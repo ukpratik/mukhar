@@ -48,8 +48,9 @@ object StreakEngine {
     }
 
     /**
-     * Auto-use freezes for missed days (US-032): for each uncovered day after the last covered day and before
-     * [today], spend a held freeze (Source.FREEZE); stop at the first day with none left. Idempotent.
+     * Auto-use freezes for missed days (US-032). Freezes are spent only when they actually save the streak
+     * (D-029): either they cover every missed day, or they cover all but the last missed day and a repair is
+     * still available for that day. Otherwise nothing is spent and the user keeps their freezes. Idempotent.
      */
     fun applyMissedDays(
         days: Map<LocalDate, Source>,
@@ -57,15 +58,19 @@ object StreakEngine {
         today: LocalDate,
     ): Pair<Map<LocalDate, Source>, HabitState> {
         val last = days.keys.maxOrNull() ?: return days to habit
-        var held = habit.freezesHeld
+        val gap = ChronoUnit.DAYS.between(last, today) - 1
+        val held = habit.freezesHeld
+        if (gap <= 0 || held == 0 || gap > held + 1) return days to habit
+        val spend = minOf(gap.toInt(), held)
         val out = days.toMutableMap()
         var d = last.plusDays(1)
-        while (d < today && held > 0) {
+        repeat(spend) {
             out[d] = Source.FREEZE
-            held--
             d = d.plusDays(1)
         }
-        return out to habit.copy(freezesHeld = held)
+        val after = habit.copy(freezesHeld = held - spend)
+        if (spend < gap && canRepair(out, after, today) == null) return days to habit
+        return out to after
     }
 
     /** Consecutive covered days ending today, or ending yesterday if today isn't covered yet. */

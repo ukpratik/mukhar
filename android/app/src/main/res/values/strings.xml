@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vaak</string>
+    <string name="tab_today">Today</string>
+    <string name="tab_practice">Practice</string>
+    <string name="tab_words">Words</string>
+    <string name="tab_me">Me</string>
+    <string name="placeholder_today">Your streak, today\'s talk, revision and words will live here.</string>
+    <string name="placeholder_practice">Talks, Say It Again and Sound Lab will live here.</string>
+    <string name="placeholder_words">Word Gym, your word bank and quick revision will live here.</string>
+    <string name="placeholder_me">Progress, settings and Premium will live here.</string>
+    <string name="placeholder_coming">Coming soon</string>
+</resources>
