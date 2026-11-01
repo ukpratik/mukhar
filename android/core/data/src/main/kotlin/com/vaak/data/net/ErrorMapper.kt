@@ -21,7 +21,9 @@ class ErrorMapper(private val json: Json, private val nowMs: () -> Long = System
         return when (status) {
             401 -> AppError.Auth
             403 -> AppError.Integrity
-            404, 409 -> AppError.Upstream(Stage.SERVER, code ?: "SESSION_STATE")
+            404 -> AppError.Upstream(Stage.SERVER, code ?: "SESSION_STATE")
+            // D-031: a second baseline is refused; terminal, the app explains it instead of retrying.
+            409 -> if (code == "BASELINE_USED") AppError.BaselineUsed else AppError.Upstream(Stage.SERVER, code ?: "SESSION_STATE")
             413 -> AppError.AudioTooLong
             422 -> AppError.TooLittleSpeech
             426 -> AppError.UpdateRequired

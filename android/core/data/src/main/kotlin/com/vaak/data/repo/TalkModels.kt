@@ -31,7 +31,8 @@ object TalkCodes {
     const val AUDIO_MISSING = "AUDIO_MISSING"
 }
 
-enum class TalkKind(val key: String) { TALK("talk"), RETAKE("retake") }
+/** `talk_session.kind` written by the recorder. [BASELINE] is the free one-time starting point (US-003, D-031). */
+enum class TalkKind(val key: String) { TALK("talk"), RETAKE("retake"), BASELINE("baseline") }
 
 data class TalkSpec(
     val kind: TalkKind,

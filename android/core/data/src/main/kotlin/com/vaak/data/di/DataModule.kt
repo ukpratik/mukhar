@@ -24,6 +24,7 @@ import com.vaak.data.prefs.SettingsStore
 import com.vaak.data.prefs.UserSettings
 import com.vaak.data.repo.HabitRepository
 import com.vaak.data.repo.TalkRepository
+import com.vaak.data.time.OverridableClock
 import com.vaak.data.util.ApplicationScope
 import com.vaak.data.util.IdGenerator
 import com.vaak.data.work.AnalysisPipeline
@@ -32,7 +33,6 @@ import com.vaak.data.work.AndroidTalkNotifier
 import com.vaak.data.work.TalkNotifier
 import com.vaak.data.work.WorkManagerAnalysisScheduler
 import com.vaak.domain.Clock
-import com.vaak.domain.SystemClock
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,9 +67,9 @@ object DataModule {
     @Provides
     fun habitDao(db: VaakDatabase): HabitDao = db.habitDao()
 
+    /** The system clock, shiftable from the debug clock screen in debug builds only (build plan "Debug hooks"). */
     @Provides
-    @Singleton
-    fun clock(): Clock = SystemClock
+    fun clock(clock: OverridableClock): Clock = clock
 
     @Provides
     @Singleton
@@ -84,9 +84,9 @@ object DataModule {
     @ApplicationScope
     fun appScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /** One `settings` DataStore (HabitModule provides it); the talk flow sees it through [UserSettings]. */
     @Provides
-    @Singleton
-    fun settings(@ApplicationContext context: Context): UserSettings = SettingsStore(context)
+    fun settings(store: SettingsStore): UserSettings = store
 
     @Provides
     @Singleton
@@ -134,10 +134,6 @@ object DataModule {
     @Singleton
     fun prompts(@ApplicationContext context: Context, habitDao: HabitDao, clock: Clock, json: Json): PromptRepository =
         PromptRepository(context, habitDao, clock, json)
-
-    @Provides
-    @Singleton
-    fun habits(habitDao: HabitDao): HabitRepository = HabitRepository(habitDao)
 
     @Provides
     @Singleton

@@ -5,6 +5,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigation.compose.composable
+import com.vaak.app.feature.PlaceholderScreen
+import com.vaak.app.nav.TodayRoute
 import com.vaak.app.nav.VaakNavHost
 import com.vaak.ui.theme.VaakTheme
 import org.junit.Rule
@@ -21,7 +24,12 @@ class VaakNavHostTest {
 
     @Test
     fun fourTabsAndSwitching() {
-        compose.setContent { VaakTheme { VaakNavHost() } }
+        // Today is stubbed with the M0 placeholder (the real one needs Hilt; see TodayContentTest).
+        compose.setContent {
+            VaakTheme {
+                VaakNavHost(todayScreen = { composable<TodayRoute> { PlaceholderScreen(R.string.tab_today, R.string.placeholder_today) } })
+            }
+        }
         compose.onAllNodesWithText("Today").assertCountEquals(2) // tab label + page title
         compose.onNodeWithText("Your streak, today's talk, revision and words will live here.").assertExists()
         for (tab in listOf("Practice", "Words", "Me")) compose.onNodeWithText(tab).assertExists()

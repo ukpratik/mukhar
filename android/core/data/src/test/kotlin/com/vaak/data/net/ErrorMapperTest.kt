@@ -41,4 +41,12 @@ class ErrorMapperTest {
         assertThat(AppError.Offline.isTerminal).isFalse()
         assertThat(AppError.Upstream(Stage.LLM, null).errorCode).isEqualTo("LLM_FAILED")
     }
+
+    @Test
+    fun secondBaselineIsTerminalNotAServerError() {
+        val e = mapper.fromHttp(409, env("BASELINE_USED"), Stage.STT)
+        assertThat(e).isEqualTo(AppError.BaselineUsed)
+        assertThat(e.isTerminal).isTrue()
+        assertThat(e.errorCode).isEqualTo("BASELINE_USED")
+    }
 }

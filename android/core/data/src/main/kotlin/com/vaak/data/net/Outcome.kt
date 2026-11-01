@@ -29,6 +29,9 @@ sealed interface AppError {
     data object TooLittleSpeech : AppError
     data object AudioTooLong : AppError
     data class Upstream(val stage: Stage, val code: String?) : AppError
+
+    /** 409 BASELINE_USED: this account or device already had its free baseline analysed (D-031). */
+    data object BaselineUsed : AppError
     data object UpdateRequired : AppError
     data object Storage : AppError
     data class Unknown(val cause: String) : AppError
@@ -37,7 +40,7 @@ sealed interface AppError {
 /** Terminal errors are never retried automatically (LLD §6). */
 val AppError.isTerminal: Boolean
     get() = this is AppError.TooLittleSpeech || this is AppError.AudioTooLong || this is AppError.UpdateRequired ||
-        this is AppError.Storage
+        this is AppError.Storage || this is AppError.BaselineUsed
 
 /** A short, content-free code stored in `talk_session.error_code` and safe to log. */
 val AppError.errorCode: String
@@ -56,5 +59,6 @@ val AppError.errorCode: String
         }
         AppError.UpdateRequired -> "UPDATE_REQUIRED"
         AppError.Storage -> "STORAGE"
+        AppError.BaselineUsed -> "BASELINE_USED"
         is AppError.Unknown -> "UNKNOWN"
     }

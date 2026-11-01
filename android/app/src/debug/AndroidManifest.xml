@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug builds only (build plan "Debug hooks"): the clock override screen and its adb receiver. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- M3: clock override + reminder delivery log. A second launcher entry, debug builds only. -->
+        <activity
+            android:name="com.vaak.app.debug.DebugClockActivity"
+            android:exported="true"
+            android:label="@string/debug_clock_label"
+            android:taskAffinity="com.vaak.debug">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- adb shell (which holds DUMP) can set the clock: see DebugClockReceiver. -->
+        <receiver
+            android:name="com.vaak.app.debug.DebugClockReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="com.vaak.debug.CLOCK" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

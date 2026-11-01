@@ -119,7 +119,7 @@ class RecordViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val prefs = settings.current()
+            val prefs = settings.currentPrefs()
             val lang = route.lang?.let { runCatching { Lang.fromCode(it) }.getOrNull() } ?: prefs.lastLang
             val track = route.track?.let(Track::fromKey) ?: prefs.trackFor(lang)
             val prompt = route.promptId?.let { prompts.byId(it) } ?: prompts.next(lang, track, null)

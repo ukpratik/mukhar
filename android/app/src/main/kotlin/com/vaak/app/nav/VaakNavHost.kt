@@ -1,5 +1,6 @@
 package com.vaak.app.nav
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,13 +27,22 @@ import com.vaak.app.feature.talk.record.RecoveredScreen
 import com.vaak.app.feature.talk.report.ReportActions
 import com.vaak.app.feature.talk.report.ReportScreen
 import com.vaak.app.feature.talk.sayagain.SayAgainScreen
-import com.vaak.app.feature.today.TodayScreen
 import com.vaak.app.feature.words.WordsScreen
 
 @Composable
-fun VaakNavHost(navController: NavHostController = rememberNavController()) {
+fun VaakNavHost(
+    navController: NavHostController = rememberNavController(),
+    // Onboarding until it's done, then Today (VaakRoot picks it from DataStore, LLD §5).
+    startDestination: Any = TodayRoute,
+    onOnboardingFinished: () -> Unit = {},
+    // Today wired to its destinations (a slot so tests can stub it).
+    todayScreen: NavGraphBuilder.(NavHostController) -> Unit = { todayDestination(it) },
+) {
     val backStack by navController.currentBackStackEntryAsState()
+    // The bar shows on the 4 tabs only (not onboarding or the full-screen talk flow).
     val onTab = TopLevel.entries.any { tab -> backStack?.destination?.hierarchy?.any { it.hasRoute(tab.route::class) } == true }
+    // The talk screens draw edge to edge and pad themselves; everything else takes the Scaffold's insets.
+    val ownInsets = backStack?.destination?.let { d -> FULL_SCREEN_TALK.any { d.hasRoute(it) } } == true
     // Leaves the talk flow and returns to the tab it started from.
     val home: () -> Unit = {
         if (!navController.popBackStack(PracticeRoute, inclusive = false) && !navController.popBackStack(TodayRoute, inclusive = false)) {
@@ -41,7 +52,7 @@ fun VaakNavHost(navController: NavHostController = rememberNavController()) {
     Scaffold(
         bottomBar = {
             // Default M3 colours render as designed (design-system §9.1): card bar, brand-tint pill, brand icon.
-            if (onTab || backStack == null) {
+            if (onTab) {
                 NavigationBar {
                     TopLevel.entries.forEach { tab ->
                         val selected = backStack?.destination?.hierarchy?.any { it.hasRoute(tab.route::class) } == true
@@ -62,8 +73,9 @@ fun VaakNavHost(navController: NavHostController = rememberNavController()) {
             }
         },
     ) { padding ->
-        NavHost(navController, startDestination = TodayRoute, modifier = Modifier.padding(if (onTab) padding else androidx.compose.foundation.layout.PaddingValues())) {
-            composable<TodayRoute> { TodayScreen(onTodaysTalk = { navController.navigate(RecordRoute()) }) }
+        NavHost(navController, startDestination = startDestination, modifier = Modifier.padding(if (ownInsets) PaddingValues() else padding)) {
+            todayScreen(navController)
+            m3Destinations(navController, onOnboardingFinished)
             composable<PracticeRoute> {
                 PromptScreen(onRecord = { prompt, track -> navController.navigate(RecordRoute(prompt.id, prompt.lang.code, track)) })
             }
@@ -117,3 +129,6 @@ fun VaakNavHost(navController: NavHostController = rememberNavController()) {
         }
     }
 }
+
+/** Full-screen talk routes (S09 to S12): no bottom bar, and they handle their own window insets. */
+private val FULL_SCREEN_TALK = listOf(RecordRoute::class, ReportRoute::class, SayAgainRoute::class, RecoveredRoute::class)

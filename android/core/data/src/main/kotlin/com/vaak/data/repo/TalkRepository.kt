@@ -92,7 +92,9 @@ class TalkRepository(
                 id = id, kind = spec.kind.key, parentId = spec.parentId, lang = spec.lang.code, track = spec.track.key,
                 promptId = spec.promptId, createdAt = now, zoneId = clock.zone().id, durationMs = 0, speechMs = 0,
                 snrDb = 0.0, status = TalkStatus.RECORDING, leaseUntil = null, attempts = 0, errorCode = null,
-                audioPath = file.path, audioKept = false, serverSessionId = null, quotaDay = null, updatedAt = now,
+                // A baseline's audio is held until S05's "Keep this recording?" answer ([setAudioKept]).
+                audioPath = file.path, audioKept = spec.kind == TalkKind.BASELINE, serverSessionId = null, quotaDay = null,
+                updatedAt = now,
             ),
         )
         return id to file
@@ -126,10 +128,19 @@ class TalkRepository(
     /** Enqueues the queue job (the fallback) and runs the foreground path now (LLD §4.9). */
     fun startAnalysis(id: String) {
         scheduler.enqueue(id)
-        appScope.launch {
-            val run = analyze(id)
-            if (run is AnalysisRun.RetryAfter) scheduler.enqueueAfter(id, run.delayMs)
-        }
+        appScope.launch { analyzeForeground(id) }
+    }
+
+    /** [startAnalysis], awaited: the baseline (S05) waits on the analysing view for its result. */
+    suspend fun analyzeNow(id: String): AnalysisRun {
+        scheduler.enqueue(id)
+        return analyzeForeground(id)
+    }
+
+    private suspend fun analyzeForeground(id: String): AnalysisRun {
+        val run = analyze(id)
+        if (run is AnalysisRun.RetryAfter) scheduler.enqueueAfter(id, run.delayMs)
+        return run
     }
 
     /** "Get feedback on this part" on a recovered talk (S09 state 8). */
@@ -137,6 +148,15 @@ class TalkRepository(
         val s = talkDao.session(id) ?: return
         talkDao.updateSession(s.copy(errorCode = null, updatedAt = clock.now().toEpochMilli()))
         startAnalysis(id)
+    }
+
+    /** The keep-audio answer (US-003, off by default): `false` deletes the audio now; the numbers stay. */
+    suspend fun setAudioKept(id: String, keep: Boolean) {
+        val s = talkDao.session(id) ?: return
+        if (!keep) s.audioPath?.let { File(it).delete() }
+        talkDao.updateSession(
+            s.copy(audioKept = keep && s.audioPath != null, audioPath = if (keep) s.audioPath else null, updatedAt = clock.now().toEpochMilli()),
+        )
     }
 
     /** User-confirmed discard: the row stays as `discarded` (history), the audio is deleted. */
@@ -159,7 +179,7 @@ class TalkRepository(
             val current = talkDao.session(id) ?: return AnalysisRun.Gone
             return if (current.status == TalkStatus.UPLOADING) AnalysisRun.LeaseHeld else AnalysisRun.Done
         }
-        val prefs = settings.current()
+        val prefs = settings.currentPrefs()
         val wasQueued = before.status == TalkStatus.QUEUED || before.errorCode != null
         val lang = Lang.fromCode(before.lang)
 
@@ -200,7 +220,7 @@ class TalkRepository(
         val serverId = s.serverSessionId ?: return onError(id, AppError.Unknown("no_server_session"), Stage.LLM)
         val lowConf = lowConfidence(words)
         val metrics = MetricsCalculator.compute(words, lang, stutterFriendly)
-        val prompt = prompts.byId(s.promptId)?.text.orEmpty()
+        val prompt = prompts.byId(s.promptId)?.text ?: if (s.kind == TalkKind.BASELINE.key) BASELINE_PROMPT else ""
         val request = FeedbackRequest(serverId, lang, s.track, prompt, stutterFriendly, words, lowConf, metrics, s.speechMs.toLong())
         var outcome = pipeline.feedback(request)
         // Two silent automatic retries for an LLM failure before the user sees "Try again" (S10 state 4 notes).
@@ -435,7 +455,10 @@ class TalkRepository(
         const val MIN_RETRY_MS = 60_000L
         const val SILENT_LLM_RETRIES = 2
         const val SILENT_RETRY_DELAY_MS = 1_000L
-        private val NO_AUTO_RETRY = setOf("TOO_LITTLE_SPEECH", "AUDIO_TOO_LONG", TalkCodes.AUDIO_MISSING, "LLM_FAILED")
+        private val NO_AUTO_RETRY = setOf("TOO_LITTLE_SPEECH", "AUDIO_TOO_LONG", TalkCodes.AUDIO_MISSING, "LLM_FAILED", "BASELINE_USED")
+
+        /** The S05 prompt (not in `prompts.json`; the baseline has one fixed prompt). */
+        const val BASELINE_PROMPT = "Tell us who you are, and one thing you'd like to get better at when you speak."
 
         fun lowConfidence(words: List<Word>): Set<Int> =
             words.indices.filter { words[it].conf < MetricsCalculator.LOW_CONF }.toSet()

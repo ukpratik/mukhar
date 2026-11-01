@@ -54,5 +54,7 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
+    // ViewModel tests build a real SettingsStore on a temp DataStore.
+    testImplementation(libs.androidx.datastore.preferences)
     debugImplementation(libs.compose.ui.test.manifest)
 }

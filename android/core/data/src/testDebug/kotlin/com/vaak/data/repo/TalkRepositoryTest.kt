@@ -1,5 +1,6 @@
 package com.vaak.data.repo
 
+import com.vaak.data.tempSettingsStore
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -25,6 +26,7 @@ import com.vaak.domain.prompt.Track
 import com.vaak.domain.talk.StorageLevel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.After
@@ -59,7 +61,7 @@ class TalkRepositoryTest {
             .allowMainThreadQueries().build()
         val prompts = PromptRepository({ File("src/main/assets/prompts.json").readText() }, db.habitDao(), clock, json)
         repo = TalkRepository(
-            db.talkDao(), db.wordDao(), HabitRepository(db.habitDao()), settings, pipeline, prompts, scheduler,
+            db.talkDao(), db.wordDao(), HabitRepository(db.habitDao(), tempSettingsStore(), clock), settings, pipeline, prompts, scheduler,
             RecordingFiles(dir), { freeBytes }, clock, { "talk-${++nextId}" }, json, TestScope(),
         )
     }
@@ -275,6 +277,11 @@ class TalkRepositoryTest {
         assertThat(s.durationMs).isEqualTo(64_000)
         assertThat(file.length()).isEqualTo(1_000L * 47)
         assertThat(repo.observeRecovered().first()!!.id).isEqualTo(id)
+        // Today's recovered card reads the same row (S07); it isn't also counted as waiting.
+        val today = com.vaak.data.today.RoomTalkStatusSource(db, db.talkDao())
+        assertThat(today.recovered.first()!!.sessionId).isEqualTo(id)
+        assertThat(today.recovered.first()!!.durationMs).isEqualTo(64_000)
+        assertThat(today.waiting.first()!!.count).isEqualTo(1) // only the queued talk
         assertThat(scheduler.enqueued).containsExactly(queued) // the recovered talk waits for the user
         assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done)
         assertThat(pipeline.transcribeCalls).isEmpty()
@@ -357,4 +364,82 @@ class TalkRepositoryTest {
 
     @Suppress("unused")
     private fun TalkSessionEntity.short() = "$id:$status:$errorCode"
+
+    private suspend fun baseline(): Pair<String, File> {
+        val (id, file) = repo.startSession(TalkSpec(TalkKind.BASELINE, Lang.EN, Track.EVERYDAY, "baseline_intro"))
+        file.writeBytes(ByteArray(128))
+        repo.finishRecording(id, RecordingResult(file, 60_000, 45_000, 25.0, false))
+        return id to file
+    }
+
+    @Test
+    fun secondBaselineIsTerminalAndNeverRetried() = runTest {
+        val (id, _) = baseline()
+        pipeline.transcribeAnswers += Outcome.Err(com.vaak.data.net.AppError.BaselineUsed)
+        assertThat(repo.analyzeNow(id)).isEqualTo(AnalysisRun.Done)
+        assertThat(pipeline.transcribeCalls.single().kind).isEqualTo("baseline")
+        assertThat(status(id).status).isEqualTo(TalkStatus.FAILED)
+        assertThat(status(id).errorCode).isEqualTo("BASELINE_USED")
+        scheduler.enqueued.clear()
+        repo.recoverOnStart()
+        assertThat(scheduler.enqueued).doesNotContain(id) // D-031: no retry loop against the 409
+    }
+
+    @Test
+    fun baselineKeepsItsAudioUntilTheKeepAnswer() = runTest {
+        val (id, file) = baseline()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        assertThat(repo.analyzeNow(id)).isEqualTo(AnalysisRun.Done)
+        assertThat(pipeline.feedbackCalls.single().prompt).isEqualTo(TalkRepository.BASELINE_PROMPT)
+        assertThat(status(id).status).isEqualTo(TalkStatus.FEEDBACK_READY)
+        assertThat(file.exists()).isTrue() // held for "Keep this recording?" (S05)
+        repo.setAudioKept(id, keep = false)
+        assertThat(file.exists()).isFalse()
+        assertThat(status(id).audioPath).isNull()
+        assertThat(status(id).audioKept).isFalse()
+    }
+
+    @Test
+    fun baselineRecorderRecordsOnTheTalkPipelineAndExplainsA409() = runTest {
+        var n = 0L
+        var frame = 0
+        val source = object : com.vaak.data.audio.PcmSource {
+            override fun start() = true
+            override suspend fun read(buffer: ShortArray): Int {
+                kotlinx.coroutines.delay(20)
+                val speaking = frame++ >= 30 // a quiet start sets the noise floor
+                for (i in buffer.indices) {
+                    buffer[i] = if (speaking) (8000 * kotlin.math.sin(2 * kotlin.math.PI * 220 * n++ / 16_000)).toInt().toShort() else ((i % 7) - 3).toShort()
+                }
+                return buffer.size
+            }
+            override fun stop() = Unit
+            override fun release() = Unit
+        }
+        val recorder = com.vaak.data.audio.Recorder(
+            { source },
+            { f ->
+                f.writeBytes(ByteArray(64))
+                object : com.vaak.data.audio.AudioSink {
+                    override fun write(pcm: ShortArray, length: Int) = Unit
+                    override fun finish() = Unit
+                    override fun abort() = Unit
+                }
+            },
+            kotlinx.coroutines.test.StandardTestDispatcher(testScheduler),
+        )
+        val baseline = com.vaak.data.baseline.TalkBaselineRecorder(recorder, repo, backgroundScope)
+        pipeline.transcribeAnswers += Outcome.Err(com.vaak.data.net.AppError.BaselineUsed)
+
+        assertThat(baseline.start(Lang.EN, "baseline_intro")).isTrue()
+        advanceTimeBy(15_000)
+        assertThat(baseline.progress.value!!.elapsedMs).isAtLeast(14_000)
+        assertThat(baseline.stop()).isEqualTo(com.vaak.data.baseline.BaselineResult.AlreadyUsed)
+        assertThat(baseline.progress.value).isNull()
+        val row = status("talk-1")
+        assertThat(row.kind).isEqualTo("baseline")
+        assertThat(row.status).isEqualTo(TalkStatus.DISCARDED) // nothing is kept from a refused baseline
+        assertThat(row.audioPath).isNull()
+    }
 }

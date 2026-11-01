@@ -1,5 +1,6 @@
 package com.vaak.data.work
 
+import com.vaak.data.tempSettingsStore
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -66,7 +67,7 @@ class AnalysisWorkerTest {
         val prompts = PromptRepository({ File("src/main/assets/prompts.json").readText() }, db.habitDao(), clock, json)
         var n = 0
         repo = TalkRepository(
-            db.talkDao(), db.wordDao(), HabitRepository(db.habitDao()), MemorySettings(), pipeline, prompts, scheduler,
+            db.talkDao(), db.wordDao(), HabitRepository(db.habitDao(), tempSettingsStore(), clock), MemorySettings(), pipeline, prompts, scheduler,
             RecordingFiles(Files.createTempDirectory("w").toFile()), { Long.MAX_VALUE }, clock, { "t${++n}" }, json, TestScope(),
         )
     }

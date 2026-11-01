@@ -48,7 +48,7 @@ class PromptViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val p = settings.current()
+            val p = settings.currentPrefs()
             val lang = p.lastLang.takeIf { it in p.langs } ?: p.langs.first()
             val track = p.trackFor(lang)
             _state.update {
@@ -68,7 +68,7 @@ class PromptViewModel @Inject constructor(
                 is PromptEvent.SelectLang -> {
                     if (e.lang == _state.value.lang) return@launch
                     settings.setLang(e.lang)
-                    val p = settings.current()
+                    val p = settings.currentPrefs()
                     val track = p.trackFor(e.lang)
                     _state.update { it.copy(lang = e.lang, tracks = p.tracksFor(e.lang), track = track, fresh = false, prompt = prompts.next(e.lang, track, null)) }
                 }

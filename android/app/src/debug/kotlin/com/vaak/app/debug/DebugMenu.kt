@@ -54,11 +54,20 @@ interface DebugEntryPoint {
     fun settings(): UserSettings
 }
 
-/** Debug builds only (build-plan "Debug hooks"): fake pipeline failure modes, delay, low storage, plan, stutter mode. */
+/**
+ * Debug builds only (build-plan "Debug hooks"): fake pipeline failure modes, delay, low storage, plan, stutter mode,
+ * and the clock override screen (also its own launcher entry, "Vaak debug clock").
+ */
 @Composable
 fun DebugMenuEntry() {
     var open by rememberSaveable { mutableStateOf(false) }
-    OutlinedButton(onClick = { open = true }, modifier = Modifier.padding(horizontal = 20.dp)) { Text(stringResource(R.string.debug_menu)) }
+    val context = LocalContext.current
+    Row(Modifier.padding(horizontal = 20.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(onClick = { open = true }) { Text(stringResource(R.string.debug_menu)) }
+        OutlinedButton(onClick = { context.startActivity(android.content.Intent(context, DebugClockActivity::class.java)) }) {
+            Text(stringResource(R.string.debug_open_clock))
+        }
+    }
     if (open) {
         Dialog(onDismissRequest = { open = false }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
             Surface(Modifier.fillMaxSize()) { DebugMenu(onClose = { open = false }) }

@@ -9,7 +9,6 @@
     <string name="placeholder_words">Word Gym, your word bank and quick revision will live here.</string>
     <string name="placeholder_me">Progress, settings and Premium will live here.</string>
     <string name="placeholder_coming">Coming soon</string>
-    <string name="todays_talk">Today\'s Talk</string>
 
     <!-- Shared talk chrome -->
     <string name="lang_en">English</string>
