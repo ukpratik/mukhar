@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- M3 Today (S07) and streak sheet (S20) copy. Never shaming: no "lost", "broken" or "failed". -->
+<resources>
+    <string name="greet_morning">Good morning</string>
+    <string name="greet_afternoon">Good afternoon</string>
+    <string name="greet_evening">Good evening</string>
+    <string name="greet_with_name">%1$s,\n%2$s</string>
+    <string name="today_profile_a11y">Me: profile and settings</string>
+
+    <string name="streak_day_label">Day %1$d</string>
+    <string name="streak_n_day">%1$d-day streak</string>
+    <string name="streak_week">Week</string>
+    <string name="streak_line_warmup">Your warm-up counted. One talk a day keeps it going.</string>
+    <string name="streak_line_met">Weekly goal met. That\'s as big as the streak.</string>
+    <string name="streak_line_counted">Today is counted.</string>
+    <string name="streak_line_counted_queued">Today is counted. Your talk credited the day when you stopped.</string>
+    <string name="streak_line_talks_off">Revising 5 cards keeps your streak going.</string>
+    <string name="streak_line_goal_today">One talk today and this week\'s goal is met.</string>
+    <string name="streak_line_keep_going">One talk a day keeps it going.</string>
+    <string name="streak_line_fresh">Fresh start. Today\'s talk is Day 1 of your next streak.</string>
+    <string name="day_initials">MTWTFSS</string>
+
+    <string name="today_offline_title">You\'re offline</string>
+    <string name="today_offline_body">You can still talk. We\'ll analyse it when you\'re back online.</string>
+    <string name="today_waiting_sub">Recorded %1$s · %2$s · day counted</string>
+    <string name="today_recovered_title">We kept your talk</string>
+    <string name="today_recovered_sub">%1$s recorded · %2$s</string>
+
+    <string name="talk_eyebrow_first">Your first talk</string>
+    <string name="talk_eyebrow_today">Today\'s talk</string>
+    <string name="talk_eyebrow_again">Practise again</string>
+    <string name="talk_easy">Easy</string>
+    <string name="talk_minutes_first">1 to 2 min</string>
+    <string name="talk_minutes">2 to 3 min</string>
+    <string name="talk_analysed_later">Analysed later</string>
+    <string name="talk_start">Start talk</string>
+    <string name="talk_shuffle">Another prompt</string>
+    <string name="talk_card_a11y">%1$s, %2$s, %3$s. %4$s Start talk</string>
+    <string name="talks_off_title">Talks are off</string>
+    <string name="talks_off_body">Daily talks and coach\'s notes need two online services. See what\'s sent before you decide.</string>
+    <string name="talks_off_a11y">Talks are off. Turn on talks: see what leaves your phone first</string>
+
+    <string name="today_done_title">You\'re done for today.</string>
+    <string name="today_done_body">Today is counted. Come back tomorrow for a new talk.</string>
+    <string name="today_tomorrow">Tomorrow\'s talk · opens at 3 am</string>
+
+    <string name="revise_title">Revise</string>
+    <string name="revise_caught_up">Revise · all caught up</string>
+    <string name="revise_nothing">Nothing due yet. Words you add show up here tomorrow.</string>
+    <string name="revise_minutes">~%1$d min</string>
+    <string name="revise_minutes_offline">Works offline · ~%1$d min</string>
+    <string name="revise_minutes_on_phone">Works fully on your phone · ~%1$d min</string>
+
+    <string name="today_words">Today\'s words</string>
+    <string name="today_word_bank">Word bank</string>
+    <string name="today_words_soon">Three new words a day, picked for your goals, will show up here.</string>
+
+    <string name="today_baseline_title">Your starting point</string>
+    <string name="today_baseline_body">A 1-minute talk so you can hear how far you\'ve come. Optional.</string>
+    <string name="today_baseline_a11y">Record your 1-minute starting point</string>
+
+    <string name="today_tip_nudge">Want a nudge %1$s?</string>
+    <string name="today_tip_dismiss">Dismiss tip</string>
+
+    <!-- S20 streak sheet -->
+    <string name="sheet_frozen_note">Frozen days keep the streak; they don\'t add to the week.</string>
+    <string name="sheet_freezes">Freezes</string>
+    <string name="sheet_freezes_held">%1$d of 2 held. A missed day uses one for you.</string>
+    <string name="sheet_weekly_goal">Weekly goal</string>
+    <string name="sheet_weekly_goal_n">Weekly goal · %1$d of %2$d</string>
+    <string name="sheet_goal_note">Meeting it counts as much as the streak.</string>
+    <string name="sheet_goal_met_note">Met this week. That\'s as big as the streak.</string>
+    <string name="sheet_rule">A day counts with 30 s of speaking or 5 review cards, before 3 am. You earn a freeze every 7 days.</string>
+    <string name="sheet_do_talk">Do today\'s talk</string>
+    <string name="sheet_do_revise">Revise 5 cards</string>
+    <string name="sheet_freeze_title">A freeze covered yesterday</string>
+    <string name="sheet_freeze_title_day">A freeze covered %1$s</string>
+    <string name="sheet_freeze_body">Busy days happen. Your streak is safe and still growing.</string>
+    <string name="sheet_repair_tonight">Open until 3 am tonight</string>
+    <string name="sheet_repair_tomorrow">Open until 3 am tomorrow night</string>
+    <string name="sheet_repair_title">Your %1$d-day streak can come back</string>
+    <string name="sheet_repair_lead">Do 2 sessions today and we\'ll restore it, as if the missed days never happened.</string>
+    <string name="sheet_repair_progress">Repair · %1$d of 2 done</string>
+    <string name="sheet_repair_talk">A talk · 30 s+</string>
+    <string name="sheet_repair_review">Revise · 5+ cards</string>
+    <string name="sheet_repair_rule">A session is a talk with 30 s of speaking, or a review of 5 or more cards. Repairs are available once every 30 days.</string>
+    <string name="sheet_repair_finish_talk">Do a talk to finish</string>
+    <string name="sheet_repair_start_talk">Start with a talk</string>
+    <string name="sheet_not_today">Not today</string>
+    <string name="sheet_fresh_title">Fresh start. Let\'s go.</string>
+    <string name="sheet_fresh_lead">Life got busy, and that\'s fine. Today\'s talk is Day 1 of your next streak.</string>
+    <string name="sheet_kept_a11y">What you keep</string>
+    <string name="sheet_best_kept">your best streak, kept</string>
+    <string name="sheet_words_kept">learned, all still yours</string>
+    <string name="sheet_fresh_goal_note">Want a gentler restart? 3 days a week is a great rhythm.</string>
+    <string name="sheet_start_day1">Start Day 1</string>
+    <string name="sheet_week_a11y">This week: %1$s</string>
+    <string name="sheet_week_done">%1$s done</string>
+    <string name="sheet_week_frozen">%1$s frozen</string>
+    <string name="sheet_week_today">today to do</string>
+
+    <!-- Placeholder destinations until M2/M4 -->
+    <string name="placeholder_talk_title">Today\'s talk</string>
+    <string name="placeholder_talk">Recording and feedback arrive with the talk pipeline.</string>
+    <string name="placeholder_revise_title">Revise</string>
+    <string name="placeholder_revise">Quick revision sessions arrive with Word Gym.</string>
+</resources>

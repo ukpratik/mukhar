@@ -48,5 +48,8 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.compose.ui.test.junit4)
+    // M3: ViewModel tests build a real SettingsStore on a temp DataStore.
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.datastore.preferences)
     debugImplementation(libs.compose.ui.test.manifest)
 }

@@ -108,4 +108,21 @@ interface HabitDao {
 
     @Query("SELECT rule_key FROM insight")
     suspend fun achievedInsightKeys(): List<String>
+
+    // --- M3: habit and reminders ---
+
+    @Query("SELECT * FROM habit_state WHERE id = 1")
+    fun observeHabitState(): Flow<HabitStateEntity?>
+
+    @Query("UPDATE reminder_log SET outcome = 'opened', opened_at = :at WHERE id = :id")
+    suspend fun markReminderOpened(id: Long, at: Long)
+
+    /** Finalises a shown reminder whose day is over without a tap or practice (US-033 "ignored"). */
+    @Query("UPDATE reminder_log SET outcome = 'ignored' WHERE id = :id AND outcome = 'shown'")
+    suspend fun markReminderIgnored(id: Long)
+
+    /** Words learned, shown as kept on the fresh-start sheet (S20). */
+    @Query("SELECT COUNT(*) FROM word")
+    suspend fun wordCount(): Int
+    // --- end M3 ---
 }

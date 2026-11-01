@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="goal_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="reminder_plan_days">
+        <item quantity="one">%d day a week</item>
+        <item quantity="other">%d days a week</item>
+    </plurals>
+    <plurals name="freezes_saved">
+        <item quantity="one">%d freeze saved.</item>
+        <item quantity="other">%d freezes saved.</item>
+    </plurals>
+    <plurals name="talks_waiting">
+        <item quantity="one">%d talk waiting</item>
+        <item quantity="other">%d talks waiting</item>
+    </plurals>
+    <plurals name="revise_due_tomorrow">
+        <item quantity="one">Next %d card due tomorrow</item>
+        <item quantity="other">Next %d cards due tomorrow</item>
+    </plurals>
+    <plurals name="sheet_next_freeze">
+        <item quantity="one">%1$d of 2 held. Next one in %2$d day.</item>
+        <item quantity="other">%1$d of 2 held. Next one in %2$d days.</item>
+    </plurals>
+    <plurals name="sheet_days_more">
+        <item quantity="one">%d more day this week. Still very doable.</item>
+        <item quantity="other">%d more days this week. Still very doable.</item>
+    </plurals>
+    <plurals name="sheet_best_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="sheet_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <plurals name="baseline_recording_a11y">
+        <item quantity="one">Recording your starting point. %d second of 1 minute.</item>
+        <item quantity="other">Recording your starting point. %d seconds of 1 minute.</item>
+    </plurals>
+    <!-- The streak card reads as one sentence (design §10). %1$s title, %2$s the card line; quantity follows the goal (%4$d). -->
+    <plurals name="streak_card_a11y">
+        <item quantity="one">%1$s. %2$s Weekly goal %3$d of %4$d day. Open streak details</item>
+        <item quantity="other">%1$s. %2$s Weekly goal %3$d of %4$d days. Open streak details</item>
+    </plurals>
+    <plurals name="streak_card_met_a11y">
+        <item quantity="one">%1$s. %2$s Weekly goal met, %3$d of %4$d day. Open streak details</item>
+        <item quantity="other">%1$s. %2$s Weekly goal met, %3$d of %4$d days. Open streak details</item>
+    </plurals>
+    <plurals name="revise_due">
+        <item quantity="one">Revise · %d due</item>
+        <item quantity="other">Revise · %d due</item>
+    </plurals>
+    <plurals name="sheet_best">
+        <item quantity="one">Your best: %d day</item>
+        <item quantity="other">Your best: %d days</item>
+    </plurals>
+</resources>

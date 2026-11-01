@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- M3 reminder copy (US-004, US-033, S06). Shared by the S06 preview and the notification. -->
+<resources>
+    <string name="channel_reminders">Daily reminder</string>
+    <string name="channel_reminders_desc">One nudge a day, after the routine you chose.</string>
+    <string name="channel_trial">Trial and billing</string>
+    <string name="channel_trial_desc">A heads-up before your free trial ends.</string>
+
+    <string name="routine_morning_tea">morning tea</string>
+    <string name="routine_commute">commute</string>
+    <string name="routine_lunch">lunch</string>
+    <string name="routine_workout">workout</string>
+    <string name="routine_dinner">dinner</string>
+    <string name="routine_custom">Custom</string>
+
+    <string name="reminder_phrase_preset">After your %1$s</string>
+    <string name="reminder_phrase_custom">After %1$s</string>
+    <string name="reminder_body">%1$s: today\'s talk is ready</string>
+    <string name="reminder_body_tea">%1$s: today\'s talk is ready ☕</string>
+    <string name="reminder_adjust">Adjust your reminder?</string>
+</resources>

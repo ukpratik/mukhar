@@ -20,6 +20,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kotlinx.coroutines.android)
+    // M3: settings (DataStore, LLD §2.1) and reminder notifications.
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)

@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,16 +21,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.vaak.app.feature.me.MeScreen
 import com.vaak.app.feature.practice.PracticeScreen
-import com.vaak.app.feature.today.TodayScreen
 import com.vaak.app.feature.words.WordsScreen
 
 @Composable
-fun VaakNavHost(navController: NavHostController = rememberNavController()) {
+fun VaakNavHost(
+    navController: NavHostController = rememberNavController(),
+    // --- M3: onboarding start, and Today wired to its destinations (a slot so tests can stub it) ---
+    startDestination: Any = TodayRoute,
+    onOnboardingFinished: () -> Unit = {},
+    todayScreen: NavGraphBuilder.(NavHostController) -> Unit = { todayDestination(it) },
+    // --- end M3 ---
+) {
     val backStack by navController.currentBackStackEntryAsState()
+    // M3: the bar shows on the 4 tabs only (not onboarding or full-screen flows).
+    val onTab = TopLevel.entries.any { tab -> backStack?.destination?.hierarchy?.any { it.hasRoute(tab.route::class) } == true }
     Scaffold(
         bottomBar = {
             // Default M3 colours render as designed (design-system §9.1): card bar, brand-tint pill, brand icon.
-            NavigationBar {
+            if (onTab) NavigationBar {
                 TopLevel.entries.forEach { tab ->
                     val selected = backStack?.destination?.hierarchy?.any { it.hasRoute(tab.route::class) } == true
                     NavigationBarItem(
@@ -48,8 +57,9 @@ fun VaakNavHost(navController: NavHostController = rememberNavController()) {
             }
         },
     ) { padding ->
-        NavHost(navController, startDestination = TodayRoute, modifier = Modifier.padding(padding)) {
-            composable<TodayRoute> { TodayScreen() }
+        NavHost(navController, startDestination = startDestination, modifier = Modifier.padding(padding)) {
+            todayScreen(navController) // M3
+            m3Destinations(navController, onOnboardingFinished) // M3
             composable<PracticeRoute> { PracticeScreen() }
             composable<WordsRoute> { WordsScreen() }
             composable<MeRoute> { MeScreen() }

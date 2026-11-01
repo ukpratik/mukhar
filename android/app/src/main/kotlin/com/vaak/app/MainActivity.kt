@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.vaak.app.nav.VaakNavHost
 import com.vaak.ui.theme.VaakTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VaakTheme {
-                VaakNavHost()
+                VaakRoot() // M3: onboarding gate, then the tab graph
             }
         }
     }

@@ -6,8 +6,8 @@ import com.vaak.data.db.HabitDao
 import com.vaak.data.db.TalkDao
 import com.vaak.data.db.VaakDatabase
 import com.vaak.data.db.WordDao
+import com.vaak.data.time.OverridableClock
 import com.vaak.domain.Clock
-import com.vaak.domain.SystemClock
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +32,7 @@ object DataModule {
     @Provides
     fun habitDao(db: VaakDatabase): HabitDao = db.habitDao()
 
+    /** M3: the system clock, shiftable from the debug screen in debug builds only (build plan "Debug hooks"). */
     @Provides
-    @Singleton
-    fun clock(): Clock = SystemClock
+    fun clock(clock: OverridableClock): Clock = clock
 }
