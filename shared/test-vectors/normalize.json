@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "cases": [
+    { "name": "trailing comma", "in": "Hello,", "out": "hello" },
+    { "name": "collapse and trim whitespace", "in": "  So,   um...  ", "out": "so um" },
+    { "name": "apostrophe removed", "in": "Don't", "out": "dont" },
+    { "name": "curly quotes", "in": "“Quote”", "out": "quote" },
+    { "name": "hyphen removed", "in": "you-know", "out": "youknow" },
+    { "name": "NFC composes e + acute", "in": "école", "out": "école" },
+    { "name": "uppercase Latin with accent", "in": "ÉCOLE", "out": "école" },
+    { "name": "precomposed qa (U+0958) loses nukta", "in": "क़िताब", "out": "किताब" },
+    { "name": "decomposed dda + nukta", "in": "ड़", "out": "ड" },
+    { "name": "precomposed dddha (U+095C)", "in": "ड़", "out": "ड" },
+    { "name": "candrabindu becomes anusvara (haan)", "in": "हाँ", "out": "हां" },
+    { "name": "danda stripped", "in": "वो।", "out": "वो" },
+    { "name": "double danda stripped", "in": "॥ठीक॥", "out": "ठीक" },
+    { "name": "ZWJ removed", "in": "क्‍ष", "out": "क्ष" },
+    { "name": "ZWNJ removed", "in": "क्‌ष", "out": "क्ष" },
+    { "name": "Hinglish phrase", "in": "Matlab, हाँ!", "out": "matlab हां" },
+    { "name": "punctuation only", "in": "!!!", "out": "" },
+    { "name": "empty", "in": "", "out": "" }
+  ]
+}

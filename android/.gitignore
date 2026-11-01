@@ -1,0 +1,23 @@
+# Gradle / build
+.gradle/
+build/
+.kotlin/
+local.properties
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+# IDE
+.idea/
+*.iml
+.DS_Store
+# Signing: never commit keys (LLD §7)
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+# Recordings and golden-set audio stay out of git
+recordings/
+*.aac
+*.m4a
