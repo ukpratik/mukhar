@@ -1,0 +1,33 @@
+{
+  "name": "vaak-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Vaak API: Cloudflare Worker (Hono) for auth, quota, STT relay, grounded LLM feedback and Play entitlements",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "dev": "wrangler dev --env dev",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --env dev",
+    "db:migrate:dev": "wrangler d1 migrations apply DB --remote --env dev",
+    "db:migrate:prod": "wrangler d1 migrations apply DB --remote --env production",
+    "deploy:dev": "wrangler deploy --env dev",
+    "deploy:prod": "wrangler deploy --env production",
+    "bench:stt": "node scripts/stt-bench.ts",
+    "eval:feedback": "node scripts/feedback-eval.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0",
+    "hono": "4.13.13",
+    "jose": "6.2.12"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.23.0",
+    "@cloudflare/workers-types": "5.20261016.1",
+    "typescript": "6.0.3",
+    "vitest": "4.1.12",
+    "wrangler": "4.151.1"
+  }
+}

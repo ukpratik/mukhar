@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "notes": "Copy to manifest.json (git-ignored) and list your own clips. Audio lives in data/golden/audio/ (git-ignored). reference = verbatim transcript with every filler, false start and grammar slip exactly as spoken. verbatim_checks = deliberate non-standard phrases in the reference; if a provider 'fixes' them it counts as a false correction.",
+  "clips": [
+    {
+      "id": "en-001",
+      "audio": "audio/en-001.aac",
+      "lang": "en",
+      "set": "en",
+      "speaker": "S01",
+      "noisy": false,
+      "reference": "So um I led a team of five people and we uh basically shipped the app in three months. We discussed about the roadmap every week.",
+      "verbatim_checks": ["discussed about"],
+      "keyterms": []
+    },
+    {
+      "id": "hi-001",
+      "audio": "audio/hi-001.aac",
+      "lang": "hi",
+      "set": "hi",
+      "speaker": "S02",
+      "noisy": true,
+      "reference": "तो आज मैं आपको बताऊंगी कि मेरा दिन कैसा था। उम्म सुबह मैं जल्दी उठी और फिर फिर थोड़ा योग किया।",
+      "verbatim_checks": ["फिर फिर"]
+    },
+    {
+      "id": "hinglish-001",
+      "audio": "audio/hinglish-001.aac",
+      "lang": "hi",
+      "set": "hinglish",
+      "speaker": "S03",
+      "noisy": false,
+      "reference": "मेरा office बहुत stressful था basically मैं late हो गया और boss ने umm कुछ नहीं बोला।",
+      "verbatim_checks": []
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+# Vaak Worker (LLD §1, §7, §9). Secrets are NOT stored here: set them per env with
+#   npx wrangler secret put <NAME> --env dev|production
+# Secret names: ANTHROPIC_API_KEY, DEEPGRAM_API_KEY, SARVAM_API_KEY, ELEVENLABS_API_KEY, GOOGLE_SA_JSON,
+#   SESSION_HMAC_KEY, DEVICE_SALT, ALERT_WEBHOOK_URL, DEBUG_ALLOWLIST_UIDS (dev only)
+name = "vaak-api"
+main = "src/index.ts"
+compatibility_date = "2026-08-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Top level = local development and tests (Miniflare uses a local SQLite file; the id is unused locally).
+[vars]
+ENVIRONMENT = "local"
+FIREBASE_PROJECT_ID = "vaak-dev"
+PLAY_PACKAGE_NAME = "com.vaak.app"
+GA4_PROPERTY_ID = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vaak-local"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["0 22 * * *"]
+
+[observability]
+enabled = true
+
+# ---------------------------------------------------------------- dev
+[env.dev]
+name = "vaak-api-dev"
+
+[env.dev.vars]
+ENVIRONMENT = "dev"
+FIREBASE_PROJECT_ID = "vaak-dev"
+PLAY_PACKAGE_NAME = "com.vaak.app"
+GA4_PROPERTY_ID = ""
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "vaak-dev"
+database_id = "REPLACE_WITH_DEV_D1_ID" # from: npx wrangler d1 create vaak-dev
+migrations_dir = "migrations"
+
+[env.dev.triggers]
+crons = ["0 22 * * *"]
+
+# ---------------------------------------------------------------- production
+[env.production]
+name = "vaak-api"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+FIREBASE_PROJECT_ID = "REPLACE_WITH_FIREBASE_PROJECT_ID"
+PLAY_PACKAGE_NAME = "com.vaak.app"
+GA4_PROPERTY_ID = ""
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "vaak-prod"
+database_id = "REPLACE_WITH_PROD_D1_ID" # from: npx wrangler d1 create vaak-prod
+migrations_dir = "migrations"
+
+[env.production.triggers]
+crons = ["0 22 * * *"]

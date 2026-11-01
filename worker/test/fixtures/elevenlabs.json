@@ -1,0 +1,12 @@
+{
+  "language_code": "hin",
+  "language_probability": 0.97,
+  "text": "तो आज (laughs) मैं",
+  "words": [
+    { "text": "तो", "start": 0.1, "end": 0.3, "type": "word", "logprob": -0.05 },
+    { "text": " ", "start": 0.3, "end": 0.35, "type": "spacing", "logprob": 0 },
+    { "text": "आज", "start": 0.35, "end": 0.6, "type": "word", "logprob": -1.2 },
+    { "text": "(laughs)", "start": 0.6, "end": 1.1, "type": "audio_event", "logprob": 0 },
+    { "text": "मैं", "start": 1.2, "end": 1.4, "type": "word", "logprob": -0.01 }
+  ]
+}

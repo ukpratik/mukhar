@@ -1,0 +1,14 @@
+# Copy to .dev.vars (git-ignored) for `npm run dev`, and fill in your own values. NAMES ONLY here.
+ANTHROPIC_API_KEY=
+DEEPGRAM_API_KEY=
+SARVAM_API_KEY=
+ELEVENLABS_API_KEY=
+# Google service-account JSON on one line (Play Developer API, Play Integrity, GA4 user deletion scopes)
+GOOGLE_SA_JSON=
+# 32+ random bytes, e.g. `openssl rand -base64 48`
+SESSION_HMAC_KEY=
+DEVICE_SALT=
+# ntfy.sh topic URL, Discord or Slack incoming webhook
+ALERT_WEBHOOK_URL=
+# dev only: comma-separated Firebase UIDs of debug builds that may skip the Play Integrity verdict
+DEBUG_ALLOWLIST_UIDS=

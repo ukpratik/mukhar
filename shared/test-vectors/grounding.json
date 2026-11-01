@@ -1,0 +1,5141 @@
+{
+ "version": 1,
+ "low_conf": 0.6,
+ "notes": "Grounding validator cases (LLD §4.4). words are [w, start_ms, end_ms, conf]; a token is low-confidence when conf < low_conf. expected spans are [start, end] after any off-by-few repair, or \"fallback\" when the metrics fallback replaces the item. better_versions entries are [start, end, kept upgraded words]. dropped counts every model item removed (glow, grow, better versions, mistakes); in self_harm cases coaching is suppressed and dropped reflects only grounding failures.",
+ "cases": [
+  {
+   "name": "EN all items grounded exactly",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN off-by-one glow is repaired",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 14,
+     "end": 19,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN quote differing only in case and punctuation matches",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "Shipped the APP in three months",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN hallucinated glow quote falls back",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "launched the product in three months",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN grow touching a low-confidence token falls back",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.3
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": "fallback",
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN mistake on the unclear word roadmap is dropped",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.3
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 23,
+      "quote": "We discussed about the roadmap",
+      "fix": "We discussed the roadmap"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN span longer than 40 tokens falls back",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "w0",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "w1",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "w2",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "w3",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "w4",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "w5",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "w6",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "w7",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "w8",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "w9",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "w10",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "w11",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "w12",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "w13",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "w14",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "w15",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "w16",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "w17",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "w18",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "w19",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "w20",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "w21",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "w22",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "w23",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "w24",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "w25",
+     7500,
+     7750,
+     0.92
+    ],
+    [
+     "w26",
+     7800,
+     8050,
+     0.92
+    ],
+    [
+     "w27",
+     8100,
+     8350,
+     0.92
+    ],
+    [
+     "w28",
+     8400,
+     8650,
+     0.92
+    ],
+    [
+     "w29",
+     8700,
+     8950,
+     0.92
+    ],
+    [
+     "w30",
+     9000,
+     9250,
+     0.92
+    ],
+    [
+     "w31",
+     9300,
+     9550,
+     0.92
+    ],
+    [
+     "w32",
+     9600,
+     9850,
+     0.92
+    ],
+    [
+     "w33",
+     9900,
+     10150,
+     0.92
+    ],
+    [
+     "w34",
+     10200,
+     10450,
+     0.92
+    ],
+    [
+     "w35",
+     10500,
+     10750,
+     0.92
+    ],
+    [
+     "w36",
+     10800,
+     11050,
+     0.92
+    ],
+    [
+     "w37",
+     11100,
+     11350,
+     0.92
+    ],
+    [
+     "w38",
+     11400,
+     11650,
+     0.92
+    ],
+    [
+     "w39",
+     11700,
+     11950,
+     0.92
+    ],
+    [
+     "w40",
+     12000,
+     12250,
+     0.92
+    ],
+    [
+     "w41",
+     12300,
+     12550,
+     0.92
+    ],
+    [
+     "w42",
+     12600,
+     12850,
+     0.92
+    ],
+    [
+     "w43",
+     12900,
+     13150,
+     0.92
+    ],
+    [
+     "w44",
+     13200,
+     13450,
+     0.92
+    ],
+    [
+     "w45",
+     13500,
+     13750,
+     0.92
+    ],
+    [
+     "w46",
+     13800,
+     14050,
+     0.92
+    ],
+    [
+     "w47",
+     14100,
+     14350,
+     0.92
+    ],
+    [
+     "w48",
+     14400,
+     14650,
+     0.92
+    ],
+    [
+     "w49",
+     14700,
+     14950,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 41,
+     "quote": "w0 w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 w29 w30 w31 w32 w33 w34 w35 w36 w37 w38 w39 w40 w41",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 2,
+     "end": 3,
+     "quote": "w2 w3",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": [
+     2,
+     3
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN out-of-range indices with a quote elsewhere fall back",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 30,
+     "end": 32,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": "fallback",
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN upgraded word missing from the rewrite is removed",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       },
+       {
+        "word": "orchestrated",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN better version whose only upgraded word was already in the quote is dropped",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I led a strong team of five people",
+      "upgraded_words": [
+       {
+        "word": "team",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN better version identical to the quote after norm is dropped",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I led a team of five people!",
+      "upgraded_words": [
+       {
+        "word": "led",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN better version rewrite longer than 2x quote + 60 chars is dropped",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I led a team of five people and also rewrote every single other sentence in this talk at very great length, adding many extra words nobody asked for",
+      "upgraded_words": [
+       {
+        "word": "rewrote",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN mistake whose fix equals the quote is dropped",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "we discussed about."
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ]
+    ],
+    "mistakes": [],
+    "words_for_you": [
+     "spearheaded"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN only the first 3 better versions are kept; duplicates in chips removed",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "So",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "um",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "I",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "led",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "a",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "team",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "of",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "five",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "people",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "and",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "we",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "um",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "basically",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "shipped",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "the",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "app",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "in",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "three",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "months.",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "We",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "discussed",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "about",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "the",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "roadmap",
+     6900,
+     7150,
+     0.92
+    ],
+    [
+     "every",
+     7200,
+     7450,
+     0.92
+    ],
+    [
+     "week.",
+     7500,
+     7750,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 13,
+     "end": 18,
+     "quote": "shipped the app in three months.",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 10,
+     "end": 12,
+     "quote": "we um basically",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 2,
+      "end": 8,
+      "quote": "I led a team of five people",
+      "rewrite": "I spearheaded a team of five engineers",
+      "upgraded_words": [
+       {
+        "word": "spearheaded",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     },
+     {
+      "start": 13,
+      "end": 18,
+      "quote": "shipped the app in three months.",
+      "rewrite": "delivered the app within three months",
+      "upgraded_words": [
+       {
+        "word": "delivered",
+        "meaning": "m",
+        "register": "formal"
+       },
+       {
+        "word": "within",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     },
+     {
+      "start": 19,
+      "end": 25,
+      "quote": "We discussed about the roadmap every week.",
+      "rewrite": "We reviewed the roadmap weekly",
+      "upgraded_words": [
+       {
+        "word": "reviewed",
+        "meaning": "m",
+        "register": "formal"
+       },
+       {
+        "word": "weekly",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     },
+     {
+      "start": 9,
+      "end": 12,
+      "quote": "and we um basically",
+      "rewrite": "and we then",
+      "upgraded_words": [
+       {
+        "word": "then",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [
+     {
+      "start": 19,
+      "end": 21,
+      "quote": "We discussed about",
+      "fix": "We discussed"
+     }
+    ],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     13,
+     18
+    ],
+    "grow": [
+     10,
+     12
+    ],
+    "better_versions": [
+     [
+      2,
+      8,
+      [
+       "spearheaded"
+      ]
+     ],
+     [
+      13,
+      18,
+      [
+       "delivered",
+       "within"
+      ]
+     ],
+     [
+      19,
+      25,
+      [
+       "reviewed",
+       "weekly"
+      ]
+     ]
+    ],
+    "mistakes": [
+     [
+      19,
+      21
+     ]
+    ],
+    "words_for_you": [
+     "spearheaded",
+     "delivered",
+     "within",
+     "reviewed",
+     "weekly"
+    ],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN repair picks the nearest occurrence of a repeated phrase",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "I",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "think",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "you",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "know",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "it",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "was",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "hard",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "you",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "know",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "very",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "hard",
+     3000,
+     3250,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 9,
+     "end": 10,
+     "quote": "very hard",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 6,
+     "end": 7,
+     "quote": "you know",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     9,
+     10
+    ],
+    "grow": [
+     7,
+     8
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN empty quote falls back",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "I",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "think",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "you",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "know",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "it",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "was",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "hard",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "you",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "know",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "very",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "hard",
+     3000,
+     3250,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 9,
+     "end": 10,
+     "quote": "very hard",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 6,
+     "end": 7,
+     "quote": "",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     9,
+     10
+    ],
+    "grow": "fallback",
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN stutter-friendly: a repetition grow falls back",
+   "lang": "en",
+   "stutter_friendly": true,
+   "words": [
+    [
+     "I",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "think",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "you",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "know",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "it",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "was",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "hard",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "you",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "know",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "very",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "hard",
+     3000,
+     3250,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 9,
+     "end": 10,
+     "quote": "very hard",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 3,
+     "end": 4,
+     "quote": "you know",
+     "issue": "repetition",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     9,
+     10
+    ],
+    "grow": "fallback",
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN stutter-friendly: a filler grow is kept",
+   "lang": "en",
+   "stutter_friendly": true,
+   "words": [
+    [
+     "I",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "think",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "you",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "know",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "it",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "was",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "hard",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "you",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "know",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "very",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "hard",
+     3000,
+     3250,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 9,
+     "end": 10,
+     "quote": "very hard",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 2,
+     "end": 3,
+     "quote": "you know",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     9,
+     10
+    ],
+    "grow": [
+     2,
+     3
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "EN model self_harm flag suppresses coaching",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "I",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "think",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "you",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "know",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "it",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "was",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "hard",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "you",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "know",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "very",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "hard",
+     3000,
+     3250,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 9,
+     "end": 10,
+     "quote": "very hard",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 2,
+     "end": 3,
+     "quote": "you know",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "self_harm"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": "fallback",
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "self_harm"
+   }
+  },
+  {
+   "name": "EN keyword backstop flags self-harm even if the model says none",
+   "lang": "en",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "honestly",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "some",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "days",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "I",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "want",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "to",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "die",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "and",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "nothing",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "helps",
+     2700,
+     2950,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 0,
+     "quote": "honestly",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 8,
+     "end": 9,
+     "quote": "nothing helps",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": "fallback",
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "self_harm"
+   }
+  },
+  {
+   "name": "HI Devanagari with danda in tokens and not in quote",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "तो",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "आज",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "मैं",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "आपको",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "बताऊंगी",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "कि",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "मेरा",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "morning",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "routine",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "कैसा",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "है।",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "मैं",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "सुबह",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "जल्दी",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "उठती",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "हूं",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "और",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "फिर",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "फिर",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "फिर",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "थोड़ा",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "stretching",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "करती",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "हूं।",
+     6900,
+     7150,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 1,
+     "end": 10,
+     "quote": "आज मैं आपको बताऊंगी कि मेरा morning routine कैसा है",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 16,
+     "end": 19,
+     "quote": "और फिर फिर फिर",
+     "issue": "repetition",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 11,
+      "end": 23,
+      "quote": "मैं सुबह जल्दी उठती हूं और फिर फिर फिर थोड़ा stretching करती हूं।",
+      "rewrite": "मैं सुबह जल्दी उठती हूं, उसके बाद कुछ देर stretching करती हूं।",
+      "upgraded_words": [
+       {
+        "word": "उसके बाद",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     1,
+     10
+    ],
+    "grow": [
+     16,
+     19
+    ],
+    "better_versions": [
+     [
+      11,
+      23,
+      [
+       "उसके बाद"
+      ]
+     ]
+    ],
+    "mistakes": [],
+    "words_for_you": [
+     "उसके बाद"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI quote without nukta matches a token with nukta (थोड़ा)",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "तो",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "आज",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "मैं",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "आपको",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "बताऊंगी",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "कि",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "मेरा",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "morning",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "routine",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "कैसा",
+     2700,
+     2950,
+     0.92
+    ],
+    [
+     "है।",
+     3000,
+     3250,
+     0.92
+    ],
+    [
+     "मैं",
+     3300,
+     3550,
+     0.92
+    ],
+    [
+     "सुबह",
+     3600,
+     3850,
+     0.92
+    ],
+    [
+     "जल्दी",
+     3900,
+     4150,
+     0.92
+    ],
+    [
+     "उठती",
+     4200,
+     4450,
+     0.92
+    ],
+    [
+     "हूं",
+     4500,
+     4750,
+     0.92
+    ],
+    [
+     "और",
+     4800,
+     5050,
+     0.92
+    ],
+    [
+     "फिर",
+     5100,
+     5350,
+     0.92
+    ],
+    [
+     "फिर",
+     5400,
+     5650,
+     0.92
+    ],
+    [
+     "फिर",
+     5700,
+     5950,
+     0.92
+    ],
+    [
+     "थोड़ा",
+     6000,
+     6250,
+     0.92
+    ],
+    [
+     "stretching",
+     6300,
+     6550,
+     0.92
+    ],
+    [
+     "करती",
+     6600,
+     6850,
+     0.92
+    ],
+    [
+     "हूं।",
+     6900,
+     7150,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 20,
+     "end": 22,
+     "quote": "थोडा stretching करती",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 16,
+     "end": 19,
+     "quote": "और फिर फिर फिर",
+     "issue": "repetition",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     20,
+     22
+    ],
+    "grow": [
+     16,
+     19
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI precomposed za (U+095B) token vs decomposed quote",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "ये",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "बहुत",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "ज़रूरी",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "बात",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "है",
+     1200,
+     1450,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 1,
+     "end": 3,
+     "quote": "बहुत ज़रूरी बात",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 0,
+     "end": 1,
+     "quote": "ये बहुत",
+     "issue": "weak_word",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     1,
+     3
+    ],
+    "grow": [
+     0,
+     1
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI ZWJ inside a token is ignored",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "मुझे",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "क्‍षमा",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "कीजिए",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "मैं",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "लेट",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "हो",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "गया",
+     1800,
+     2050,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 2,
+     "quote": "मुझे क्षमा कीजिए",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 3,
+     "end": 6,
+     "quote": "मैं लेट हो गया",
+     "issue": "clarity",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     0,
+     2
+    ],
+    "grow": [
+     3,
+     6
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI ZWNJ inside a token is ignored",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "ये",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "रिश्‌ता",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "बहुत",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "अच्छा",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "है",
+     1200,
+     1450,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 1,
+     "end": 3,
+     "quote": "रिश्ता बहुत अच्छा",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 0,
+     "end": 1,
+     "quote": "ये रिश्ता",
+     "issue": "weak_word",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     1,
+     3
+    ],
+    "grow": [
+     0,
+     1
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI candrabindu in tokens, anusvara in quote",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "हाँ",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "मैं",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "कल",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "आऊँगा",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "पक्का",
+     1200,
+     1450,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 2,
+     "quote": "हां मैं कल",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 3,
+     "end": 4,
+     "quote": "आऊंगा पक्का",
+     "issue": "clarity",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     0,
+     2
+    ],
+    "grow": [
+     3,
+     4
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "Hinglish mixed-script quote with case and danda differences",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "मेरा",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "office",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "बहुत",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "stressful",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "था",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "basically",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "मैं",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "late",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "हो",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "गया",
+     2700,
+     2950,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 4,
+     "quote": "मेरा Office बहुत Stressful था।",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 5,
+     "end": 6,
+     "quote": "basically मैं",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [
+     {
+      "start": 6,
+      "end": 9,
+      "quote": "मैं late हो गया",
+      "rewrite": "मुझे देर हो गई",
+      "upgraded_words": [
+       {
+        "word": "देर",
+        "meaning": "m",
+        "register": "formal"
+       }
+      ]
+     }
+    ],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": [
+     0,
+     4
+    ],
+    "grow": [
+     5,
+     6
+    ],
+    "better_versions": [
+     [
+      6,
+      9,
+      [
+       "देर"
+      ]
+     ]
+    ],
+    "mistakes": [],
+    "words_for_you": [
+     "देर"
+    ],
+    "dropped": 0,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "Hinglish quote transliterated into Latin does not match Devanagari tokens",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "मेरा",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "office",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "बहुत",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "stressful",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "था",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "basically",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "मैं",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "late",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "हो",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "गया",
+     2700,
+     2950,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 4,
+     "quote": "mera office bahut stressful tha",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 5,
+     "end": 6,
+     "quote": "basically मैं",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": [
+     5,
+     6
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "Hinglish repair blocked by a low-confidence token",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "मेरा",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "office",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "बहुत",
+     600,
+     850,
+     0.3
+    ],
+    [
+     "stressful",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "था",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "basically",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "मैं",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "late",
+     2100,
+     2350,
+     0.92
+    ],
+    [
+     "हो",
+     2400,
+     2650,
+     0.92
+    ],
+    [
+     "गया",
+     2700,
+     2950,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 4,
+     "quote": "मेरा office बहुत stressful था",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 5,
+     "end": 6,
+     "quote": "basically मैं",
+     "issue": "filler",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": [
+     5,
+     6
+    ],
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 1,
+    "safety": "none"
+   }
+  },
+  {
+   "name": "HI keyword backstop (आत्महत्या) flags self-harm",
+   "lang": "hi",
+   "stutter_friendly": false,
+   "words": [
+    [
+     "कभी",
+     0,
+     250,
+     0.92
+    ],
+    [
+     "कभी",
+     300,
+     550,
+     0.92
+    ],
+    [
+     "लगता",
+     600,
+     850,
+     0.92
+    ],
+    [
+     "है",
+     900,
+     1150,
+     0.92
+    ],
+    [
+     "मैं",
+     1200,
+     1450,
+     0.92
+    ],
+    [
+     "आत्महत्या",
+     1500,
+     1750,
+     0.92
+    ],
+    [
+     "कर",
+     1800,
+     2050,
+     0.92
+    ],
+    [
+     "लूं",
+     2100,
+     2350,
+     0.92
+    ]
+   ],
+   "output": {
+    "summary": "Summary.",
+    "glow": {
+     "start": 0,
+     "end": 1,
+     "quote": "कभी कभी",
+     "note": "Nice."
+    },
+    "grow": {
+     "start": 2,
+     "end": 3,
+     "quote": "लगता है",
+     "issue": "clarity",
+     "why": "Why.",
+     "how": "How."
+    },
+    "better_versions": [],
+    "mistakes": [],
+    "safety": "none"
+   },
+   "expected": {
+    "glow": "fallback",
+    "grow": "fallback",
+    "better_versions": [],
+    "mistakes": [],
+    "words_for_you": [],
+    "dropped": 0,
+    "safety": "self_harm"
+   }
+  }
+ ]
+}

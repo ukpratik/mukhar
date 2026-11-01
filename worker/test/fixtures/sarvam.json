@@ -1,0 +1,10 @@
+{
+  "request_id": "fixture",
+  "transcript": "तो आज मैं office गई",
+  "language_code": "hi-IN",
+  "timestamps": {
+    "words": ["तो आज", "मैं office गई"],
+    "start_time_seconds": [0.0, 1.0],
+    "end_time_seconds": [0.8, 2.5]
+  }
+}
