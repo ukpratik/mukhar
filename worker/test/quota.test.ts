@@ -19,6 +19,24 @@ describe("quota day (shared quota.json)", () => {
   });
 });
 
+describe("baseline decisions (shared quota.json, D-031)", () => {
+  it.each(vectors.baseline.map((c) => [c.name, c] as const))("%s", (_n, c) => {
+    const usageMap = c.usage as Record<string, { uid_talks?: number; device_talks?: number }>;
+    const usage = (day: string): Usage => {
+      const u = usageMap[day];
+      return u ? { ...EMPTY_USAGE, uidTalks: u.uid_talks ?? 0, deviceTalks: u.device_talks ?? 0 } : EMPTY_USAGE;
+    };
+    const d = decide(
+      { uid: "u1", tier: c.tier as Tier, nowMs: Date.parse(c.now), kind: "baseline", durationMs: c.duration_ms, queued: false, baselineUsed: c.baseline_used },
+      usage,
+      limits,
+    );
+    const e = c.expected as { allow: boolean; debit_day?: null; code?: string };
+    if (e.allow) expect(d).toEqual({ allow: true, debitDay: null });
+    else expect(d).toEqual({ allow: false, code: e.code });
+  });
+});
+
 describe("quota decisions (shared quota.json, same cases as the Kotlin QuotaMirrorTest)", () => {
   it.each(vectors.decide.map((c) => [c.name, c] as const))("%s", (_n, c) => {
     const usageMap = c.usage as Record<string, { uid_talks?: number; device_talks?: number; uid_checks?: number; device_checks?: number }>;

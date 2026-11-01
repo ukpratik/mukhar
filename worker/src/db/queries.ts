@@ -96,6 +96,32 @@ export async function releaseQuota(db: D1Database, uid: string, deviceHash: stri
   ]);
 }
 
+// ---------------------------------------------------------------- baseline (D-031)
+/** Session IDs holding the baseline marker for this uid and this device (null = unused). */
+export async function readBaseline(db: D1Database, uid: string, deviceHash: string): Promise<{ uid: string | null; device: string | null }> {
+  const [u, d] = await db.batch<{ session_id: string }>([
+    db.prepare("SELECT session_id FROM baseline_used WHERE key_type = 'uid' AND key = ?").bind(uid),
+    db.prepare("SELECT session_id FROM baseline_used WHERE key_type = 'device' AND key = ?").bind(deviceHash),
+  ]);
+  return { uid: u?.results[0]?.session_id ?? null, device: d?.results[0]?.session_id ?? null };
+}
+
+/** Claims both markers atomically-enough: INSERT OR IGNORE, then confirm both belong to this session. */
+export async function claimBaseline(db: D1Database, uid: string, deviceHash: string, sessionId: string, nowMs: number): Promise<boolean> {
+  await db.batch([
+    db.prepare("INSERT OR IGNORE INTO baseline_used (key_type, key, session_id, created_at) VALUES ('uid', ?, ?, ?)").bind(uid, sessionId, nowMs),
+    db.prepare("INSERT OR IGNORE INTO baseline_used (key_type, key, session_id, created_at) VALUES ('device', ?, ?, ?)").bind(deviceHash, sessionId, nowMs),
+  ]);
+  const now = await readBaseline(db, uid, deviceHash);
+  if (now.uid === sessionId && now.device === sessionId) return true;
+  await releaseBaseline(db, sessionId);
+  return false;
+}
+
+export async function releaseBaseline(db: D1Database, sessionId: string): Promise<void> {
+  await db.prepare("DELETE FROM baseline_used WHERE session_id = ?").bind(sessionId).run();
+}
+
 // ---------------------------------------------------------------- sessions
 export type SessionStatus = "pending" | "transcribed" | "failed" | "feedback_ready" | "feedback_failed";
 
@@ -227,6 +253,8 @@ export async function deleteUserData(db: D1Database, uid: string, deviceHash: st
     db.prepare("DELETE FROM sessions WHERE uid = ?").bind(uid),
     db.prepare("DELETE FROM entitlements WHERE uid = ?").bind(uid),
     db.prepare("DELETE FROM reports WHERE uid = ?").bind(uid),
+    // D-031: the uid marker goes; the device marker (salted hash) stays so a reinstall can't get a second free baseline.
+    db.prepare("DELETE FROM baseline_used WHERE key_type = 'uid' AND key = ?").bind(uid),
   ];
   if (deviceHash) stmts.push(db.prepare("DELETE FROM quota_device WHERE device_hash = ? AND quota_day < ?").bind(deviceHash, today));
   await db.batch(stmts);

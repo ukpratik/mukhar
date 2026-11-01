@@ -18,7 +18,7 @@ src/quota/              quotaDay.ts (03:00 IST), decide.ts (pure, mirrors Kotlin
 src/spend/ledger.ts     cost estimates, $5/day cap → 503 BUSY, 80 % / 100 % webhook alerts
 src/play/               googleAuth.ts (service-account JWT), subscriptions.ts (subscriptionsv2, GA4 user deletion)
 src/db/queries.ts       all D1 SQL
-migrations/0001_init.sql
+migrations/0001_init.sql, 0002_baseline.sql
 test/                   Vitest in workerd (@cloudflare/vitest-pool-workers) with a local D1; consumes ../shared/test-vectors
 scripts/                stt-bench.ts, feedback-eval.ts (+ lib/ with pure, unit-tested metrics)
 data/golden/            benchmark manifest format and recording/consent guide (audio never committed)
@@ -75,8 +75,11 @@ Provider specs are `name` or `name:variant` (Deepgram language, Sarvam mode, Ele
   compares SHA-256 of the JSON array of `w` strings. `lc` marks tokens below `low_conf_threshold`.
 - **Fallback items** in `/feedback` have `start`, `end`, `quote` = `null` and `fallback: true`.
 - **Errors** use the LLD envelope; extra codes: `NOT_FOUND` 404, `INTERNAL` 500, `STT_TIMEOUT` 504, `UNSUPPORTED_MEDIA`
-  415, `PLAY_UNAVAILABLE` 502 (also from `/session` when Google can't decode the token). `Retry-After` is set when known.
-- `kind` on `/transcribe` is `talk` or `retake`; a re-take needs `parent_session_id` = the parent's `session_id`.
+  415, `BASELINE_USED` 409, `PLAY_UNAVAILABLE` 502 (also from `/session` when Google can't decode the token). `Retry-After` is set when known.
+- `kind` on `/transcribe` is `talk`, `retake` or `baseline`; a re-take needs `parent_session_id` = the parent's `session_id`.
+- **Baseline (D-031):** free (no quota debit) once per uid AND once per device hash (`baseline_used` table, migration
+  0002); a second one is 409 `BASELINE_USED`. `/feedback` accepts baseline sessions. Read-aloud never calls the API.
+  `DELETE /me` removes the uid marker but keeps the device marker, so a reinstall can't get a second free baseline.
 
 ## Gate-zero benchmark and feedback eval
 See `data/golden/README.md`. Summary: record and consent clips, write `data/golden/manifest.json`, then

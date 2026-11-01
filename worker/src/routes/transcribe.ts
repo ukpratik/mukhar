@@ -1,7 +1,7 @@
 import { addLog, isUuid, ok, type Ctx } from "../app.ts";
 import { sha256Hex } from "../auth/session.ts";
 import {
-  getSession, getSessionByClientId, markTranscribed, readUsage, releaseQuota, reserveQuota, retakeUsed, setSessionStatus,
+  claimBaseline, getSession, getSessionByClientId, readBaseline, releaseBaseline, markTranscribed, readUsage, releaseQuota, reserveQuota, retakeUsed, setSessionStatus,
   upsertPendingSession, type Counter, type SessionRow,
 } from "../db/queries.ts";
 import { ApiError } from "../errors.ts";
@@ -16,7 +16,7 @@ import { asObj, optBool, optInt, reqEnum, type Obj } from "./validate.ts";
 export const AUDIO_TYPES = new Set(["audio/aac", "audio/aacp", "audio/x-aac", "audio/mp4", "audio/m4a", "audio/x-m4a", "audio/wav", "audio/x-wav", "audio/mpeg", "audio/ogg", "audio/webm"]);
 /** 64 kbps budget (2× the app's 32 kbps AAC) plus 64 KB of headroom. */
 const bytesFor = (durationMs: number) => Math.ceil(durationMs / 1000) * 8000 + 65_536;
-export const MIN_WORDS: Record<QuotaKind, number> = { talk: 5, retake: 5, check: 1 };
+export const MIN_WORDS: Record<QuotaKind, number> = { talk: 5, retake: 5, baseline: 5, check: 1 };
 const DEBITED = new Set(["transcribed", "feedback_ready", "feedback_failed"]);
 
 export interface Multipart { meta: Obj; audio: File }
@@ -75,6 +75,8 @@ export async function runTranscription(
 
   let debitDay: string | null = alreadyDebited ? existing.quota_day : null;
   let reserved = false;
+  let baselineClaimed = false;
+  const sessionId = existing?.id ?? deps.uuid();
   let parentId: string | null = existing?.parent_id ?? null;
 
   if (!alreadyDebited) {
@@ -86,15 +88,24 @@ export async function runTranscription(
         parentId = p.id;
       }
     }
+    let baselineUsed: { uid: boolean; device: boolean } | undefined;
+    if (x.kind === "baseline") {
+      const b = await readBaseline(db, uid, dh);
+      baselineUsed = { uid: b.uid !== null && b.uid !== sessionId, device: b.device !== null && b.device !== sessionId };
+    }
     const usageCache = new Map<string, Awaited<ReturnType<typeof readUsage>>>();
     for (const d of [today, addDays(today, 1)]) usageCache.set(d, await readUsage(db, uid, dh, d));
     const decision = decide(
-      { uid, tier, nowMs: now, kind: x.kind, durationMs: x.durationMs, queued: x.queued, parent },
+      { uid, tier, nowMs: now, kind: x.kind, durationMs: x.durationMs, queued: x.queued, parent, baselineUsed },
       (d) => usageCache.get(d)!,
       cfg.limits,
     );
     if (!decision.allow) throw new ApiError(decision.code, undefined, decision.retryAfterS);
     debitDay = decision.debitDay;
+    if (x.kind === "baseline") {
+      if (!(await claimBaseline(db, uid, dh, sessionId, now))) throw new ApiError("BASELINE_USED");
+      baselineClaimed = true;
+    }
     if (debitDay) {
       await reserveQuota(db, uid, dh, debitDay, counter);
       reserved = true;
@@ -108,12 +119,13 @@ export async function runTranscription(
     }
   }
 
-  const sessionId = existing?.id ?? deps.uuid();
   await upsertPendingSession(db, { id: sessionId, uid, clientSessionId: x.clientSessionId, kind: x.kind, parentId, quotaDay: debitDay, nowMs: now });
 
   const release = async () => {
     if (reserved && debitDay) await releaseQuota(db, uid, dh, debitDay, counter);
     reserved = false;
+    if (baselineClaimed) await releaseBaseline(db, sessionId);
+    baselineClaimed = false;
     await setSessionStatus(db, sessionId, alreadyDebited ? existing.status : "failed");
   };
 
@@ -155,7 +167,7 @@ export async function transcribeRoute(c: Ctx) {
   const { meta, audio } = await readMultipart(c);
   const clientSessionId = meta.client_session_id;
   if (!isUuid(clientSessionId)) throw new ApiError("BAD_REQUEST", "client_session_id must be a UUID");
-  const kind = reqEnum(meta, "kind", ["talk", "retake"] as const);
+  const kind = reqEnum(meta, "kind", ["talk", "retake", "baseline"] as const);
   const lang = reqEnum(meta, "lang", ["en", "hi"] as const);
   const durationMs = optInt(meta, "duration_ms", 0, 3_600_000) ?? 0;
   const queued = optBool(meta, "queued", false);

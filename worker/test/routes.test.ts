@@ -298,6 +298,80 @@ describe("POST /v1/transcribe", () => {
   });
 });
 
+describe("baseline talk (D-031)", () => {
+  const OTHER_DEVICE = "T3RoZXJEZXZpY2VIYXNoMDAx";
+  const baseline = (n: number, opts: { uid?: string; device?: string } = {}) => postTalk({ client_session_id: uuid(n), kind: "baseline" }, opts);
+
+  it("first baseline is analysed with no quota consumed", async () => {
+    const r = await baseline(1);
+    expect(r.status).toBe(200);
+    expect((await json(r)).quota.talks_used).toBe(0);
+    expect(await rows("SELECT * FROM quota_usage")).toEqual([]);
+    expect(await rows("SELECT key_type FROM baseline_used ORDER BY key_type")).toEqual([{ key_type: "device" }, { key_type: "uid" }]);
+    expect(await rows("SELECT kind, quota_day FROM sessions")).toEqual([{ kind: "baseline", quota_day: null }]);
+  });
+
+  it("a second baseline is 409 BASELINE_USED without an STT call", async () => {
+    await baseline(1);
+    const before = f.calls.length;
+    const r = await baseline(2);
+    expect(r.status).toBe(409);
+    expect((await json(r)).error.code).toBe("BASELINE_USED");
+    expect(f.calls.length).toBe(before);
+  });
+
+  it("a baseline after the daily free talk is used is still OK, and the talk quota stays intact", async () => {
+    expect((await postTalk({ client_session_id: uuid(1) })).status).toBe(200);
+    const r = await baseline(2);
+    expect(r.status).toBe(200);
+    expect((await json(r)).quota.talks_used).toBe(1);
+  });
+
+  it("a different uid on the same device is rejected", async () => {
+    await baseline(1);
+    const r = await baseline(2, { uid: "reinstalled-uid" });
+    expect(r.status).toBe(409);
+    expect((await json(r)).error.code).toBe("BASELINE_USED");
+  });
+
+  it("the same uid on another device is rejected too", async () => {
+    await baseline(1);
+    expect((await baseline(2, { device: OTHER_DEVICE })).status).toBe(409);
+  });
+
+  it("retrying the same baseline (same client_session_id) is idempotent", async () => {
+    const a = await json(await baseline(1));
+    const r = await baseline(1);
+    expect(r.status).toBe(200);
+    expect((await json(r)).session_id).toBe(a.session_id);
+  });
+
+  it("an STT failure releases the baseline so it can be retried", async () => {
+    f.routes[0] = ["https://api.deepgram.com/", () => new Response("err", { status: 500 })];
+    expect((await baseline(1)).status).toBe(502);
+    expect(await rows("SELECT * FROM baseline_used")).toEqual([]);
+    f.routes[0] = ["https://api.deepgram.com/", deepgramOk()];
+    expect((await baseline(2)).status).toBe(200);
+  });
+
+  it("feedback works on a baseline session", async () => {
+    const sid = (await json(await baseline(1))).session_id;
+    f.llm.push(llmOk(goodFeedback));
+    expect((await postFeedback(feedbackBody(sid))).status).toBe(200);
+  });
+
+  it("DELETE /me removes the uid marker but keeps the device marker", async () => {
+    await baseline(1);
+    await call(f, "/v1/me", { method: "DELETE", headers: { Authorization: `Bearer fb:${UID}`, "content-type": "application/json" }, body: "{}" });
+    expect(await rows("SELECT key_type FROM baseline_used")).toEqual([{ key_type: "device" }]);
+    expect((await baseline(2)).status).toBe(409);
+  });
+
+  it("read-aloud is not an API kind", async () => {
+    expect((await postTalk({ client_session_id: uuid(1), kind: "readaloud" })).status).toBe(400);
+  });
+});
+
 describe("POST /v1/feedback", () => {
   async function transcribed() {
     return (await json(await postTalk({ client_session_id: uuid(1) }))).session_id as string;

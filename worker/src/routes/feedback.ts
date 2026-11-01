@@ -14,6 +14,7 @@ import { asObj, jsonBody, optBool, reqEnum, reqStr, type Obj } from "./validate.
 export const MAX_FEEDBACK_ATTEMPTS = 3;
 export const MAX_TOKENS_IN = 1500; // ~3:05 at a fast 400 wpm
 const READY = new Set(["transcribed", "feedback_ready", "feedback_failed"]);
+const FEEDBACK_KINDS = new Set(["talk", "retake", "baseline"]);
 
 function parseTokens(v: unknown): FeedbackToken[] {
   if (!Array.isArray(v) || v.length === 0 || v.length > MAX_TOKENS_IN) throw new ApiError("BAD_REQUEST", `tokens must be an array of 1-${MAX_TOKENS_IN}`);
@@ -54,7 +55,7 @@ export async function feedbackRoute(c: Ctx) {
 
   const session = await getSession(db, sessionId);
   if (!session || session.uid !== c.get("uid")) throw new ApiError("SESSION_NOT_FOUND");
-  if ((session.kind !== "talk" && session.kind !== "retake") || !READY.has(session.status)) throw new ApiError("SESSION_STATE");
+  if (!FEEDBACK_KINDS.has(session.kind) || !READY.has(session.status)) throw new ApiError("SESSION_STATE");
   if ((await transcriptHash(tokens.map((t) => t.w))) !== session.transcript_sha256) throw new ApiError("SESSION_STATE", "Transcript does not match the session");
 
   const cfg = await cfgOf(c);

@@ -12,7 +12,7 @@ const SEED_CONFIG: Record<string, string> = {
 
 beforeEach(async () => {
   await env.DB.batch([
-    ...["quota_usage", "quota_device", "sessions", "entitlements", "reports", "spend_daily", "config"].map((t) => env.DB.prepare(`DELETE FROM ${t}`)),
+    ...["quota_usage", "quota_device", "sessions", "entitlements", "reports", "spend_daily", "baseline_used", "config"].map((t) => env.DB.prepare(`DELETE FROM ${t}`)),
     ...Object.entries(SEED_CONFIG).map(([k, v]) => env.DB.prepare("INSERT INTO config (key, value) VALUES (?, ?)").bind(k, v)),
   ]);
 });

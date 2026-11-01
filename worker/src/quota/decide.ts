@@ -2,7 +2,7 @@ import { addDays, quotaDay, resetsAtMs } from "./quotaDay.ts";
 
 /** Pure quota decision (LLD §4.7). Mirrors the Kotlin `QuotaMirror`; both run shared/test-vectors/quota.json. */
 export type Tier = "free" | "premium";
-export type QuotaKind = "talk" | "retake" | "check";
+export type QuotaKind = "talk" | "retake" | "baseline" | "check";
 
 export interface Limits {
   free_talks_per_day: number;
@@ -49,11 +49,13 @@ export interface QuotaRequest {
   durationMs: number;
   queued: boolean;
   parent?: ParentSession | undefined;
+  /** D-031: whether a baseline was already analysed for this uid / this device hash. */
+  baselineUsed?: { uid: boolean; device: boolean } | undefined;
 }
 
 export type Decision =
   | { allow: true; debitDay: string | null }
-  | { allow: false; code: "QUOTA_EXHAUSTED" | "AUDIO_TOO_LONG" | "SESSION_STATE"; retryAfterS?: number };
+  | { allow: false; code: "QUOTA_EXHAUSTED" | "AUDIO_TOO_LONG" | "SESSION_STATE" | "BASELINE_USED"; retryAfterS?: number };
 
 const talks = (u: Usage) => Math.max(u.uidTalks, u.deviceTalks);
 const checks = (u: Usage) => Math.max(u.uidChecks, u.deviceChecks);
@@ -79,6 +81,12 @@ export function decide(req: QuotaRequest, usage: (day: string) => Usage, limits:
       const p = req.parent;
       if (p && p.uid === req.uid && p.kind === "talk" && !p.retakeUsed) return { allow: true, debitDay: null };
       return { allow: false, code: "SESSION_STATE" };
+    }
+    case "baseline": {
+      // D-031: free (no quota debit), once per uid and once per device hash.
+      const u = req.baselineUsed;
+      if (u?.uid || u?.device) return { allow: false, code: "BASELINE_USED" };
+      return { allow: true, debitDay: null };
     }
     case "talk": {
       const limit = dailyLimit("talk", req.tier, limits);
