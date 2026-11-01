@@ -59,6 +59,43 @@ class QuotaDecideVectorTest(private val name: String, private val case: JsonObje
     }
 }
 
+@RunWith(Parameterized::class)
+class QuotaBaselineVectorTest(private val name: String, private val case: JsonObject) {
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{0}")
+        fun cases(): List<Array<Any>> = TestVectors.load("quota.json").getValue("baseline").jsonArray.map {
+            arrayOf(it.jsonObject.getValue("name").jsonPrimitive.content, it.jsonObject)
+        }
+    }
+
+    @Test
+    fun decidesAsSpecified() {
+        val used = case.getValue("baseline_used").jsonObject
+        val request = QuotaRequest(
+            uid = "u1",
+            tier = Tier.valueOf(case.getValue("tier").jsonPrimitive.content.uppercase()),
+            now = Instant.parse(case.getValue("now").jsonPrimitive.content),
+            kind = QuotaKind.BASELINE,
+            durationMs = case.getValue("duration_ms").jsonPrimitive.long,
+            baselineUsed = BaselineUsed(used.getValue("uid").jsonPrimitive.boolean, used.getValue("device").jsonPrimitive.boolean),
+        )
+        val usage = case.getValue("usage").jsonObject
+        val decision = QuotaMirror.decide(request, { day ->
+            val u = usage[day.toString()]?.jsonObject ?: return@decide Usage()
+            fun f(k: String) = u[k]?.jsonPrimitive?.int ?: 0
+            Usage(f("uid_talks"), f("device_talks"), f("uid_checks"), f("device_checks"))
+        })
+        val expected = case.getValue("expected").jsonObject
+        if (expected.getValue("allow").jsonPrimitive.boolean) {
+            assertWithMessage(name).that(decision).isEqualTo(Decision.Allow(null))
+        } else {
+            assertWithMessage(name).that(decision)
+                .isEqualTo(Decision.Deny(DenyCode.valueOf(expected.getValue("code").jsonPrimitive.content)))
+        }
+    }
+}
+
 class QuotaMirrorTest {
     private val json = TestVectors.load("quota.json")
 

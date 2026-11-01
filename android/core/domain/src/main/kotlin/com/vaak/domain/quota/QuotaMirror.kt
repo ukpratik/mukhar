@@ -7,7 +7,10 @@ import java.time.ZoneOffset
 
 enum class Tier { FREE, PREMIUM }
 
-enum class QuotaKind { TALK, RETAKE, CHECK }
+enum class QuotaKind { TALK, RETAKE, CHECK, BASELINE }
+
+/** Whether this uid or this device hash already used its one free baseline (D-031). */
+data class BaselineUsed(val uid: Boolean = false, val device: Boolean = false)
 
 /** Server limits (D1 `config`, LLD §2.2). */
 data class Limits(
@@ -36,9 +39,10 @@ data class QuotaRequest(
     val durationMs: Long,
     val queued: Boolean = false,
     val parent: ParentSession? = null,
+    val baselineUsed: BaselineUsed = BaselineUsed(),
 )
 
-enum class DenyCode { QUOTA_EXHAUSTED, AUDIO_TOO_LONG, SESSION_STATE }
+enum class DenyCode { QUOTA_EXHAUSTED, AUDIO_TOO_LONG, SESSION_STATE, BASELINE_USED }
 
 sealed interface Decision {
     /** [debitDay] is the quota day charged, or `null` when free (re-takes). */
@@ -80,6 +84,10 @@ object QuotaMirror {
         val today = quotaDay(request.now)
         val retryAfter = { Duration.between(request.now, resetsAt(today)).seconds.coerceAtLeast(0) }
         return when (request.kind) {
+            // D-031: one free baseline per uid AND per device; never debits the daily quota.
+            QuotaKind.BASELINE ->
+                if (request.baselineUsed.uid || request.baselineUsed.device) Decision.Deny(DenyCode.BASELINE_USED)
+                else Decision.Allow(debitDay = null)
             QuotaKind.RETAKE -> {
                 val parent = request.parent
                 if (parent != null && parent.uid == request.uid && parent.kind == "talk" && !parent.retakeUsed) {

@@ -59,7 +59,7 @@
     { "name": "at 03:00 IST the new quota day starts", "uid": "u1", "tier": "free", "now": "2026-11-02T21:30:00Z", "kind": "talk", "duration_ms": 60000, "queued": false,
       "usage": { "2026-11-02": { "uid_talks": 1 } }, "expected": { "allow": true, "debit_day": "2026-11-03" } }
   ],
-  "baseline_notes": "D-031: kind baseline is free (no quota debit) once per uid AND once per device hash; a second one is 409 BASELINE_USED. Duration cap = the tier talk cap + grace. Kotlin consumer: none yet (QuotaMirror has no baseline kind).",
+  "baseline_notes": "D-031: kind baseline is free (no quota debit) once per uid AND once per device hash; a second one is 409 BASELINE_USED. Duration cap = the tier talk cap + grace. Kotlin consumer: QuotaBaselineVectorTest (QuotaMirror QuotaKind.BASELINE).",
   "baseline": [
     {"name": "first baseline is free", "tier": "free", "now": "2026-11-02T05:00:00Z", "duration_ms": 90000, "baseline_used": {"uid": false, "device": false}, "usage": {}, "expected": {"allow": true, "debit_day": null}},
     {"name": "baseline after the daily free talk is used is still free", "tier": "free", "now": "2026-11-02T05:00:00Z", "duration_ms": 90000, "baseline_used": {"uid": false, "device": false}, "usage": {"2026-11-02": {"uid_talks": 1, "device_talks": 1}}, "expected": {"allow": true, "debit_day": null}},
