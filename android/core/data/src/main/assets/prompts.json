@@ -1,0 +1,698 @@
+{
+ "version": 1,
+ "prompts": [
+  {
+   "id": "en-001",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Your manager asks why your team missed a deadline. Explain it honestly, and say what changes next sprint.",
+   "prep": [
+    "Point: the deadline slipped by a week.",
+    "Reason: why it happened.",
+    "Example: one concrete moment.",
+    "Point again: what changes now."
+   ]
+  },
+  {
+   "id": "en-002",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Tell us about a project you're proud of, and what you'd do differently next time.",
+   "tip": "Try: what it was → what you did → the result → one lesson."
+  },
+  {
+   "id": "en-003",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Explain what your team does to someone who just joined the company.",
+   "tip": "Try: who you help → what you make → how you work."
+  },
+  {
+   "id": "en-004",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Convince your team to drop one meeting from the weekly calendar.",
+   "prep": [
+    "Point: which meeting should go.",
+    "Reason: what it costs the team.",
+    "Example: a week where it didn't help.",
+    "Point again: what you'll do instead."
+   ]
+  },
+  {
+   "id": "en-005",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Give a two-minute update on your work to a senior leader who has never met you.",
+   "tip": "Try: the goal → where it stands → one risk → what you need."
+  },
+  {
+   "id": "en-006",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "A client is unhappy with a delay. Call them and explain the plan to fix it.",
+   "tip": "Try: say sorry once → the facts → the plan → the next update."
+  },
+  {
+   "id": "en-007",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Describe a tool or app that makes your workday easier."
+  },
+  {
+   "id": "en-008",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Should people in your role work from the office, from home, or both? Give your view.",
+   "prep": [
+    "Point: your view in one line.",
+    "Reason: the main reason.",
+    "Example: a day that shows it.",
+    "Point again: your view, said simply."
+   ]
+  },
+  {
+   "id": "en-009",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Tell me about yourself.",
+   "tip": "Try: now → before → why this role."
+  },
+  {
+   "id": "en-010",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Tell me about a time you disagreed with your manager.",
+   "tip": "Try: the situation → what you did → the result → the lesson."
+  },
+  {
+   "id": "en-011",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "\"Why should we hire you over someone with more experience?\" Answer in under two minutes.",
+   "prep": [
+    "Point: what you bring.",
+    "Reason: why it matters for this job.",
+    "Example: proof from your work.",
+    "Point again: why you're the right pick."
+   ]
+  },
+  {
+   "id": "en-012",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Describe a mistake you made at work and how you fixed it.",
+   "tip": "Try: the mistake → how you found it → the fix → what changed."
+  },
+  {
+   "id": "en-013",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "What is your biggest strength, and how has it helped a team?",
+   "prep": [
+    "Point: your strength.",
+    "Reason: why it helps a team.",
+    "Example: one real moment.",
+    "Point again: how you'll use it here."
+   ]
+  },
+  {
+   "id": "en-014",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "Tell me about a time you led without having the title.",
+   "tip": "Try: the problem → why you stepped up → what you did → the result."
+  },
+  {
+   "id": "en-015",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Where do you see yourself in three years?"
+  },
+  {
+   "id": "en-016",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Walk me through a decision you made with very little information.",
+   "tip": "Try: the choice → what you knew → how you decided → how it went."
+  },
+  {
+   "id": "en-017",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe your commute to someone who has never been to your city."
+  },
+  {
+   "id": "en-018",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe a small habit that made your week better.",
+   "tip": "Try: the habit → when you do it → what changed."
+  },
+  {
+   "id": "en-019",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Recommend a book, film or series to a friend, and say who it's for.",
+   "prep": [
+    "Point: what to watch or read.",
+    "Reason: why it's worth it.",
+    "Example: one scene or idea.",
+    "Point again: who will love it."
+   ]
+  },
+  {
+   "id": "en-020",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Talk about your favourite meal and the story behind it."
+  },
+  {
+   "id": "en-021",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Plan a one-day trip near your city for a visiting friend.",
+   "tip": "Try: morning → afternoon → evening → why they'll enjoy it."
+  },
+  {
+   "id": "en-022",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Is it better to save money or spend it on experiences? Give your view.",
+   "prep": [
+    "Point: your answer.",
+    "Reason: why you think so.",
+    "Example: something from your life.",
+    "Point again: your answer, in one line."
+   ]
+  },
+  {
+   "id": "en-023",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Explain how something you use every day works, as if to a curious ten-year-old."
+  },
+  {
+   "id": "en-024",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe the best day you had this month."
+  },
+  {
+   "id": "en-025",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Give a short toast at a friend's wedding.",
+   "tip": "Try: how you met → one funny moment → a wish for them."
+  },
+  {
+   "id": "en-026",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Persuade your housing society to start composting.",
+   "prep": [
+    "Point: what you want them to start.",
+    "Reason: why it matters.",
+    "Example: a place where it worked.",
+    "Point again: the first step."
+   ]
+  },
+  {
+   "id": "en-027",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Introduce a guest speaker at a college event.",
+   "tip": "Try: who they are → why they matter → what we'll hear."
+  },
+  {
+   "id": "en-028",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Thank your team at the end of a big project."
+  },
+  {
+   "id": "en-029",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Open a meeting where people are upset about a change, and calm the room.",
+   "tip": "Try: name the feeling → the facts → what happens next."
+  },
+  {
+   "id": "en-030",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Teach the audience one thing you're good at in two minutes.",
+   "tip": "Try: why it's useful → the steps → one tip."
+  },
+  {
+   "id": "hi-001",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने शहर की एक समस्या बताइए, और आप उसे कैसे सुलझाएँगे।",
+   "translit": "Apne shahar ki ek samasya bataiye, aur aap use kaise suljhaenge.",
+   "prep": [
+    "समस्या क्या है",
+    "यह क्यों मायने रखती है",
+    "एक उदाहरण, आपके रोज़ के जीवन से",
+    "आपका हल"
+   ]
+  },
+  {
+   "id": "hi-002",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपनी पसंदीदा जगह के बारे में बताइए, जहाँ आप सुकून पाते हैं।",
+   "translit": "Apni pasandeeda jagah ke baare mein bataiye, jahan aap sukoon paate hain."
+  },
+  {
+   "id": "hi-003",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने बचपन का कोई त्योहार याद कीजिए और बताइए वह खास क्यों था।",
+   "translit": "Apne bachpan ka koi tyohaar yaad kijiye aur bataiye woh khaas kyon tha."
+  },
+  {
+   "id": "hi-004",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "किसी दोस्त को एक फ़िल्म या किताब सुझाइए, और बताइए किसके लिए है।",
+   "translit": "Kisi dost ko ek film ya kitaab sujhaiye, aur bataiye kiske liye hai.",
+   "prep": [
+    "क्या देखें या पढ़ें",
+    "यह क्यों अच्छी है",
+    "एक दृश्य या विचार",
+    "यह किसे पसंद आएगी"
+   ]
+  },
+  {
+   "id": "hi-005",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "पैसे बचाना बेहतर है या अनुभवों पर ख़र्च करना? अपनी राय दीजिए।",
+   "translit": "Paise bachana behtar hai ya anubhavon par kharch karna? Apni raay dijiye.",
+   "prep": [
+    "आपकी राय",
+    "इसकी वजह",
+    "आपके जीवन से एक उदाहरण",
+    "राय दोबारा, एक वाक्य में"
+   ]
+  },
+  {
+   "id": "hi-006",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने रोज़ के सफ़र के बारे में बताइए, किसी ऐसे व्यक्ति को जो आपके शहर कभी नहीं आया।",
+   "translit": "Apne roz ke safar ke baare mein bataiye, kisi aise vyakti ko jo aapke shahar kabhi nahin aaya."
+  },
+  {
+   "id": "hi-007",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "मोबाइल फ़ोन ने परिवारों को पास लाया है या दूर किया है? अपनी बात रखिए।",
+   "translit": "Mobile phone ne parivaron ko paas laaya hai ya door kiya hai? Apni baat rakhiye.",
+   "prep": [
+    "आपकी राय",
+    "मुख्य वजह",
+    "एक घटना",
+    "आपका निष्कर्ष"
+   ]
+  },
+  {
+   "id": "hi-008",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "किसी मेहमान दोस्त के लिए अपने शहर के पास एक दिन की सैर की योजना बताइए।",
+   "translit": "Kisi mehmaan dost ke liye apne shahar ke paas ek din ki sair ki yojana bataiye."
+  },
+  {
+   "id": "hi-009",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "अपनी टीम के काम के बारे में किसी नए साथी को समझाइए।",
+   "translit": "Apni team ke kaam ke baare mein kisi naye saathi ko samjhaiye."
+  },
+  {
+   "id": "hi-010",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "आपके मैनेजर पूछते हैं कि काम देर से क्यों हुआ। ईमानदारी से बताइए और आगे क्या बदलेगा।",
+   "translit": "Aapke manager poochhte hain ki kaam der se kyon hua. Imaandaari se bataiye aur aage kya badlega.",
+   "prep": [
+    "काम कितना देर से हुआ",
+    "इसकी वजह",
+    "एक ठोस पल",
+    "अब क्या बदलेगा"
+   ]
+  },
+  {
+   "id": "hi-011",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "एक नाराज़ ग्राहक को फ़ोन पर समझाइए कि देरी कैसे ठीक होगी।",
+   "translit": "Ek naaraaz graahak ko phone par samjhaiye ki deri kaise theek hogi."
+  },
+  {
+   "id": "hi-012",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "कोई ऐसा ऐप या तरीका बताइए जिससे आपका काम आसान होता है।",
+   "translit": "Koi aisa app ya tareeka bataiye jisse aapka kaam aasaan hota hai."
+  },
+  {
+   "id": "hi-013",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "अपने किसी ऐसे काम के बारे में बताइए जिस पर आपको गर्व है।",
+   "translit": "Apne kisi aise kaam ke baare mein bataiye jis par aapko garv hai."
+  },
+  {
+   "id": "hi-014",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "अपनी टीम को हफ़्ते की एक मीटिंग बंद करने के लिए राज़ी कीजिए।",
+   "translit": "Apni team ko hafte ki ek meeting band karne ke liye raazi kijiye.",
+   "prep": [
+    "कौन सी मीटिंग बंद हो",
+    "इससे टीम का क्या नुकसान है",
+    "एक हफ़्ता जब इससे फ़ायदा नहीं हुआ",
+    "इसकी जगह क्या करेंगे"
+   ]
+  },
+  {
+   "id": "hi-015",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "ऑफ़िस से काम बेहतर है या घर से? अपनी राय दीजिए।",
+   "translit": "Office se kaam behtar hai ya ghar se? Apni raay dijiye.",
+   "prep": [
+    "आपकी राय",
+    "मुख्य वजह",
+    "एक दिन का उदाहरण",
+    "राय दोबारा"
+   ]
+  },
+  {
+   "id": "hi-016",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "किसी दोस्त की शादी में दो मिनट का छोटा-सा भाषण दीजिए।",
+   "translit": "Kisi dost ki shaadi mein do minute ka chhota-sa bhaashan dijiye."
+  },
+  {
+   "id": "hi-017",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "अपनी सोसाइटी को कचरे से खाद बनाने के लिए राज़ी कीजिए।",
+   "translit": "Apni society ko kachre se khaad banane ke liye raazi kijiye.",
+   "prep": [
+    "आप क्या शुरू करवाना चाहते हैं",
+    "यह क्यों ज़रूरी है",
+    "जहाँ यह काम आया",
+    "पहला कदम"
+   ]
+  },
+  {
+   "id": "hi-018",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "कॉलेज के कार्यक्रम में एक मेहमान वक्ता का परिचय दीजिए।",
+   "translit": "College ke kaaryakram mein ek mehmaan vakta ka parichay dijiye."
+  },
+  {
+   "id": "hi-019",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "किसी बड़े काम के बाद अपनी टीम का धन्यवाद कीजिए।",
+   "translit": "Kisi bade kaam ke baad apni team ka dhanyavaad kijiye."
+  },
+  {
+   "id": "hi-020",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "किसी बदलाव से नाराज़ लोगों की मीटिंग शुरू कीजिए और माहौल शांत कीजिए।",
+   "translit": "Kisi badlaav se naaraaz logon ki meeting shuru kijiye aur maahaul shaant kijiye."
+  },
+  {
+   "id": "hi-021",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "जिस चीज़ में आप माहिर हैं, वह दो मिनट में लोगों को सिखाइए।",
+   "translit": "Jis cheez mein aap maahir hain, woh do minute mein logon ko sikhaiye."
+  },
+  {
+   "id": "hi-022",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "अपने स्कूल के किसी शिक्षक के बारे में बताइए जिन्होंने आपको प्रेरित किया।",
+   "translit": "Apne school ke kisi shikshak ke baare mein bataiye jinhone aapko prerit kiya."
+  },
+  {
+   "id": "hi-023",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "अपने बारे में बताइए।",
+   "translit": "Apne baare mein bataiye."
+  },
+  {
+   "id": "hi-024",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आप अपने मैनेजर से असहमत थे।",
+   "translit": "Koi aisa samay bataiye jab aap apne manager se asahmat the."
+  },
+  {
+   "id": "hi-025",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "हम आपको ज़्यादा अनुभव वाले उम्मीदवार की जगह क्यों चुनें?",
+   "translit": "Hum aapko zyaada anubhav waale ummeedvaar ki jagah kyon chunein?",
+   "prep": [
+    "आप क्या लेकर आते हैं",
+    "यह इस काम के लिए क्यों ज़रूरी है",
+    "आपके काम से सबूत",
+    "आप सही विकल्प क्यों हैं"
+   ]
+  },
+  {
+   "id": "hi-026",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "काम पर हुई किसी गलती और उसे ठीक करने के बारे में बताइए।",
+   "translit": "Kaam par hui kisi galti aur use theek karne ke baare mein bataiye."
+  },
+  {
+   "id": "hi-027",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "आपकी सबसे बड़ी ताक़त क्या है, और इससे टीम को कैसे मदद मिली?",
+   "translit": "Aapki sabse badi taaqat kya hai, aur isse team ko kaise madad mili?",
+   "prep": [
+    "आपकी ताक़त",
+    "यह टीम के काम क्यों आती है",
+    "एक असली पल",
+    "यहाँ आप इसे कैसे इस्तेमाल करेंगे"
+   ]
+  },
+  {
+   "id": "hi-028",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "तीन साल बाद आप ख़ुद को कहाँ देखते हैं?",
+   "translit": "Teen saal baad aap khud ko kahan dekhte hain?"
+  },
+  {
+   "id": "hi-029",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "इस महीने का अपना सबसे अच्छा दिन बताइए।",
+   "translit": "Is mahine ka apna sabse achchha din bataiye."
+  },
+  {
+   "id": "hi-030",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "अपने काम का एक सामान्य दिन कैसा होता है, बताइए।",
+   "translit": "Apne kaam ka ek saamaanya din kaisa hota hai, bataiye."
+  }
+ ]
+}

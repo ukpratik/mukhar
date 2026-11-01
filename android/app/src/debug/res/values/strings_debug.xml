@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debug_menu">Debug menu</string>
+    <string name="debug_pipeline">Analysis pipeline</string>
+    <string name="debug_use_fake">Fake pipeline (canned, no network)</string>
+    <string name="debug_failure">Fake failure mode</string>
+    <string name="debug_mode_none">None</string>
+    <string name="debug_mode_stt">Transcription fails</string>
+    <string name="debug_mode_llm">Coach\'s notes fail</string>
+    <string name="debug_mode_busy">Busy (spend cap)</string>
+    <string name="debug_mode_offline">Offline</string>
+    <string name="debug_mode_self_harm">Self-harm cue (helpline card)</string>
+    <string name="debug_delay">Fake delay: %1$d s</string>
+    <string name="debug_storage">Low storage simulation</string>
+    <string name="debug_storage_off">Off (real free space)</string>
+    <string name="debug_storage_warn">Below 50 MB (warn)</string>
+    <string name="debug_storage_block">Below 10 MB (block)</string>
+    <string name="debug_premium">Premium plan (3:00 cap)</string>
+    <string name="debug_stutter">Stutter-friendly mode</string>
+</resources>

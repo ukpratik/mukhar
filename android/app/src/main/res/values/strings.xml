@@ -1,13 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Vaak</string>
     <string name="tab_today">Today</string>
     <string name="tab_practice">Practice</string>
     <string name="tab_words">Words</string>
     <string name="tab_me">Me</string>
     <string name="placeholder_today">Your streak, today\'s talk, revision and words will live here.</string>
-    <string name="placeholder_practice">Talks, Say It Again and Sound Lab will live here.</string>
     <string name="placeholder_words">Word Gym, your word bank and quick revision will live here.</string>
     <string name="placeholder_me">Progress, settings and Premium will live here.</string>
     <string name="placeholder_coming">Coming soon</string>
+    <string name="todays_talk">Today\'s Talk</string>
+
+    <!-- Shared talk chrome -->
+    <string name="lang_en">English</string>
+    <string name="lang_hi">Hindi</string>
+    <string name="lang_hi_native" translatable="false">हिंदी</string>
+    <string name="track_professional">Professional</string>
+    <string name="track_interviews">Interviews</string>
+    <string name="track_everyday">Everyday</string>
+    <string name="track_public_speaking">Public speaking</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="dot_pair">%1$s · %2$s</string>
+    <string name="quoted_with_time">“%1$s” · %2$s</string>
+    <string name="credit_counted" tools:ignore="PluralsCandidate">Day %1$d counted</string>
+    <string name="credit_counted_goal" tools:ignore="PluralsCandidate">Day %1$d counted · weekly goal met</string>
+    <string name="credit_short">Talk saved · 30 s counts for your streak</string>
+    <string name="private_line">Private by default. Audio is deleted after analysis.</string>
+    <string name="back_to_today">Back to Today</string>
+    <string name="try_again">Try again</string>
+    <string name="discard">Discard</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="undo">Undo</string>
+    <string name="done">Done</string>
+
+    <!-- S08 Prompt picker -->
+    <string name="studio_title">Speak Studio</string>
+    <string name="studio_sub">Pick a prompt. Talk for up to 3 minutes.</string>
+    <string name="studio_lang_cd">Talk language</string>
+    <string name="studio_track">Track</string>
+    <string name="studio_track_cd">Goal track</string>
+    <string name="prompt_section">Prompt</string>
+    <string name="prompt_eyebrow">Prompt · %1$s</string>
+    <string name="prep_chip" translatable="false">PREP</string>
+    <string name="structure_hint">Structure hint</string>
+    <string name="translit_toggle">Show in Latin script</string>
+    <string name="translit_toggle_cd">Show transliteration in Latin script</string>
+    <string name="time_line_premium">Up to 3:00 · soft markers at 1:00 and 2:00</string>
+    <string name="time_line_free">Up to 2:00</string>
+    <string name="no_repeat_line">You won\'t see your last 30 prompts again.</string>
+    <string name="new_prompt">New prompt</string>
+    <string name="shuffle_cd">Another prompt</string>
+    <string name="record">Record</string>
+
+    <!-- S09 Recording -->
+    <string name="close_discard_cd">Close. Asks before discarding</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_think">Think time</string>
+    <string name="status_recording">Recording</string>
+    <string name="status_paused">Paused</string>
+    <string name="retake_eyebrow">Re-take · %1$s</string>
+    <string name="prep_tip">Try: point → reason → example → point again.</string>
+    <string name="mic_good">Mic sounds good</string>
+    <string name="mic_good_sub">Quiet room, clear voice</string>
+    <string name="mic_noisy">Lots of background sound</string>
+    <string name="mic_noisy_sub">Traffic or a fan nearby</string>
+    <string name="think_switch">30 seconds to think first</string>
+    <string name="think_switch_sub">The timer starts after</string>
+    <string name="start_cta">Start · up to %1$s</string>
+    <string name="start_cd">Start recording. Up to %1$s</string>
+    <string name="think_left">to think</string>
+    <plurals name="think_live">
+        <item quantity="one">%d second to think. Recording starts by itself.</item>
+        <item quantity="other">%d seconds to think. Recording starts by itself.</item>
+    </plurals>
+    <string name="think_nudge">Pick your one main point. Start with that.</string>
+    <string name="start_now">Start now</string>
+    <string name="timer_of">of %1$s · take your time</string>
+    <string name="timer_of_paused">of %1$s · paused</string>
+    <string name="recording_live">Recording. %1$s of %2$s.</string>
+    <string name="recording_started">Recording started</string>
+    <string name="stop">Stop</string>
+    <string name="stop_cd">Stop and get feedback</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="resume_cd">Resume recording</string>
+    <plurals name="pause_cd">
+        <item quantity="one">Pause recording. %d pause left</item>
+        <item quantity="other">Pause recording. %d pauses left</item>
+    </plurals>
+    <plurals name="pauses_left">
+        <item quantity="one">%d pause left</item>
+        <item quantity="other">%d pauses left</item>
+    </plurals>
+    <string name="paused_away_title">Paused while you were away</string>
+    <string name="paused_away_body">Your talk so far is safe. Carry on whenever you\'re ready.</string>
+    <string name="noise_title">It\'s noisy — results may be less accurate</string>
+    <string name="noise_body">A quieter corner or holding the phone a little closer helps. You can still record.</string>
+    <string name="noise_body_results">A quieter corner or holding the phone a little closer helps next time.</string>
+    <string name="record_anyway">Record anyway</string>
+    <string name="check_again">Check again</string>
+    <string name="low_title">We couldn\'t hear much — try again?</string>
+    <plurals name="low_body">
+        <item quantity="one">We caught about %d second of speech. Feedback needs at least 10, and 30 seconds counts for your streak.</item>
+        <item quantity="other">We caught about %d seconds of speech. Feedback needs at least 10, and 30 seconds counts for your streak.</item>
+    </plurals>
+    <string name="low_tip_distance">Hold the phone about a hand\'s length away.</string>
+    <string name="low_tip_mic">Check nothing is covering the mic at the bottom.</string>
+    <string name="low_tip_start">Start with one easy line: “Last year I worked on…”</string>
+    <string name="storage_title">Your phone is almost full</string>
+    <string name="storage_body">About %1$d MB is free. If it runs out while you\'re talking, the end of your talk may not save. Freeing a little space first keeps it safe.</string>
+    <string name="storage_block_body">About %1$d MB is free, which isn\'t enough to save a talk safely. Free up a little space, then come back.</string>
+    <string name="open_storage">Open storage settings</string>
+    <string name="discard_title">Discard this talk?</string>
+    <string name="keep_talking">Keep talking</string>
+    <string name="keep_it">Keep it</string>
+    <string name="mic_unavailable">The microphone is busy. Close other apps that use it and try again.</string>
+    <string name="perm_title">Vaak needs the microphone to hear your talk</string>
+    <string name="perm_body">Your audio stays private and is deleted after analysis.</string>
+    <string name="perm_allow">Allow microphone</string>
+    <string name="perm_denied_body">Microphone access is off for Vaak. Turn it on in Settings to record a talk.</string>
+    <string name="rec_title">We kept your talk</string>
+    <string name="rec_body">Vaak closed while you were talking. The first %1$s is saved on this phone.</string>
+    <string name="rec_card">%1$s recorded · %2$s</string>
+    <string name="rec_get">Get feedback on this part</string>
+    <string name="rec_again">Record it again instead</string>
+    <string name="rec_close_cd">Close, keep the talk for later</string>
+
+    <!-- S10 Analysing -->
+    <string name="report_title">Coach\'s report</string>
+    <string name="meta_today">Today, %1$s</string>
+    <string name="saved_title">Talk saved</string>
+    <string name="your_talk">Your talk</string>
+    <string name="back_continue_cd">Back to Today. Analysis continues</string>
+    <string name="back_kept_cd">Back to Today. Your talk is kept</string>
+    <string name="report_cd">Report this feedback</string>
+    <string name="listening">Listening back…</string>
+    <string name="listening_body">About 15 seconds. You can leave this screen; we\'ll keep going.</string>
+    <string name="step_saved">Saved on your phone · %1$s</string>
+    <string name="step_transcript">Writing your transcript</string>
+    <string name="step_transcript_retry">Writing your transcript · try again</string>
+    <string name="step_measure">Measuring pace and fillers</string>
+    <string name="step_notes">Your coach\'s notes</string>
+    <string name="writing_notes">Your coach is writing notes…</string>
+    <string name="queued_title">We\'ll analyse it when you\'re online</string>
+    <string name="queued_body">Your talk is saved on this phone. Nothing is lost if you close the app.</string>
+    <string name="waiting_card">Waiting · %1$s</string>
+    <string name="queued_note">We\'ll send one notification when your report is ready. It won\'t use today\'s free talk until it\'s analysed.</string>
+    <string name="discard_talk">Discard this talk</string>
+    <string name="busy_title">We\'re busy right now</string>
+    <string name="busy_body">Lots of people are practising. Your talk is saved, and we\'ll write your report as soon as there\'s room.</string>
+    <string name="busy_note">We\'ll send one notification when it\'s ready. It won\'t use a free talk until then.</string>
+    <string name="fb_error_title">Your coach\'s notes didn\'t load</string>
+    <string name="fb_error_body">Your transcript and numbers are safe, and this didn\'t use today\'s talk.</string>
+    <string name="try_later">Try again later</string>
+    <string name="summary_numbers">Your numbers are in.</string>
+    <string name="summary_numbers_fillers">Your numbers are in. Fillers are down from your average.</string>
+    <string name="stt_title">We couldn\'t get your transcript this time</string>
+    <string name="stt_body">The speech service didn\'t answer. Your talk is safe on this phone, and this didn\'t use today\'s talk.</string>
+    <string name="keep_for_later">Keep it for later</string>
+
+    <!-- S11 Results -->
+    <string name="metrics_cd">Delivery metrics</string>
+    <string name="metric_pace">Pace</string>
+    <string name="metric_fillers">Fillers</string>
+    <string name="metric_pauses">Long pauses</string>
+    <string name="metric_repeats">Repeats</string>
+    <string name="metric_variety">Word variety</string>
+    <string name="unit_wpm">wpm</string>
+    <string name="unit_per_min">/min</string>
+    <string name="about_metric_cd">About %1$s</string>
+    <string name="band_slow">Slow</string>
+    <string name="band_comfortable">Comfortable</string>
+    <string name="band_fast">Fast</string>
+    <string name="band_label">%1$s band</string>
+    <string name="band_provisional">%1$s · provisional</string>
+    <string name="delta_down_avg">Down from %1$s avg</string>
+    <string name="delta_up_avg">Up from %1$s avg</string>
+    <string name="delta_same">Same as your avg</string>
+    <string name="delta_variety_up">Up from %1$s · your last 5 talks</string>
+    <string name="delta_variety_down">Down from %1$s · your last 5 talks</string>
+    <string name="variety_hi">Provisional for Hindi · compared with Hindi talks only</string>
+    <string name="variety_locked">Speak longer to unlock</string>
+    <string name="not_scored">Not scored</string>
+    <string name="info_pace">Words per minute while you were speaking, without fillers or long think-breaks. 110 to 160 is comfortable for most listeners.</string>
+    <string name="info_fillers">Sounds like “um” and “uh” per minute, plus words like “basically” when they sit between pauses. Aim for 5 or fewer.</string>
+    <string name="info_pauses">Silences longer than 1.5 seconds, per minute. A few help; many break the flow.</string>
+    <string name="info_repeats" tools:ignore="Typos">Words or pairs of words said twice in a row, like “the the”.</string>
+    <string name="info_variety">How varied your words are, from 0 to 1, measured over every 50 words. Higher means fewer repeated words.</string>
+    <string name="info_compare">Compared only with your own last 5 talks in this language.</string>
+    <string name="sfm_note">Stutter-friendly: repeats and pauses aren\'t scored.</string>
+    <string name="sfm_settings">Settings</string>
+    <string name="transcript_title">What you said</string>
+    <string name="transcript_range">%1$s to %2$s</string>
+    <string name="transcript_cd">Transcript</string>
+    <string name="legend_filler">filler</string>
+    <string name="legend_repeat">repeat</string>
+    <string name="legend_unsure">unsure</string>
+    <string name="legend_glow">glow</string>
+    <string name="legend_grow">grow</string>
+    <string name="legend_sample_filler" translatable="false">um</string>
+    <string name="legend_sample_filler_hi" translatable="false">मतलब</string>
+    <string name="legend_sample_repeat" translatable="false" tools:ignore="Typos">the the</string>
+    <string name="legend_sample_unsure">word</string>
+    <string name="legend_sample_quote">quoted</string>
+    <string name="show_full_transcript">Show full transcript</string>
+    <string name="show_less">Show less</string>
+    <string name="hi_borrowing_note">English words like metro, office and traffic are a natural part of Hindi. We never count them as mistakes.</string>
+    <string name="glow_tag">Glow · what worked</string>
+    <string name="glow_tag_short">Glow</string>
+    <string name="glow_tag_hi" translatable="false">क्या अच्छा रहा</string>
+    <string name="grow_tag">Grow · one thing to try</string>
+    <string name="grow_tag_short">Grow</string>
+    <string name="grow_tag_hi" translatable="false">एक चीज़ आज़माएँ</string>
+    <string name="why">Why</string>
+    <string name="how">How</string>
+    <string name="why_hi" translatable="false">क्यों</string>
+    <string name="how_hi" translatable="false">कैसे</string>
+    <string name="better_title">Better versions</string>
+    <plurals name="better_count">
+        <item quantity="one">%d line</item>
+        <item quantity="other">%d lines</item>
+    </plurals>
+    <string name="better_tip">Tap a highlighted word to add it to Word Gym.</string>
+    <string name="save_line">Save line</string>
+    <string name="saved_line">Saved</string>
+    <string name="add_word_cd">Add %1$s to Word Gym</string>
+    <string name="added_word_cd">%1$s added to Word Gym</string>
+    <string name="toast_added">Added to Word Gym</string>
+    <string name="rate_question">Was this useful?</string>
+    <string name="rate_cd">Rate this feedback</string>
+    <string name="rate_no">Not useful</string>
+    <string name="rate_yes">Useful</string>
+    <string name="rate_great">Very useful</string>
+    <string name="report_link">Something off? Report this feedback</string>
+    <string name="report_sheet_title">Report this feedback</string>
+    <string name="report_lead">Thanks for telling us. What was off?</string>
+    <string name="report_reason_cd">Reason</string>
+    <string name="reason_transcript">The transcript is wrong</string>
+    <string name="reason_advice">The advice is wrong</string>
+    <string name="reason_offensive">It\'s offensive or hurtful</string>
+    <string name="reason_other">Something else</string>
+    <string name="report_note">Add a note (optional)</string>
+    <string name="report_consent_bold">Also send my transcript and this feedback</string>
+    <string name="report_consent_rest">so the team can see what went wrong. Kept for 90 days, then deleted. No audio is sent.</string>
+    <string name="send_report">Send report</string>
+    <string name="toast_reported">Thanks. We\'ll look at it.</string>
+    <string name="toast_report_failed">We couldn\'t send that right now. Try again later.</string>
+    <string name="say_again_cta">Say it again in %1$s</string>
+    <string name="help_title">It sounds like things are heavy right now</string>
+    <string name="help_body">We didn\'t write coaching notes on this talk. If you\'re thinking about hurting yourself, please talk to someone. You don\'t have to go through it alone.</string>
+    <string name="help_call">Call Tele-MANAS · 14416</string>
+    <string name="help_small">Free, any time, in English, Hindi and other languages.</string>
+    <string name="help_trust">Talk to someone you trust</string>
+    <string name="show_numbers">Show my numbers</string>
+
+    <!-- S12 Say it again -->
+    <string name="retake_title">Re-take</string>
+    <string name="back_report_cd">Back to the report</string>
+    <string name="retake_time">%1$s of %2$s · same prompt</string>
+    <string name="sa_title_both">Cleaner and quicker.</string>
+    <string name="sa_body_both">Fewer fillers and fewer long pauses than your first take, in less time.</string>
+    <string name="sa_title_fillers">Cleaner this time.</string>
+    <string name="sa_body_fillers">Fewer fillers than your first take, in less time.</string>
+    <string name="sa_title_pauses">Smoother this time.</string>
+    <string name="sa_body_pauses">Fewer long pauses than your first take, in less time.</string>
+    <string name="sa_title_pace">A steadier pace.</string>
+    <string name="sa_body_pace">Your pace moved closer to comfortable, in less time.</string>
+    <string name="sa_title_same">Same story, a little quicker.</string>
+    <string name="sa_body_same">Less time often makes a re-take feel bumpier. You still practised it twice, and that\'s the work.</string>
+    <string name="deltas_cd">What changed</string>
+    <string name="chip_fewer">%1$d%% fewer</string>
+    <string name="chip_same">About the same</string>
+    <string name="chip_more">A few more</string>
+    <string name="chip_still_comfortable">Still comfortable</string>
+    <string name="chip_faster_comfortable">Faster, still comfortable</string>
+    <string name="chip_slower_comfortable">Slower, still comfortable</string>
+    <string name="chip_now_comfortable">Now comfortable</string>
+    <string name="chip_faster">Faster</string>
+    <string name="chip_slower">Slower</string>
+    <string name="words_for_you">Words for you</string>
+    <string name="tap_to_add">tap to add</string>
+    <string name="note_already_counted" tools:ignore="PluralsCandidate">Day %1$d was already counted. Re-takes are a bonus.</string>
+    <string name="note_counted_either" tools:ignore="PluralsCandidate">Day %1$d is counted either way.</string>
+    <string name="for_next_time">For next time</string>
+    <string name="done_for_today">Done for today</string>
+    <string name="report_button">Report</string>
+    <string name="report_button_cd">See the full report</string>
+    <string name="once_more">Once more</string>
+    <string name="once_more_cd">Try once more</string>
 </resources>

@@ -26,6 +26,8 @@ android {
         }
     }
 
+    buildFeatures.buildConfig = true
+
     // Robolectric Compose tests need merged resources.
     testOptions.unitTests.isIncludeAndroidResources = true
 }
@@ -42,11 +44,15 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.compose.material.icons.extended)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.kotlinx.coroutines.test)
     debugImplementation(libs.compose.ui.test.manifest)
 }

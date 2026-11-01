@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,48 @@ interface TalkDao {
     @Query("SELECT * FROM talk_session WHERE id = :id")
     fun observeSession(id: String): Flow<TalkSessionEntity?>
 
+    @Query("SELECT * FROM talk_session WHERE id = :id")
+    suspend fun session(id: String): TalkSessionEntity?
+
+    @Update
+    suspend fun updateSession(session: TalkSessionEntity)
+
+    /** Persisted every few seconds while recording, so a crash keeps a useful duration and speech time (US-018). */
+    @Query("UPDATE talk_session SET duration_ms = :durationMs, speech_ms = :speechMs, updated_at = :now WHERE id = :id AND status = 'recording'")
+    suspend fun updateProgress(id: String, durationMs: Int, speechMs: Int, now: Long)
+
+    /** The newest talk recovered after the app closed mid-recording that the user hasn't acted on (S09 state 8). */
+    @Query("SELECT * FROM talk_session WHERE status = 'recorded' AND error_code = 'RECOVERED' ORDER BY created_at DESC LIMIT 1")
+    fun observeRecovered(): Flow<TalkSessionEntity?>
+
+    /** The latest re-take of [parentId] (US-017). */
+    @Query("SELECT * FROM talk_session WHERE parent_id = :parentId AND kind = 'retake' AND status != 'discarded' ORDER BY created_at DESC LIMIT 1")
+    suspend fun latestRetake(parentId: String): TalkSessionEntity?
+
+    @Query("SELECT * FROM transcript WHERE session_id = :id")
+    fun observeTranscript(id: String): Flow<TranscriptEntity?>
+
+    @Query("SELECT * FROM transcript WHERE session_id = :id")
+    suspend fun transcript(id: String): TranscriptEntity?
+
+    @Query("SELECT * FROM metrics WHERE session_id = :id")
+    fun observeMetrics(id: String): Flow<MetricsEntity?>
+
+    @Query("SELECT * FROM metrics WHERE session_id = :id")
+    suspend fun metrics(id: String): MetricsEntity?
+
+    @Query("SELECT * FROM feedback WHERE session_id = :id")
+    fun observeFeedback(id: String): Flow<FeedbackEntity?>
+
+    @Query("SELECT * FROM feedback WHERE session_id = :id")
+    suspend fun feedback(id: String): FeedbackEntity?
+
+    @Query("UPDATE feedback SET rating = :rating WHERE session_id = :id")
+    suspend fun rateFeedback(id: String, rating: Int)
+
+    @Query("UPDATE feedback SET reported = 1 WHERE session_id = :id")
+    suspend fun markReported(id: String)
+
     @Query("SELECT * FROM talk_session WHERE status IN (:statuses) ORDER BY created_at")
     suspend fun sessionsWithStatus(statuses: List<String>): List<TalkSessionEntity>
 
@@ -27,7 +70,8 @@ interface TalkDao {
      */
     @Query(
         "UPDATE talk_session SET status = 'uploading', lease_until = :now + :leaseMs, attempts = attempts + 1, updated_at = :now " +
-            "WHERE id = :id AND (status IN ('recorded', 'queued', 'failed') OR (status = 'uploading' AND lease_until < :now))",
+            "WHERE id = :id AND (status IN ('recorded', 'queued', 'failed', 'transcribed', 'feedback_failed') " +
+            "OR (status = 'uploading' AND lease_until < :now))",
     )
     suspend fun claimLease(id: String, now: Long, leaseMs: Long = 90_000): Int
 
@@ -65,6 +109,25 @@ interface WordDao {
     @Insert
     suspend fun insertReviewLog(log: ReviewLogEntity)
 
+    @Query("DELETE FROM word WHERE id = :id AND source = 'talk' AND source_session_id = :sessionId")
+    suspend fun deleteTalkWord(id: String, sessionId: String)
+
+    /** Words collected from one talk's better versions (Word Gym itself is M4). */
+    @Query("SELECT id FROM word WHERE source = 'talk' AND source_session_id = :sessionId")
+    fun observeTalkWordIds(sessionId: String): Flow<List<String>>
+
+    @Query("SELECT id FROM word WHERE source = 'talk' AND source_session_id = :sessionId")
+    suspend fun talkWordIds(sessionId: String): List<String>
+
+    @Query("SELECT id FROM card WHERE session_id = :sessionId AND type = 'saved_line'")
+    suspend fun savedLineIds(sessionId: String): List<String>
+
+    @Query("DELETE FROM card WHERE id = :id")
+    suspend fun deleteCard(id: String)
+
+    @Query("SELECT id FROM card WHERE session_id = :sessionId AND type = 'saved_line'")
+    fun observeSavedLineIds(sessionId: String): Flow<List<String>>
+
     @Upsert
     suspend fun upsertDailyWords(words: List<DailyWordEntity>)
 
@@ -99,6 +162,10 @@ interface HabitDao {
 
     @Insert
     suspend fun insertPromptHistory(entry: PromptHistoryEntity)
+
+    /** Most recent first (US-010 no-repeat-of-last-30). */
+    @Query("SELECT prompt_id FROM prompt_history ORDER BY shown_at DESC, id DESC LIMIT :limit")
+    suspend fun recentPromptIds(limit: Int): List<String>
 
     @Query("SELECT prompt_id FROM prompt_history WHERE shown_at >= :since")
     suspend fun promptsShownSince(since: Long): List<String>
