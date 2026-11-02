@@ -129,6 +129,7 @@ fun RecordScreen(
     onLeave: () -> Unit,
     onReport: (String) -> Unit,
     onSayAgain: (String) -> Unit,
+    onQuota: () -> Unit = {},
     vm: RecordViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -155,6 +156,7 @@ fun RecordScreen(
                 RecordEffect.HapticConfirm -> haptics.confirm()
                 RecordEffect.HapticTick -> haptics.tick()
                 RecordEffect.MicUnavailable -> snackbar.showSnackbar(micBusy)
+                RecordEffect.OpenQuota -> onQuota()
                 RecordEffect.OpenStorageSettings -> runCatching {
                     context.startActivity(Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }

@@ -86,6 +86,8 @@ data class BetterUi(val index: Int, val quote: String, val rewrite: String, val 
 data class ReportUiState(
     val sessionId: String = "",
     val phase: ReportPhase = ReportPhase.LISTENING,
+    /** The server said QUOTA_EXHAUSTED: the talk waits, saved, for the next quota day (S17, US-060). */
+    val quotaRefused: Boolean = false,
     val meta: MetaUi? = null,
     val credit: CreditUi? = null,
     val stutterFriendly: Boolean = false,
@@ -144,6 +146,7 @@ object ReportMapper {
         return ReportUiState(
             sessionId = s.id,
             phase = phase,
+            quotaRefused = s.status == TalkStatus.QUEUED && s.errorCode == "QUOTA_EXHAUSTED",
             meta = MetaUi(lang, Track.fromKey(s.track), s.durationMs.toLong(), Instant.ofEpochMilli(s.createdAt), ZoneId.of(s.zoneId)),
             credit = credit(d.credit, s.speechMs.toLong()),
             stutterFriendly = stutterFriendly,

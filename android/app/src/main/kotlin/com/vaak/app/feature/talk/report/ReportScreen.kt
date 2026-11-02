@@ -116,6 +116,8 @@ data class ReportActions(
     val onSayAgain: (ReportUiState) -> Unit,
     val onRecordAgain: (ReportUiState) -> Unit,
     val onSettings: () -> Unit,
+    /** S17 after the server's QUOTA_EXHAUSTED (the talk stays saved and is analysed after the reset). */
+    val onQuota: () -> Unit = {},
 )
 
 @Composable
@@ -146,6 +148,7 @@ fun ReportScreen(actions: ReportActions, vm: ReportViewModel = hiltViewModel()) 
         }
     }
     LaunchedEffect(state.phase) { if (state.phase == ReportPhase.GONE) actions.onBack() }
+    LaunchedEffect(state.quotaRefused) { if (state.quotaRefused) actions.onQuota() }
     ReportContent(state, vm::onEvent, actions, snackbar)
 }
 

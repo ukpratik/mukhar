@@ -20,6 +20,7 @@ abstract class VaakDatabase : RoomDatabase() {
     abstract fun talkDao(): TalkDao
     abstract fun wordDao(): WordDao
     abstract fun habitDao(): HabitDao
+    abstract fun progressDao(): ProgressDao
 
     companion object {
         const val NAME = "vaak.db"

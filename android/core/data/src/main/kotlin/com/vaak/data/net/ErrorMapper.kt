@@ -19,6 +19,8 @@ class ErrorMapper(private val json: Json, private val nowMs: () -> Long = System
         val err = body?.let { runCatching { json.decodeFromString<ErrorEnvelopeDto>(it).error }.getOrNull() }
         val code = err?.code
         return when (status) {
+            // M5: a purchase token Play doesn't know (POST /entitlement). Terminal for that token.
+            400 -> if (code == "PURCHASE_INVALID") AppError.Upstream(Stage.SERVER, code) else AppError.Unknown("http_400")
             401 -> AppError.Auth
             403 -> AppError.Integrity
             404 -> AppError.Upstream(Stage.SERVER, code ?: "SESSION_STATE")

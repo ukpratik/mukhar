@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.okhttp)
+    implementation(libs.billing.ktx)
 
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)

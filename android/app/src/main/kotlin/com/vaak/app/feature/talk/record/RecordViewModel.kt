@@ -11,7 +11,10 @@ import com.vaak.data.audio.RecorderState
 import com.vaak.data.audio.RecordingResult
 import com.vaak.data.content.PromptRepository
 import com.vaak.data.prefs.UserSettings
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsEvent
 import com.vaak.data.repo.Entitlements
+import com.vaak.data.repo.TalkQuota
 import com.vaak.data.repo.StopOutcome
 import com.vaak.data.repo.TalkKind
 import com.vaak.data.repo.TalkRepository
@@ -92,6 +95,9 @@ sealed interface RecordEffect {
     data object HapticTick : RecordEffect
     data object MicUnavailable : RecordEffect
     data object OpenStorageSettings : RecordEffect
+
+    /** Today's free talk is used (client mirror, US-060): S17 instead of the recorder. Never mid-recording. */
+    data object OpenQuota : RecordEffect
 }
 
 @HiltViewModel
@@ -103,6 +109,8 @@ class RecordViewModel @Inject constructor(
     private val settings: UserSettings,
     private val entitlements: Entitlements,
     private val notifier: TalkNotifier,
+    private val quota: TalkQuota,
+    private val analytics: Analytics,
 ) : ViewModel() {
     private val route = savedState.toRoute<RecordRoute>()
     private val _state = MutableStateFlow(RecordUiState(isRetake = route.parentId != null))
@@ -124,6 +132,11 @@ class RecordViewModel @Inject constructor(
             val track = route.track?.let(Track::fromKey) ?: prefs.trackFor(lang)
             val prompt = route.promptId?.let { prompts.byId(it) } ?: prompts.next(lang, track, null)
             val cap = route.capS?.toLong() ?: capSeconds(entitlements.isPremium.first()).toLong()
+            // Re-takes and re-recording a recovered talk don't use the daily talk (US-017, D-031).
+            if (route.parentId == null && route.replaceId == null && quota.status().exhausted) {
+                effects.send(RecordEffect.OpenQuota)
+                return@launch
+            }
             _state.update {
                 it.copy(
                     phase = RecordPhase.PERMISSION, prompt = prompt, lang = prompt?.lang ?: lang, track = track,
@@ -266,6 +279,7 @@ class RecordViewModel @Inject constructor(
                 return@launch
             }
             effects.send(RecordEffect.HapticConfirm)
+            analytics.log(AnalyticsEvent.talkStarted(prompt.lang.code, s.track.key))
         }
     }
 
@@ -319,6 +333,8 @@ class RecordViewModel @Inject constructor(
             }
             is StopOutcome.Saved -> {
                 recorder.reset()
+                analytics.log(AnalyticsEvent.talkStopped(result.durationMs / 1000, result.speechMs / 1000))
+                if (outcome.credit != null) analytics.log(AnalyticsEvent.streakCredited)
                 talks.startAnalysis(id)
                 effects.send(if (route.parentId != null) RecordEffect.OpenSayAgain(id) else RecordEffect.OpenReport(id))
             }

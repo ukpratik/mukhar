@@ -36,7 +36,17 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vaak.app.R
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.vaak.data.debug.DebugAnalyticsSink
 import com.vaak.data.debug.DebugControls
+import com.vaak.data.debug.FakePlayStore
+import com.vaak.data.repo.EntitlementRepository
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import com.vaak.data.debug.FakeMode
 import com.vaak.data.debug.LowStorage
 import com.vaak.data.prefs.TalkPrefs
@@ -52,6 +62,8 @@ import kotlinx.coroutines.launch
 interface DebugEntryPoint {
     fun controls(): DebugControls
     fun settings(): UserSettings
+    fun fakePlay(): FakePlayStore
+    fun entitlements(): EntitlementRepository
 }
 
 /**
@@ -109,9 +121,58 @@ private fun DebugMenu(onClose: () -> Unit) {
         }
         Toggle(stringResource(R.string.debug_premium), state.premium) { on -> controls.update { it.copy(premium = on) } }
         Toggle(stringResource(R.string.debug_stutter), prefs.stutterFriendly) { on -> scope.launch { entry.settings().setStutterFriendly(on) } }
+        BillingSection(entry, state.fakeBilling) { on -> controls.update { it.copy(fakeBilling = on) } }
+        AnalyticsSection()
         TextButton(onClick = onClose, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
     }
 }
+
+/**
+ * M5 debug hooks: fake Play billing (no Play account) and the trial-expiry override. Each action changes the fake
+ * Play subscription, then re-runs the app's refresh (Play → "Worker" verification → cache → reminder).
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun BillingSection(entry: DebugEntryPoint, fake: Boolean, onFake: (Boolean) -> Unit) {
+    val scope = rememberCoroutineScope()
+    val play = entry.fakePlay()
+    var sub by remember { mutableStateOf(play.subscription) }
+    val fmt = remember { DateTimeFormatter.ofPattern("d MMM HH:mm") }
+    fun act(f: () -> Unit) {
+        f()
+        scope.launch {
+            entry.entitlements().refresh()
+            sub = play.current()
+        }
+    }
+    Text("Billing", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 20.dp, bottom = 4.dp))
+    Toggle("Fake Play billing (restart to apply)", fake, onFake)
+    Text(
+        sub?.let { "${it.plan.basePlanId} · ${it.state} · ${if (it.isTrial) "trial" else "paid"} · auto-renew ${it.autoRenewing} · ends " +
+            Instant.ofEpochMilli(it.expiryMs).atZone(ZoneId.systemDefault()).format(fmt) } ?: "No fake subscription",
+        style = MaterialTheme.typography.bodySmall,
+    )
+    Text("Trial-expiry override", style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 8.dp))
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton({ act { play.endsIn(Duration.ofHours(47)) } }) { Text("Ends in 47 h (day 6)") }
+        OutlinedButton({ act { play.endsIn(Duration.ofHours(23)) } }) { Text("Ends in 23 h") }
+        OutlinedButton({ act { play.endsIn(Duration.ofMinutes(2)) } }) { Text("Ends in 2 min") }
+        OutlinedButton({ act { play.endsIn(Duration.ofSeconds(-1)) } }) { Text("Ends now") }
+        OutlinedButton({ act { play.cancel() } }) { Text("Cancel auto-renew") }
+        OutlinedButton({ act { play.resume() } }) { Text("Resume") }
+        OutlinedButton({ act { play.clear() } }) { Text("New Play account") }
+    }
+}
+
+@Composable
+private fun AnalyticsSection() {
+    val events by DebugAnalyticsSink.events.collectAsStateWithLifecycle()
+    Text("Analytics (recorded only with consent)", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 20.dp, bottom = 4.dp))
+    if (events.isEmpty()) Text("No events yet", style = MaterialTheme.typography.bodySmall)
+    events.takeLast(EVENTS_SHOWN).reversed().forEach { Text("${it.name} ${it.params}", style = MaterialTheme.typography.bodySmall) }
+}
+
+private const val EVENTS_SHOWN = 15
 
 @Composable
 private fun Header(label: Int) {

@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vaak.app.feature.habit.StreakSheet
 import com.vaak.app.feature.onboarding.openNotificationSettings
+import com.vaak.app.feature.plan.openPlaySubscriptions
 
 /** Today with its ViewModel and the streak sheet (S07 + S20). Navigation targets come from the nav graph. */
 @Composable
@@ -53,6 +54,8 @@ fun TodayDestination(
             onDismissTip = viewModel::onDismissTip,
             onOpenWord = onOpenWord,
             onSpeak = viewModel::onSpeak,
+            onKeepTrial = viewModel::onKeepTrial,
+            onManageTrial = { context.openPlaySubscriptions() },
         ),
     )
 

@@ -4,6 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsEvent
 import com.vaak.data.db.HabitDao
 import com.vaak.data.prefs.SettingsStore
 import com.vaak.domain.Clock
@@ -29,6 +31,7 @@ class ReminderScheduler @Inject constructor(
     private val settings: SettingsStore,
     private val dao: HabitDao,
     private val clock: Clock,
+    private val analytics: Analytics = Analytics.None,
 ) {
     private val alarms: AlarmManager = context.getSystemService(AlarmManager::class.java)
     private val _next = MutableStateFlow<ReminderPlan?>(null)
@@ -54,6 +57,7 @@ class ReminderScheduler @Inject constructor(
             )
         }
         settings.setReminderBackoffLevel(plan?.backoff?.ordinal ?: 0)
+        if (plan != null && plan.at != _next.value?.at) analytics.log(AnalyticsEvent.reminderScheduled)
         _next.value = plan
         return plan
     }

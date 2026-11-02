@@ -10,6 +10,8 @@ import com.vaak.app.nav.ReportRoute
 import com.vaak.data.content.PromptRepository
 import com.vaak.data.net.Outcome
 import com.vaak.data.prefs.UserSettings
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsEvent
 import com.vaak.data.repo.Entitlements
 import com.vaak.data.repo.HarvestResult
 import com.vaak.data.repo.TalkRepository
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,7 +59,9 @@ class ReportViewModel @Inject constructor(
     private val prompts: PromptRepository,
     private val settings: UserSettings,
     entitlements: Entitlements,
+    private val analytics: Analytics,
 ) : ViewModel() {
+    private var feedbackShownLogged = false
     private val id = savedState.toRoute<ReportRoute>().sessionId
     private val manualRetryFailed = MutableStateFlow(false)
     private val retrying = MutableStateFlow(false)
@@ -85,6 +90,11 @@ class ReportViewModel @Inject constructor(
                 retrying = busy,
             )
         }
+    }.onEach { s ->
+        if (s.phase == ReportPhase.READY && !feedbackShownLogged) {
+            feedbackShownLogged = true
+            analytics.log(AnalyticsEvent.feedbackShown)
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportUiState(sessionId = id))
 
     fun onEvent(e: ReportEvent) {
@@ -98,7 +108,10 @@ class ReportViewModel @Inject constructor(
                 }
                 ReportEvent.RetryTranscript -> talks.analyze(id)
                 ReportEvent.Discard -> talks.discard(id)
-                is ReportEvent.Rate -> talks.rate(id, e.value)
+                is ReportEvent.Rate -> {
+                    talks.rate(id, e.value)
+                    analytics.log(AnalyticsEvent.feedbackRated(e.value))
+                }
                 is ReportEvent.ToggleWord -> {
                     val s = state.value
                     val meta = s.meta ?: return@launch
@@ -107,6 +120,7 @@ class ReportViewModel @Inject constructor(
                         HarvestResult.AlreadyInGym -> effects.send(ReportEffect.Toast(R.string.toast_already_in_gym))
                         is HarvestResult.Added -> {
                             effects.send(ReportEffect.Added)
+                            analytics.log(AnalyticsEvent.wordAdded("talk"))
                             // Over the 5-a-day cap the word waits for a later day (US-021).
                             effects.send(ReportEffect.Toast(if (r.carriedOver) R.string.toast_added_later else R.string.toast_added, undo = e))
                         }
@@ -118,6 +132,7 @@ class ReportViewModel @Inject constructor(
                 }
                 is ReportEvent.SendReport -> {
                     val r = talks.report(id, e.reason.key, e.consent, e.note)
+                    if (r is Outcome.Ok) analytics.log(AnalyticsEvent.feedbackReported(e.reason.key))
                     effects.send(ReportEffect.Toast(if (r is Outcome.Ok) R.string.toast_reported else R.string.toast_report_failed))
                 }
             }

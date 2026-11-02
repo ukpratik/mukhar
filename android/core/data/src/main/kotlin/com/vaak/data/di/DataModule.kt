@@ -11,7 +11,21 @@ import com.vaak.data.audio.RecordingFiles
 import com.vaak.data.audio.StorageInfo
 import com.vaak.data.content.PromptRepository
 import com.vaak.data.content.WordCatalog
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsSink
+import com.vaak.data.analytics.ConsentAnalytics
+import com.vaak.data.billing.AccountServer
+import com.vaak.data.billing.BillingRepository
+import com.vaak.data.db.ProgressDao
+import com.vaak.data.repo.DataWiper
+import com.vaak.data.repo.EntitlementRepository
+import com.vaak.data.work.ReminderScheduler
+import java.io.File
 import com.vaak.data.repo.Entitlements
+import com.vaak.data.work.AccountSync
+import com.vaak.data.work.AlarmTrialReminderScheduler
+import com.vaak.data.work.TrialReminderScheduler
+import com.vaak.data.work.WorkManagerAccountSync
 import com.vaak.data.repo.SentenceChecker
 import com.vaak.data.repo.WordRepository
 import com.vaak.data.tts.AndroidSpeaker
@@ -47,6 +61,8 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -72,6 +88,9 @@ object DataModule {
 
     @Provides
     fun habitDao(db: VaakDatabase): HabitDao = db.habitDao()
+
+    @Provides
+    fun progressDao(db: VaakDatabase): ProgressDao = db.progressDao()
 
     /** The system clock, shiftable from the debug clock screen in debug builds only (build plan "Debug hooks"). */
     @Provides
@@ -178,4 +197,51 @@ object DataModule {
     @Provides
     @Singleton
     fun speaker(impl: AndroidSpeaker): Speaker = impl
+
+    // ---- M5: analytics, billing, account ----
+
+    /** Records only while "Share usage and crash reports" is on (D-026); see [ConsentAnalytics]. */
+    @Provides
+    @Singleton
+    fun analytics(settings: SettingsStore, sink: AnalyticsSink, @ApplicationScope scope: CoroutineScope): Analytics =
+        ConsentAnalytics(settings.analyticsConsent.stateIn(scope, SharingStarted.Eagerly, false), sink)
+
+    @Provides
+    @Singleton
+    fun accountSync(@ApplicationContext context: Context): AccountSync = WorkManagerAccountSync { WorkManager.getInstance(context) }
+
+    @Provides
+    @Singleton
+    fun trialReminders(impl: AlarmTrialReminderScheduler): TrialReminderScheduler = impl
+
+    @Provides
+    @Singleton
+    fun entitlementRepository(
+        billing: BillingRepository,
+        server: AccountServer,
+        settings: SettingsStore,
+        clock: Clock,
+        reminders: TrialReminderScheduler,
+        sync: AccountSync,
+        analytics: Analytics,
+        @ApplicationScope scope: CoroutineScope,
+    ): EntitlementRepository = EntitlementRepository(billing, server, settings, clock, reminders, sync, analytics, scope)
+
+    @Provides
+    @Singleton
+    fun dataWiper(
+        db: VaakDatabase,
+        settings: SettingsStore,
+        files: RecordingFiles,
+        @ApplicationContext context: Context,
+        sync: AccountSync,
+        trialReminders: TrialReminderScheduler,
+        analytics: Analytics,
+        reminders: ReminderScheduler,
+    ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR)), sync, trialReminders, analytics) {
+        reminders.reschedule()
+    }
+
+    /** `cache/share/`: share-card images (S21), served by the app's FileProvider and wiped with the data. */
+    const val SHARE_DIR = "share"
 }

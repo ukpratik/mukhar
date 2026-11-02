@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="progress_total_talks">
+        <item quantity="one">talk</item>
+        <item quantity="other">talks</item>
+    </plurals>
+    <!-- %1$d weeks met of %2$d weeks (quantity = %2$d) -->
+    <plurals name="progress_goal_met">
+        <item quantity="one">Goal met %1$d of %2$d week</item>
+        <item quantity="other">Goal met %1$d of %2$d weeks</item>
+    </plurals>
+    <plurals name="quota_due">
+        <item quantity="one">%1$d due</item>
+        <item quantity="other">%1$d due</item>
+    </plurals>
+    <plurals name="settings_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="delete_talks">
+        <item quantity="one">%1$d talk, its report and any saved audio</item>
+        <item quantity="other">%1$d talks, reports and any saved audio</item>
+    </plurals>
+    <plurals name="delete_words">
+        <item quantity="one">%1$d word, saved lines and your streak</item>
+        <item quantity="other">%1$d words, saved lines and your streak</item>
+    </plurals>
+    <plurals name="share_streak_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="share_headline">
+        <item quantity="one">%1$d week of speaking practice</item>
+        <item quantity="other">%1$d weeks of speaking practice</item>
+    </plurals>
+    <!-- %1$s = first name, %2$d = weeks -->
+    <plurals name="share_headline_name">
+        <item quantity="one">%1$s\'s %2$d week of speaking practice</item>
+        <item quantity="other">%1$s\'s %2$d weeks of speaking practice</item>
+    </plurals>
+    <plurals name="share_headline_hi">
+        <item quantity="one">%1$d हफ़्ते की प्रगति</item>
+        <item quantity="other">%1$d हफ़्तों की प्रगति</item>
+    </plurals>
+    <plurals name="share_headline_hi_name">
+        <item quantity="one">%1$s की %2$d हफ़्ते की प्रगति</item>
+        <item quantity="other">%1$s की %2$d हफ़्तों की प्रगति</item>
+    </plurals>
+    <plurals name="insight_talks_title">
+        <item quantity="one">%1$d talk done</item>
+        <item quantity="other">%1$d talks done</item>
+    </plurals>
+    <plurals name="insight_talks_body">
+        <item quantity="one">That\'s %1$d time you showed up and spoke. The habit is building.</item>
+        <item quantity="other">That\'s %1$d times you showed up and spoke. The habit is building.</item>
+    </plurals>
+    <plurals name="insight_streak_body">
+        <item quantity="one">You practised %1$d day in a row. That\'s how speaking gets easier.</item>
+        <item quantity="other">You practised %1$d days in a row. That\'s how speaking gets easier.</item>
+    </plurals>
+    <plurals name="insight_words_title">
+        <item quantity="one">%1$d word learned</item>
+        <item quantity="other">%1$d words learned</item>
+    </plurals>
+    <plurals name="insight_words_body">
+        <item quantity="one">Your word bank now holds %1$d word. Try one in today\'s talk.</item>
+        <item quantity="other">Your word bank now holds %1$d words. Try one in today\'s talk.</item>
+    </plurals>
+    <plurals name="quota_checks_left">
+        <item quantity="one">%1$d of %2$d check left</item>
+        <item quantity="other">%1$d of %2$d checks left</item>
+    </plurals>
+    <plurals name="paywall_tl_today">
+        <item quantity="one">Today · %1$d day free</item>
+        <item quantity="other">Today · %1$d days free</item>
+    </plurals>
+    <plurals name="paywall_cta_note_year">
+        <item quantity="one">%1$d day free, then %2$s a year. We remind you 1 day before.</item>
+        <item quantity="other">%1$d days free, then %2$s a year. We remind you 1 day before.</item>
+    </plurals>
+    <plurals name="paywall_cta_note_month">
+        <item quantity="one">%1$d day free, then %2$s a month. We remind you 1 day before.</item>
+        <item quantity="other">%1$d days free, then %2$s a month. We remind you 1 day before.</item>
+    </plurals>
+    <plurals name="paywall_cta_trial">
+        <item quantity="one">Start %1$d day free</item>
+        <item quantity="other">Start %1$d days free</item>
+    </plurals>
+</resources>

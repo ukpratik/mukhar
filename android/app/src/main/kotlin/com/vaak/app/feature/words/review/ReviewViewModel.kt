@@ -14,6 +14,8 @@ import com.vaak.data.prefs.SettingsStore
 import com.vaak.data.repo.CheckQuota
 import com.vaak.data.repo.ReviewCard
 import com.vaak.data.repo.ReviewMode
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsEvent
 import com.vaak.data.repo.SentenceCheck
 import com.vaak.data.repo.SentenceChecker
 import com.vaak.data.repo.WordRepository
@@ -119,6 +121,7 @@ class ReviewViewModel @Inject constructor(
     private val clock: Clock,
     settings: SettingsStore,
     connectivity: ConnectivityObserver,
+    private val analytics: Analytics,
 ) : ViewModel() {
     private val route = savedState.toRoute<ReviewRoute>()
     private val mode = if (route.mode == ReviewRoute.REVISE) ReviewMode.REVISE else ReviewMode.GYM
@@ -186,7 +189,10 @@ class ReviewViewModel @Inject constructor(
             // US-031: the 5th grade credits the day immediately, even if the user then closes (S15 notes).
             val credit = words.creditReview(graded)
             streakDay = credit.streak.takeIf { it > 0 }
-            if (credit.creditedDay != null) effects.send(ReviewEffect.TodayCounts)
+            if (credit.creditedDay != null) {
+                effects.send(ReviewEffect.TodayCounts)
+                analytics.log(AnalyticsEvent.streakCredited)
+            }
         }
         val next = s.index + 1
         _state.update { it.copy(index = next, flipped = startsFlipped(it.cards.getOrNull(next)), sentence = SentenceUi()) }
@@ -195,6 +201,7 @@ class ReviewViewModel @Inject constructor(
 
     private suspend fun finish() {
         if (graded == 0 && _state.value.cards.isEmpty()) return
+        if (graded > 0) analytics.log(AnalyticsEvent.reviewSessionCompleted(graded))
         val more = words.queue(mode).size
         _state.update {
             it.copy(
@@ -256,6 +263,7 @@ class ReviewViewModel @Inject constructor(
             return
         }
         val outcome = checker.check(word.lang, word.lemma, word.meaning, result.file, result.durationMs)
+        if (outcome is Outcome.Ok) analytics.log(AnalyticsEvent.sentenceCheck(outcome.value.verdict.name.lowercase()))
         _state.update {
             it.copy(
                 sentence = when (outcome) {

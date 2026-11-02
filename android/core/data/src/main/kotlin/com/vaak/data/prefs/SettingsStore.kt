@@ -9,6 +9,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vaak.domain.billing.EntitlementSnapshot
+import com.vaak.domain.billing.Plan
 import com.vaak.domain.model.Lang
 import com.vaak.domain.prompt.Track
 import kotlinx.coroutines.flow.Flow
@@ -170,6 +172,68 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
 
     suspend fun markTtsTipShown(lang: Lang) = update { it[K.ttsTipShown] = it[K.ttsTipShown].orEmpty() + lang.code }
 
+    // M5: settings screen, entitlement cache, server quota mirror, delete my data.
+
+    val analyticsConsent: Flow<Boolean> = store.data.map { it[K.analyticsConsent] ?: false }.distinctUntilChanged()
+
+    /** S19 "Share usage and crash reports": independent of the S04 consent, off unless switched on (D-026, D-028). */
+    suspend fun setAnalyticsConsent(on: Boolean) = update { it[K.analyticsConsent] = on }
+
+    suspend fun setKeepBaselineAudio(on: Boolean) = update { it[K.keepBaselineAudio] = on }
+
+    /** S19 practice languages and goal tracks (same rules as onboarding). */
+    suspend fun setLangsAndTracks(langs: Set<Lang>, tracks: Set<GoalTrack>) {
+        require(langs.isNotEmpty()) { "Pick at least one language" }
+        require(tracks.size in 1..GoalTrack.MAX_PICKED) { "Pick 1 to 3 goals" }
+        update {
+            it[K.langs] = langs.map(Lang::code).toSet()
+            it[K.tracks] = tracks.map(GoalTrack::key).toSet()
+        }
+    }
+
+    /** The verified entitlement (LLD §2.1 `trial {expiry, auto_renewing}`, plus the plan bought on this device). */
+    val entitlement: Flow<EntitlementSnapshot> = store.data.map { p ->
+        EntitlementSnapshot(
+            premium = p[K.entPremium] ?: false,
+            expiryMs = p[K.entExpiry],
+            isTrial = p[K.entTrial] ?: false,
+            autoRenewing = p[K.entAutoRenewing] ?: false,
+            plan = Plan.fromBasePlan(p[K.entPlan]),
+            priceLabel = p[K.entPrice],
+            verifiedAtMs = p[K.entVerifiedAt],
+        )
+    }.distinctUntilChanged()
+
+    suspend fun setEntitlement(e: EntitlementSnapshot) = update {
+        it[K.entPremium] = e.premium
+        it.putOrRemove(K.entExpiry, e.expiryMs)
+        it[K.entTrial] = e.isTrial
+        it[K.entAutoRenewing] = e.autoRenewing
+        it.putOrRemove(K.entPlan, e.plan?.basePlanId)
+        it.putOrRemove(K.entPrice, e.priceLabel)
+        it.putOrRemove(K.entVerifiedAt, e.verifiedAtMs)
+    }
+
+    /** The day [Keep] was tapped on the trial banner: it stays hidden for that day (S18 notes). */
+    val trialBannerDismissedDay: Flow<LocalDate?> = store.data.map { p -> p[K.trialBannerDismissed]?.let(LocalDate::parse) }.distinctUntilChanged()
+
+    suspend fun dismissTrialBanner(day: LocalDate) = update { it[K.trialBannerDismissed] = day.toString() }
+
+    /** Talks used on a quota day, as the server last said (`/me`, `/transcribe` or a 429). Display only. */
+    val serverTalkQuota: Flow<ServerTalkQuota?> = store.data.map { p ->
+        val day = p[K.talkQuotaDay] ?: return@map null
+        ServerTalkQuota(LocalDate.parse(day), p[K.talkQuotaUsed] ?: 0, p[K.talkQuotaLimit] ?: 1)
+    }.distinctUntilChanged()
+
+    suspend fun setServerTalkQuota(q: ServerTalkQuota) = update {
+        it[K.talkQuotaDay] = q.day.toString()
+        it[K.talkQuotaUsed] = q.used.coerceAtLeast(0)
+        it[K.talkQuotaLimit] = q.limit.coerceAtLeast(0)
+    }
+
+    /** Delete all my data (US-063): every key goes, so the next start is a fresh install (onboarding). */
+    suspend fun clearAll() = update { it.clear() }
+
     private fun Preferences.toSettings(): Settings {
         val minutes = this[K.reminderTime]
         val routine = Routine.fromKey(this[K.reminderRoutine])
@@ -269,6 +333,17 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val checksDay = stringPreferencesKey("checks_day")
         val checksUsed = intPreferencesKey("checks_used")
         val ttsTipShown = stringSetPreferencesKey("tts_tip_shown")
+        val entPremium = booleanPreferencesKey("entitlement_premium")
+        val entExpiry = longPreferencesKey("trial_expiry")
+        val entTrial = booleanPreferencesKey("entitlement_is_trial")
+        val entAutoRenewing = booleanPreferencesKey("trial_auto_renewing")
+        val entPlan = stringPreferencesKey("entitlement_plan")
+        val entVerifiedAt = longPreferencesKey("entitlement_verified_at")
+        val entPrice = stringPreferencesKey("entitlement_price")
+        val trialBannerDismissed = stringPreferencesKey("trial_banner_dismissed_day")
+        val talkQuotaDay = stringPreferencesKey("talk_quota_day")
+        val talkQuotaUsed = intPreferencesKey("talk_quota_used")
+        val talkQuotaLimit = intPreferencesKey("talk_quota_limit")
         fun talkTrack(lang: Lang) = stringPreferencesKey("talk_track_${lang.code}")
     }
 

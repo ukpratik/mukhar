@@ -8,7 +8,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vaak.app.feature.plan.TrialBannerUi
 import com.vaak.data.db.WordDao
+import com.vaak.data.repo.EntitlementRepository
 import com.vaak.data.prefs.SettingsStore
 import com.vaak.data.repo.HabitRepository
 import com.vaak.data.repo.WordItem
@@ -62,6 +64,7 @@ class TodayViewModel @Inject constructor(
     connectivity: ConnectivityObserver,
     talkStatus: TalkStatusSource,
     @param:ApplicationContext private val context: Context,
+    entitlements: EntitlementRepository,
 ) : ViewModel() {
 
     private val shuffle = MutableStateFlow(0)
@@ -96,7 +99,14 @@ class TodayViewModel @Inject constructor(
 
     private val wordsAndVoices = combine(todaysWords, speaker.voices) { w, v -> w to v }
 
-    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extras, wordsAndVoices) { h, s, (dueNow, dueTomorrow), x, (w, v) ->
+    /** Re-checked each minute so the banner appears when trial day 6 starts while Today is open. */
+    private val trialBanner = combine(entitlements.snapshot, settings.trialBannerDismissedDay, ticks) { e, dismissed, _ ->
+        TrialBannerUi.from(e, clock.now(), clock.zone(), dismissed)
+    }
+
+    private val extrasAndBanner = combine(extras, trialBanner) { x, b -> x to b }
+
+    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extrasAndBanner, wordsAndVoices) { h, s, (dueNow, dueTomorrow), (x, banner), (w, v) ->
         TodayStateMapper.map(
             TodayInputs(
                 now = clock.now().atZone(clock.zone()),
@@ -110,7 +120,7 @@ class TodayViewModel @Inject constructor(
                 notificationsAllowed = x.notificationsAllowed,
                 shuffle = x.shuffle,
             ),
-        ).copy(words = w, voices = v)
+        ).copy(words = w, voices = v, trialBanner = banner)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), TodayUiState())
 
     init {
@@ -142,6 +152,11 @@ class TodayViewModel @Inject constructor(
             if (h.freezeNoticeDay != null) habit.acknowledgeFreezeNotice()
             if (h.freshStart) habit.acknowledgeFreshStart()
         }
+    }
+
+    /** [Keep] hides the trial banner for the rest of the day (S18 notes). */
+    fun onKeepTrial() {
+        viewModelScope.launch { settings.dismissTrialBanner(clock.now().atZone(clock.zone()).toLocalDate()) }
     }
 
     fun onDismissTip() {

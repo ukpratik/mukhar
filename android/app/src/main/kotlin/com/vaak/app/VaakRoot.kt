@@ -38,6 +38,11 @@ class RootViewModel @Inject constructor(settings: SettingsStore) : ViewModel() {
     fun onOnboardingFinished() {
         _start.value = TodayRoute
     }
+
+    /** After Delete all my data: a fresh graph at onboarding, as on a new install (US-063). */
+    fun onDataDeleted() {
+        _start.value = OnboardingRoute
+    }
 }
 
 @Composable
@@ -46,6 +51,8 @@ fun VaakRoot(viewModel: RootViewModel = hiltViewModel()) {
     when (val s = start) {
         null -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
         // A new graph (and nav controller) when onboarding ends, so Today becomes the start destination.
-        else -> key(s) { VaakNavHost(startDestination = s, onOnboardingFinished = viewModel::onOnboardingFinished) }
+        else -> key(s) {
+            VaakNavHost(startDestination = s, onOnboardingFinished = viewModel::onOnboardingFinished, onDataDeleted = viewModel::onDataDeleted)
+        }
     }
 }

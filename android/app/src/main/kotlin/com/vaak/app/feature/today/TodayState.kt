@@ -70,6 +70,8 @@ data class TodayUiState(
     val words: List<WordItem> = emptyList(),
     /** Installed TTS voices; the speaker is hidden for a language without one. */
     val voices: Map<Lang, Boolean> = emptyMap(),
+    /** The day-6 trial banner (US-062), on top, even when notifications are off. */
+    val trialBanner: com.vaak.app.feature.plan.TrialBannerUi? = null,
 )
 
 data class TodayInputs(

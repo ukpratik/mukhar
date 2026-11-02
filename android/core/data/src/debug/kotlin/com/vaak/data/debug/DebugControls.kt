@@ -2,7 +2,10 @@ package com.vaak.data.debug
 
 import android.content.Context
 import androidx.core.content.edit
+import com.vaak.data.analytics.AnalyticsEvent
+import com.vaak.data.analytics.AnalyticsSink
 import com.vaak.data.audio.StorageInfo
+import com.vaak.data.util.VaakLog
 import com.vaak.data.repo.Entitlements
 import com.vaak.data.work.AnalysisPipeline
 import com.vaak.data.work.FeedbackRequest
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.io.File
 
@@ -32,6 +36,8 @@ data class DebugState(
     val delayMs: Long = 1_500,
     val lowStorage: LowStorage = LowStorage.OFF,
     val premium: Boolean = false,
+    /** Fake Play billing (no Play account needed). Applies after a restart. */
+    val fakeBilling: Boolean = true,
 )
 
 /** Debug-only switches, persisted so QA settings survive restarts. Stripped from release builds. */
@@ -48,6 +54,7 @@ class DebugControls(context: Context) {
             putLong(K_DELAY, next.delayMs)
             putString(K_STORAGE, next.lowStorage.name)
             putBoolean(K_PREMIUM, next.premium)
+            putBoolean(K_FAKE_BILLING, next.fakeBilling)
         }
         _state.value = next
     }
@@ -58,6 +65,7 @@ class DebugControls(context: Context) {
         delayMs = prefs.getLong(K_DELAY, 1_500),
         lowStorage = runCatching { LowStorage.valueOf(prefs.getString(K_STORAGE, null) ?: "OFF") }.getOrDefault(LowStorage.OFF),
         premium = prefs.getBoolean(K_PREMIUM, false),
+        fakeBilling = prefs.getBoolean(K_FAKE_BILLING, true),
     )
 
     private companion object {
@@ -66,6 +74,7 @@ class DebugControls(context: Context) {
         const val K_DELAY = "fake_delay_ms"
         const val K_STORAGE = "low_storage"
         const val K_PREMIUM = "premium"
+        const val K_FAKE_BILLING = "fake_billing"
     }
 }
 
@@ -87,6 +96,30 @@ class DebugStorageInfo(private val real: StorageInfo, private val controls: Debu
     override fun availableBytes(): Long = controls.state.value.lowStorage.bytes ?: real.availableBytes()
 }
 
-class DebugEntitlements(controls: DebugControls) : Entitlements {
-    override val isPremium: Flow<Boolean> = controls.state.map { it.premium }
+/** The debug "Premium" switch forces Premium on top of the real (or fake-billing) entitlement. */
+class DebugEntitlements(controls: DebugControls, real: Entitlements) : Entitlements {
+    override val isPremium: Flow<Boolean> = combine(controls.state.map { it.premium }, real.isPremium) { forced, paid -> forced || paid }
+}
+
+/** Debug builds keep the last consented analytics events in memory (Logcat too) so QA can see what would be sent. */
+object DebugAnalyticsSink : AnalyticsSink {
+    private const val MAX = 50
+    private val _events = MutableStateFlow<List<AnalyticsEvent>>(emptyList())
+    val events: StateFlow<List<AnalyticsEvent>> = _events.asStateFlow()
+
+    override fun record(event: AnalyticsEvent) {
+        _events.value = (_events.value + event).takeLast(MAX)
+        VaakLog.i("analytics: ${event.name} ${event.params}")
+    }
+}
+
+/** The fake Play account lives in its own prefs file, so "Delete all my data" leaves it (as Play would). */
+class SharedPrefsFakeStore(context: Context) : FakeStorePersistence {
+    private val prefs = context.applicationContext.getSharedPreferences("vaak_fake_play", Context.MODE_PRIVATE)
+    override fun load(): String? = prefs.getString(KEY, null)
+    override fun save(json: String?) = prefs.edit { if (json == null) remove(KEY) else putString(KEY, json) }
+
+    private companion object {
+        const val KEY = "subscription"
+    }
 }

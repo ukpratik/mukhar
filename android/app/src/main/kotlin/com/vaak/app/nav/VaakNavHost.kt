@@ -20,7 +20,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.vaak.app.feature.me.MeScreen
+import com.vaak.app.feature.plan.PlanScreen
+import com.vaak.app.feature.progress.ProgressScreen
+import com.vaak.app.feature.quota.QuotaScreen
+import com.vaak.app.feature.settings.SettingsScreen
+import com.vaak.app.feature.share.ShareScreen
 import com.vaak.app.feature.talk.prompt.PromptScreen
 import com.vaak.app.feature.talk.record.RecordScreen
 import com.vaak.app.feature.talk.record.RecoveredScreen
@@ -37,10 +41,14 @@ fun VaakNavHost(
     // Onboarding until it's done, then Today (VaakRoot picks it from DataStore, LLD §5).
     startDestination: Any = TodayRoute,
     onOnboardingFinished: () -> Unit = {},
+    // "Start fresh" after Delete all my data: the root rebuilds the graph at onboarding (S19 state 3).
+    onDataDeleted: () -> Unit = {},
     // Today wired to its destinations (a slot so tests can stub it).
     todayScreen: NavGraphBuilder.(NavHostController) -> Unit = { todayDestination(it) },
     // The Words tab (S14) wired to its destinations (a slot so tests can stub it; the real one needs Hilt).
     wordsScreen: NavGraphBuilder.(NavHostController) -> Unit = { wordsDestination(it) },
+    // The Me tab (S16 Progress) wired to its destinations (a slot so tests can stub it; the real one needs Hilt).
+    meScreen: NavGraphBuilder.(NavHostController) -> Unit = { meDestination(it) },
 ) {
     val backStack by navController.currentBackStackEntryAsState()
     // The bar shows on the 4 tabs only (not onboarding or the full-screen talk flow).
@@ -97,13 +105,32 @@ fun VaakNavHost(
                     onTurnOnTalks = { navController.navigate(DisclosureRoute) },
                 )
             }
-            composable<MeRoute> { MeScreen() }
+            meScreen(navController)
+            composable<SettingsRoute> {
+                SettingsScreen(
+                    onBack = { navController.popBackStack() },
+                    onPlan = { navController.navigate(PlanRoute(PlanRoute.SOURCE_SETTINGS)) },
+                    onDisclosure = { navController.navigate(DisclosureRoute) },
+                    onStartFresh = onDataDeleted,
+                )
+            }
+            composable<PlanRoute> { PlanScreen(onClose = { if (!navController.popBackStack()) navController.navigate(TodayRoute) }) }
+            composable<ShareRoute> { ShareScreen(onClose = { navController.popBackStack() }) }
+            composable<QuotaRoute> {
+                QuotaScreen(
+                    onClose = home,
+                    onPremium = { navController.navigate(PlanRoute(PlanRoute.SOURCE_QUOTA)) },
+                    onRevise = { navController.navigate(ReviewRoute(ReviewRoute.REVISE)) { popUpTo<QuotaRoute> { inclusive = true } } },
+                    onGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) { popUpTo<QuotaRoute> { inclusive = true } } },
+                )
+            }
 
             composable<RecordRoute> {
                 RecordScreen(
                     onLeave = { if (!navController.popBackStack()) home() },
                     onReport = { id -> navController.navigate(ReportRoute(id)) { popUpTo<RecordRoute> { inclusive = true } } },
                     onSayAgain = { id -> navController.navigate(SayAgainRoute(id)) { popUpTo<RecordRoute> { inclusive = true } } },
+                    onQuota = { navController.navigate(QuotaRoute) { popUpTo<RecordRoute> { inclusive = true } } },
                 )
             }
             composable<ReportRoute> {
@@ -119,6 +146,7 @@ fun VaakNavHost(
                             navController.navigate(RecordRoute(s.promptId, m.lang.code, m.track.key)) { popUpTo<ReportRoute> { inclusive = true } }
                         },
                         onSettings = { navController.navigate(MeRoute) { popUpTo(navController.graph.findStartDestination().id) } },
+                        onQuota = { navController.navigate(QuotaRoute) { popUpTo<ReportRoute> { inclusive = true } } },
                     ),
                 )
             }
@@ -160,5 +188,21 @@ fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
     }
 }
 
+/** The Me tab: Progress (S16), with Settings in the header and the plan card at the bottom. */
+fun NavGraphBuilder.meDestination(navController: NavHostController) {
+    composable<MeRoute> {
+        ProgressScreen(
+            onSettings = { navController.navigate(SettingsRoute) },
+            onPlan = { navController.navigate(PlanRoute(PlanRoute.SOURCE_ME)) },
+            onTalk = navController::navigateToTalk,
+            onBaseline = { navController.navigate(BaselineRoute) },
+            onShare = { navController.navigate(ShareRoute) },
+        )
+    }
+}
+
 /** Full-screen talk routes (S09 to S12): no bottom bar, and they handle their own window insets. */
-private val FULL_SCREEN_TALK = listOf(RecordRoute::class, ReportRoute::class, SayAgainRoute::class, RecoveredRoute::class)
+private val FULL_SCREEN_TALK = listOf(
+    RecordRoute::class, ReportRoute::class, SayAgainRoute::class, RecoveredRoute::class,
+    SettingsRoute::class, PlanRoute::class, QuotaRoute::class, ShareRoute::class,
+)

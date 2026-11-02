@@ -6,7 +6,6 @@
     <string name="tab_words">Words</string>
     <string name="tab_me">Me</string>
     <string name="placeholder_today">Your streak, today\'s talk, revision and words will live here.</string>
-    <string name="placeholder_me">Progress, settings and Premium will live here.</string>
     <string name="placeholder_coming">Coming soon</string>
 
     <!-- Shared talk chrome -->

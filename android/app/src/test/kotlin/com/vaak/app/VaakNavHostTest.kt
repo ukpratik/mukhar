@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.composable
 import com.vaak.app.feature.PlaceholderScreen
+import com.vaak.app.nav.MeRoute
 import com.vaak.app.nav.TodayRoute
 import com.vaak.app.nav.VaakNavHost
 import com.vaak.app.nav.WordsRoute
@@ -31,6 +32,7 @@ class VaakNavHostTest {
                 VaakNavHost(
                     todayScreen = { composable<TodayRoute> { PlaceholderScreen(R.string.tab_today, R.string.placeholder_today) } },
                     wordsScreen = { composable<WordsRoute> { PlaceholderScreen(R.string.tab_words, R.string.placeholder_coming) } },
+                    meScreen = { composable<MeRoute> { PlaceholderScreen(R.string.tab_me, R.string.placeholder_coming) } },
                 )
             }
         }
@@ -41,6 +43,6 @@ class VaakNavHostTest {
         compose.onNodeWithText("Words").performClick()
         compose.onAllNodesWithText("Words").assertCountEquals(2) // tab label + the (stubbed) page title
         compose.onNodeWithText("Me").performClick()
-        compose.onNodeWithText("Progress, settings and Premium will live here.").assertExists()
+        compose.onAllNodesWithText("Me").assertCountEquals(2) // tab label + the (stubbed) Progress title
     }
 }

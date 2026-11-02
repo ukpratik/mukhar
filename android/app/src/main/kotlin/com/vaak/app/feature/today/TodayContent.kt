@@ -73,6 +73,7 @@ import com.vaak.app.feature.habit.StreakRing
 import com.vaak.app.feature.habit.WeekDots
 import com.vaak.app.feature.habit.streakTitle
 import com.vaak.app.feature.onboarding.Eyebrow
+import com.vaak.app.feature.plan.TrialBanner
 import com.vaak.app.feature.onboarding.currentLocale
 import com.vaak.app.feature.onboarding.label
 import com.vaak.app.feature.onboarding.timeLabel
@@ -107,6 +108,8 @@ data class TodayActions(
     val onDismissTip: () -> Unit = {},
     val onOpenWord: (String) -> Unit = {},
     val onSpeak: (WordItem) -> Unit = {},
+    val onKeepTrial: () -> Unit = {},
+    val onManageTrial: () -> Unit = {},
 )
 
 /** S07, stateless (state in, events out). Order is fixed by US-030. */
@@ -120,6 +123,7 @@ fun TodayContent(state: TodayUiState, actions: TodayActions, modifier: Modifier 
     ) {
         if (state.loading) return@Column
         Header(state, actions.onOpenMe)
+        state.trialBanner?.let { TrialBanner(it, actions.onKeepTrial, actions.onManageTrial) }
         if (state.offline) OfflineBanner()
         state.waiting?.let { w ->
             CardRow(

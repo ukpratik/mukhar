@@ -84,3 +84,6 @@ data class HabitMarks(
     val freezeNoticeDay: LocalDate? = null,
     val freshStartAckDay: LocalDate? = null,
 )
+
+/** The server's count of talks on a quota day (03:00 IST), mirrored for S17. */
+data class ServerTalkQuota(val day: LocalDate, val used: Int, val limit: Int)

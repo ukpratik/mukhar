@@ -58,6 +58,24 @@ data class ReviewRoute(val mode: String = GYM, val wordId: String? = null) {
 
 @Serializable data class WordDetailRoute(val wordId: String)
 
+// M5: Me (Progress S16) → Settings (S19), Plan/paywall (S18), Share card (S21); Quota (S17) from the talk flow.
+
+@Serializable data object SettingsRoute
+
+/** S18. [source] is the `paywall_viewed{source}` value: quota, progress, settings or me. */
+@Serializable
+data class PlanRoute(val source: String = SOURCE_ME) {
+    companion object {
+        const val SOURCE_ME = "me"
+        const val SOURCE_QUOTA = "quota"
+        const val SOURCE_SETTINGS = "settings"
+    }
+}
+
+@Serializable data object QuotaRoute
+
+@Serializable data object ShareRoute
+
 /** The 4 bottom tabs (US-030): selected icon filled, unselected outlined (design-system §7). */
 enum class TopLevel(
     val route: Any,

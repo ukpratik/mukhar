@@ -161,3 +161,42 @@ data class CheckSentenceResponseDto(
     val note: String = "",
     @SerialName("request_id") val requestId: String? = null,
 )
+
+// M5: billing and account (LLD §3). Field names match worker/src/routes/entitlement.ts and me.ts exactly.
+
+/** `POST /entitlement`: [productId] is the Play subscription product (`premium`), not the base plan. */
+@Serializable
+data class EntitlementRequestDto(
+    @SerialName("purchase_token") val purchaseToken: String,
+    @SerialName("product_id") val productId: String,
+)
+
+/** The Worker's entitlement view: `/entitlement` returns it alone, `/me` adds `quota`. */
+@Serializable
+data class EntitlementResponseDto(
+    val premium: Boolean,
+    @SerialName("expiry_time") val expiryTime: Long? = null,
+    @SerialName("is_trial") val isTrial: Boolean = false,
+    @SerialName("auto_renewing") val autoRenewing: Boolean = false,
+    @SerialName("request_id") val requestId: String? = null,
+)
+
+@Serializable
+data class MeResponseDto(
+    val premium: Boolean,
+    @SerialName("expiry_time") val expiryTime: Long? = null,
+    @SerialName("is_trial") val isTrial: Boolean = false,
+    @SerialName("auto_renewing") val autoRenewing: Boolean = false,
+    val quota: QuotaDto? = null,
+    @SerialName("request_id") val requestId: String? = null,
+)
+
+/** `DELETE /me` (US-063): both optional; the Worker ignores nulls. No Firebase yet, so no app instance id. */
+@Serializable
+data class DeleteMeRequestDto(
+    @SerialName("device_hash") val deviceHash: String? = null,
+    @SerialName("app_instance_id") val appInstanceId: String? = null,
+)
+
+@Serializable
+data class DeleteMeResponseDto(val deleted: Boolean, @SerialName("request_id") val requestId: String? = null)

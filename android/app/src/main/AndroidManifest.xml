@@ -27,6 +27,17 @@
             </intent-filter>
         </activity>
 
+        <!-- M5: the share card PNG (S21) goes to the Android share sheet through this provider; no storage permission. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.share"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_paths" />
+        </provider>
+
         <!-- WorkManager is initialised on demand with the Hilt worker factory (VaakApp is a Configuration.Provider). -->
         <provider
             android:name="androidx.startup.InitializationProvider"

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.vaak.data.analytics.Analytics
+import com.vaak.data.analytics.AnalyticsEvent
 import com.vaak.data.db.HabitDao
 import com.vaak.data.db.ReminderLogEntity
 import com.vaak.data.prefs.SettingsStore
@@ -30,6 +32,7 @@ class ReminderHandler @Inject constructor(
     private val clock: Clock,
     private val scheduler: ReminderScheduler,
     private val notifier: ReminderNotifier,
+    private val analytics: Analytics = Analytics.None,
 ) {
     suspend fun onAlarm(scheduledFor: Instant): FireDecision {
         val s = settings.current()
@@ -47,6 +50,7 @@ class ReminderHandler @Inject constructor(
                 val now = clock.now().toEpochMilli()
                 val id = dao.insertReminderLog(ReminderLogEntity(scheduledFor = scheduledFor.toEpochMilli(), shownAt = now, openedAt = null, outcome = "shown"))
                 notifier.show(id, reminder, decision.adjustNote)
+                analytics.log(AnalyticsEvent.reminderShown)
             }
             is FireDecision.Skip -> decision.outcome?.let {
                 dao.insertReminderLog(ReminderLogEntity(scheduledFor = scheduledFor.toEpochMilli(), shownAt = null, openedAt = null, outcome = it.key))
@@ -56,7 +60,10 @@ class ReminderHandler @Inject constructor(
         return decision
     }
 
-    suspend fun onOpened(logId: Long) = dao.markReminderOpened(logId, clock.now().toEpochMilli())
+    suspend fun onOpened(logId: Long) {
+        dao.markReminderOpened(logId, clock.now().toEpochMilli())
+        analytics.log(AnalyticsEvent.reminderOpened)
+    }
 }
 
 /** Work started from a receiver or trampoline outlives it via goAsync / this process scope. */
@@ -89,6 +96,7 @@ class ReminderReceiver : BroadcastReceiver() {
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
     @Inject lateinit var scheduler: ReminderScheduler
+    @Inject lateinit var entitlements: com.vaak.data.repo.EntitlementRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action !in ACTIONS) return
@@ -96,6 +104,8 @@ class BootReceiver : BroadcastReceiver() {
         reminderScope.launch {
             try {
                 scheduler.reschedule()
+                // The trial alarm (US-062) is lost on reboot too.
+                entitlements.rescheduleReminder()
             } finally {
                 pending.finish()
             }

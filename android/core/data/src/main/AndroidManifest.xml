@@ -28,6 +28,11 @@
             </intent-filter>
         </receiver>
 
+        <!-- M5: the trial reminder at expiry − 24 h (US-062), on the trial channel. -->
+        <receiver
+            android:name="com.vaak.data.work.TrialReminderReceiver"
+            android:exported="false" />
+
         <activity
             android:name="com.vaak.data.work.ReminderOpenActivity"
             android:excludeFromRecents="true"

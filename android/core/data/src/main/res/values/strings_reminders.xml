@@ -18,4 +18,8 @@
     <string name="reminder_body">%1$s: today\'s talk is ready</string>
     <string name="reminder_body_tea">%1$s: today\'s talk is ready ☕</string>
     <string name="reminder_adjust">Adjust your reminder?</string>
+    <!-- M5: trial reminder (US-062). Transactional, sent even if daily reminders are off. -->
+    <string name="trial_notif_title">Your Vaak trial ends tomorrow</string>
+    <string name="trial_notif_body_price">%1$s will be charged on %2$s. Tap to keep it or cancel in Google Play.</string>
+    <string name="trial_notif_body">Premium renews on %1$s. Tap to keep it or cancel in Google Play.</string>
 </resources>
