@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- M6: S22 Sound Lab lite (US-070). Copy from design/final/s22-sound-lab.html. No scores anywhere. -->
+    <string name="soundlab_title">Sound Lab</string>
+    <string name="soundlab_sub">2 minutes a pair. Headphones help.</string>
+    <string name="soundlab_english">English</string>
+    <string name="soundlab_hindi">Hindi</string>
+    <string name="soundlab_practised">Practised</string>
+    <string name="soundlab_pair_cd">%1$s: %2$s. %3$s</string>
+    <string name="soundlab_pair_practised_cd">%1$s: %2$s. %3$s. Practised</string>
+    <string name="soundlab_back_cd">Back</string>
+    <string name="soundlab_back_pairs_cd">Back to pairs</string>
+    <string name="soundlab_load_failed">Sound Lab couldn\'t load its pairs. It should be back after the next update.</string>
+    <string name="soundlab_preview_list_note">Some pairs use a preview voice until our recorded clips arrive.</string>
+
+    <!-- Entry card on the Practice tab (S08) -->
+    <string name="soundlab_entry_title">Sound Lab</string>
+    <string name="soundlab_entry_body">Tricky sound pairs like v / w and ड़ / र. Listen, pick, say. No scores.</string>
+
+    <!-- Steps -->
+    <string name="soundlab_step_listen">Listen</string>
+    <string name="soundlab_step_pick">Pick</string>
+    <string name="soundlab_step_say">Say</string>
+    <string name="soundlab_step_done_cd">%1$s, done</string>
+    <string name="soundlab_step_now_cd">%1$s, current step</string>
+
+    <!-- Listen -->
+    <string name="soundlab_listen_title">Hear the difference</string>
+    <string name="soundlab_play_cd">Play %1$s</string>
+    <string name="soundlab_stop_cd">Stop %1$s</string>
+    <string name="soundlab_test_ear">Test my ear</string>
+    <string name="soundlab_preview_voice">Preview voice</string>
+    <string name="soundlab_preview_note">Recorded clips for this pair are on the way. A synthetic voice can blur these sounds, so lean on the mouth tips.</string>
+    <string name="soundlab_no_voice">Add a %1$s text-to-speech voice in your phone\'s settings to hear the preview clips.</string>
+
+    <!-- Pick -->
+    <string name="soundlab_clip_of">Clip %1$d of %2$d · play again</string>
+    <string name="soundlab_play_round_cd">Play clip %1$d of %2$d</string>
+    <string name="soundlab_which">Which one did you hear?</string>
+    <string name="soundlab_you_picked">you picked</string>
+    <string name="soundlab_this_one">this one</string>
+    <string name="soundlab_picked_this_one">you picked · this one</string>
+    <string name="soundlab_reveal_right">Yes, that one was “%1$s”</string>
+    <string name="soundlab_reveal_right_body">Nice ear. Keep listening for it in the next clip.</string>
+    <string name="soundlab_reveal_other">That one was “%1$s”</string>
+    <string name="soundlab_hear_both">Hear both</string>
+    <string name="soundlab_next_clip">Next clip</string>
+    <string name="soundlab_to_say">Now say it</string>
+
+    <!-- Say -->
+    <string name="soundlab_say_title">Say “%1$s”, then “%2$s”</string>
+    <string name="soundlab_say_title_one">Say “%1$s”</string>
+    <string name="soundlab_say_sub">Compare yourself with the model. Only you hear this; it isn\'t saved.</string>
+    <string name="soundlab_model">Model · %1$s</string>
+    <string name="soundlab_you">You · %1$s</string>
+    <string name="soundlab_recorded_voice_en">Recorded voice, en-IN</string>
+    <string name="soundlab_recorded_voice_hi">Recorded voice, hi-IN</string>
+    <string name="soundlab_take_meta">%1$s · just now</string>
+    <string name="soundlab_record">Record</string>
+    <string name="soundlab_stop">Stop</string>
+    <string name="soundlab_record_again">Record again</string>
+    <string name="soundlab_recording">Recording · %1$s</string>
+    <string name="soundlab_retry">Didn\'t catch that. Try once more, a little closer to the mic.</string>
+    <string name="soundlab_mic_denied">Sound Lab needs the microphone to record you. Your take stays on this phone and is deleted when you leave the pair.</string>
+    <string name="soundlab_allow_mic">Allow microphone</string>
+    <string name="soundlab_done_pair">Done with this pair</string>
+</resources>

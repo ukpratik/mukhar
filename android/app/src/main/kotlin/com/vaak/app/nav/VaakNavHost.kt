@@ -25,6 +25,8 @@ import com.vaak.app.feature.progress.ProgressScreen
 import com.vaak.app.feature.quota.QuotaScreen
 import com.vaak.app.feature.settings.SettingsScreen
 import com.vaak.app.feature.share.ShareScreen
+import com.vaak.app.feature.soundlab.SoundLabRoute // M6
+import com.vaak.app.feature.soundlab.soundLabDestination // M6
 import com.vaak.app.feature.talk.prompt.PromptScreen
 import com.vaak.app.feature.talk.record.RecordScreen
 import com.vaak.app.feature.talk.record.RecoveredScreen
@@ -89,8 +91,12 @@ fun VaakNavHost(
             todayScreen(navController)
             m3Destinations(navController, onOnboardingFinished)
             composable<PracticeRoute> {
-                PromptScreen(onRecord = { prompt, track -> navController.navigate(RecordRoute(prompt.id, prompt.lang.code, track)) })
+                PromptScreen(
+                    onRecord = { prompt, track -> navController.navigate(RecordRoute(prompt.id, prompt.lang.code, track)) },
+                    onOpenSoundLab = { navController.navigate(SoundLabRoute) }, // M6: Sound Lab entry (S22)
+                )
             }
+            soundLabDestination(navController) // M6: S22 Sound Lab lite
             wordsScreen(navController)
             composable<WordDetailRoute> {
                 WordDetailScreen(

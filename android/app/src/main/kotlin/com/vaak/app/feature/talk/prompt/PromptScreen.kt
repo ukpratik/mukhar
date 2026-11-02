@@ -64,6 +64,7 @@ import com.vaak.app.feature.talk.common.InfoChip
 import com.vaak.app.feature.talk.common.difficultyLabel
 import com.vaak.app.feature.talk.common.rememberHaptics
 import com.vaak.app.feature.talk.common.trackLabel
+import com.vaak.app.feature.soundlab.SoundLabEntryCard // M6
 import com.vaak.domain.model.Lang
 import com.vaak.domain.prompt.Prompt
 import com.vaak.ui.theme.NotoDeva
@@ -73,7 +74,7 @@ import com.vaak.ui.theme.VaakTheme
 
 /** S08 Prompt picker (the Practice tab, US-010). Today's Talk skips this screen (D-020). */
 @Composable
-fun PromptScreen(onRecord: (Prompt, String) -> Unit, vm: PromptViewModel = hiltViewModel()) {
+fun PromptScreen(onRecord: (Prompt, String) -> Unit, onOpenSoundLab: (() -> Unit)? = null, vm: PromptViewModel = hiltViewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     val haptics = rememberHaptics()
     PromptContent(
@@ -83,12 +84,13 @@ fun PromptScreen(onRecord: (Prompt, String) -> Unit, vm: PromptViewModel = hiltV
             vm.onEvent(e)
         },
         onRecord = { state.prompt?.let { onRecord(it, state.track.key) } },
+        onOpenSoundLab = onOpenSoundLab,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord: () -> Unit) {
+fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord: () -> Unit, onOpenSoundLab: (() -> Unit)? = null) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = VaakSpace.gutter).padding(top = 18.dp, bottom = 24.dp),
     ) {
@@ -161,6 +163,8 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
                 Text(stringResource(R.string.record))
             }
         }
+        // M6: Sound Lab entry (S22, US-070)
+        if (onOpenSoundLab != null) SoundLabEntryCard(onOpenSoundLab, Modifier.padding(top = 20.dp))
     }
 }
 

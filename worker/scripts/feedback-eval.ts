@@ -1,7 +1,8 @@
 /**
  * Feedback eval (LLD §8, NFR-004, ADR-004). Run on every prompt_version change.
  *
- *   ANTHROPIC_API_KEY=… node scripts/feedback-eval.ts [--set data/eval/feedback-eval.json] [--limit N] [--thinking disabled]
+ *   ANTHROPIC_API_KEY=… node scripts/feedback-eval.ts [--set data/eval/eval-set.json] [--limit N] [--thinking disabled]
+ *   node scripts/feedback-eval.ts --dry-run [--set …]   (M6: validates the set offline, no API call, no key needed)
  *
  * Each item goes through the real prompt (src/llm/prompt.ts), the real client and the real grounding validator.
  * Reports schema validity, PRE-filter grounding (≥ 95%), post-filter grounding (100% by construction), borrowing false
@@ -13,35 +14,46 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeSpanChecker, validate } from "../src/grounding/validate.ts";
 import { anthropicClient, LlmError } from "../src/llm/client.ts";
-import { buildUserMessage, PROMPT_VERSION, SYSTEM_PROMPT, type FeedbackMetrics } from "../src/llm/prompt.ts";
+import { buildUserMessage, PROMPT_VERSION, SYSTEM_PROMPT } from "../src/llm/prompt.ts";
 import { FEEDBACK_SCHEMA, parseFeedback, type ModelFeedback } from "../src/llm/schema.ts";
 import { llmCostMicroUsd } from "../src/spend/ledger.ts";
 import { percentile } from "./lib/bench.ts";
-import { borrowingFalsePositives, checkRegression, safetyPass, stutterCompliant, type EvalLabels, type EvalSummary } from "./lib/evalMetrics.ts";
+import {
+  borrowingFalsePositives, checkRegression, safetyPass, stutterCompliant, validateEvalSet, type EvalSet, type EvalSetReport, type EvalSummary,
+} from "./lib/evalMetrics.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-
-interface EvalItem {
-  id: string;
-  lang: "en" | "hi";
-  track: string;
-  prompt: string;
-  stutter_friendly?: boolean;
-  /** Either STT-style word tuples [w, start_ms, end_ms, conf] or plain text (all tokens confident). */
-  words?: Array<[string, number, number, number]>;
-  text?: string;
-  metrics: FeedbackMetrics;
-  labels?: EvalLabels;
-}
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? process.argv[i + 1] : undefined;
 }
 
+function printReport(path: string, r: EvalSetReport) {
+  const kv = (o: Record<string, number>) => Object.entries(o).map(([k, v]) => `${k} ${v}`).join(", ");
+  console.log(`Eval set ${path.replace(ROOT + "/", "")}: ${r.items} items, ${r.tokens} tokens`);
+  console.log(`  languages: ${kv(r.byLang)} (varieties: ${kv(r.byVariety)})`);
+  console.log(`  safety: ${kv(r.safety)}; self_harm caught by the keyword backstop: ${r.selfHarmKeywordCaught}/${r.safety.self_harm}`);
+  console.log(`  borrowing-labelled: ${r.withBorrowingSpans}, low-confidence: ${r.withLowConf}, stutter-friendly: ${r.stutterFriendly}`);
+  console.log(`  traps: ${kv(r.traps)}`);
+  if (r.errors.length) console.log(`INVALID (${r.errors.length}):\n  - ${r.errors.join("\n  - ")}`);
+  else console.log("VALID (dry run: no API call made)");
+}
+
 async function main() {
-  const setPath = resolve(ROOT, arg("set") ?? "data/eval/feedback-eval.json");
-  const doc = JSON.parse(await readFile(setPath, "utf8")) as { low_conf?: number; items: EvalItem[] };
+  const setPath = resolve(ROOT, arg("set") ?? "data/eval/eval-set.json");
+  const parsed: unknown = JSON.parse(await readFile(setPath, "utf8"));
+  const report = validateEvalSet(parsed);
+  if (process.argv.includes("--dry-run")) {
+    printReport(setPath, report);
+    if (report.errors.length) process.exitCode = 1;
+    return;
+  }
+  if (report.errors.length) {
+    printReport(setPath, report);
+    throw new Error("eval set is invalid; fix it before spending API calls");
+  }
+  const doc = parsed as EvalSet;
   const lowConf = doc.low_conf ?? 0.6;
   const items = doc.items.slice(0, Number(arg("limit") ?? Infinity));
   const thinking = arg("thinking") === "disabled" ? "disabled" : "adaptive";
