@@ -63,6 +63,7 @@ class TalkRepositoryTest {
         repo = TalkRepository(
             db.talkDao(), db.wordDao(), HabitRepository(db.habitDao(), tempSettingsStore(), clock), settings, pipeline, prompts, scheduler,
             RecordingFiles(dir), { freeBytes }, clock, { "talk-${++nextId}" }, json, TestScope(),
+            testWordRepository(db, clock),
         )
     }
 
@@ -324,12 +325,89 @@ class TalkRepositoryTest {
         repo.analyze(id)
         val bv = repo.observeTalk(id).first()!!.feedback!!.feedback.betterVersions.first()
         val word = bv.upgradedWords.first()
-        assertThat(repo.toggleWord(id, Lang.EN, "professional", word, bv.rewrite)).isTrue()
+        assertThat(repo.toggleWord(id, Lang.EN, "professional", word, bv.rewrite)).isInstanceOf(HarvestResult.Added::class.java)
         assertThat(repo.observeCollectedWords(id).first()).containsExactly("en:articulate")
-        assertThat(repo.toggleWord(id, Lang.EN, "professional", word, bv.rewrite)).isFalse() // undo
+        assertThat(db.wordDao().cardsForWord("en:articulate").map { it.type }).containsExactly("word_meaning", "meaning_word")
+        assertThat(repo.toggleWord(id, Lang.EN, "professional", word, bv.rewrite)).isNull() // undo
         assertThat(repo.observeCollectedWords(id).first()).isEmpty()
+        assertThat(db.wordDao().cardsForWord("en:articulate")).isEmpty()
         assertThat(repo.toggleSavedLine(id, Lang.EN, 0, bv.quote, bv.rewrite)).isTrue()
         assertThat(repo.observeSavedLines(id).first()).containsExactly("line:$id:0")
+    }
+
+    @Test
+    fun mistakesBecomeFixCardsOnceAndUngroundedOnesAreDropped() = runTest {
+        val id = recorded()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyze(id)
+        repo.analyze(id) // a second run doesn't duplicate cards
+        val fixes = db.wordDao().reviewCandidates(Long.MAX_VALUE).filter { it.type == "mistake_fix" }
+        // The canned notes have 2 mistakes; the one quoting a low-confidence word is dropped by the validator.
+        assertThat(fixes.map { it.front to it.back }).containsExactly("from day one itself" to "from day one")
+    }
+
+    // --- M4 fixes: baseline audio (US-003, D-010) ---
+
+    @Test
+    fun baselineAudioIsHeldUntilAnsweredAndDeletedWhenTheUserLeft() = runTest {
+        val (id, _) = baseline()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyze(id)
+        val held = status(id)
+        assertThat(held.audioKept).isTrue()
+        assertThat(File(held.audioPath!!).exists()).isTrue()
+        // App restarted before "Keep this recording?" was answered: the default (off) applies.
+        repo.recoverOnStart()
+        assertThat(status(id).audioPath).isNull()
+        assertThat(status(id).audioKept).isFalse()
+        assertThat(File(held.audioPath!!).exists()).isFalse()
+    }
+
+    @Test
+    fun anExplicitKeepSurvivesRestart() = runTest {
+        val (id, _) = baseline()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyze(id)
+        settings.state.value = settings.state.value.copy(keepBaselineAudio = true)
+        repo.setAudioKept(id, true)
+        repo.recoverOnStart()
+        assertThat(status(id).audioKept).isTrue()
+        assertThat(File(status(id).audioPath!!).exists()).isTrue()
+    }
+
+    @Test
+    fun noWhileStillQueuedDeletesAfterTheAnalysisNotBefore() = runTest {
+        val (id, _) = baseline() // offline: the transcribe answer queue is empty → Offline
+        repo.analyze(id)
+        assertThat(status(id).status).isEqualTo(TalkStatus.QUEUED)
+        repo.setAudioKept(id, false)
+        val path = status(id).audioPath!!
+        assertThat(File(path).exists()).isTrue() // the queue still needs it
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyze(id)
+        assertThat(status(id).status).isEqualTo(TalkStatus.FEEDBACK_READY)
+        assertThat(File(path).exists()).isFalse()
+        assertThat(status(id).audioPath).isNull()
+    }
+
+    @Test
+    fun recoveredBaselineIsAnalysedAsTheBaseline() = runTest {
+        val (id, file) = repo.startSession(TalkSpec(TalkKind.BASELINE, Lang.EN, Track.EVERYDAY, "baseline_intro"))
+        AdtsWriter(file).use { w -> repeat(800) { w.writeFrame(ByteArray(40)) } }
+        repo.updateProgress(id, 50_000, 40_000)
+        repo.recoverOnStart()
+        assertThat(status(id).errorCode).isEqualTo(TalkCodes.RECOVERED)
+        assertThat(File(status(id).audioPath!!).exists()).isTrue() // not swept: the user hasn't acted on it yet
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyzeRecoveredNow(id)
+        assertThat(pipeline.transcribeCalls.last().kind).isEqualTo("baseline")
+        assertThat(status(id).status).isEqualTo(TalkStatus.FEEDBACK_READY)
+        assertThat(status(id).audioKept).isTrue() // held for the keep question
     }
 
     @Test

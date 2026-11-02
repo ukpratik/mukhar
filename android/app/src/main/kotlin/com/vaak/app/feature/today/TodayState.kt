@@ -3,6 +3,8 @@ package com.vaak.app.feature.today
 import com.vaak.data.prefs.ReminderSettings
 import com.vaak.data.prefs.Settings
 import com.vaak.data.repo.HabitSnapshot
+import com.vaak.data.repo.WordItem
+import com.vaak.domain.model.Lang
 import com.vaak.data.today.RecoveredTalk
 import com.vaak.data.today.WaitingTalks
 import com.vaak.domain.streak.Source
@@ -64,6 +66,10 @@ data class TodayUiState(
     val habit: HabitSnapshot? = null,
     /** Opens the streak sheet once to tell the user about a freeze or a fresh start (US-032). */
     val autoOpenSheet: Boolean = false,
+    /** Today's words (US-020): from the user's talks first, then curated; picked once per streak day. */
+    val words: List<WordItem> = emptyList(),
+    /** Installed TTS voices; the speaker is hidden for a language without one. */
+    val voices: Map<Lang, Boolean> = emptyMap(),
 )
 
 data class TodayInputs(

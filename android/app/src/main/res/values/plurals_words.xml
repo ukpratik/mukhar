@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="words_gym_due">
+        <item quantity="one">Word Gym · %d due</item>
+        <item quantity="other">Word Gym · %d due</item>
+    </plurals>
+    <plurals name="word_next_in">
+        <item quantity="one">In %d day</item>
+        <item quantity="other">In %d days</item>
+    </plurals>
+    <plurals name="done_cards">
+        <item quantity="one">%d card</item>
+        <item quantity="other">%d cards</item>
+    </plurals>
+    <plurals name="done_next">
+        <item quantity="one">Next %d card due tomorrow.</item>
+        <item quantity="other">Next %d cards due tomorrow.</item>
+    </plurals>
+    <plurals name="done_keep_going">
+        <item quantity="one">Keep going: %d more card</item>
+        <item quantity="other">Keep going: %d more cards</item>
+    </plurals>
+    <plurals name="words_empty_body">
+        <item quantity="one">Words you add from your talks, plus %1$d pick a day for %2$s. The first ones arrive tomorrow morning.</item>
+        <item quantity="other">Words you add from your talks, plus %1$d picks a day for %2$s. The first ones arrive tomorrow morning.</item>
+    </plurals>
+    <plurals name="interval_min_cd">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="interval_hours_cd">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="interval_days_cd">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+</resources>

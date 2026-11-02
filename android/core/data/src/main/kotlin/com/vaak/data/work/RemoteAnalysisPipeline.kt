@@ -1,5 +1,6 @@
 package com.vaak.data.work
 
+import com.vaak.data.net.CheckSentenceMetaDto
 import com.vaak.data.net.ErrorMapper
 import com.vaak.data.net.FeedbackMetricsDto
 import com.vaak.data.net.FeedbackRequestDto
@@ -81,6 +82,20 @@ class RemoteAnalysisPipeline @Inject constructor(
             ),
         )
         Unit
+    }
+
+    override suspend fun checkSentence(request: SentenceCheckRequest, audio: File): Outcome<SentenceCheckResult> = call(Stage.LLM) {
+        val meta = CheckSentenceMetaDto(
+            clientSessionId = request.clientSessionId,
+            lang = request.lang.code,
+            targetWord = request.targetWord,
+            meaning = request.meaning,
+            durationMs = request.durationMs,
+            keyterms = listOf(request.targetWord),
+        )
+        val part = MultipartBody.Part.createFormData("audio", "sentence.aac", audio.asRequestBody(AAC))
+        val r = api.checkSentence(meta, part)
+        SentenceCheckResult(r.transcript, r.wordFound, r.result, r.corrected, r.example, r.note)
     }
 
     private suspend fun <T> call(stage: Stage, block: suspend () -> T): Outcome<T> = try {

@@ -13,7 +13,7 @@ import javax.inject.Inject
 data class WaitingTalks(val count: Int, val latestRecordedAt: Instant, val latestDurationMs: Int)
 
 /** A talk saved after the app closed mid-recording (S09 state 8). */
-data class RecoveredTalk(val sessionId: String, val recordedAt: Instant, val durationMs: Int)
+data class RecoveredTalk(val sessionId: String, val recordedAt: Instant, val durationMs: Int, val isBaseline: Boolean = false)
 
 /**
  * What Today shows about the talk pipeline, read from Room. The recovered talk is the row crash recovery
@@ -37,7 +37,7 @@ class RoomTalkStatusSource @Inject constructor(
         .distinctUntilChanged()
 
     override val recovered: Flow<RecoveredTalk?> = talkDao.observeRecovered()
-        .map { s -> s?.let { RecoveredTalk(it.id, Instant.ofEpochMilli(it.createdAt), it.durationMs) } }
+        .map { s -> s?.let { RecoveredTalk(it.id, Instant.ofEpochMilli(it.createdAt), it.durationMs, it.kind == "baseline") } }
         .distinctUntilChanged()
 
     private companion object {

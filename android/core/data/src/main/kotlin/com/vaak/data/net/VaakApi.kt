@@ -19,6 +19,11 @@ interface VaakApi {
     @POST("feedback")
     suspend fun feedback(@Body body: FeedbackRequestDto): FeedbackResponseDto
 
+    /** Multipart: `meta` JSON + `audio` (≤ 15 s, `audio/aac`). */
+    @Multipart
+    @POST("check-sentence")
+    suspend fun checkSentence(@Part("meta") meta: CheckSentenceMetaDto, @Part audio: MultipartBody.Part): CheckSentenceResponseDto
+
     @POST("report")
     suspend fun report(@Body body: ReportRequestDto): ReportResponseDto
 }

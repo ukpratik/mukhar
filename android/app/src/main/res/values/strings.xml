@@ -6,7 +6,6 @@
     <string name="tab_words">Words</string>
     <string name="tab_me">Me</string>
     <string name="placeholder_today">Your streak, today\'s talk, revision and words will live here.</string>
-    <string name="placeholder_words">Word Gym, your word bank and quick revision will live here.</string>
     <string name="placeholder_me">Progress, settings and Premium will live here.</string>
     <string name="placeholder_coming">Coming soon</string>
 
@@ -126,6 +125,9 @@
     <string name="rec_card">%1$s recorded · %2$s</string>
     <string name="rec_get">Get feedback on this part</string>
     <string name="rec_again">Record it again instead</string>
+    <string name="rec_baseline_title">We kept your starting point</string>
+    <string name="rec_baseline_body">Vaak closed while you were recording your starting point. The first %1$s is saved on this phone.</string>
+    <string name="rec_baseline_get">Use this as my starting point</string>
     <string name="rec_close_cd">Close, keep the talk for later</string>
 
     <!-- S10 Analysing -->
@@ -229,6 +231,8 @@
     <string name="add_word_cd">Add %1$s to Word Gym</string>
     <string name="added_word_cd">%1$s added to Word Gym</string>
     <string name="toast_added">Added to Word Gym</string>
+    <string name="toast_added_later">Added. It joins your Word Gym on a later day (5 new words a day).</string>
+    <string name="toast_already_in_gym">Already in your Word Gym</string>
     <string name="rate_question">Was this useful?</string>
     <string name="rate_cd">Rate this feedback</string>
     <string name="rate_no">Not useful</string>

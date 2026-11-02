@@ -100,11 +100,75 @@ interface WordDao {
     @Upsert
     suspend fun upsertCard(card: CardEntity)
 
-    @Query("SELECT * FROM card WHERE suspended = 0 AND (state = 0 OR due < :cutoff)")
+    /** Cards whose `due` is before [cutoff]. New cards carry their release time as `due` (harvest carry-over, US-021). */
+    @Query("SELECT * FROM card WHERE suspended = 0 AND due < :cutoff")
     suspend fun reviewCandidates(cutoff: Long): List<CardEntity>
 
-    @Query("SELECT COUNT(*) FROM card WHERE suspended = 0 AND state != 0 AND due < :cutoff")
+    @Query("SELECT COUNT(*) FROM card WHERE suspended = 0 AND due < :cutoff")
     fun observeDueCount(cutoff: Long): Flow<Int>
+
+    // --- M4: Word Gym, word bank and revision ---
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCard(card: CardEntity): Long
+
+    @Query("SELECT * FROM card WHERE id = :id")
+    suspend fun card(id: String): CardEntity?
+
+    @Query("SELECT * FROM card WHERE word_id = :wordId")
+    suspend fun cardsForWord(wordId: String): List<CardEntity>
+
+    @Query("SELECT * FROM word WHERE id = :id")
+    suspend fun word(id: String): WordEntity?
+
+    @Query("SELECT * FROM word WHERE id = :id")
+    fun observeWord(id: String): Flow<WordEntity?>
+
+    @Query("SELECT id FROM word")
+    suspend fun allWordIds(): List<String>
+
+    @Query("SELECT * FROM word ORDER BY added_at DESC")
+    fun observeWords(): Flow<List<WordEntity>>
+
+    @Query("SELECT * FROM card")
+    fun observeCards(): Flow<List<CardEntity>>
+
+    @Query("SELECT * FROM card WHERE word_id = :wordId")
+    fun observeCardsForWord(wordId: String): Flow<List<CardEntity>>
+
+    /** Release times of harvested words (their word → meaning card's `due`), from [fromMs] on (US-021 cap). */
+    @Query(
+        "SELECT c.due FROM card c JOIN word w ON w.id = c.word_id " +
+            "WHERE w.source = 'talk' AND c.type = 'word_meaning' AND c.due >= :fromMs",
+    )
+    suspend fun talkReleaseTimes(fromMs: Long): List<Long>
+
+    /** Harvested words released by [beforeMs] that were never a daily word, oldest release first (US-020). */
+    @Query(
+        "SELECT w.* FROM word w JOIN card c ON c.word_id = w.id AND c.type = 'word_meaning' " +
+            "WHERE w.source = 'talk' AND c.due < :beforeMs AND w.id NOT IN (SELECT word_id FROM daily_word) " +
+            "ORDER BY c.due, w.id",
+    )
+    suspend fun talkWordsForDaily(beforeMs: Long): List<WordEntity>
+
+    @Query("SELECT * FROM daily_word WHERE day = :day ORDER BY position")
+    suspend fun dailyWords(day: String): List<DailyWordEntity>
+
+    @Query("DELETE FROM card WHERE word_id = :wordId")
+    suspend fun deleteCardsForWord(wordId: String)
+
+    @Query("DELETE FROM word WHERE id = :id")
+    suspend fun deleteWord(id: String)
+
+    @Query("UPDATE card SET suspended = :suspended WHERE word_id = :wordId")
+    suspend fun setWordSuspended(wordId: String, suspended: Boolean)
+
+    /** New cards first reviewed since [sinceMs] (QueueBuilder's new-per-day budget). */
+    @Query("SELECT COUNT(DISTINCT card_id) FROM review_log WHERE state_before = 0 AND reviewed_at >= :sinceMs")
+    suspend fun newIntroducedSince(sinceMs: Long): Int
+
+    @Query("SELECT * FROM review_log WHERE card_id = :cardId ORDER BY reviewed_at")
+    suspend fun reviewLogs(cardId: String): List<ReviewLogEntity>
 
     @Insert
     suspend fun insertReviewLog(log: ReviewLogEntity)

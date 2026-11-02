@@ -12,7 +12,6 @@ import com.vaak.data.db.TalkDao
 import com.vaak.data.db.TalkSessionEntity
 import com.vaak.data.db.TranscriptEntity
 import com.vaak.data.db.WordDao
-import com.vaak.data.db.WordEntity
 import com.vaak.data.net.AppError
 import com.vaak.data.net.Outcome
 import com.vaak.data.net.errorCode
@@ -41,7 +40,6 @@ import com.vaak.domain.model.Word
 import com.vaak.domain.talk.StorageLevel
 import com.vaak.domain.talk.StoragePolicy
 import com.vaak.domain.talk.TalkThresholds
-import com.vaak.domain.text.Normalizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -76,6 +74,7 @@ class TalkRepository(
     private val ids: IdGenerator,
     private val json: Json,
     private val appScope: CoroutineScope,
+    private val wordRepo: WordRepository,
 ) {
     // ---- Recording ----
 
@@ -150,13 +149,39 @@ class TalkRepository(
         startAnalysis(id)
     }
 
-    /** The keep-audio answer (US-003, off by default): `false` deletes the audio now; the numbers stay. */
+    /**
+     * The keep-audio answer (US-003, off by default). `false` deletes the audio now, or right after the analysis
+     * when it still needs the file (an offline-queued baseline); the numbers stay.
+     */
     suspend fun setAudioKept(id: String, keep: Boolean) {
         val s = talkDao.session(id) ?: return
-        if (!keep) s.audioPath?.let { File(it).delete() }
+        val stillNeeded = !keep && s.status in TalkStatus.PENDING && talkDao.transcript(id) == null
+        if (!keep && !stillNeeded) s.audioPath?.let { File(it).delete() }
         talkDao.updateSession(
-            s.copy(audioKept = keep && s.audioPath != null, audioPath = if (keep) s.audioPath else null, updatedAt = clock.now().toEpochMilli()),
+            s.copy(
+                audioKept = keep && s.audioPath != null,
+                audioPath = if (keep || stillNeeded) s.audioPath else null,
+                updatedAt = clock.now().toEpochMilli(),
+            ),
         )
+    }
+
+    /**
+     * A baseline's audio is held until S05's "Keep this recording?" answer. If the app died or the user left before
+     * answering, the default (off) applies: the held audio is deleted (US-003, D-010). Runs at process start.
+     */
+    suspend fun releaseUnansweredBaselineAudio() {
+        if (settings.currentPrefs().keepBaselineAudio) return
+        for (s in talkDao.sessionsWithStatus(ALL_STATUSES)) {
+            if (s.kind == TalkKind.BASELINE.key && s.audioKept && s.errorCode != TalkCodes.RECOVERED) setAudioKept(s.id, false)
+        }
+    }
+
+    /** Recovered baseline (S09 state 8 for a baseline): clear the recovered mark and analyse it as the baseline now. */
+    suspend fun analyzeRecoveredNow(id: String): AnalysisRun {
+        val s = talkDao.session(id) ?: return AnalysisRun.Gone
+        talkDao.updateSession(s.copy(errorCode = null, updatedAt = clock.now().toEpochMilli()))
+        return analyzeNow(id)
     }
 
     /** User-confirmed discard: the row stays as `discarded` (history), the audio is deleted. */
@@ -251,13 +276,17 @@ class TalkRepository(
                         createdAt = clock.now().toEpochMilli(),
                     ),
                 )
+                // Mistake → fix cards for revision (US-022, US-040).
+                wordRepo.harvestMistakes(id, lang, checked.feedback.mistakes)
                 // Audio is deleted after analysis unless the user chose to keep it (PRD, S09 "Private by default").
-                val audio = s.audioPath
-                if (audio != null && !s.audioKept) File(audio).delete()
+                // Re-read the row: the keep answer may have changed while the notes were being written.
+                val fresh = talkDao.session(id) ?: s
+                val audio = fresh.audioPath
+                if (audio != null && !fresh.audioKept) File(audio).delete()
                 update(id) {
                     it.copy(
                         status = TalkStatus.FEEDBACK_READY, errorCode = null, leaseUntil = null,
-                        audioPath = if (s.audioKept) audio else null,
+                        audioPath = if (fresh.audioKept) audio else null,
                     )
                 }
                 AnalysisRun.Done
@@ -324,6 +353,7 @@ class TalkRepository(
             if (s.errorCode == TalkCodes.RECOVERED || s.errorCode in NO_AUTO_RETRY) continue
             scheduler.enqueue(s.id)
         }
+        releaseUnansweredBaselineAudio()
     }
 
     fun observeRecovered(): Flow<TalkSessionEntity?> = talkDao.observeRecovered()
@@ -390,22 +420,16 @@ class TalkRepository(
     fun observeCollectedWords(sessionId: String): Flow<List<String>> = wordDao.observeTalkWordIds(sessionId)
     fun observeSavedLines(sessionId: String): Flow<List<String>> = wordDao.observeSavedLineIds(sessionId)
 
-    /** Tapping an upgraded word collects it for Word Gym (US-015/021; the gym itself is M4). Returns false on undo. */
-    suspend fun toggleWord(sessionId: String, lang: Lang, track: String, word: UpgradedWord, example: String): Boolean {
-        val id = wordId(lang, word.word)
-        val collected = id in wordDao.talkWordIds(sessionId)
-        if (collected) {
-            wordDao.deleteTalkWord(id, sessionId)
-            return false
+    /**
+     * Tapping an upgraded word adds it to the Word Gym with its cards (US-015/021, deduplicated, ≤ 5 new a day).
+     * Tapping a word this talk added removes it again (Undo) and returns null.
+     */
+    suspend fun toggleWord(sessionId: String, lang: Lang, track: String, word: UpgradedWord, example: String): HarvestResult? {
+        if (wordId(lang, word.word) in wordDao.talkWordIds(sessionId)) {
+            wordRepo.unharvest(sessionId, lang, word.word)
+            return null
         }
-        wordDao.insertWord(
-            WordEntity(
-                id = id, lang = lang.code, lemma = word.word, meaning = word.meaning, example = example,
-                register = word.register.key, tracks = track, source = "talk", sourceSessionId = sessionId,
-                addedAt = clock.now().toEpochMilli(),
-            ),
-        )
-        return true
+        return wordRepo.harvest(sessionId, lang, track, word, example)
     }
 
     /** "Save line" adds the better version to revision as a new self-graded card (US-015/040). */
@@ -455,6 +479,10 @@ class TalkRepository(
         const val MIN_RETRY_MS = 60_000L
         const val SILENT_LLM_RETRIES = 2
         const val SILENT_RETRY_DELAY_MS = 1_000L
+        private val ALL_STATUSES = listOf(
+            TalkStatus.RECORDED, TalkStatus.QUEUED, TalkStatus.UPLOADING, TalkStatus.TRANSCRIBED, TalkStatus.FEEDBACK_READY,
+            TalkStatus.FEEDBACK_FAILED, TalkStatus.FAILED,
+        )
         private val NO_AUTO_RETRY = setOf("TOO_LITTLE_SPEECH", "AUDIO_TOO_LONG", TalkCodes.AUDIO_MISSING, "LLM_FAILED", "BASELINE_USED")
 
         /** The S05 prompt (not in `prompts.json`; the baseline has one fixed prompt). */
@@ -463,7 +491,7 @@ class TalkRepository(
         fun lowConfidence(words: List<Word>): Set<Int> =
             words.indices.filter { words[it].conf < MetricsCalculator.LOW_CONF }.toSet()
 
-        fun wordId(lang: Lang, word: String): String = "${lang.code}:${Normalizer.norm(word)}"
+        fun wordId(lang: Lang, word: String): String = WordRepository.wordId(lang, word)
 
         fun bandLimits(lang: Lang): Pair<Double, Double> = if (lang == Lang.HI) 100.0 to 150.0 else 110.0 to 160.0
 

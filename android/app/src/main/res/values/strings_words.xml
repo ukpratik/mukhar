@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- M4: S13 Word Gym review, S14 Word bank and word detail, S15 Quick revision. Copy from design/final. -->
+
+    <!-- S14 -->
+    <string name="words_title">Words</string>
+    <string name="words_section_a11y">Section</string>
+    <string name="words_seg_bank">Word bank</string>
+    <string name="words_seg_lines">Saved lines</string>
+    <string name="words_gym">Word Gym</string>
+    <string name="words_gym_nothing">Nothing to review yet</string>
+    <string name="words_gym_caught_up">All caught up for today</string>
+    <string name="words_gym_due_sub">~%1$d min · works offline</string>
+    <string name="words_gym_a11y" tools:ignore="PluralsCandidate">Word Gym: %1$d due, about %2$d minutes. Start review</string>
+    <string name="words_gym_nothing_a11y">Review: nothing due yet</string>
+    <string name="words_empty_title">Your words will live here</string>
+    <string name="words_empty_goals">your goals</string>
+    <string name="words_and">%1$s and %2$s</string>
+    <string name="words_empty_cta">Do today\'s talk</string>
+    <string name="words_empty_note">Your talk is the curriculum: words from it come first.</string>
+    <string name="words_filter_a11y">Filter words</string>
+    <string name="words_filter_all">All</string>
+    <string name="words_filter_talks">From your talks</string>
+    <string name="words_filter_curated">Curated</string>
+    <string name="words_count_talks" tools:ignore="PluralsCandidate">%1$d from your talks · %2$d in total</string>
+    <string name="words_count_curated" tools:ignore="PluralsCandidate">%1$d curated · %2$d in total</string>
+    <string name="words_count_all">%1$d in total</string>
+    <string name="words_none_match">No words match these filters yet.</string>
+    <string name="words_lines_empty_title">No saved lines yet</string>
+    <string name="words_lines_empty_body">Tap “Save line” on a better version in your results. Saved lines come back in Revise.</string>
+    <string name="word_status_new">New</string>
+    <string name="word_status_learning">Learning</string>
+    <string name="word_status_known">Known</string>
+    <string name="word_status_saved">Saved for %1$s</string>
+    <string name="word_src_talk">From your talk · %1$s</string>
+    <string name="word_row_a11y">%1$s, %2$s. %3$s. %4$s</string>
+
+    <string name="pos_noun">noun</string>
+    <string name="pos_verb">verb</string>
+    <string name="pos_adjective">adj.</string>
+    <string name="pos_adverb">adv.</string>
+    <string name="pos_phrase">phrase</string>
+    <string name="pos_noun_full">noun</string>
+    <string name="pos_verb_full">verb</string>
+    <string name="pos_adjective_full">adjective</string>
+    <string name="pos_adverb_full">adverb</string>
+    <string name="pos_phrase_full">phrase</string>
+    <string name="pos_noun_hi" translatable="false">संज्ञा</string>
+    <string name="pos_verb_hi" translatable="false">क्रिया</string>
+    <string name="pos_adjective_hi" translatable="false">विशेषण</string>
+    <string name="pos_adverb_hi" translatable="false">क्रिया-विशेषण</string>
+    <string name="pos_phrase_hi" translatable="false">मुहावरा</string>
+    <string name="register_formal">formal</string>
+    <string name="register_casual">casual</string>
+    <string name="register_power">power</string>
+
+    <!-- S14 word detail -->
+    <string name="word_detail_title">Word</string>
+    <string name="word_back_cd">Back to word bank</string>
+    <string name="word_hear_en_cd">Hear %1$s, Indian English voice</string>
+    <string name="word_hear_hi_cd">Hear %1$s, Hindi voice</string>
+    <string name="word_meaning">Meaning</string>
+    <string name="word_example">Example</string>
+    <string name="word_from_talk">From your talk on %1$s</string>
+    <string name="word_see_line">See line</string>
+    <string name="word_hindi_track">Hindi · %1$s</string>
+    <string name="word_status">Status</string>
+    <string name="word_next_review">Next review</string>
+    <string name="word_next_today">Today</string>
+    <string name="word_next_first">After your first review</string>
+    <string name="word_practise">Practise in a sentence</string>
+    <string name="word_remove">Remove from Word Gym</string>
+    <string name="word_add_back">Add back to Word Gym</string>
+    <string name="word_removed">Removed from Word Gym</string>
+    <string name="voice_tip_title">Add a %1$s voice to hear words</string>
+    <string name="voice_tip_body">Your phone has no %1$s (India) voice yet. It\'s free and works offline.</string>
+    <string name="voice_tip_open">Open voice settings</string>
+    <string name="voice_tip_not_now">Not now</string>
+
+    <!-- S13 / S15 review -->
+    <string name="gym_title">Word Gym</string>
+    <string name="revise_bar_title">Revise</string>
+    <string name="review_close_cd">Close review. Progress is saved</string>
+    <string name="revise_close_cd">Close revision. Progress is saved</string>
+    <string name="review_count_cd">Card %1$d of %2$d</string>
+    <string name="review_type_word_meaning">Word → meaning</string>
+    <string name="review_type_meaning_word">Meaning → word</string>
+    <string name="revise_type_word">Word</string>
+    <string name="revise_type_fix">Past fix</string>
+    <string name="revise_type_line">Saved line · read it aloud</string>
+    <string name="review_hint">Say the meaning in your head, then flip.</string>
+    <string name="review_hint_word">Say the word in your head, then flip.</string>
+    <string name="review_hint_fix">Say the better way in your head, then flip.</string>
+    <string name="review_show">Show meaning</string>
+    <string name="review_show_word">Show word</string>
+    <string name="review_show_fix">Show the fix</string>
+    <string name="review_front_cd">%1$s, %2$s. Tap to show the meaning</string>
+    <string name="review_front_mw_cd">%1$s. Tap to show the word</string>
+    <string name="review_say">Say it in a sentence</string>
+    <string name="review_grade_q">How well did you remember?</string>
+    <string name="review_grade_group">Grade this card</string>
+    <string name="review_grade_self_q">Did your sentence sound like the example?</string>
+    <string name="review_grade_self_group">Grade this card yourself</string>
+    <string name="review_line_grade_q">How natural did it feel?</string>
+    <string name="grade_again">Again</string>
+    <string name="grade_hard">Hard</string>
+    <string name="grade_good">Good</string>
+    <string name="grade_easy">Easy</string>
+    <string name="grade_cd">%1$s, next in %2$s</string>
+    <string name="grade_sugg_cd">%1$s, suggested, next in %2$s</string>
+    <string name="interval_under_min">&lt; 1 min</string>
+    <string name="interval_min">%1$d min</string>
+    <string name="interval_hours">%1$d h</string>
+    <string name="interval_days">%1$d d</string>
+    <string name="interval_under_min_cd">under a minute</string>
+    <string name="review_offline_title">Sentence check is offline</string>
+    <string name="review_offline_body">Say a sentence out loud, compare it with the example, then grade yourself.</string>
+    <string name="review_talks_off">Sentence checks need talks on</string>
+    <string name="review_today_counts">Today counts</string>
+    <string name="review_empty_title">Nothing to review right now</string>
+    <string name="review_empty_body">You\'re all caught up. New words arrive tomorrow morning.</string>
+    <string name="review_back_today">Back to Today</string>
+
+    <!-- S13 say it in a sentence -->
+    <string name="sentence_with">Your sentence with</string>
+    <string name="sentence_listening">Listening… use “%1$s” in one sentence</string>
+    <string name="sentence_keyterm">Up to 15 seconds. It stops when you pause.</string>
+    <string name="sentence_stop">Stop and check</string>
+    <string name="sentence_cancel">Cancel</string>
+    <string name="sentence_checking">Checking your sentence…</string>
+    <string name="sentence_you_said">You said</string>
+    <string name="sentence_ok_title">Nicely used</string>
+    <string name="sentence_almost_title">Almost there</string>
+    <string name="sentence_no_title">Not quite yet</string>
+    <string name="sentence_try_like">Try it like this</string>
+    <string name="sentence_how_used">Here\'s how it\'s used</string>
+    <string name="sentence_again">Say it again</string>
+    <string name="sentence_hear">Hear it</string>
+    <string name="sentence_hear_cd">Hear the corrected sentence</string>
+    <string name="sentence_try_another">Try another sentence</string>
+    <string name="sentence_quota" tools:ignore="PluralsCandidate">%1$d of %2$d free checks used today</string>
+    <string name="sentence_done_for_today">Checks are done for today</string>
+    <string name="sentence_failed">We couldn\'t check that one. Try again, or grade it yourself.</string>
+    <string name="sentence_too_short">We couldn\'t hear a sentence. Try again a little louder.</string>
+
+    <!-- S15 card types -->
+    <string name="fix_you_said">You said</string>
+    <string name="fix_say_instead">Say instead</string>
+    <string name="fix_from">From your talk on %1$s.</string>
+    <string name="fix_say_aloud">Say the fixed line out loud, then grade.</string>
+    <string name="fix_hear_cd">Hear the fixed line</string>
+    <string name="line_better_of">Better version of “%1$s”</string>
+    <string name="line_read_aloud">Read it out loud, then grade how natural it felt.</string>
+    <string name="line_hear_cd">Hear the line</string>
+
+    <!-- S15 done -->
+    <string name="done_title_revise">Revision done. Nicely kept.</string>
+    <string name="done_title_gym">Word Gym done. Nicely kept.</string>
+    <string name="done_body">%1$s in %2$s.</string>
+    <string name="done_time">%1$d min %2$d s</string>
+    <string name="done_time_s">%1$d s</string>
+    <string name="done_credit">Counts for today · Day %1$d</string>
+    <string name="done_short">Five or more cards count for the day.</string>
+    <string name="done_tally_a11y">What you revised</string>
+    <string name="done_words">Words</string>
+    <string name="done_fixes">Past fixes</string>
+    <string name="done_lines">Saved lines read aloud</string>
+    <string name="done_close_cd">Close</string>
+</resources>

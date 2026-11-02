@@ -46,6 +46,15 @@ interface BaselineRecorder {
     /** Asked once after analysis, off by default (design §10 rule 8). `false` deletes the audio now. */
     suspend fun keepAudio(sessionId: String, keep: Boolean)
 
+    /**
+     * A baseline saved when the app closed mid-recording (S09 state 8): analyse it as the baseline and return to the
+     * "Keep this recording?" question, as if Stop had been tapped.
+     */
+    suspend fun resume(sessionId: String): BaselineResult = BaselineResult.Failed
+
+    /** The user left S05 before answering "Keep this recording?": the default (off) applies, the audio is deleted. */
+    fun abandon(sessionId: String) = Unit
+
     companion object {
         const val MAX_MS = 60_000L
         const val MIN_SPEECH_MS = 10_000L

@@ -380,10 +380,45 @@ class OnboardingViewModel @Inject constructor(
 
     fun onKeepBaselineAudio(keep: Boolean) = _state.update { it.copy(keepBaselineAudio = keep) }
 
+    /**
+     * A baseline recovered after the app closed mid-recording (Today → S09 state 8 → here): analyse it as the
+     * baseline, then ask "Keep this recording?" as after a normal stop (US-003).
+     */
+    fun resumeRecoveredBaseline(sessionId: String) {
+        if (_state.value.baseline !is BaselineUi.Offer) return
+        _state.update { it.copy(baseline = BaselineUi.Analysing) }
+        viewModelScope.launch {
+            val result = baselineRecorder.resume(sessionId)
+            if (result == BaselineResult.AlreadyUsed) settings.setBaseline(recorded = true, keepAudio = false)
+            _state.update {
+                it.copy(
+                    baseline = when (result) {
+                        is BaselineResult.Saved -> BaselineUi.Saved(result.sessionId, result.durationMs)
+                        BaselineResult.AlreadyUsed -> BaselineUi.AlreadyUsed
+                        BaselineResult.TooShort, BaselineResult.Failed -> BaselineUi.Offer
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Leaving S05 before answering "Keep this recording?" (back, closing the screen) applies the default: off, so
+     * the audio is deleted (US-003, D-010). Process death is covered at the next start by
+     * `TalkRepository.releaseUnansweredBaselineAudio`.
+     */
+    override fun onCleared() {
+        val saved = _state.value.baseline as? BaselineUi.Saved ?: return
+        if (!baselineAnswered) baselineRecorder.abandon(saved.sessionId)
+    }
+
+    private var baselineAnswered = false
+
     /** Keep-audio is asked once, off by default (US-003); the numbers are kept either way. */
     fun onBaselineSavedContinue() {
         val saved = _state.value.baseline as? BaselineUi.Saved ?: return
         val keep = _state.value.keepBaselineAudio
+        baselineAnswered = true
         viewModelScope.launch {
             baselineRecorder.keepAudio(saved.sessionId, keep)
             settings.setBaseline(recorded = true, keepAudio = keep)

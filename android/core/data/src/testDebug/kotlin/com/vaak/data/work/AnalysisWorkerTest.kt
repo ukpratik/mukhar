@@ -19,6 +19,7 @@ import com.vaak.data.net.AppError
 import com.vaak.data.net.Outcome
 import com.vaak.data.repo.HabitRepository
 import com.vaak.data.repo.MemorySettings
+import com.vaak.data.repo.testWordRepository
 import com.vaak.data.repo.RecordingScheduler
 import com.vaak.data.repo.ScriptedPipeline
 import com.vaak.data.repo.TalkKind
@@ -69,6 +70,7 @@ class AnalysisWorkerTest {
         repo = TalkRepository(
             db.talkDao(), db.wordDao(), HabitRepository(db.habitDao(), tempSettingsStore(), clock), MemorySettings(), pipeline, prompts, scheduler,
             RecordingFiles(Files.createTempDirectory("w").toFile()), { Long.MAX_VALUE }, clock, { "t${++n}" }, json, TestScope(),
+            testWordRepository(db, clock),
         )
     }
 

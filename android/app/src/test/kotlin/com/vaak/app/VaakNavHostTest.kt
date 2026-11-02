@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.vaak.app.feature.PlaceholderScreen
 import com.vaak.app.nav.TodayRoute
 import com.vaak.app.nav.VaakNavHost
+import com.vaak.app.nav.WordsRoute
 import com.vaak.ui.theme.VaakTheme
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +28,10 @@ class VaakNavHostTest {
         // Today is stubbed with the M0 placeholder (the real one needs Hilt; see TodayContentTest).
         compose.setContent {
             VaakTheme {
-                VaakNavHost(todayScreen = { composable<TodayRoute> { PlaceholderScreen(R.string.tab_today, R.string.placeholder_today) } })
+                VaakNavHost(
+                    todayScreen = { composable<TodayRoute> { PlaceholderScreen(R.string.tab_today, R.string.placeholder_today) } },
+                    wordsScreen = { composable<WordsRoute> { PlaceholderScreen(R.string.tab_words, R.string.placeholder_coming) } },
+                )
             }
         }
         compose.onAllNodesWithText("Today").assertCountEquals(2) // tab label + page title
@@ -35,7 +39,7 @@ class VaakNavHostTest {
         for (tab in listOf("Practice", "Words", "Me")) compose.onNodeWithText(tab).assertExists()
 
         compose.onNodeWithText("Words").performClick()
-        compose.onNodeWithText("Word Gym, your word bank and quick revision will live here.").assertExists()
+        compose.onAllNodesWithText("Words").assertCountEquals(2) // tab label + the (stubbed) page title
         compose.onNodeWithText("Me").performClick()
         compose.onNodeWithText("Progress, settings and Premium will live here.").assertExists()
     }

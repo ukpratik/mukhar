@@ -139,3 +139,25 @@ data class ErrorBodyDto(val code: String, val message: String? = null, @SerialNa
 
 @Serializable
 data class ErrorEnvelopeDto(val error: ErrorBodyDto, @SerialName("request_id") val requestId: String? = null)
+
+/** `/check-sentence` multipart `meta` (LLD §3). */
+@Serializable
+data class CheckSentenceMetaDto(
+    @SerialName("client_session_id") val clientSessionId: String,
+    val lang: String,
+    @SerialName("target_word") val targetWord: String,
+    val meaning: String,
+    @SerialName("duration_ms") val durationMs: Long,
+    val keyterms: List<String> = emptyList(),
+)
+
+@Serializable
+data class CheckSentenceResponseDto(
+    val transcript: String,
+    @SerialName("word_found") val wordFound: Boolean,
+    val result: String,
+    val corrected: String = "",
+    val example: String = "",
+    val note: String = "",
+    @SerialName("request_id") val requestId: String? = null,
+)

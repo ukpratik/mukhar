@@ -53,7 +53,9 @@
 
     <string name="today_words">Today\'s words</string>
     <string name="today_word_bank">Word bank</string>
-    <string name="today_words_soon">Three new words a day, picked for your goals, will show up here.</string>
+    <string name="today_words_soon">New words for your goals show up here each morning.</string>
+    <string name="today_word_from_talk">From your talk</string>
+    <string name="today_recovered_baseline_title">We kept your starting point</string>
 
     <string name="today_baseline_title">Your starting point</string>
     <string name="today_baseline_body">A 1-minute talk so you can hear how far you\'ve come. Optional.</string>
@@ -100,6 +102,4 @@
     <string name="sheet_week_today">today to do</string>
 
     <!-- Placeholder destination until M4 -->
-    <string name="placeholder_revise_title">Revise</string>
-    <string name="placeholder_revise">Quick revision sessions arrive with Word Gym.</string>
 </resources>

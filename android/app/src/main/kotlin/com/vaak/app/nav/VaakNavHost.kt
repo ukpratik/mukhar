@@ -27,7 +27,9 @@ import com.vaak.app.feature.talk.record.RecoveredScreen
 import com.vaak.app.feature.talk.report.ReportActions
 import com.vaak.app.feature.talk.report.ReportScreen
 import com.vaak.app.feature.talk.sayagain.SayAgainScreen
+import com.vaak.app.feature.words.WordDetailScreen
 import com.vaak.app.feature.words.WordsScreen
+import com.vaak.app.feature.words.review.ReviewScreen
 
 @Composable
 fun VaakNavHost(
@@ -37,6 +39,8 @@ fun VaakNavHost(
     onOnboardingFinished: () -> Unit = {},
     // Today wired to its destinations (a slot so tests can stub it).
     todayScreen: NavGraphBuilder.(NavHostController) -> Unit = { todayDestination(it) },
+    // The Words tab (S14) wired to its destinations (a slot so tests can stub it; the real one needs Hilt).
+    wordsScreen: NavGraphBuilder.(NavHostController) -> Unit = { wordsDestination(it) },
 ) {
     val backStack by navController.currentBackStackEntryAsState()
     // The bar shows on the 4 tabs only (not onboarding or the full-screen talk flow).
@@ -79,7 +83,20 @@ fun VaakNavHost(
             composable<PracticeRoute> {
                 PromptScreen(onRecord = { prompt, track -> navController.navigate(RecordRoute(prompt.id, prompt.lang.code, track)) })
             }
-            composable<WordsRoute> { WordsScreen() }
+            wordsScreen(navController)
+            composable<WordDetailRoute> {
+                WordDetailScreen(
+                    onBack = { navController.popBackStack() },
+                    onPractise = { id -> navController.navigate(ReviewRoute(ReviewRoute.GYM, wordId = id)) },
+                    onSeeLine = { id -> navController.navigate(ReportRoute(id)) },
+                )
+            }
+            composable<ReviewRoute> {
+                ReviewScreen(
+                    onClose = { if (!navController.popBackStack()) navController.navigate(TodayRoute) },
+                    onTurnOnTalks = { navController.navigate(DisclosureRoute) },
+                )
+            }
             composable<MeRoute> { MeScreen() }
 
             composable<RecordRoute> {
@@ -124,9 +141,22 @@ fun VaakNavHost(
                     onRecordAgain = { s ->
                         navController.navigate(RecordRoute(s.promptId, s.lang, s.track, replaceId = s.id)) { popUpTo<RecoveredRoute> { inclusive = true } }
                     },
+                    // A recovered baseline resumes the baseline flow (analysis, then "Keep this recording?").
+                    onResumeBaseline = { id -> navController.navigate(BaselineResumeRoute(id)) { popUpTo<RecoveredRoute> { inclusive = true } } },
                 )
             }
         }
+    }
+}
+
+/** The Words tab (S14). */
+fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
+    composable<WordsRoute> {
+        WordsScreen(
+            onOpenGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) },
+            onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
+            onTalk = navController::navigateToTalk,
+        )
     }
 }
 

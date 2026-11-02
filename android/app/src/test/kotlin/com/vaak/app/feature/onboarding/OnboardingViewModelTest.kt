@@ -167,6 +167,64 @@ class OnboardingViewModelTest {
         await(OnboardingStep.REMINDER)
     }
 
+    // --- M4 fixes (US-003, D-010) ---
+
+    /** Clears the ViewModel the way leaving the screen does (ViewModelStore.clear → onCleared). */
+    private fun leaveScreen() {
+        val store = androidx.lifecycle.ViewModelStore()
+        val vm = h.vm
+        androidx.lifecycle.ViewModelProvider.create(store, object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = vm as T
+        })[OnboardingViewModel::class.java]
+        store.clear()
+    }
+
+    @Test
+    fun leavingBeforeTheKeepAnswerDeletesTheBaselineAudio() {
+        val recorder = h.recorder as com.vaak.app.testing.FakeBaselineRecorder
+        h.resumeAt(OnboardingStep.BASELINE)
+        waitFor { !state.loading && state.step == OnboardingStep.BASELINE }
+        h.vm.onRecordBaseline()
+        waitFor { state.baseline is BaselineUi.Recording }
+        h.vm.onStopBaseline()
+        waitFor { state.baseline is BaselineUi.Saved }
+        leaveScreen() // back or close before answering "Keep this recording?"
+        assertThat(recorder.abandoned).containsExactly("baseline-1")
+        assertThat(recorder.kept).isNull()
+    }
+
+    @Test
+    fun anAnsweredKeepQuestionIsNotOverriddenOnLeave() {
+        val recorder = h.recorder as com.vaak.app.testing.FakeBaselineRecorder
+        h.resumeAt(OnboardingStep.BASELINE)
+        waitFor { !state.loading && state.step == OnboardingStep.BASELINE }
+        h.vm.onRecordBaseline()
+        waitFor { state.baseline is BaselineUi.Recording }
+        h.vm.onStopBaseline()
+        waitFor { state.baseline is BaselineUi.Saved }
+        h.vm.onKeepBaselineAudio(true)
+        h.vm.onBaselineSavedContinue()
+        waitFor { recorder.kept == true }
+        leaveScreen()
+        assertThat(recorder.abandoned).isEmpty()
+    }
+
+    @Test
+    fun aRecoveredBaselineResumesTheBaselineFlow() {
+        val recorder = h.recorder as com.vaak.app.testing.FakeBaselineRecorder
+        h.resumeAt(OnboardingStep.WELCOME)
+        waitFor { !state.loading }
+        h.vm.startStandalone(OnboardingStep.BASELINE)
+        h.vm.resumeRecoveredBaseline("recovered-1")
+        waitFor { state.baseline is BaselineUi.Saved } // analysed, then "Keep this recording?"
+        assertThat(recorder.resumed).containsExactly("recovered-1")
+        assertThat(state.keepBaselineAudio).isFalse()
+        h.vm.onBaselineSavedContinue()
+        waitFor { settings().baselineRecorded }
+        assertThat(recorder.kept).isFalse()
+    }
+
     @Test
     fun notificationsDeniedKeepsThePlan() {
         h.resumeAt(OnboardingStep.REMINDER)

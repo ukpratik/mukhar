@@ -76,7 +76,12 @@ import com.vaak.app.feature.onboarding.Eyebrow
 import com.vaak.app.feature.onboarding.currentLocale
 import com.vaak.app.feature.onboarding.label
 import com.vaak.app.feature.onboarding.timeLabel
+import com.vaak.app.feature.words.SpeakerSlot
+import com.vaak.app.feature.words.hearDescription
+import com.vaak.app.feature.words.posAndRegister
 import com.vaak.data.prefs.ReminderSettings
+import com.vaak.data.repo.WordItem
+import com.vaak.data.repo.WordSource
 import com.vaak.data.work.ReminderCopy
 import com.vaak.domain.model.Lang
 import com.vaak.ui.theme.VaakCard
@@ -100,6 +105,8 @@ data class TodayActions(
     val onOpenRecovered: (String) -> Unit = {},
     val onTipTap: () -> Unit = {},
     val onDismissTip: () -> Unit = {},
+    val onOpenWord: (String) -> Unit = {},
+    val onSpeak: (WordItem) -> Unit = {},
 )
 
 /** S07, stateless (state in, events out). Order is fixed by US-030. */
@@ -125,7 +132,7 @@ fun TodayContent(state: TodayUiState, actions: TodayActions, modifier: Modifier 
         state.recovered?.let { r ->
             CardRow(
                 icon = Icons.Outlined.Restore, badge = Badge.BRAND,
-                title = stringResource(R.string.today_recovered_title),
+                title = stringResource(if (r.isBaseline) R.string.today_recovered_baseline_title else R.string.today_recovered_title),
                 sub = stringResource(R.string.today_recovered_sub, mmss(r.durationMs.toLong()), clockTime(r.recordedAt)),
                 onClick = { actions.onOpenRecovered(r.sessionId) },
             )
@@ -146,7 +153,7 @@ fun TodayContent(state: TodayUiState, actions: TodayActions, modifier: Modifier 
                 a11y = a11y,
             )
         }
-        WordsSection(actions.onOpenWords)
+        WordsSection(state, actions)
         if (state.showBaseline && !state.baselineFirst) BaselineCard(actions.onRecordBaseline)
     }
 }
@@ -473,22 +480,59 @@ private fun BaselineCard(onClick: () -> Unit) {
     )
 }
 
-/** Today's words arrive with the M4 content packs; until then the section says what will appear. */
+/** Today's words (US-020): meaning, example, register and source, with the speaker when a voice is installed. */
 @Composable
-private fun WordsSection(onOpenWords: () -> Unit) {
+private fun WordsSection(state: TodayUiState, actions: TodayActions) {
     Row(Modifier.fillMaxWidth().padding(top = VaakSpace.s, start = 2.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.today_words), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(1f).semantics { heading() })
         Box(
-            Modifier.heightIn(min = VaakSpace.touch).clickable(role = Role.Button, onClick = onOpenWords).padding(horizontal = VaakSpace.xs),
+            Modifier.heightIn(min = VaakSpace.touch).clickable(role = Role.Button, onClick = actions.onOpenWords).padding(horizontal = VaakSpace.xs),
             contentAlignment = Alignment.Center,
         ) {
             Text(stringResource(R.string.today_word_bank), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
         }
     }
-    VaakCard(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(VaakSpace.l), verticalArrangement = Arrangement.spacedBy(VaakSpace.s)) {
-            Eyebrow(stringResource(R.string.placeholder_coming), color = VaakTheme.colors.accentInk)
-            Text(stringResource(R.string.today_words_soon), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    VaakCard(Modifier.fillMaxWidth().testTag(TAG_WORDS)) {
+        if (state.words.isEmpty()) {
+            Text(
+                stringResource(R.string.today_words_soon),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(VaakSpace.l),
+            )
+        }
+        state.words.forEachIndexed { i, w ->
+            if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            val meta = posAndRegister(w)
+            Row(
+                Modifier.fillMaxWidth().clickable(role = Role.Button) { actions.onOpenWord(w.id) }
+                    .padding(start = VaakSpace.l, end = VaakSpace.s, top = 12.dp, bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
+                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            w.lemma,
+                            style = if (w.lang == Lang.HI) VaakTheme.type.hiBodyLarge.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(meta, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text(
+                        "${if (w.lang == Lang.HI) w.gloss ?: w.meaning else w.meaning} “${w.example}”",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 3,
+                    )
+                    if (w.source == WordSource.TALK) {
+                        Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.Mic, null, tint = VaakTheme.colors.accentInk, modifier = Modifier.size(14.dp))
+                            Text(stringResource(R.string.today_word_from_talk), style = MaterialTheme.typography.labelSmall, color = VaakTheme.colors.accentInk, modifier = Modifier.padding(start = 4.dp))
+                        }
+                    }
+                }
+                SpeakerSlot(state.voices[w.lang] == true, hearDescription(w.lemma, w.lang), { actions.onSpeak(w) })
+            }
         }
     }
 }
@@ -504,3 +548,4 @@ const val TAG_STREAK_CARD = "today_streak"
 const val TAG_TALK_CARD = "today_talk"
 const val TAG_DONE_CARD = "today_done"
 const val TAG_REVISE = "today_revise"
+const val TAG_WORDS = "today_words"

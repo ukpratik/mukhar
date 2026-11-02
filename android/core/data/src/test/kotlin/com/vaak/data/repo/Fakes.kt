@@ -9,6 +9,8 @@ import com.vaak.data.work.AnalysisScheduler
 import com.vaak.data.work.FeedbackRequest
 import com.vaak.data.work.FeedbackResult
 import com.vaak.data.work.ReportRequest
+import com.vaak.data.work.SentenceCheckRequest
+import com.vaak.data.work.SentenceCheckResult
 import com.vaak.data.work.TranscribeRequest
 import com.vaak.data.work.TranscribeResult
 import com.vaak.domain.model.Lang
@@ -39,6 +41,14 @@ class ScriptedPipeline : AnalysisPipeline {
     override suspend fun report(request: ReportRequest): Outcome<Unit> {
         reports += request
         return Outcome.Ok(Unit)
+    }
+
+    val checkAnswers = ArrayDeque<Outcome<SentenceCheckResult>>()
+    val checkCalls = mutableListOf<SentenceCheckRequest>()
+
+    override suspend fun checkSentence(request: SentenceCheckRequest, audio: File): Outcome<SentenceCheckResult> {
+        checkCalls += request
+        return if (checkAnswers.size > 1) checkAnswers.removeFirst() else checkAnswers.firstOrNull() ?: Outcome.Err(AppError.Offline)
     }
 }
 

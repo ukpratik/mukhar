@@ -52,7 +52,7 @@ class TodayContentTest {
         compose.onNodeWithContentDescription("Record your 1-minute starting point").performScrollTo()
         compose.onNodeWithContentDescription("Revise. Nothing due yet. Words you add show up here tomorrow.").performScrollTo()
         exists("Today's words")
-        exists("Three new words a day, picked for your goals, will show up here.")
+        exists("New words for your goals show up here each morning.")
         compose.onNodeWithTag(TAG_TALK_CARD).performClick()
         assertThat(talk).isEqualTo(1)
     }
@@ -115,5 +115,36 @@ class TodayContentTest {
                 compose.onAllNodes(hasContentDescription(banned, substring = true, ignoreCase = true)).assertCountEquals(0)
             }
         }
+    }
+
+    @Test
+    fun todaysWordsShowRealDailyWordsWithTheSpeakerOnlyWithAVoice() {
+        var opened: String? = null
+        val words = listOf(
+            com.vaak.app.feature.words.WordsFixtures.articulate,
+            com.vaak.app.feature.words.WordsFixtures.concise,
+            com.vaak.app.feature.words.WordsFixtures.sateek,
+        )
+        show(
+            TodayFixtures.midDay.copy(words = words, voices = mapOf(com.vaak.domain.model.Lang.EN to true, com.vaak.domain.model.Lang.HI to false)),
+            TodayActions(onOpenWord = { opened = it }),
+        )
+        compose.onAllNodes(hasText("From your talk", substring = true)).assertCountEquals(2) // concise is curated
+        compose.onNodeWithContentDescription("Hear articulate, Indian English voice").performScrollTo()
+        compose.onNodeWithContentDescription("Hear concise, Indian English voice").performScrollTo()
+        compose.onAllNodes(hasContentDescription("Hear सटीक", substring = true)).assertCountEquals(0) // no Hindi voice: hidden
+        compose.onNode(hasText("Short and clear", substring = true)).performScrollTo().performClick()
+        assertThat(opened).isEqualTo("en:concise")
+    }
+
+    @Test
+    fun aRecoveredBaselineIsShownAsTheStartingPoint() {
+        var opened: String? = null
+        show(
+            TodayFixtures.firstDay.copy(recovered = com.vaak.data.today.RecoveredTalk("b-1", java.time.Instant.parse("2026-11-02T03:00:00Z"), 42_000, isBaseline = true)),
+            TodayActions(onOpenRecovered = { opened = it }),
+        )
+        compose.onNode(hasContentDescription("We kept your starting point", substring = true)).performScrollTo().performClick()
+        assertThat(opened).isEqualTo("b-1")
     }
 }

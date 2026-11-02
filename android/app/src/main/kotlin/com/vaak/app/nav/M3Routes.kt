@@ -4,8 +4,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.vaak.app.R
-import com.vaak.app.feature.PlaceholderScreen
+import androidx.navigation.toRoute
 import com.vaak.app.feature.onboarding.OnboardingRoute as OnboardingFlow
 import com.vaak.app.feature.onboarding.OnboardingStep
 import com.vaak.app.feature.onboarding.StandaloneStepRoute
@@ -17,8 +16,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object DisclosureRoute
 @Serializable data object BaselineRoute
 
-/** Where the Revise card goes. M4 builds the session (S15); placeholder until then. */
-@Serializable data object ReviseEntryRoute
+/** S05 resuming a baseline that was recovered after the app closed mid-recording (S09 state 8). */
+@Serializable data class BaselineResumeRoute(val sessionId: String)
 
 /** Today's Talk goes straight to Recording (S09) with a prompt picked for the last language and track (D-020). */
 fun NavHostController.navigateToTalk() = navigate(RecordRoute())
@@ -28,7 +27,8 @@ fun NavGraphBuilder.todayDestination(navController: NavHostController) {
     composable<TodayRoute> {
         TodayDestination(
             onStartTalk = navController::navigateToTalk,
-            onOpenRevise = { navController.navigate(ReviseEntryRoute) },
+            onOpenRevise = { navController.navigate(ReviewRoute(ReviewRoute.REVISE)) },
+            onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
             onOpenWords = { navController.navigateTab(WordsRoute) },
             onOpenMe = { navController.navigateTab(MeRoute) },
             onTurnOnTalks = { navController.navigate(DisclosureRoute) },
@@ -39,14 +39,17 @@ fun NavGraphBuilder.todayDestination(navController: NavHostController) {
 }
 
 /**
- * Onboarding, the standalone S04/S05, and the placeholder revise destination. Finishing onboarding calls
+ * Onboarding and the standalone S04/S05 (also S05 resuming a recovered baseline). Finishing onboarding calls
  * [onOnboardingFinished]: the root then rebuilds the graph with Today as its start, so tab back-stack rules hold.
  */
 fun NavGraphBuilder.m3Destinations(navController: NavHostController, onOnboardingFinished: () -> Unit) {
     composable<OnboardingRoute> { OnboardingFlow(onFinished = onOnboardingFinished) }
     composable<DisclosureRoute> { StandaloneStepRoute(OnboardingStep.DISCLOSURE, onClose = { navController.popBackStack() }) }
     composable<BaselineRoute> { StandaloneStepRoute(OnboardingStep.BASELINE, onClose = { navController.popBackStack() }) }
-    composable<ReviseEntryRoute> { PlaceholderScreen(title = R.string.placeholder_revise_title, body = R.string.placeholder_revise) }
+    composable<BaselineResumeRoute> { entry ->
+        val id = entry.toRoute<BaselineResumeRoute>().sessionId
+        StandaloneStepRoute(OnboardingStep.BASELINE, onClose = { navController.popBackStack() }, resumeSessionId = id)
+    }
 }
 
 private fun NavHostController.navigateTab(route: Any) = navigate(route) {

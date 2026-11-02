@@ -8,6 +8,8 @@ import com.vaak.data.work.AnalysisPipeline
 import com.vaak.data.work.FeedbackRequest
 import com.vaak.data.work.FeedbackResult
 import com.vaak.data.work.ReportRequest
+import com.vaak.data.work.SentenceCheckRequest
+import com.vaak.data.work.SentenceCheckResult
 import com.vaak.data.work.TranscribeRequest
 import com.vaak.data.work.TranscribeResult
 import com.vaak.data.net.Outcome
@@ -77,6 +79,8 @@ class DebugAnalysisPipeline(
     override suspend fun transcribe(request: TranscribeRequest, audio: File): Outcome<TranscribeResult> = target.transcribe(request, audio)
     override suspend fun feedback(request: FeedbackRequest): Outcome<FeedbackResult> = target.feedback(request)
     override suspend fun report(request: ReportRequest): Outcome<Unit> = target.report(request)
+    override suspend fun checkSentence(request: SentenceCheckRequest, audio: File): Outcome<SentenceCheckResult> =
+        target.checkSentence(request, audio)
 }
 
 class DebugStorageInfo(private val real: StorageInfo, private val controls: DebugControls) : StorageInfo {

@@ -10,6 +10,12 @@ import com.vaak.data.audio.Recorder
 import com.vaak.data.audio.RecordingFiles
 import com.vaak.data.audio.StorageInfo
 import com.vaak.data.content.PromptRepository
+import com.vaak.data.content.WordCatalog
+import com.vaak.data.repo.Entitlements
+import com.vaak.data.repo.SentenceChecker
+import com.vaak.data.repo.WordRepository
+import com.vaak.data.tts.AndroidSpeaker
+import com.vaak.data.tts.Speaker
 import com.vaak.data.db.HabitDao
 import com.vaak.data.db.TalkDao
 import com.vaak.data.db.VaakDatabase
@@ -150,7 +156,26 @@ object DataModule {
         clock: Clock,
         json: Json,
         @ApplicationScope scope: CoroutineScope,
+        words: WordRepository,
     ): TalkRepository = TalkRepository(
-        talkDao, wordDao, habits, settings, pipeline, prompts, scheduler, files, storage, clock, IdGenerator.Random, json, scope,
+        talkDao, wordDao, habits, settings, pipeline, prompts, scheduler, files, storage, clock, IdGenerator.Random, json, scope, words,
     )
+
+    @Provides
+    @Singleton
+    fun wordCatalog(@ApplicationContext context: Context, json: Json): WordCatalog = WordCatalog(context, json)
+
+    @Provides
+    @Singleton
+    fun words(wordDao: WordDao, catalog: WordCatalog, settings: SettingsStore, habits: HabitRepository, clock: Clock): WordRepository =
+        WordRepository(wordDao, catalog, settings, habits, clock)
+
+    @Provides
+    @Singleton
+    fun sentenceChecker(pipeline: AnalysisPipeline, settings: SettingsStore, entitlements: Entitlements, clock: Clock): SentenceChecker =
+        SentenceChecker(pipeline, settings, entitlements, clock, IdGenerator.Random)
+
+    @Provides
+    @Singleton
+    fun speaker(impl: AndroidSpeaker): Speaker = impl
 }

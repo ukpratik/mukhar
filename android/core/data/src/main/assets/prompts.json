@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "prompts": [
   {
    "id": "en-001",
@@ -333,6 +333,1255 @@
    "difficulty": "medium",
    "text": "Teach the audience one thing you're good at in two minutes.",
    "tip": "Try: why it's useful → the steps → one tip."
+  },
+  {
+   "id": "en-031",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "A client in Pune wants the delivery date moved up by two weeks. Explain what is possible and what it would cost.",
+   "prep": [
+    "Point: what we can realistically deliver.",
+    "Reason: the work that cannot be rushed.",
+    "Example: one task and its true timeline.",
+    "Point again: the option you recommend."
+   ]
+  },
+  {
+   "id": "en-032",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Give a two-minute update on your work this week at the Monday team stand-up."
+  },
+  {
+   "id": "en-033",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Your team wants to switch tools, but your manager prefers the old one. Make the case for switching in one meeting.",
+   "tip": "Try: the problem → the new tool → the cost → a small trial."
+  },
+  {
+   "id": "en-034",
+   "lang": "en",
+   "tracks": [
+    "professional",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Present the results of a customer survey your team ran last quarter to senior leaders."
+  },
+  {
+   "id": "en-035",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Introduce yourself on your first day in a new office to a team of twelve people."
+  },
+  {
+   "id": "en-036",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Tell me about yourself. You are a fresher from an engineering college applying for a software role."
+  },
+  {
+   "id": "en-037",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Why do you want to leave your current job after only eighteen months?",
+   "tip": "Try: what you learned → what is missing → why this role fills it."
+  },
+  {
+   "id": "en-038",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Describe a time you disagreed with a senior colleague. What did you do?",
+   "prep": [
+    "Point: we disagreed, and we sorted it out.",
+    "Reason: what we each believed.",
+    "Example: the conversation that changed things.",
+    "Point again: what I learned about disagreeing well."
+   ]
+  },
+  {
+   "id": "en-039",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "You have a gap of two years on your CV because you prepared for government exams. Explain it to the interviewer."
+  },
+  {
+   "id": "en-040",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "What are your hobbies, and how do they help you at work?"
+  },
+  {
+   "id": "en-041",
+   "lang": "en",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Your salary expectation is higher than the offer. Negotiate politely with the HR manager on a call.",
+   "tip": "Try: thank them → your number → why → leave room to agree."
+  },
+  {
+   "id": "en-042",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe your daily commute in your city, and one thing that would make it easier."
+  },
+  {
+   "id": "en-043",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell a friend about the best street food you have eaten and where to find it."
+  },
+  {
+   "id": "en-044",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Your parents want you to buy a car on EMI. Explain why you would rather wait a year."
+  },
+  {
+   "id": "en-045",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Convince your housing society to start segregating dry and wet waste."
+  },
+  {
+   "id": "en-046",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell your cousin how you plan to spend Diwali this year."
+  },
+  {
+   "id": "en-047",
+   "lang": "en",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Explain UPI to your viewers as if they have never used it, in under two minutes.",
+   "tip": "Try: what it is → how to pay → one safety tip."
+  },
+  {
+   "id": "en-048",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Give a short toast at your best friend's engagement party."
+  },
+  {
+   "id": "en-049",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Speak to first-year students at your old college about what you wish you had known.",
+   "prep": [
+    "Point: one thing I wish I'd known.",
+    "Reason: why it matters in first year.",
+    "Example: a moment from my own college days.",
+    "Point again: what they can do this week."
+   ]
+  },
+  {
+   "id": "en-050",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Give a talk to your colony on why we should save water before summer, and get them to act."
+  },
+  {
+   "id": "en-051",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Introduce the chief guest at your company's annual day function."
+  },
+  {
+   "id": "en-052",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Thank everyone who helped organise your office's cricket tournament."
+  },
+  {
+   "id": "en-053",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your followers why you started a weekend running habit and how they can begin.",
+   "tip": "Try: the hook → your story → three easy steps."
+  },
+  {
+   "id": "en-054",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Explain a technical problem to a non-technical manager who must decide whether to delay the launch."
+  },
+  {
+   "id": "en-055",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Tell me about a time you had to learn something new very quickly."
+  },
+  {
+   "id": "en-056",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Explain to a new intern how leave and attendance work in your office."
+  },
+  {
+   "id": "en-057",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "A vendor has delivered late three times. Tell them on a call what must change.",
+   "prep": [
+    "Point: we need on-time delivery from now on.",
+    "Reason: how the delays hurt us.",
+    "Example: the last late order and its impact.",
+    "Point again: what we expect and by when."
+   ]
+  },
+  {
+   "id": "en-058",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Your project failed after six months. Present what went wrong to leadership without blaming anyone."
+  },
+  {
+   "id": "en-059",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Pitch your small catering business to a corporate office looking for a lunch vendor.",
+   "tip": "Try: who you are → what you serve → price → why trust you."
+  },
+  {
+   "id": "en-060",
+   "lang": "en",
+   "tracks": [
+    "professional",
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Present your team's plan to cut cloud costs by 20 percent to the whole engineering department."
+  },
+  {
+   "id": "en-061",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Leave a clear voice note for your team explaining why you are on leave tomorrow and who covers for you."
+  },
+  {
+   "id": "en-062",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "What is your biggest weakness, and what are you doing about it?",
+   "tip": "Try: name it → a real example → what you are doing now."
+  },
+  {
+   "id": "en-063",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Why did you choose your college course, and would you choose it again?"
+  },
+  {
+   "id": "en-064",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "Walk me through a decision you made with incomplete data. What happened?"
+  },
+  {
+   "id": "en-065",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "You are moving from a small town to Bengaluru for this job. How will you handle the change?"
+  },
+  {
+   "id": "en-066",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Where do you see yourself in three years?"
+  },
+  {
+   "id": "en-067",
+   "lang": "en",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Explain a project on your resume to an interviewer who knows nothing about your industry.",
+   "prep": [
+    "Point: what the project did in one line.",
+    "Reason: why the company needed it.",
+    "Example: my specific part in it.",
+    "Point again: the result and what I learned."
+   ]
+  },
+  {
+   "id": "en-068",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Your landlord wants to raise rent by 15 percent. Explain why that is too much and suggest a fair number."
+  },
+  {
+   "id": "en-069",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe a family recipe and who taught it to you."
+  },
+  {
+   "id": "en-070",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Convince your father to get a regular health check-up this year.",
+   "tip": "Try: your worry → why it helps → make it easy for him."
+  },
+  {
+   "id": "en-071",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell your friends why your favourite IPL team will win this season."
+  },
+  {
+   "id": "en-072",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Explain to your family why you want to quit a stable job to start your own business."
+  },
+  {
+   "id": "en-073",
+   "lang": "en",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Explain to your viewers how to make perfect cutting chai at home."
+  },
+  {
+   "id": "en-074",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Give a farewell speech for a colleague who is retiring after thirty years."
+  },
+  {
+   "id": "en-075",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Welcome the audience to your school's annual sports day."
+  },
+  {
+   "id": "en-076",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Debate: should college attendance be compulsory? Take one side and defend it.",
+   "prep": [
+    "Point: my side, stated clearly.",
+    "Reason: the strongest argument.",
+    "Example: a real student's situation.",
+    "Point again: why my side wins."
+   ]
+  },
+  {
+   "id": "en-077",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Speak at a blood donation camp to encourage first-time donors."
+  },
+  {
+   "id": "en-078",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Explain the 'quiet quitting' trend to your viewers and say what you think of it."
+  },
+  {
+   "id": "en-079",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Give a short talk at a tech meetup on one tool that saves you an hour a day."
+  },
+  {
+   "id": "en-080",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell a neighbour about a good local doctor or clinic you trust, and why."
+  },
+  {
+   "id": "en-081",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Your colleague keeps missing handoffs. Give them feedback one-on-one without souring the relationship.",
+   "prep": [
+    "Point: the handoffs need to improve.",
+    "Reason: what happens when they slip.",
+    "Example: last Thursday's missed handoff.",
+    "Point again: what we agree to try."
+   ]
+  },
+  {
+   "id": "en-082",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Explain your role to a relative who keeps asking what you actually do at work."
+  },
+  {
+   "id": "en-083",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Your startup has three months of runway left. Tell your team honestly and ask for their ideas."
+  },
+  {
+   "id": "en-084",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Ask your manager for a work-from-home arrangement two days a week.",
+   "tip": "Try: the ask → why it helps the work → how you'll stay reachable."
+  },
+  {
+   "id": "en-085",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Summarise a long client call for a teammate who missed it."
+  },
+  {
+   "id": "en-086",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your shop's staff why you are moving from cash to UPI-only billing."
+  },
+  {
+   "id": "en-087",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Tell me about a time you failed. What did you learn?",
+   "tip": "Try: the goal → what went wrong → what you changed."
+  },
+  {
+   "id": "en-088",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "What do you know about our company, and why do you want to join us?"
+  },
+  {
+   "id": "en-089",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "You are switching from a bank job to product management. Convince me you can make the move.",
+   "prep": [
+    "Point: my banking years prepared me for this.",
+    "Reason: the skills that carry over.",
+    "Example: a time I solved a customer problem end to end.",
+    "Point again: why I'm ready now."
+   ]
+  },
+  {
+   "id": "en-090",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "How do you handle pressure when three deadlines fall in the same week?"
+  },
+  {
+   "id": "en-091",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Describe the best team you have worked in. What made it work?"
+  },
+  {
+   "id": "en-092",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Tell me about your final-year project in simple words."
+  },
+  {
+   "id": "en-093",
+   "lang": "en",
+   "tracks": [
+    "interviews",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "You are interviewing for a flat-share. Tell the current flatmates about your habits and routine."
+  },
+  {
+   "id": "en-094",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your grandparents how to spot a fake bank call or SMS.",
+   "tip": "Try: the warning sign → what to do → who to call."
+  },
+  {
+   "id": "en-095",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe your favourite monsoon memory."
+  },
+  {
+   "id": "en-096",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Plan a weekend trip from Mumbai to Lonavala with friends and pitch the plan in the group."
+  },
+  {
+   "id": "en-097",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Your friend borrowed money six months ago and hasn't returned it. Ask for it back without ruining the friendship."
+  },
+  {
+   "id": "en-098",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Recommend a web series you binged recently, without spoilers."
+  },
+  {
+   "id": "en-099",
+   "lang": "en",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Review a new cafe in your area for your Instagram followers."
+  },
+  {
+   "id": "en-100",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Speak at your school's alumni meet about how the school shaped you."
+  },
+  {
+   "id": "en-101",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Give an impromptu speech: 'Is social media making us lonely?'"
+  },
+  {
+   "id": "en-102",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Announce the winners of the rangoli competition at your society's Diwali event."
+  },
+  {
+   "id": "en-103",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Motivate your college team before the inter-college debate final.",
+   "tip": "Try: where we are → what we've done → one rallying line."
+  },
+  {
+   "id": "en-104",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Explain to your viewers why so many young Indians are taking up personal finance, and give one tip."
+  },
+  {
+   "id": "en-105",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Give the opening remarks at a hackathon your company is hosting."
+  },
+  {
+   "id": "en-106",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Explain to a customer why their online order will arrive two days late."
+  },
+  {
+   "id": "en-107",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Run the first two minutes of a kickoff meeting for a new project with a team across Delhi and Chennai.",
+   "prep": [
+    "Point: why this project matters.",
+    "Reason: the problem it solves for users.",
+    "Example: who does what in week one.",
+    "Point again: what success looks like."
+   ]
+  },
+  {
+   "id": "en-108",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Your best performer has asked for a raise you cannot give. Explain the situation and what you can offer.",
+   "tip": "Try: thank them → the honest constraint → what you can do → a date to revisit."
+  },
+  {
+   "id": "en-109",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Present a monthly sales report to your boss where the numbers are down by 10 percent."
+  },
+  {
+   "id": "en-110",
+   "lang": "en",
+   "tracks": [
+    "professional",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Give a one-minute self-introduction at an industry networking event."
+  },
+  {
+   "id": "en-111",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your accountant what expenses you want to claim for your freelance work this year."
+  },
+  {
+   "id": "en-112",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Tell me about a time you helped a teammate who was struggling.",
+   "tip": "Try: who and why → what you did → how it ended."
+  },
+  {
+   "id": "en-113",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "Why should we hire you over a candidate with two more years of experience?"
+  },
+  {
+   "id": "en-114",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "How do you keep yourself updated in your field?"
+  },
+  {
+   "id": "en-115",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Describe a situation where a customer was angry. How did you handle it?",
+   "prep": [
+    "Point: I calmed the customer and fixed the issue.",
+    "Reason: what made them angry.",
+    "Example: what I said and did.",
+    "Point again: how they left, and what I learned."
+   ]
+  },
+  {
+   "id": "en-116",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "What would your previous manager say about you?"
+  },
+  {
+   "id": "en-117",
+   "lang": "en",
+   "tracks": [
+    "interviews",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "In a group discussion round, open the topic: 'Work from home is here to stay.'"
+  },
+  {
+   "id": "en-118",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell your friend why you switched from Swiggy and Zomato to cooking at home on weekdays."
+  },
+  {
+   "id": "en-119",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Your neighbour plays loud music late at night. Ask them politely to lower it."
+  },
+  {
+   "id": "en-120",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe the most memorable wedding you have attended."
+  },
+  {
+   "id": "en-121",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your teenage cousin why she should start saving a little of her pocket money.",
+   "tip": "Try: one simple idea → a number she can picture → start today."
+  },
+  {
+   "id": "en-122",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Your family is split on whether to move your grandmother to your city. Share your view at the dinner table."
+  },
+  {
+   "id": "en-123",
+   "lang": "en",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Explain the difference between a mutual fund SIP and a fixed deposit to your viewers."
+  },
+  {
+   "id": "en-124",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Give a vote of thanks at the end of a college seminar."
+  },
+  {
+   "id": "en-125",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Speak for two minutes on the topic 'The best lesson cricket taught me.'"
+  },
+  {
+   "id": "en-126",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "At a parents' meeting, argue that schools should cut homework for primary classes.",
+   "prep": [
+    "Point: less homework, better learning.",
+    "Reason: children need time to play and rest.",
+    "Example: a child's evening as it is today.",
+    "Point again: what we ask the school to try."
+   ]
+  },
+  {
+   "id": "en-127",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Introduce your startup in two minutes at a college entrepreneurship fest."
+  },
+  {
+   "id": "en-128",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell your followers about one small habit that made your mornings calmer."
+  },
+  {
+   "id": "en-129",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "Give a talk to your company's new hires on how to ask good questions at work."
+  },
+  {
+   "id": "en-130",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe the market or bazaar near your home to someone visiting for the first time."
+  },
+  {
+   "id": "en-131",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Tell your team you are changing the weekly meeting from one hour to thirty minutes, and how it will work."
+  },
+  {
+   "id": "en-132",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "Thank a colleague in front of the team for helping you meet a tough deadline."
+  },
+  {
+   "id": "en-133",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "A big client is unhappy with your team's work. Open the escalation call and rebuild their trust.",
+   "prep": [
+    "Point: we hear you, and we will fix this.",
+    "Reason: what went wrong on our side.",
+    "Example: the specific steps starting today.",
+    "Point again: how we'll keep you updated."
+   ]
+  },
+  {
+   "id": "en-134",
+   "lang": "en",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your manager why you need one more person on the team.",
+   "tip": "Try: the workload → the risk → the ask."
+  },
+  {
+   "id": "en-135",
+   "lang": "en",
+   "tracks": [
+    "professional",
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Explain to a customer at your shop why a product costs more this month."
+  },
+  {
+   "id": "en-136",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "What motivates you to do your best work?"
+  },
+  {
+   "id": "en-137",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Tell me about a time you took ownership of something that was not your job."
+  },
+  {
+   "id": "en-138",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "You were laid off last year. Tell the interviewer what happened and what you have done since.",
+   "tip": "Try: the facts in one line → what you did next → why you're ready."
+  },
+  {
+   "id": "en-139",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "How would you explain your current job to a ten-year-old?"
+  },
+  {
+   "id": "en-140",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "Why are you interested in working in a startup rather than a large company?"
+  },
+  {
+   "id": "en-141",
+   "lang": "en",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "Describe a time you had to say no to your manager.",
+   "prep": [
+    "Point: I said no, and it was the right call.",
+    "Reason: why I couldn't say yes.",
+    "Example: how I said it and what I offered instead.",
+    "Point again: what it taught me."
+   ]
+  },
+  {
+   "id": "en-142",
+   "lang": "en",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "In your appraisal meeting, explain why you deserve a promotion this cycle."
+  },
+  {
+   "id": "en-143",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Describe how your city has changed in the last ten years."
+  },
+  {
+   "id": "en-144",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Tell your friends about a festival from your home state that they may not know."
+  },
+  {
+   "id": "en-145",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Ask your gym trainer to change your plan because of a knee problem."
+  },
+  {
+   "id": "en-146",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "Your sibling wants to drop out of college for a content creator career. Give your honest advice."
+  },
+  {
+   "id": "en-147",
+   "lang": "en",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "Describe your ideal Sunday."
+  },
+  {
+   "id": "en-148",
+   "lang": "en",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Explain to your viewers how to plan a budget trip to Goa during the off-season.",
+   "tip": "Try: when to go → where to stay → what to skip."
+  },
+  {
+   "id": "en-149",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Give a speech at your parents' 25th wedding anniversary."
+  },
+  {
+   "id": "en-150",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Introduce yourself at the start of a Toastmasters club meeting."
+  },
+  {
+   "id": "en-151",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "Speak to a room of shopkeepers on why they should accept digital payments.",
+   "prep": [
+    "Point: digital payments grow your business.",
+    "Reason: customers carry less cash now.",
+    "Example: a shop that gained sales after switching.",
+    "Point again: how to start this week."
+   ]
+  },
+  {
+   "id": "en-152",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Give a short talk on 'One book that changed how I think.'"
+  },
+  {
+   "id": "en-153",
+   "lang": "en",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "Explain a viral reel trend to your parents and why people enjoy it."
+  },
+  {
+   "id": "en-154",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "Welcome new members to your city's weekend cycling group and share the rules."
+  },
+  {
+   "id": "en-155",
+   "lang": "en",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "Wish your class teacher on Teachers' Day in front of the whole class."
   },
   {
    "id": "hi-001",
@@ -693,6 +1942,1395 @@
    "difficulty": "easy",
    "text": "अपने काम का एक सामान्य दिन कैसा होता है, बताइए।",
    "translit": "Apne kaam ka ek saamaanya din kaisa hota hai, bataiye."
+  },
+  {
+   "id": "hi-031",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "क्लाइंट को फ़ोन पर बताइए कि प्रोजेक्ट एक हफ़्ता लेट होगा, और आगे क्या प्लान है।",
+   "translit": "Client ko phone par bataiye ki project ek hafta late hoga, aur aage kya plan hai.",
+   "prep": [
+    "मुद्दा: प्रोजेक्ट एक हफ़्ता लेट है",
+    "कारण: देरी क्यों हुई",
+    "उदाहरण: कौन सा काम अटका",
+    "फिर से मुद्दा: नई तारीख और भरोसा"
+   ]
+  },
+  {
+   "id": "hi-032",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "सोमवार की टीम मीटिंग में अपने पिछले हफ़्ते के काम का अपडेट दीजिए।",
+   "translit": "Somvaar ki team meeting mein apne pichhle hafte ke kaam ka update dijiye."
+  },
+  {
+   "id": "hi-033",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "आपकी दुकान का एक पुराना कर्मचारी बार-बार देर से आता है। उससे शांति से बात कीजिए।",
+   "translit": "Aapki dukaan ka ek purana karmachari baar-baar der se aata hai. Usse shaanti se baat kijiye.",
+   "tip": "कोशिश करें: उसकी कदर → समस्या → असर → आगे का वादा।"
+  },
+  {
+   "id": "hi-034",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "अपने बॉस से दो दिन वर्क फ़्रॉम होम की इजाज़त माँगिए।",
+   "translit": "Apne boss se do din work from home ki ijaazat maangiye."
+  },
+  {
+   "id": "hi-035",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "नए इंटर्न को समझाइए कि ऑफ़िस में छुट्टी के लिए कैसे अप्लाई करते हैं।",
+   "translit": "Naye intern ko samjhaiye ki office mein chhutti ke liye kaise apply karte hain."
+  },
+  {
+   "id": "hi-036",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "अपने बारे में बताइए। आप बी.कॉम के फ़्रेशर हैं और अकाउंटिंग की नौकरी चाहते हैं।",
+   "translit": "Apne baare mein bataiye. Aap B.Com ke fresher hain aur accounting ki naukri chahte hain.",
+   "tip": "कोशिश करें: पढ़ाई → एक खूबी → यह नौकरी क्यों।"
+  },
+  {
+   "id": "hi-037",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "आप अपनी पिछली नौकरी क्यों छोड़ना चाहते हैं?",
+   "translit": "Aap apni pichhli naukri kyon chhodna chahte hain?"
+  },
+  {
+   "id": "hi-038",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आपसे गलती हुई और आपने उसे सुधारा।",
+   "translit": "Koi aisa samay bataiye jab aapse galti hui aur aapne use sudhaara.",
+   "prep": [
+    "मुद्दा: गलती हुई, पर मैंने संभाल ली",
+    "कारण: गलती कैसे हुई",
+    "उदाहरण: मैंने क्या कदम उठाए",
+    "फिर से मुद्दा: इससे क्या सीखा"
+   ]
+  },
+  {
+   "id": "hi-039",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "आपके पास अनुभव कम है। हम आपको ही क्यों चुनें?",
+   "translit": "Aapke paas anubhav kam hai. Hum aapko hi kyon chunein?"
+  },
+  {
+   "id": "hi-040",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "खाली समय में आप क्या करते हैं, और उससे क्या सीखते हैं?",
+   "translit": "Khaali samay mein aap kya karte hain, aur usse kya seekhte hain?"
+  },
+  {
+   "id": "hi-041",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "सरकारी नौकरी की तैयारी छोड़कर प्राइवेट जॉब में क्यों आना चाहते हैं?",
+   "translit": "Sarkari naukri ki taiyari chhodkar private job mein kyon aana chahte hain?",
+   "tip": "कोशिश करें: सच्ची वजह → क्या सीखा → यहाँ क्यों।"
+  },
+  {
+   "id": "hi-042",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "HR ने जो सैलरी ऑफ़र की है वह कम है। विनम्रता से बातचीत कीजिए।",
+   "translit": "HR ne jo salary offer ki hai woh kam hai. Vinamrata se baatcheet kijiye."
+  },
+  {
+   "id": "hi-043",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने रोज़ के ऑफ़िस आने-जाने के सफ़र के बारे में बताइए।",
+   "translit": "Apne roz ke office aane-jaane ke safar ke baare mein bataiye."
+  },
+  {
+   "id": "hi-044",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपनी मम्मी के हाथ की सबसे पसंदीदा डिश के बारे में बताइए।",
+   "translit": "Apni mummy ke haath ki sabse pasandeeda dish ke baare mein bataiye."
+  },
+  {
+   "id": "hi-045",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "पापा को समझाइए कि उन्हें हर साल हेल्थ चेकअप क्यों कराना चाहिए।",
+   "translit": "Papa ko samjhaiye ki unhein har saal health checkup kyon karana chahiye.",
+   "prep": [
+    "मुद्दा: चेकअप ज़रूरी है",
+    "कारण: बीमारी जल्दी पकड़ में आती है",
+    "उदाहरण: किसी जान-पहचान वाले की बात",
+    "फिर से मुद्दा: इस महीने ही करवा लें"
+   ]
+  },
+  {
+   "id": "hi-046",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "मकान मालिक किराया बहुत बढ़ा रहा है। उससे बात करके बीच का रास्ता निकालिए।",
+   "translit": "Makaan maalik kiraya bahut badha raha hai. Usse baat karke beech ka raasta nikaaliye."
+  },
+  {
+   "id": "hi-047",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "इस बार होली कैसे मनाने का प्लान है, दोस्तों को बताइए।",
+   "translit": "Is baar Holi kaise manaane ka plan hai, doston ko bataiye."
+  },
+  {
+   "id": "hi-048",
+   "lang": "hi",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "अपने व्यूअर्स को समझाइए कि UPI से पेमेंट करते समय धोखे से कैसे बचें।",
+   "translit": "Apne viewers ko samjhaiye ki UPI se payment karte samay dhokhe se kaise bachein.",
+   "tip": "कोशिश करें: एक किस्सा → तीन सावधानियाँ → एक लाइन में सार।"
+  },
+  {
+   "id": "hi-049",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "अपने दोस्त की शादी में दो मिनट का छोटा-सा भाषण दीजिए।",
+   "translit": "Apne dost ki shaadi mein do minute ka chhota-sa bhaashan dijiye."
+  },
+  {
+   "id": "hi-050",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "कॉलेज के नए छात्रों को बताइए कि पहले साल में किन बातों का ध्यान रखें।",
+   "translit": "College ke naye chhaatron ko bataiye ki pehle saal mein kin baaton ka dhyaan rakhein."
+  },
+  {
+   "id": "hi-051",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "सोसाइटी की मीटिंग में सबको पानी बचाने के लिए राज़ी कीजिए।",
+   "translit": "Society ki meeting mein sabko paani bachaane ke liye raazi kijiye.",
+   "prep": [
+    "मुद्दा: हमें पानी बचाना होगा",
+    "कारण: गर्मियों में टैंकर पर निर्भरता",
+    "उदाहरण: पिछले साल की किल्लत",
+    "फिर से मुद्दा: तीन आसान कदम"
+   ]
+  },
+  {
+   "id": "hi-052",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "स्कूल के वार्षिक उत्सव में मुख्य अतिथि का स्वागत कीजिए।",
+   "translit": "School ke vaarshik utsav mein mukhya atithi ka swaagat kijiye."
+  },
+  {
+   "id": "hi-053",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "ऑफ़िस के क्रिकेट टूर्नामेंट की जीत के बाद टीम को धन्यवाद दीजिए।",
+   "translit": "Office ke cricket tournament ki jeet ke baad team ko dhanyavaad dijiye."
+  },
+  {
+   "id": "hi-054",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "अपने फ़ॉलोअर्स को बताइए कि आपने सुबह की सैर की आदत कैसे डाली।",
+   "translit": "Apne followers ko bataiye ki aapne subah ki sair ki aadat kaise daali."
+  },
+  {
+   "id": "hi-055",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "ग्रुप डिस्कशन शुरू कीजिए: 'क्या मोबाइल बच्चों के लिए नुकसानदायक है?'",
+   "translit": "Group discussion shuru kijiye: 'Kya mobile bachchon ke liye nuksaandaayak hai?'"
+  },
+  {
+   "id": "hi-056",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "सप्लायर ने तीसरी बार माल देर से भेजा है। फ़ोन पर साफ़ बताइए कि अब क्या बदलना होगा।",
+   "translit": "Supplier ne teesri baar maal der se bheja hai. Phone par saaf bataiye ki ab kya badalna hoga.",
+   "prep": [
+    "मुद्दा: समय पर डिलीवरी चाहिए",
+    "कारण: देरी से हमें नुकसान हुआ",
+    "उदाहरण: पिछला ऑर्डर",
+    "फिर से मुद्दा: आगे की शर्त"
+   ]
+  },
+  {
+   "id": "hi-057",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "किसी रिश्तेदार को समझाइए कि आप ऑफ़िस में असल में क्या काम करते हैं।",
+   "translit": "Kisi rishtedaar ko samjhaiye ki aap office mein asal mein kya kaam karte hain."
+  },
+  {
+   "id": "hi-058",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "टीम को बताइए कि इस साल बोनस नहीं मिलेगा, और कंपनी आगे क्या करेगी।",
+   "translit": "Team ko bataiye ki is saal bonus nahin milega, aur company aage kya karegi.",
+   "tip": "कोशिश करें: सच सीधे → वजह → आगे की उम्मीद।"
+  },
+  {
+   "id": "hi-059",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "किसी ऑफ़िस को अपनी टिफ़िन सर्विस के बारे में दो मिनट में पिच कीजिए।",
+   "translit": "Kisi office ko apni tiffin service ke baare mein do minute mein pitch kijiye."
+  },
+  {
+   "id": "hi-060",
+   "lang": "hi",
+   "tracks": [
+    "professional",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "मैनेजमेंट के सामने पिछले तीन महीने की सेल्स रिपोर्ट पेश कीजिए।",
+   "translit": "Management ke saamne pichhle teen mahine ki sales report pesh kijiye."
+  },
+  {
+   "id": "hi-061",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "सहकर्मी को धन्यवाद दीजिए जिसने मुश्किल डेडलाइन में आपकी मदद की।",
+   "translit": "Sahkarmi ko dhanyavaad dijiye jisne mushkil deadline mein aapki madad ki."
+  },
+  {
+   "id": "hi-062",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "आपकी सबसे बड़ी कमज़ोरी क्या है, और आप उस पर कैसे काम कर रहे हैं?",
+   "translit": "Aapki sabse badi kamzori kya hai, aur aap us par kaise kaam kar rahe hain?",
+   "tip": "कोशिश करें: कमज़ोरी → एक उदाहरण → अब क्या कर रहे हैं।"
+  },
+  {
+   "id": "hi-063",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "आपने यह कोर्स क्यों चुना था, और क्या आज भी वही चुनेंगे?",
+   "translit": "Aapne yeh course kyon chuna tha, aur kya aaj bhi wahi chunenge?"
+  },
+  {
+   "id": "hi-064",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "किसी नाराज़ ग्राहक को आपने कैसे संभाला, एक उदाहरण दीजिए।",
+   "translit": "Kisi naaraaz graahak ko aapne kaise sambhaala, ek udaaharan dijiye.",
+   "prep": [
+    "मुद्दा: ग्राहक शांत होकर गया",
+    "कारण: वह नाराज़ क्यों था",
+    "उदाहरण: मैंने क्या कहा और किया",
+    "फिर से मुद्दा: इससे क्या सीखा"
+   ]
+  },
+  {
+   "id": "hi-065",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "आपके CV में दो साल का गैप है। इंटरव्यू में ईमानदारी से समझाइए।",
+   "translit": "Aapke CV mein do saal ka gap hai. Interview mein imaandaari se samjhaiye."
+  },
+  {
+   "id": "hi-066",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "पाँच साल बाद आप खुद को कहाँ देखते हैं?",
+   "translit": "Paanch saal baad aap khud ko kahaan dekhte hain?"
+  },
+  {
+   "id": "hi-067",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "छोटे शहर से मुंबई आकर काम करना कैसे संभालेंगे?",
+   "translit": "Chhote shahar se Mumbai aakar kaam karna kaise sambhaalenge?"
+  },
+  {
+   "id": "hi-068",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "दोस्त ने छह महीने पहले पैसे उधार लिए थे। दोस्ती बचाते हुए उनसे पैसे वापस माँगिए।",
+   "translit": "Dost ne chhah mahine pehle paise udhaar liye the. Dosti bachaate hue unse paise waapas maangiye.",
+   "tip": "कोशिश करें: दोस्ती की बात → ज़रूरत → आसान रास्ता।"
+  },
+  {
+   "id": "hi-069",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "बारिश के मौसम की अपनी कोई प्यारी याद सुनाइए।",
+   "translit": "Baarish ke mausam ki apni koi pyaari yaad sunaaiye."
+  },
+  {
+   "id": "hi-070",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "दादी-नानी को समझाइए कि फ़र्ज़ी बैंक कॉल को कैसे पहचानें।",
+   "translit": "Daadi-naani ko samjhaiye ki farzi bank call ko kaise pehchaanein."
+  },
+  {
+   "id": "hi-071",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने मोहल्ले की सबसे अच्छी चाट की दुकान के बारे में बताइए।",
+   "translit": "Apne mohalle ki sabse achchhi chaat ki dukaan ke baare mein bataiye."
+  },
+  {
+   "id": "hi-072",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "घरवालों को समझाइए कि आप नौकरी छोड़कर अपना बिज़नेस क्यों शुरू करना चाहते हैं।",
+   "translit": "Gharwaalon ko samjhaiye ki aap naukri chhodkar apna business kyon shuru karna chahte hain.",
+   "prep": [
+    "मुद्दा: मैं अपना काम शुरू करना चाहता हूँ",
+    "कारण: मेरा आइडिया और तैयारी",
+    "उदाहरण: बचत और बैकअप प्लान",
+    "फिर से मुद्दा: एक साल का मौका दीजिए"
+   ]
+  },
+  {
+   "id": "hi-073",
+   "lang": "hi",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "अपने व्यूअर्स को घर पर बढ़िया अदरक वाली चाय बनाना सिखाइए।",
+   "translit": "Apne viewers ko ghar par badhiya adrak waali chai banaana sikhaaiye."
+  },
+  {
+   "id": "hi-074",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "तीस साल बाद रिटायर हो रहे सहकर्मी के लिए विदाई भाषण दीजिए।",
+   "translit": "Tees saal baad retire ho rahe sahkarmi ke liye vidaai bhaashan dijiye.",
+   "tip": "कोशिश करें: एक याद → उनकी खूबी → शुभकामना।"
+  },
+  {
+   "id": "hi-075",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "स्कूल के खेल दिवस पर सबका स्वागत कीजिए।",
+   "translit": "School ke khel divas par sabka swaagat kijiye."
+  },
+  {
+   "id": "hi-076",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "बहस: क्या कॉलेज में हाज़िरी ज़रूरी होनी चाहिए? एक पक्ष लेकर बोलिए।",
+   "translit": "Bahas: Kya college mein haaziri zaroori honi chahiye? Ek paksh lekar boliye."
+  },
+  {
+   "id": "hi-077",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "रक्तदान शिविर में लोगों को पहली बार खून देने के लिए प्रेरित कीजिए।",
+   "translit": "Raktdaan shivir mein logon ko pehli baar khoon dene ke liye prerit kijiye."
+  },
+  {
+   "id": "hi-078",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "अपने फ़ॉलोअर्स को समझाइए कि आजकल 'डिजिटल डिटॉक्स' का ट्रेंड क्या है।",
+   "translit": "Apne followers ko samjhaiye ki aajkal 'digital detox' ka trend kya hai."
+  },
+  {
+   "id": "hi-079",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "ऑफ़िस के नए कर्मचारियों के ओरिएंटेशन में कंपनी के बारे में बताइए।",
+   "translit": "Office ke naye karmachariyon ke orientation mein company ke baare mein bataiye."
+  },
+  {
+   "id": "hi-080",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "वीडियो इंटरव्यू की शुरुआत में एक मिनट में अपना परिचय दीजिए।",
+   "translit": "Video interview ki shuruaat mein ek minute mein apna parichay dijiye."
+  },
+  {
+   "id": "hi-081",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "सहकर्मी बार-बार काम अधूरा छोड़ देता है। अकेले में उसे फ़ीडबैक दीजिए।",
+   "translit": "Sahkarmi baar-baar kaam adhoora chhod deta hai. Akele mein use feedback dijiye.",
+   "tip": "कोशिश करें: अच्छी बात → समस्या → असर → मिलकर हल।"
+  },
+  {
+   "id": "hi-082",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "छुट्टी पर जाने से पहले टीम के लिए वॉइस नोट छोड़िए कि आपका काम कौन देखेगा।",
+   "translit": "Chhutti par jaane se pehle team ke liye voice note chhodiye ki aapka kaam kaun dekhega."
+  },
+  {
+   "id": "hi-083",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "बड़ा क्लाइंट आपकी टीम के काम से नाराज़ है। कॉल पर उसका भरोसा वापस जीतिए।",
+   "translit": "Bada client aapki team ke kaam se naaraaz hai. Call par uska bharosa waapas jeetiye.",
+   "prep": [
+    "मुद्दा: हम गलती मानते हैं और ठीक करेंगे",
+    "कारण: हमसे कहाँ चूक हुई",
+    "उदाहरण: आज से उठाए जाने वाले कदम",
+    "फिर से मुद्दा: हर हफ़्ते अपडेट"
+   ]
+  },
+  {
+   "id": "hi-084",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "मैनेजर को समझाइए कि टीम में एक और व्यक्ति की ज़रूरत क्यों है।",
+   "translit": "Manager ko samjhaiye ki team mein ek aur vyakti ki zaroorat kyon hai."
+  },
+  {
+   "id": "hi-085",
+   "lang": "hi",
+   "tracks": [
+    "professional",
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "ग्राहक को समझाइए कि इस महीने सामान का दाम क्यों बढ़ा है।",
+   "translit": "Graahak ko samjhaiye ki is mahine saamaan ka daam kyon badha hai."
+  },
+  {
+   "id": "hi-086",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "अपने स्टाफ़ को बताइए कि दुकान में अब बिलिंग ऐप से होगी, और यह कैसे काम करेगा।",
+   "translit": "Apne staff ko bataiye ki dukaan mein ab billing app se hogi, aur yeh kaise kaam karega."
+  },
+  {
+   "id": "hi-087",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आपने अपनी ज़िम्मेदारी से बढ़कर काम किया।",
+   "translit": "Koi aisa samay bataiye jab aapne apni zimmedaari se badhkar kaam kiya."
+  },
+  {
+   "id": "hi-088",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "हमारी कंपनी के बारे में आप क्या जानते हैं?",
+   "translit": "Hamaari company ke baare mein aap kya jaante hain?",
+   "tip": "कोशिश करें: कंपनी क्या करती है → आपको क्या पसंद → आप कैसे जुड़ेंगे।"
+  },
+  {
+   "id": "hi-089",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "पिछले साल आपकी नौकरी चली गई थी। बताइए क्या हुआ और तब से आपने क्या किया।",
+   "translit": "Pichhle saal aapki naukri chali gayi thi. Bataiye kya hua aur tab se aapne kya kiya.",
+   "prep": [
+    "मुद्दा: छँटनी हुई, पर मैं रुका नहीं",
+    "कारण: कंपनी में क्या हुआ",
+    "उदाहरण: इस बीच सीखी नई स्किल",
+    "फिर से मुद्दा: अब मैं तैयार हूँ"
+   ]
+  },
+  {
+   "id": "hi-090",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "एक ही हफ़्ते में तीन डेडलाइन हों, तो दबाव कैसे संभालते हैं?",
+   "translit": "Ek hi hafte mein teen deadline hon, to dabaav kaise sambhaalte hain?"
+  },
+  {
+   "id": "hi-091",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "अपना फ़ाइनल ईयर प्रोजेक्ट आसान शब्दों में समझाइए।",
+   "translit": "Apna final year project aasaan shabdon mein samjhaiye."
+  },
+  {
+   "id": "hi-092",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "आपके पिछले मैनेजर आपके बारे में क्या कहेंगे?",
+   "translit": "Aapke pichhle manager aapke baare mein kya kahenge?"
+  },
+  {
+   "id": "hi-093",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "अप्रेज़ल मीटिंग में बताइए कि आपको इस बार प्रमोशन क्यों मिलना चाहिए।",
+   "translit": "Appraisal meeting mein bataiye ki aapko is baar promotion kyon milna chahiye.",
+   "tip": "कोशिश करें: नतीजे → ज़िम्मेदारियाँ → आगे का प्लान।"
+  },
+  {
+   "id": "hi-094",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने शहर में पिछले दस साल में क्या-क्या बदला है, बताइए।",
+   "translit": "Apne shahar mein pichhle das saal mein kya-kya badla hai, bataiye."
+  },
+  {
+   "id": "hi-095",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "पड़ोसी देर रात तक तेज़ गाना बजाते हैं। उनसे विनम्रता से बात कीजिए।",
+   "translit": "Padosi der raat tak tez gaana bajaate hain. Unse vinamrata se baat kijiye."
+  },
+  {
+   "id": "hi-096",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "आपकी पसंदीदा वेब सीरीज़ के बारे में बताइए, बिना कहानी खोले।",
+   "translit": "Aapki pasandeeda web series ke baare mein bataiye, bina kahaani khole."
+  },
+  {
+   "id": "hi-097",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "छोटी बहन को समझाइए कि पॉकेट मनी से थोड़ी बचत क्यों करनी चाहिए।",
+   "translit": "Chhoti behen ko samjhaiye ki pocket money se thodi bachat kyon karni chahiye."
+  },
+  {
+   "id": "hi-098",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "दादी को अपने शहर में लाने पर घर में दो राय हैं। खाने की मेज़ पर अपनी बात रखिए।",
+   "translit": "Daadi ko apne shahar mein laane par ghar mein do raay hain. Khaane ki mez par apni baat rakhiye."
+  },
+  {
+   "id": "hi-099",
+   "lang": "hi",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "अपने व्यूअर्स को SIP और FD का फ़र्क आसान भाषा में समझाइए।",
+   "translit": "Apne viewers ko SIP aur FD ka fark aasaan bhaasha mein samjhaiye.",
+   "prep": [
+    "मुद्दा: दोनों अलग काम आते हैं",
+    "कारण: रिस्क और रिटर्न का फ़र्क",
+    "उदाहरण: हर महीने 2000 रुपये का हिसाब",
+    "फिर से मुद्दा: किसके लिए क्या ठीक है"
+   ]
+  },
+  {
+   "id": "hi-100",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "कॉलेज सेमिनार के आख़िर में धन्यवाद ज्ञापन दीजिए।",
+   "translit": "College seminar ke aakhir mein dhanyavaad gyaapan dijiye."
+  },
+  {
+   "id": "hi-101",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "दो मिनट बोलिए: 'क्रिकेट ने मुझे क्या सिखाया।'",
+   "translit": "Do minute boliye: 'Cricket ne mujhe kya sikhaaya.'"
+  },
+  {
+   "id": "hi-102",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "पेरेंट्स मीटिंग में कहिए कि छोटी क्लास का होमवर्क कम होना चाहिए।",
+   "translit": "Parents meeting mein kahiye ki chhoti class ka homework kam hona chahiye."
+  },
+  {
+   "id": "hi-103",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "कॉलेज फ़ेस्ट में दो मिनट में अपने स्टार्टअप का परिचय दीजिए।",
+   "translit": "College fest mein do minute mein apne startup ka parichay dijiye.",
+   "tip": "कोशिश करें: समस्या → हल → अब तक की प्रगति → माँग।"
+  },
+  {
+   "id": "hi-104",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "फ़ॉलोअर्स को एक छोटी आदत बताइए जिसने आपका दिन बेहतर बनाया।",
+   "translit": "Followers ko ek chhoti aadat bataiye jisne aapka din behtar banaaya."
+  },
+  {
+   "id": "hi-105",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "ग्रुप डिस्कशन में बोलिए: 'वर्क फ़्रॉम होम अच्छा है या ऑफ़िस?'",
+   "translit": "Group discussion mein boliye: 'Work from home achchha hai ya office?'"
+  },
+  {
+   "id": "hi-106",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "ग्राहक को फ़ोन पर बताइए कि उसका ऑनलाइन ऑर्डर दो दिन देर से पहुँचेगा।",
+   "translit": "Graahak ko phone par bataiye ki uska online order do din der se pahunchega."
+  },
+  {
+   "id": "hi-107",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "नए प्रोजेक्ट की किकऑफ़ मीटिंग के पहले दो मिनट आप चलाइए।",
+   "translit": "Naye project ki kickoff meeting ke pehle do minute aap chalaaiye.",
+   "prep": [
+    "मुद्दा: यह प्रोजेक्ट क्यों ज़रूरी है",
+    "कारण: ग्राहकों की समस्या",
+    "उदाहरण: पहले हफ़्ते में कौन क्या करेगा",
+    "फिर से मुद्दा: सफलता कैसी दिखेगी"
+   ]
+  },
+  {
+   "id": "hi-108",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "टीम का सबसे अच्छा सदस्य बड़ी सैलरी बढ़ोतरी माँग रहा है जो आप नहीं दे सकते। उससे बात कीजिए।",
+   "translit": "Team ka sabse achchha sadasya badi salary badhotari maang raha hai jo aap nahin de sakte. Usse baat kijiye.",
+   "tip": "कोशिश करें: कदर → सच्ची मजबूरी → आप क्या दे सकते हैं।"
+  },
+  {
+   "id": "hi-109",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "CA को बताइए कि फ़्रीलांस काम के कौन-से ख़र्च आप टैक्स में दिखाना चाहते हैं।",
+   "translit": "CA ko bataiye ki freelance kaam ke kaun-se kharch aap tax mein dikhaana chahte hain."
+  },
+  {
+   "id": "hi-110",
+   "lang": "hi",
+   "tracks": [
+    "professional",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "किसी बिज़नेस नेटवर्किंग इवेंट में एक मिनट में अपना परिचय दीजिए।",
+   "translit": "Kisi business networking event mein ek minute mein apna parichay dijiye."
+  },
+  {
+   "id": "hi-111",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "टीम को बताइए कि साप्ताहिक मीटिंग अब आधे घंटे की होगी, और क्यों।",
+   "translit": "Team ko bataiye ki saaptaahik meeting ab aadhe ghante ki hogi, aur kyon."
+  },
+  {
+   "id": "hi-112",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आपने किसी परेशान साथी की मदद की।",
+   "translit": "Koi aisa samay bataiye jab aapne kisi pareshaan saathi ki madad ki."
+  },
+  {
+   "id": "hi-113",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "दो साल ज़्यादा अनुभव वाले उम्मीदवार की जगह हम आपको क्यों लें?",
+   "translit": "Do saal zyaada anubhav waale ummeedwaar ki jagah hum aapko kyon lein?",
+   "tip": "कोशिश करें: आपकी खास बात → सबूत → कंपनी को फ़ायदा।"
+  },
+  {
+   "id": "hi-114",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "आप अपने काम की दुनिया में नई चीज़ें कैसे सीखते रहते हैं?",
+   "translit": "Aap apne kaam ki duniya mein nayi cheezein kaise seekhte rehte hain?"
+  },
+  {
+   "id": "hi-115",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आपको अपने मैनेजर को 'ना' कहना पड़ा।",
+   "translit": "Koi aisa samay bataiye jab aapko apne manager ko 'na' kehna pada.",
+   "prep": [
+    "मुद्दा: मैंने ना कहा और वह सही था",
+    "कारण: क्यों हाँ नहीं कह सकता था",
+    "उदाहरण: मैंने कैसे कहा और क्या विकल्प दिया",
+    "फिर से मुद्दा: इससे क्या सीखा"
+   ]
+  },
+  {
+   "id": "hi-116",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "आपको सबसे ज़्यादा मेहनत करने की प्रेरणा कहाँ से मिलती है?",
+   "translit": "Aapko sabse zyaada mehnat karne ki prerna kahaan se milti hai?"
+  },
+  {
+   "id": "hi-117",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "बैंक की नौकरी से सेल्स में क्यों आना चाहते हैं? इंटरव्यूअर को यक़ीन दिलाइए।",
+   "translit": "Bank ki naukri se sales mein kyon aana chahte hain? Interviewer ko yaqeen dilaaiye."
+  },
+  {
+   "id": "hi-118",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "आपको स्विगी-ज़ोमैटो छोड़कर घर पर खाना बनाना क्यों अच्छा लगने लगा?",
+   "translit": "Aapko Swiggy-Zomato chhodkar ghar par khaana banaana kyon achchha lagne laga?"
+  },
+  {
+   "id": "hi-119",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अब तक की सबसे यादगार शादी के बारे में बताइए जिसमें आप गए।",
+   "translit": "Ab tak ki sabse yaadgaar shaadi ke baare mein bataiye jismein aap gaye."
+  },
+  {
+   "id": "hi-120",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "जिम ट्रेनर से कहिए कि घुटने के दर्द की वजह से आपका प्लान बदले।",
+   "translit": "Gym trainer se kahiye ki ghutne ke dard ki vajah se aapka plan badle.",
+   "tip": "कोशिश करें: समस्या → डॉक्टर ने क्या कहा → क्या बदलना है।"
+  },
+  {
+   "id": "hi-121",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "दोस्तों के ग्रुप में वीकेंड पर लोनावला ट्रिप का प्लान पिच कीजिए।",
+   "translit": "Doston ke group mein weekend par Lonavala trip ka plan pitch kijiye."
+  },
+  {
+   "id": "hi-122",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "भाई कॉलेज छोड़कर यूट्यूबर बनना चाहता है। उसे ईमानदार सलाह दीजिए।",
+   "translit": "Bhai college chhodkar YouTuber banna chahta hai. Use imaandaar salaah dijiye."
+  },
+  {
+   "id": "hi-123",
+   "lang": "hi",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "फ़ॉलोअर्स को बताइए कि ऑफ़-सीज़न में कम बजट में गोवा ट्रिप कैसे प्लान करें।",
+   "translit": "Followers ko bataiye ki off-season mein kam budget mein Goa trip kaise plan karein."
+  },
+  {
+   "id": "hi-124",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "मम्मी-पापा की शादी की 25वीं सालगिरह पर भाषण दीजिए।",
+   "translit": "Mummy-papa ki shaadi ki 25vin saalgirah par bhaashan dijiye.",
+   "prep": [
+    "मुद्दा: उनकी जोड़ी हमारी प्रेरणा है",
+    "कारण: मुश्किल वक्त में साथ निभाया",
+    "उदाहरण: एक किस्सा जो सब जानते हैं",
+    "फिर से मुद्दा: उनके लिए शुभकामना"
+   ]
+  },
+  {
+   "id": "hi-125",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "शिक्षक दिवस पर पूरी क्लास के सामने अपनी टीचर को शुभकामना दीजिए।",
+   "translit": "Shikshak divas par poori class ke saamne apni teacher ko shubhkaamna dijiye."
+  },
+  {
+   "id": "hi-126",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "दुकानदारों की मीटिंग में उन्हें डिजिटल पेमेंट अपनाने के लिए राज़ी कीजिए।",
+   "translit": "Dukaandaaron ki meeting mein unhein digital payment apnaane ke liye raazi kijiye."
+  },
+  {
+   "id": "hi-127",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "दो मिनट बोलिए: 'एक किताब जिसने मेरी सोच बदल दी।'",
+   "translit": "Do minute boliye: 'Ek kitaab jisne meri soch badal di.'",
+   "tip": "कोशिश करें: किताब → एक विचार → आपकी ज़िंदगी में बदलाव।"
+  },
+  {
+   "id": "hi-128",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "मम्मी-पापा को समझाइए कि आजकल रील्स का कोई वायरल ट्रेंड क्या है।",
+   "translit": "Mummy-papa ko samjhaiye ki aajkal reels ka koi viral trend kya hai."
+  },
+  {
+   "id": "hi-129",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "नए कर्मचारियों को बताइए कि ऑफ़िस में अच्छे सवाल कैसे पूछें।",
+   "translit": "Naye karmachariyon ko bataiye ki office mein achchhe sawaal kaise poochhein."
+  },
+  {
+   "id": "hi-130",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "कैंपस प्लेसमेंट से पहले सीनियर के तौर पर जूनियर्स को इंटरव्यू की तीन टिप्स दीजिए।",
+   "translit": "Campus placement se pehle senior ke taur par juniors ko interview ki teen tips dijiye."
+  },
+  {
+   "id": "hi-131",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "बॉस के सामने पिछले महीने की रिपोर्ट रखिए, जिसमें बिक्री 10 प्रतिशत घटी है।",
+   "translit": "Boss ke saamne pichhle mahine ki report rakhiye, jismein bikri 10 pratishat ghati hai.",
+   "prep": [
+    "मुद्दा: बिक्री घटी, पर हल है",
+    "कारण: गिरावट की असली वजह",
+    "उदाहरण: एक इलाक़ा या प्रोडक्ट",
+    "फिर से मुद्दा: अगले महीने का प्लान"
+   ]
+  },
+  {
+   "id": "hi-132",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "easy",
+   "text": "नए ऑफ़िस में पहले दिन टीम के सामने अपना परिचय दीजिए।",
+   "translit": "Naye office mein pehle din team ke saamne apna parichay dijiye."
+  },
+  {
+   "id": "hi-133",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "hard",
+   "text": "स्टार्टअप के पास तीन महीने का पैसा बचा है। टीम को सच बताइए और उनसे सुझाव माँगिए।",
+   "translit": "Startup ke paas teen mahine ka paisa bacha hai. Team ko sach bataiye aur unse sujhaav maangiye.",
+   "tip": "कोशिश करें: सच → हम क्या कर रहे हैं → आपसे क्या चाहिए।"
+  },
+  {
+   "id": "hi-134",
+   "lang": "hi",
+   "tracks": [
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "मीटिंग से चूके साथी को क्लाइंट कॉल का छोटा सार सुनाइए।",
+   "translit": "Meeting se chooke saathi ko client call ka chhota saar sunaaiye."
+  },
+  {
+   "id": "hi-135",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "अपनी सबसे अच्छी टीम के बारे में बताइए। उसे अच्छा किसने बनाया?",
+   "translit": "Apni sabse achchhi team ke baare mein bataiye. Use achchha kisne banaaya?"
+  },
+  {
+   "id": "hi-136",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "आप स्टार्टअप में काम क्यों करना चाहते हैं, बड़ी कंपनी में क्यों नहीं?",
+   "translit": "Aap startup mein kaam kyon karna chahte hain, badi company mein kyon nahin?"
+  },
+  {
+   "id": "hi-137",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "कोई ऐसा समय बताइए जब आपको बहुत जल्दी कुछ नया सीखना पड़ा।",
+   "translit": "Koi aisa samay bataiye jab aapko bahut jaldi kuchh naya seekhna pada.",
+   "tip": "कोशिश करें: क्या सीखना था → कैसे सीखा → नतीजा।"
+  },
+  {
+   "id": "hi-138",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "hard",
+   "text": "अधूरी जानकारी के साथ लिया गया कोई फ़ैसला बताइए। फिर क्या हुआ?",
+   "translit": "Adhoori jaankaari ke saath liya gaya koi faisla bataiye. Phir kya hua?"
+  },
+  {
+   "id": "hi-139",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "medium",
+   "text": "अपने रिज़्यूमे का एक प्रोजेक्ट ऐसे इंटरव्यूअर को समझाइए जो आपकी फ़ील्ड नहीं जानता।",
+   "translit": "Apne resume ka ek project aise interviewer ko samjhaiye jo aapki field nahin jaanta.",
+   "prep": [
+    "मुद्दा: प्रोजेक्ट एक लाइन में",
+    "कारण: इसकी ज़रूरत क्यों थी",
+    "उदाहरण: मेरा अपना हिस्सा",
+    "फिर से मुद्दा: नतीजा और सीख"
+   ]
+  },
+  {
+   "id": "hi-140",
+   "lang": "hi",
+   "tracks": [
+    "interviews"
+   ],
+   "difficulty": "easy",
+   "text": "आप दस साल के बच्चे को अपना काम कैसे समझाएँगे?",
+   "translit": "Aap das saal ke bachche ko apna kaam kaise samjhaayenge?"
+  },
+  {
+   "id": "hi-141",
+   "lang": "hi",
+   "tracks": [
+    "interviews",
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "फ़्लैट-शेयर के लिए मौजूदा फ़्लैटमेट्स को अपनी आदतें और दिनचर्या बताइए।",
+   "translit": "Flat-share ke liye maujooda flatmates ko apni aadatein aur dincharya bataiye."
+  },
+  {
+   "id": "hi-142",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने राज्य का कोई त्योहार दोस्तों को बताइए जिसके बारे में वे कम जानते हैं।",
+   "translit": "Apne raajya ka koi tyohaar doston ko bataiye jiske baare mein ve kam jaante hain."
+  },
+  {
+   "id": "hi-143",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपना आदर्श रविवार कैसा होता है, बताइए।",
+   "translit": "Apna aadarsh Ravivaar kaisa hota hai, bataiye."
+  },
+  {
+   "id": "hi-144",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "सोसाइटी वालों को सूखा और गीला कचरा अलग करने के लिए मनाइए।",
+   "translit": "Society waalon ko sookha aur geela kachra alag karne ke liye manaaiye.",
+   "tip": "कोशिश करें: समस्या → आसान तरीक़ा → पहला कदम।"
+  },
+  {
+   "id": "hi-145",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "medium",
+   "text": "मम्मी-पापा कार EMI पर लेना चाहते हैं। समझाइए कि आप एक साल रुकना क्यों चाहते हैं।",
+   "translit": "Mummy-papa car EMI par lena chahte hain. Samjhaiye ki aap ek saal rukna kyon chahte hain."
+  },
+  {
+   "id": "hi-146",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "easy",
+   "text": "अपने घर के पास वाले बाज़ार के बारे में पहली बार आए मेहमान को बताइए।",
+   "translit": "Apne ghar ke paas waale baazaar ke baare mein pehli baar aaye mehmaan ko bataiye."
+  },
+  {
+   "id": "hi-147",
+   "lang": "hi",
+   "tracks": [
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "दोस्त आपकी शादी के ख़र्च पर सवाल उठा रहे हैं। सादी शादी का अपना फ़ैसला समझाइए।",
+   "translit": "Dost aapki shaadi ke kharch par sawaal utha rahe hain. Saadi shaadi ka apna faisla samjhaiye."
+  },
+  {
+   "id": "hi-148",
+   "lang": "hi",
+   "tracks": [
+    "everyday",
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "अपने इलाक़े के नए कैफ़े का रिव्यू इंस्टाग्राम फ़ॉलोअर्स के लिए कीजिए।",
+   "translit": "Apne ilaaqe ke naye cafe ka review Instagram followers ke liye kijiye."
+  },
+  {
+   "id": "hi-149",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "स्कूल की एल्युमनाई मीट में बताइए कि स्कूल ने आपको कैसे गढ़ा।",
+   "translit": "School ki alumni meet mein bataiye ki school ne aapko kaise gadha."
+  },
+  {
+   "id": "hi-150",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "hard",
+   "text": "बिना तैयारी के बोलिए: 'क्या सोशल मीडिया हमें अकेला बना रहा है?'",
+   "translit": "Bina taiyaari ke boliye: 'Kya social media humein akela bana raha hai?'",
+   "prep": [
+    "मुद्दा: मेरी राय साफ़ शब्दों में",
+    "कारण: सबसे मज़बूत तर्क",
+    "उदाहरण: अपने आसपास का एक किस्सा",
+    "फिर से मुद्दा: हम क्या करें"
+   ]
+  },
+  {
+   "id": "hi-151",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "सोसाइटी की दिवाली रंगोली प्रतियोगिता के विजेताओं की घोषणा कीजिए।",
+   "translit": "Society ki Diwali rangoli pratiyogita ke vijetaon ki ghoshna kijiye."
+  },
+  {
+   "id": "hi-152",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "medium",
+   "text": "इंटर-कॉलेज डिबेट फ़ाइनल से पहले अपनी टीम का हौसला बढ़ाइए।",
+   "translit": "Inter-college debate final se pehle apni team ka hausla badhaaiye."
+  },
+  {
+   "id": "hi-153",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "everyday"
+   ],
+   "difficulty": "hard",
+   "text": "व्यूअर्स को समझाइए कि आज के युवा पर्सनल फ़ाइनेंस में इतनी दिलचस्पी क्यों ले रहे हैं।",
+   "translit": "Viewers ko samjhaiye ki aaj ke yuva personal finance mein itni dilchaspi kyon le rahe hain."
+  },
+  {
+   "id": "hi-154",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking",
+    "professional"
+   ],
+   "difficulty": "medium",
+   "text": "कंपनी के हैकाथॉन की शुरुआत में स्वागत भाषण दीजिए।",
+   "translit": "Company ke hackathon ki shuruaat mein swaagat bhaashan dijiye.",
+   "tip": "कोशिश करें: स्वागत → नियम → एक जोश भरी लाइन।"
+  },
+  {
+   "id": "hi-155",
+   "lang": "hi",
+   "tracks": [
+    "public_speaking"
+   ],
+   "difficulty": "easy",
+   "text": "शहर के साइकिलिंग ग्रुप में नए सदस्यों का स्वागत कीजिए और नियम बताइए।",
+   "translit": "Shahar ke cycling group mein naye sadasyon ka swaagat kijiye aur niyam bataiye."
   }
  ]
 }

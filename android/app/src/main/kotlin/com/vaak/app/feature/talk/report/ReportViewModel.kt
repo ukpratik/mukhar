@@ -11,6 +11,7 @@ import com.vaak.data.content.PromptRepository
 import com.vaak.data.net.Outcome
 import com.vaak.data.prefs.UserSettings
 import com.vaak.data.repo.Entitlements
+import com.vaak.data.repo.HarvestResult
 import com.vaak.data.repo.TalkRepository
 import com.vaak.data.repo.TalkStatus
 import com.vaak.data.repo.capSeconds
@@ -101,10 +102,14 @@ class ReportViewModel @Inject constructor(
                 is ReportEvent.ToggleWord -> {
                     val s = state.value
                     val meta = s.meta ?: return@launch
-                    val added = talks.toggleWord(id, meta.lang, meta.track.key, e.word, e.example)
-                    if (added) {
-                        effects.send(ReportEffect.Added)
-                        effects.send(ReportEffect.Toast(R.string.toast_added, undo = e))
+                    when (val r = talks.toggleWord(id, meta.lang, meta.track.key, e.word, e.example)) {
+                        null -> Unit // undone
+                        HarvestResult.AlreadyInGym -> effects.send(ReportEffect.Toast(R.string.toast_already_in_gym))
+                        is HarvestResult.Added -> {
+                            effects.send(ReportEffect.Added)
+                            // Over the 5-a-day cap the word waits for a later day (US-021).
+                            effects.send(ReportEffect.Toast(if (r.carriedOver) R.string.toast_added_later else R.string.toast_added, undo = e))
+                        }
                     }
                 }
                 is ReportEvent.ToggleSave -> {

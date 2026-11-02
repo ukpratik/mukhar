@@ -16,7 +16,28 @@ interface AnalysisPipeline {
     suspend fun transcribe(request: TranscribeRequest, audio: File): Outcome<TranscribeResult>
     suspend fun feedback(request: FeedbackRequest): Outcome<FeedbackResult>
     suspend fun report(request: ReportRequest): Outcome<Unit>
+
+    /** US-023 "Say it in a sentence": a ≤ 15 s clip → `/check-sentence` (the target word goes to STT as a key term). */
+    suspend fun checkSentence(request: SentenceCheckRequest, audio: File): Outcome<SentenceCheckResult>
 }
+
+data class SentenceCheckRequest(
+    val clientSessionId: String,
+    val lang: Lang,
+    val targetWord: String,
+    val meaning: String,
+    val durationMs: Long,
+)
+
+/** The Worker's answer (LLD §3): [result] is `ok`, `almost` or `no`. */
+data class SentenceCheckResult(
+    val transcript: String,
+    val wordFound: Boolean,
+    val result: String,
+    val corrected: String,
+    val example: String,
+    val note: String,
+)
 
 data class TranscribeRequest(
     val clientSessionId: String,

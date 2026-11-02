@@ -125,6 +125,8 @@ fun ReportScreen(actions: ReportActions, vm: ReportViewModel = hiltViewModel()) 
     val haptics = rememberHaptics()
     val messages = mapOf(
         R.string.toast_added to stringResource(R.string.toast_added),
+        R.string.toast_added_later to stringResource(R.string.toast_added_later),
+        R.string.toast_already_in_gym to stringResource(R.string.toast_already_in_gym),
         R.string.toast_reported to stringResource(R.string.toast_reported),
         R.string.toast_report_failed to stringResource(R.string.toast_report_failed),
     )

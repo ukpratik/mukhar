@@ -57,9 +57,12 @@ fun OnboardingRoute(onFinished: () -> Unit) {
 
 /** S04 or S05 on its own, opened from Today. Leaving the step (either answer, or Back) closes it. */
 @Composable
-fun StandaloneStepRoute(step: OnboardingStep, onClose: () -> Unit) {
+fun StandaloneStepRoute(step: OnboardingStep, onClose: () -> Unit, resumeSessionId: String? = null) {
     val viewModel: OnboardingViewModel = hiltViewModel()
-    LaunchedEffect(step) { viewModel.startStandalone(step) }
+    LaunchedEffect(step) {
+        viewModel.startStandalone(step)
+        resumeSessionId?.let(viewModel::resumeRecoveredBaseline)
+    }
     OnboardingScreen(viewModel, onFinished = onClose, onExit = onClose)
 }
 

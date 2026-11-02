@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -55,6 +56,7 @@ import com.vaak.app.nav.RecoveredRoute
 import com.vaak.data.content.PromptRepository
 import com.vaak.data.db.TalkSessionEntity
 import com.vaak.data.repo.HabitRepository
+import com.vaak.data.repo.TalkKind
 import com.vaak.data.repo.TalkRepository
 import com.vaak.ui.theme.VaakCard
 import com.vaak.ui.theme.VaakSpace
@@ -114,6 +116,7 @@ fun RecoveredScreen(
     onClose: () -> Unit,
     onReport: (String) -> Unit,
     onRecordAgain: (TalkSessionEntity) -> Unit,
+    onResumeBaseline: (String) -> Unit = {},
     vm: RecoveredViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -129,7 +132,14 @@ fun RecoveredScreen(
         }
         if (s != null) {
             val duration = clock(s.durationMs.toLong())
-            CenterState(Icons.Rounded.Restore, stringResource(R.string.rec_title), stringResource(R.string.rec_body, duration), artSize = 88.dp) {
+            // A baseline is shown as the starting point it is, and resumes the baseline flow (US-003).
+            val baseline = s.kind == TalkKind.BASELINE.key
+            CenterState(
+                Icons.Rounded.Restore,
+                stringResource(if (baseline) R.string.rec_baseline_title else R.string.rec_title),
+                stringResource(if (baseline) R.string.rec_baseline_body else R.string.rec_body, duration),
+                artSize = 88.dp,
+            ) {
                 val time = Instant.ofEpochMilli(s.createdAt).atZone(ZoneId.of(s.zoneId))
                     .format(DateTimeFormatter.ofPattern("h:mm a", Locale.US)).lowercase(Locale.US)
                 VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
@@ -140,15 +150,21 @@ fun RecoveredScreen(
                         Spacer(Modifier.width(14.dp))
                         Column {
                             Text(stringResource(R.string.rec_card, duration, time), style = MaterialTheme.typography.labelLarge)
-                            Text("“${state.promptText}”", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                            Text("“${state.promptText.ifEmpty { if (baseline) TalkRepository.BASELINE_PROMPT else "" }}”", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
                         }
                     }
                 }
                 state.credit?.let { CreditPill(it, Modifier.padding(top = 4.dp)) }
             }
             Spacer(Modifier.heightIn(min = 32.dp))
-            Button(onClick = { vm.getFeedback { onReport(vm.id) } }, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.rec_get)) }
-            TextButton(onClick = { onRecordAgain(s) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rec_again)) }
+            if (baseline) {
+                Button(onClick = { onResumeBaseline(s.id) }, modifier = Modifier.fillMaxWidth().height(54.dp).testTag(TAG_RESUME_BASELINE)) {
+                    Text(stringResource(R.string.rec_baseline_get))
+                }
+            } else {
+                Button(onClick = { vm.getFeedback { onReport(vm.id) } }, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.rec_get)) }
+                TextButton(onClick = { onRecordAgain(s) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rec_again)) }
+            }
             TextButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard)) }
         }
     }
@@ -162,3 +178,5 @@ fun RecoveredScreen(
         }
     }
 }
+
+const val TAG_RESUME_BASELINE = "resume_baseline"

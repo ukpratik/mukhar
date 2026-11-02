@@ -99,6 +99,13 @@ class FakeBaselineRecorder(
     }
     override suspend fun discard() { _progress.value = null }
     override suspend fun keepAudio(sessionId: String, keep: Boolean) { kept = keep }
+    val abandoned = mutableListOf<String>()
+    val resumed = mutableListOf<String>()
+    override fun abandon(sessionId: String) { abandoned += sessionId }
+    override suspend fun resume(sessionId: String): BaselineResult {
+        resumed += sessionId
+        return result
+    }
 }
 
 /** Everything an OnboardingViewModel needs, on fakes and a temp DataStore. */

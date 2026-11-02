@@ -30,13 +30,16 @@ object QueueBuilder {
         maxItems: Int = MAX_ITEMS,
         newPerDay: Int = NEW_PER_DAY,
         newIntroducedToday: Int = 0,
+        newCapTypes: Set<CardType> = CardType.entries.toSet(),
     ): List<QueueItem> {
         require(maxItems >= 0 && newPerDay >= 0) { "limits must be non-negative" }
         val active = items.filter { !it.suspended }
-        val due = active.filter { it.card.state != CardState.NEW && it.card.due < cutoff }
+        // New cards of types outside [newCapTypes] (e.g. a talk's fixes and saved lines) queue like due cards.
+        fun capped(i: QueueItem) = i.card.state == CardState.NEW && i.type in newCapTypes
+        val due = active.filter { !capped(it) && it.card.due < cutoff }
             .sortedWith(compareBy({ it.card.due }, { it.card.id }))
         val newCap = (newPerDay - newIntroducedToday).coerceAtLeast(0)
-        val fresh = active.filter { it.card.state == CardState.NEW }
+        val fresh = active.filter { capped(it) }
             .sortedWith(compareBy({ it.createdAt }, { it.card.id }))
             .take(newCap)
         val dueTaken = due.take(maxItems)

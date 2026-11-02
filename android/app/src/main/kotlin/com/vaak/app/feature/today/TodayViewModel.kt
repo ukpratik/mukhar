@@ -11,6 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.vaak.data.db.WordDao
 import com.vaak.data.prefs.SettingsStore
 import com.vaak.data.repo.HabitRepository
+import com.vaak.data.repo.WordItem
+import com.vaak.data.repo.WordRepository
+import com.vaak.data.tts.Speaker
 import com.vaak.data.system.ConnectivityObserver
 import com.vaak.data.today.RecoveredTalk
 import com.vaak.data.today.TalkStatusSource
@@ -52,6 +55,8 @@ class TodayViewModel @Inject constructor(
     private val habit: HabitRepository,
     private val settings: SettingsStore,
     private val wordDao: WordDao,
+    private val words: WordRepository,
+    private val speaker: Speaker,
     private val clock: Clock,
     private val scheduler: ReminderScheduler,
     connectivity: ConnectivityObserver,
@@ -86,7 +91,12 @@ class TodayViewModel @Inject constructor(
         Extras(waiting, recovered, n, allowed, online)
     }
 
-    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extras) { h, s, (dueNow, dueTomorrow), x ->
+    /** Today's words, re-picked when the streak day changes (03:00). */
+    private val todaysWords = ticks.map { words.today() }.distinctUntilChanged().flatMapLatest { words.observeDailyWords(it) }
+
+    private val wordsAndVoices = combine(todaysWords, speaker.voices) { w, v -> w to v }
+
+    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extras, wordsAndVoices) { h, s, (dueNow, dueTomorrow), x, (w, v) ->
         TodayStateMapper.map(
             TodayInputs(
                 now = clock.now().atZone(clock.zone()),
@@ -100,7 +110,7 @@ class TodayViewModel @Inject constructor(
                 notificationsAllowed = x.notificationsAllowed,
                 shuffle = x.shuffle,
             ),
-        )
+        ).copy(words = w, voices = v)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), TodayUiState())
 
     init {
@@ -110,7 +120,10 @@ class TodayViewModel @Inject constructor(
             scheduler.reschedule()
         }
         refreshNotificationPermission()
+        speaker.warmUp()
     }
+
+    fun onSpeak(word: WordItem) = speaker.speak(word.lemma, word.lang)
 
     fun onShuffle() = shuffle.update { it + 1 }
 

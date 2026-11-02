@@ -31,6 +31,8 @@ data class TalkPrefs(
     val transliteration: Boolean = false,
     val structureHint: Boolean = true,
     val thinkTime: Boolean = false,
+    /** Only an explicit "keep" on S05 sets this; until then a baseline's audio is held, then deleted (US-003, D-010). */
+    val keepBaselineAudio: Boolean = false,
 ) {
     fun tracksFor(lang: Lang): List<Track> = tracks[lang].orEmpty().ifEmpty { listOf(Track.EVERYDAY) }
     fun trackFor(lang: Lang): Track = lastTrack[lang]?.takeIf { it in tracksFor(lang) } ?: tracksFor(lang).first()
@@ -148,6 +150,26 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
 
     suspend fun setFreshStartAck(day: LocalDate) = update { it[K.freshStartAck] = day.toString() }
 
+    // M4: words.
+
+    /** Daily new words, 1 to 5 (US-020). */
+    suspend fun setDailyNewWords(count: Int) = update { it[K.dailyNewWords] = count.coerceIn(1, 5) }
+
+    /** Sentence checks used on [day] (a quota day, 03:00 IST), mirrored for display only; the server decides (US-023). */
+    val checksUsed: Flow<Pair<LocalDate?, Int>> = store.data.map { p ->
+        p[K.checksDay]?.let(LocalDate::parse) to (p[K.checksUsed] ?: 0)
+    }.distinctUntilChanged()
+
+    suspend fun setChecksUsed(day: LocalDate, used: Int) = update {
+        it[K.checksDay] = day.toString()
+        it[K.checksUsed] = used.coerceAtLeast(0)
+    }
+
+    /** Languages whose "add a voice" tip was shown once (S14 state 4). */
+    val ttsTipShown: Flow<Set<String>> = store.data.map { it[K.ttsTipShown].orEmpty() }.distinctUntilChanged()
+
+    suspend fun markTtsTipShown(lang: Lang) = update { it[K.ttsTipShown] = it[K.ttsTipShown].orEmpty() + lang.code }
+
     private fun Preferences.toSettings(): Settings {
         val minutes = this[K.reminderTime]
         val routine = Routine.fromKey(this[K.reminderRoutine])
@@ -194,6 +216,7 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
             transliteration = this[K.transliteration] ?: false,
             structureHint = this[K.structureHint] ?: true,
             thinkTime = this[K.thinkTime] ?: false,
+            keepBaselineAudio = this[K.keepBaselineAudio] ?: false,
         )
     }
 
@@ -243,6 +266,9 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val talkLang = stringPreferencesKey("talk_lang")
         val structureHint = booleanPreferencesKey("structure_hint")
         val thinkTime = booleanPreferencesKey("think_time")
+        val checksDay = stringPreferencesKey("checks_day")
+        val checksUsed = intPreferencesKey("checks_used")
+        val ttsTipShown = stringSetPreferencesKey("tts_tip_shown")
         fun talkTrack(lang: Lang) = stringPreferencesKey("talk_track_${lang.code}")
     }
 

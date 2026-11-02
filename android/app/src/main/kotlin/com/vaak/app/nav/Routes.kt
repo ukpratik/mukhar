@@ -45,6 +45,19 @@ data class RecordRoute(
 /** S09 state 8: a talk saved when the app closed mid-recording. */
 @Serializable data class RecoveredRoute(val sessionId: String)
 
+// M4: Word Gym (S13), quick revision (S15) and word detail (S14).
+
+/** S13 ([mode] = gym) or S15 ([mode] = revise). [wordId] reviews one word now (S14 "Practise in a sentence"). */
+@Serializable
+data class ReviewRoute(val mode: String = GYM, val wordId: String? = null) {
+    companion object {
+        const val GYM = "gym"
+        const val REVISE = "revise"
+    }
+}
+
+@Serializable data class WordDetailRoute(val wordId: String)
+
 /** The 4 bottom tabs (US-030): selected icon filled, unselected outlined (design-system §7). */
 enum class TopLevel(
     val route: Any,

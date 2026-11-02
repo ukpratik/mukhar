@@ -70,4 +70,15 @@ class QueueBuilderTest {
         val items = (0 until 5).map { review("w$it", CardType.SAVED_LINE, -it.toLong()) }
         assertThat(QueueBuilder.build(items, cutoff)).hasSize(5)
     }
+
+    @Test
+    fun newCapCanApplyToWordCardsOnly() {
+        val now = java.time.Instant.parse("2026-11-06T04:30:00Z")
+        fun item(id: String, type: CardType) =
+            QueueItem(com.vaak.domain.fsrs.Card(id, now.minusSeconds(60)), type, now.minusSeconds(60))
+        val items = (1..4).map { item("w$it", CardType.WORD_MEANING) } + (1..3).map { item("f$it", CardType.MISTAKE_FIX) }
+        val q = QueueBuilder.build(items, now.plusSeconds(3600), newPerDay = 2, newCapTypes = setOf(CardType.WORD_MEANING, CardType.MEANING_WORD))
+        assertThat(q.count { it.type == CardType.WORD_MEANING }).isEqualTo(2)
+        assertThat(q.count { it.type == CardType.MISTAKE_FIX }).isEqualTo(3)
+    }
 }

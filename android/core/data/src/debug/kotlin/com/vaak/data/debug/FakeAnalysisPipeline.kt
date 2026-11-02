@@ -7,6 +7,8 @@ import com.vaak.data.work.AnalysisPipeline
 import com.vaak.data.work.FeedbackRequest
 import com.vaak.data.work.FeedbackResult
 import com.vaak.data.work.ReportRequest
+import com.vaak.data.work.SentenceCheckRequest
+import com.vaak.data.work.SentenceCheckResult
 import com.vaak.data.work.TranscribeRequest
 import com.vaak.data.work.TranscribeResult
 import com.vaak.domain.feedback.BetterVersion
@@ -21,6 +23,7 @@ import com.vaak.domain.feedback.UpgradedWord
 import com.vaak.domain.model.Lang
 import com.vaak.domain.model.Word
 import com.vaak.domain.text.Normalizer
+import com.vaak.domain.words.TargetWordMatcher
 import kotlinx.coroutines.delay
 import java.io.File
 
@@ -57,6 +60,19 @@ class FakeAnalysisPipeline(private val controls: DebugControls) : AnalysisPipeli
         val state = controls.state.value
         delay(state.delayMs / 3)
         return if (state.mode == FakeMode.OFFLINE) Outcome.Err(AppError.Offline) else Outcome.Ok(Unit)
+    }
+
+    private var checks = 0
+
+    /**
+     * Canned sentence checks (US-023), cycling ✅ → almost → ❌ so every S13 state can be demoed. The canned
+     * transcript is matched with the same fuzzy rule as the Worker, so `word_found` is honest.
+     */
+    override suspend fun checkSentence(request: SentenceCheckRequest, audio: File): Outcome<SentenceCheckResult> {
+        val state = controls.state.value
+        delay(state.delayMs.coerceAtMost(2_000))
+        failure(state.mode, Stage.LLM)?.let { return Outcome.Err(it) }
+        return Outcome.Ok(CannedChecks.answer(request.lang, request.targetWord, checks++ % 3))
     }
 
     private fun failure(mode: FakeMode, stage: Stage): AppError? = when (mode) {
@@ -222,5 +238,25 @@ object CannedTalks {
             }
         }
         return null
+    }
+}
+
+/** Canned `/check-sentence` answers: 0 = ✅ ok, 1 = almost, 2 = ❌ no. */
+object CannedChecks {
+    fun answer(lang: Lang, target: String, kind: Int): SentenceCheckResult {
+        val (transcript, result, corrected, example, note) = when (lang) {
+            Lang.EN -> when (kind) {
+                0 -> listOf("In the review I used $target to explain why the launch slipped.", "ok", "", "", "Right meaning, natural grammar. That's a sentence you could say in a real meeting.")
+                1 -> listOf("I will $target about the plan in tomorrow meeting.", "almost", "I will $target the plan in tomorrow's meeting.", "", "Good use of the word. Drop \"about\" and say \"tomorrow's meeting\".")
+                else -> listOf("I moved the meeting to Thursday because the client was busy.", "no", "", "That client call was $target for the whole quarter.", "We didn't hear \"$target\" used with its meaning. Try copying the example's shape.")
+            }
+            Lang.HI -> when (kind) {
+                0 -> listOf("कल की meeting में मैंने $target शब्द सही जगह इस्तेमाल किया।", "ok", "", "", "सही अर्थ, सहज वाक्य। ऐसे ही बोलिए।")
+                1 -> listOf("मैं कल $target के बारे में बात करेगा।", "almost", "मैं कल $target के बारे में बात करूँगा।", "", "शब्द ठीक है, बस क्रिया का रूप बदलिए: \"करूँगा\"।")
+                else -> listOf("मैंने meeting को गुरुवार कर दिया।", "no", "", "यह फ़ैसला पूरे साल के लिए $target रहा।", "\"$target\" का अर्थ वाक्य में नहीं आया। उदाहरण जैसा वाक्य बनाकर देखिए।")
+            }
+        }
+        val found = TargetWordMatcher.found(target, transcript.split(' '))
+        return SentenceCheckResult(transcript, found, result, corrected, example, note)
     }
 }

@@ -76,9 +76,25 @@ class TalkBaselineRecorder @Inject constructor(
     /** The baseline row holds its audio through analysis; this answer keeps or deletes it (US-003). */
     override suspend fun keepAudio(sessionId: String, keep: Boolean) = talks.setAudioKept(sessionId, keep)
 
+    override suspend fun resume(sessionId: String): BaselineResult {
+        val row = talks.session(sessionId) ?: return BaselineResult.Failed
+        if (row.kind != TalkKind.BASELINE.key) return BaselineResult.Failed
+        talks.analyzeRecoveredNow(sessionId)
+        return result(sessionId, row.durationMs.toLong())
+    }
+
+    /** Runs on the app scope: the screen (and its ViewModel) is already gone. */
+    override fun abandon(sessionId: String) {
+        scope.launch { talks.setAudioKept(sessionId, false) }
+    }
+
     /** A queued analysis (offline, busy) still counts as saved: the queue finishes it later. */
     private suspend fun analyse(id: String, durationMs: Long): BaselineResult {
         talks.analyzeNow(id)
+        return result(id, durationMs)
+    }
+
+    private suspend fun result(id: String, durationMs: Long): BaselineResult {
         val row = talks.session(id) ?: return BaselineResult.Failed
         return when {
             row.errorCode == BASELINE_USED -> {
