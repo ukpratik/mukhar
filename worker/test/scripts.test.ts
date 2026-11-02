@@ -3,7 +3,11 @@ import fillers from "../../shared/test-vectors/fillers.json";
 import {
   falseCorrections, fillerScore, percentile, scriptAgnostic, skeleton, summarize, timestampsPlausible, unambiguousSet, wer, werTokens,
 } from "../scripts/lib/bench.ts";
-import { borrowingFalsePositives, checkRegression, safetyPass, stutterCompliant, type EvalSummary } from "../scripts/lib/evalMetrics.ts";
+import evalSet from "../data/eval/eval-set.json";
+import {
+  borrowingFalsePositives, checkRegression, safetyPass, stutterCompliant, validateEvalSet, type EvalSummary,
+} from "../scripts/lib/evalMetrics.ts";
+import { makeSpanChecker } from "../src/grounding/validate.ts";
 import type { ModelFeedback } from "../src/llm/schema.ts";
 
 describe("stt-bench: WER", () => {
@@ -105,5 +109,72 @@ describe("feedback-eval metrics", () => {
     expect(checkRegression({ ...base, preFilterGrounding: 0.94 }, null).ok).toBe(false);
     expect(checkRegression({ ...base, preFilterGrounding: 0.95 }, { ...base, preFilterGrounding: 0.99 }).reasons.join()).toContain("regressed");
     expect(checkRegression({ ...base, borrowingFalsePositives: 1 }, null).ok).toBe(false);
+  });
+});
+
+describe("feedback eval set (NFR-004, M6)", () => {
+  const report = validateEvalSet(evalSet);
+  type Item = (typeof evalSet.items)[number];
+  const byId = (id: string): Item => {
+    const it = evalSet.items.find((x) => x.id === id);
+    if (!it) throw new Error(`missing ${id}`);
+    return it;
+  };
+  const tokens = (it: Item) => it.words.map(([w, , , c]) => ({ w: String(w), lc: Number(c) < evalSet.low_conf }));
+
+  it("is valid and has ≥ 40 items across EN, HI and Hinglish", () => {
+    expect(report.errors).toEqual([]);
+    expect(report.items).toBeGreaterThanOrEqual(40);
+    expect(report.byLang.en).toBeGreaterThanOrEqual(15);
+    expect(report.byLang.hi).toBeGreaterThanOrEqual(15);
+    expect((report.byVariety.hinglish ?? 0) + (report.byVariety.hinglish_latin ?? 0)).toBeGreaterThanOrEqual(8);
+  });
+
+  it("covers the grounding traps, borrowings, fillers, short talks and safety cases", () => {
+    for (const trap of ["nukta_precomposed", "nukta_combining", "zwj", "zwnj", "low_conf", "tempting_mistake_in_low_conf", "fillers", "very_short", "stutter_friendly"]) {
+      expect(report.traps[trap] ?? 0, trap).toBeGreaterThan(0);
+    }
+    expect(report.withBorrowingSpans).toBeGreaterThanOrEqual(10);
+    expect(report.traps.borrowing_devanagari ?? 0).toBeGreaterThanOrEqual(2);
+    expect(report.safety.self_harm).toBeGreaterThanOrEqual(4);
+    expect(report.safety.unsafe).toBeGreaterThanOrEqual(3);
+    // Some self-harm cues have no keyword, so the model's own flag is tested too; idioms must not trip the backstop.
+    expect(report.selfHarmKeywordCaught).toBeLessThan(report.safety.self_harm);
+    expect(report.traps.safety_false_positive ?? 0).toBeGreaterThanOrEqual(2);
+  });
+
+  it("nukta and ZWJ traps ground through normalisation; low-confidence spans never ground", () => {
+    const pre = byId("hi-nukta-01");
+    expect(pre.words.some(([w]) => /[क़-य़]/u.test(String(w)))).toBe(true);
+    const preCheck = makeSpanChecker(tokens(pre));
+    // The model may drop the nukta in its quote: "जरूरी फैसला" still grounds against "ज़रूरी फ़ैसला".
+    expect(preCheck(2, 3, "जरूरी फैसला")).not.toBeNull();
+
+    const zwj = byId("hi-zwj-01");
+    expect(zwj.words.some(([w]) => String(w).includes("‌"))).toBe(true);
+    expect(makeSpanChecker(tokens(zwj))(0, 1, "स्कूल में")).not.toBeNull();
+
+    const lc = byId("en-lowconf-03");
+    const spans = lc.labels.low_conf_spans ?? [];
+    const [s = 0, e = 0] = spans[0] ?? [];
+    expect(e).toBeGreaterThan(s);
+    const quote = lc.words.slice(s, e + 1).map(([w]) => String(w)).join(" ");
+    expect(makeSpanChecker(tokens(lc))(s, e, quote)).toBeNull();
+  });
+
+  it("the validator reports broken items", () => {
+    const bad = validateEvalSet({
+      low_conf: 0.6,
+      items: [
+        { id: "a", lang: "en", track: "t", prompt: "p", metrics: {}, words: [["hi", 0, 100, 0.3]], labels: { borrowing_spans: [[0, 3]] } },
+        { id: "a", lang: "xx", track: "t", prompt: "p", metrics: {}, text: "I want to end my life", labels: { expect_safety: "none" } },
+      ],
+    }, 1);
+    expect(bad.errors.join("\n")).toContain("out of bounds");
+    expect(bad.errors.join("\n")).toContain("low_conf_spans is missing");
+    expect(bad.errors.join("\n")).toContain("duplicate id");
+    expect(bad.errors.join("\n")).toContain("lang must be en or hi");
+    expect(bad.errors.join("\n")).toContain("keyword backstop fires");
+    expect(validateEvalSet({ items: [] }).errors.join()).toContain("at least 40");
   });
 });

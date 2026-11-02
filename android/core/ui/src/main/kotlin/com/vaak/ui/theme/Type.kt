@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.vaak.ui.R
 
-// design-system.md §2 and §9.2. M0: one bundled Fraunces cut (opsz 28, 500/600) stands in for both serif cuts;
-// Manrope and Noto Sans Devanagari fall back to the system sans-serif (see core/ui/fonts/README.md).
+// design-system.md §2 and §9.2. One bundled Fraunces cut (opsz 28, 500/600) stands in for both serif cuts (D-030).
+// M6 (NFR-012): Manrope and Noto Sans Devanagari are bundled variable fonts (core/ui/fonts/README.md).
 private val Fraunces = FontFamily(
     Font(R.font.fraunces_500, FontWeight.Normal),
     Font(R.font.fraunces_500, FontWeight.Medium),
@@ -27,8 +27,25 @@ private val Fraunces = FontFamily(
 )
 val FrauncesDisplay: FontFamily = Fraunces
 val FrauncesText: FontFamily = Fraunces
-val Manrope: FontFamily = FontFamily.SansSerif
-val NotoDeva: FontFamily = FontFamily.SansSerif
+
+// Variable fonts (minSdk 26): Font(resId, weight)'s default variationSettings set `wght` from the weight, so one file
+// serves every weight the type scale uses.
+/** Body, labels, buttons (wght 400..800). */
+val Manrope: FontFamily = FontFamily(
+    Font(R.font.manrope_variable, FontWeight.Normal),
+    Font(R.font.manrope_variable, FontWeight.Medium),
+    Font(R.font.manrope_variable, FontWeight.SemiBold),
+    Font(R.font.manrope_variable, FontWeight.Bold),
+    Font(R.font.manrope_variable, FontWeight.ExtraBold),
+)
+
+/** All Hindi (wght 400..700). It also has Latin glyphs, so Hinglish shares one font and baseline. */
+val NotoDeva: FontFamily = FontFamily(
+    Font(R.font.noto_sans_devanagari_variable, FontWeight.Normal),
+    Font(R.font.noto_sans_devanagari_variable, FontWeight.Medium),
+    Font(R.font.noto_sans_devanagari_variable, FontWeight.SemiBold),
+    Font(R.font.noto_sans_devanagari_variable, FontWeight.Bold),
+)
 
 val VaakTypography = Typography(
     displayMedium = TextStyle(fontFamily = FrauncesDisplay, fontWeight = FontWeight.Normal, fontSize = 72.sp, lineHeight = 72.sp, fontFeatureSettings = "tnum"),

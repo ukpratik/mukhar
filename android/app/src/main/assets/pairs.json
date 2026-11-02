@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "clips_dir": "pairs",
+  "notes": "Sound Lab lite (US-070, S22). Each word has a clip id; a recorded clip is assets/pairs/<id>.<m4a|ogg|mp3|aac|wav>. Without one the app falls back to TTS with a 'Preview voice' label. Words in a side line up by index with the other side (vest/west, vine/wine). Which clips to record: product/06-build/content-notes.md (Q-011).",
+  "pairs": [
+    {
+      "id": "en-v-w",
+      "lang": "en",
+      "label": "v / w",
+      "hint": "Common for Hindi speakers",
+      "listen_hint": "Play each a few times. Watch for teeth on the lip.",
+      "reveal_hint": "These two are close. Hear them back to back and listen for the rounded lips.",
+      "self_check": "Did your lips round, with no teeth on the lip? If it sounded like \"vine\", try again slowly.",
+      "say": ["en_wine", "en_vine"],
+      "a": { "sound": "v", "tip": "top teeth rest on your lower lip, then buzz.", "words": [
+        { "id": "en_vest", "text": "vest" }, { "id": "en_vine", "text": "vine" } ] },
+      "b": { "sound": "w", "tip": "round your lips like \"oo\", no teeth.", "words": [
+        { "id": "en_west", "text": "west" }, { "id": "en_wine", "text": "wine" } ] }
+    },
+    {
+      "id": "en-th-t",
+      "lang": "en",
+      "label": "th / t",
+      "hint": "Tongue between the teeth",
+      "listen_hint": "Play each a few times. \"th\" lets air slide out; \"t\" stops it for a moment.",
+      "reveal_hint": "Listen for the soft hiss of air in \"th\". \"t\" is a short, clean tap.",
+      "self_check": "Did your tongue tip show between your teeth for \"three\"? If it sounded like \"tree\", slow down and let the air flow.",
+      "say": ["en_three", "en_tree"],
+      "a": { "sound": "th", "tip": "tongue tip lightly between your teeth, then blow.", "words": [
+        { "id": "en_three", "text": "three" }, { "id": "en_thin", "text": "thin" } ] },
+      "b": { "sound": "t", "tip": "tongue tip taps the ridge behind your top teeth.", "words": [
+        { "id": "en_tree", "text": "tree" }, { "id": "en_tin", "text": "tin" } ] }
+    },
+    {
+      "id": "en-s-sh",
+      "lang": "en",
+      "label": "s / sh",
+      "hint": "Lips forward for \"sh\"",
+      "listen_hint": "Play each a few times. \"s\" is thin and sharp; \"sh\" is wider and softer.",
+      "reveal_hint": "Listen for the hush: \"sh\" sounds wider, like asking for quiet.",
+      "self_check": "Did your lips push forward for \"ship\"? If it sounded thin like \"sip\", round your lips more.",
+      "say": ["en_ship", "en_sip"],
+      "a": { "sound": "s", "tip": "smile a little, tongue near your top teeth, a thin hiss.", "words": [
+        { "id": "en_sip", "text": "sip" }, { "id": "en_sea", "text": "sea" } ] },
+      "b": { "sound": "sh", "tip": "push your lips forward, tongue a little further back.", "words": [
+        { "id": "en_ship", "text": "ship" }, { "id": "en_she", "text": "she" } ] }
+    },
+    {
+      "id": "en-z-j",
+      "lang": "en",
+      "label": "z / j",
+      "hint": "Buzz vs. a soft stop",
+      "listen_hint": "Play each a few times. \"z\" buzzes all the way; \"j\" starts with a tiny stop.",
+      "reveal_hint": "Listen for the buzz: \"z\" never stops, \"j\" begins with a little push.",
+      "self_check": "Could you feel the buzz in \"zest\" without a stop at the start? If it sounded like \"jest\", hum the \"z\" first.",
+      "say": ["en_zest", "en_jest"],
+      "a": { "sound": "z", "tip": "like \"s\" but with your voice on: a steady buzz.", "words": [
+        { "id": "en_zest", "text": "zest" }, { "id": "en_zack", "text": "Zack" } ] },
+      "b": { "sound": "j", "tip": "tongue touches the roof of your mouth, then releases.", "words": [
+        { "id": "en_jest", "text": "jest" }, { "id": "en_jack", "text": "Jack" } ] }
+    },
+    {
+      "id": "en-i-ee",
+      "lang": "en",
+      "label": "i / ee",
+      "hint": "Short and long vowels",
+      "listen_hint": "Play each a few times. The long vowel is held longer, with a wider smile.",
+      "reveal_hint": "Listen for the length: \"ee\" is held; \"i\" is quick and relaxed.",
+      "self_check": "Was \"leave\" longer than \"live\"? If they sounded the same, stretch the \"ee\" and smile.",
+      "say": ["en_leave", "en_live"],
+      "a": { "sound": "i", "tip": "short and relaxed, lips loose.", "words": [
+        { "id": "en_sit", "text": "sit" }, { "id": "en_live", "text": "live" } ] },
+      "b": { "sound": "ee", "tip": "longer, with a wider smile.", "words": [
+        { "id": "en_seat", "text": "seat" }, { "id": "en_leave", "text": "leave" } ] }
+    },
+    {
+      "id": "hi-rra-ra",
+      "lang": "hi",
+      "label": "ड़ / र",
+      "hint": "Flap vs. tap",
+      "listen_hint": "Play each a few times. ड़ flicks forward from a curled tongue; र is a light tap.",
+      "reveal_hint": "In ड़ the curled tongue flicks forward; in र it only taps. Hear them back to back.",
+      "self_check": "Did your tongue curl back and flick forward in मोड़? If it sounded like मोर, try again slowly.",
+      "say": ["hi_mod", "hi_mor"],
+      "a": { "sound": "ड़", "tip": "जीभ ऊपर मोड़कर आगे झटकें।", "words": [
+        { "id": "hi_padi", "text": "पड़ी", "translit": "paṛī", "gloss": "lay down" },
+        { "id": "hi_mod", "text": "मोड़", "translit": "moṛ", "gloss": "turn" } ] },
+      "b": { "sound": "र", "tip": "जीभ दाँतों के पीछे हल्के से छुए।", "words": [
+        { "id": "hi_pari", "text": "परी", "translit": "parī", "gloss": "fairy" },
+        { "id": "hi_mor", "text": "मोर", "translit": "mor", "gloss": "peacock" } ] }
+    },
+    {
+      "id": "hi-retroflex-dental",
+      "lang": "hi",
+      "label": "ट / त",
+      "hint": "Retroflex vs. dental",
+      "listen_hint": "Play each a few times. ट and ड come from a curled tongue; त and द touch the teeth.",
+      "reveal_hint": "ट and ड sound heavier because the tongue curls back; त and द are lighter, at the teeth.",
+      "self_check": "Did your tongue touch your teeth for दाल? If it sounded like डाल, keep the tongue forward.",
+      "say": ["hi_dal_dental", "hi_dal_retro"],
+      "a": { "sound": "ट ड", "tip": "जीभ की नोक ऊपर मोड़कर तालू को छुएँ।", "words": [
+        { "id": "hi_tal_retro", "text": "टाल", "translit": "ṭāl", "gloss": "put off" },
+        { "id": "hi_dal_retro", "text": "डाल", "translit": "ḍāl", "gloss": "branch" } ] },
+      "b": { "sound": "त द", "tip": "जीभ की नोक ऊपर के दाँतों के पीछे छुए।", "words": [
+        { "id": "hi_tal_dental", "text": "ताल", "translit": "tāl", "gloss": "pond, rhythm" },
+        { "id": "hi_dal_dental", "text": "दाल", "translit": "dāl", "gloss": "lentils" } ] }
+    },
+    {
+      "id": "hi-nasal",
+      "lang": "hi",
+      "label": "आ / आँ",
+      "hint": "Nasal sounds",
+      "listen_hint": "Play each a few times. With ँ, some air goes through the nose.",
+      "reveal_hint": "With ँ the vowel also goes through the nose. Touch your nose and feel it hum.",
+      "self_check": "Did the end of पूँछ hum through your nose? If it sounded like पूछ, let the last vowel go through the nose.",
+      "say": ["hi_poonch", "hi_puch"],
+      "a": { "sound": "आ", "tip": "मुँह से साफ़ स्वर, नाक बंद सी।", "words": [
+        { "id": "hi_kaha", "text": "कहा", "translit": "kahā", "gloss": "said" },
+        { "id": "hi_puch", "text": "पूछ", "translit": "pūch", "gloss": "ask" } ] },
+      "b": { "sound": "आँ", "tip": "वही स्वर, पर हवा नाक से भी निकले।", "words": [
+        { "id": "hi_kahan", "text": "कहाँ", "translit": "kahā̃", "gloss": "where" },
+        { "id": "hi_poonch", "text": "पूँछ", "translit": "pū̃ch", "gloss": "tail" } ] }
+    }
+  ]
+}

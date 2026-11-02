@@ -85,7 +85,9 @@ Provider specs are `name` or `name:variant` (Deepgram language, Sarvam mode, Ele
 See `data/golden/README.md`. Summary: record and consent clips, write `data/golden/manifest.json`, then
 `DEEPGRAM_API_KEY=… SARVAM_API_KEY=… ELEVENLABS_API_KEY=… node scripts/stt-bench.ts` → `reports/stt-benchmark-<date>.md`.
 Feedback: `ANTHROPIC_API_KEY=… node scripts/feedback-eval.ts [--thinking disabled]` → `reports/feedback-eval-<date>-<prompt_version>.md`
-(extend `data/eval/feedback-eval.json` to ≥ 40 labelled items first; exits 1 on an NFR-004 breach or a regression).
+(set: `data/eval/eval-set.json`, 50 synthetic labelled items, M6; exits 1 on an NFR-004 breach or a regression).
+`node scripts/feedback-eval.ts --dry-run` validates the set offline (shape, timings, confidences, label spans, safety
+labels vs the keyword backstop, coverage) with no key and no API call; `npm test` runs the same check.
 
 ## Known limitations
 - Per-uid rate limit (30/min) is per isolate, best effort; quotas and the spend cap are the hard guards.
