@@ -1,6 +1,9 @@
 package com.vaak.app.feature.talk.common
 
+import android.database.ContentObserver
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import androidx.annotation.StringRes
@@ -28,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.HourglassTop
 import androidx.compose.material.icons.rounded.LocalFireDepartment
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -41,7 +45,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,11 +59,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -107,12 +118,43 @@ fun rememberHaptics(): Haptics {
     return remember(view) { Haptics { view.performHapticFeedback(it) } }
 }
 
-/** `ANIMATOR_DURATION_SCALE == 0` turns off loops and transitions (design-system §8 reduced motion). */
+/**
+ * `ANIMATOR_DURATION_SCALE == 0` turns off loops and transitions (design-system §8 reduced motion). Observed, so
+ * changing the setting while a screen is open takes effect without leaving it.
+ */
 @Composable
 fun reducedMotion(): Boolean {
-    val context = LocalContext.current
-    return remember(context) {
-        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    val resolver = LocalContext.current.contentResolver
+    fun read() = Settings.Global.getFloat(resolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    var reduced by remember(resolver) { mutableStateOf(read()) }
+    DisposableEffect(resolver) {
+        val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                reduced = read()
+            }
+        }
+        resolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.ANIMATOR_DURATION_SCALE), false, observer)
+        onDispose { resolver.unregisterContentObserver(observer) }
+    }
+    return reduced
+}
+
+/**
+ * The indeterminate spinner for waits. With reduced motion it is a still hourglass instead of an endless loop
+ * (design-system §8). Decorative: the text next to it says what is happening.
+ */
+@Composable
+fun VaakSpinner(
+    modifier: Modifier = Modifier,
+    size: Dp = 20.dp,
+    strokeWidth: Dp = 3.dp,
+    color: Color = MaterialTheme.colorScheme.primary,
+    trackColor: Color = MaterialTheme.colorScheme.primaryContainer,
+) {
+    if (reducedMotion()) {
+        Icon(Icons.Rounded.HourglassTop, null, tint = color, modifier = modifier.size(size))
+    } else {
+        CircularProgressIndicator(modifier.size(size), color = color, strokeWidth = strokeWidth, trackColor = trackColor)
     }
 }
 
@@ -121,7 +163,12 @@ fun reducedMotion(): Boolean {
 @Composable
 fun VaakAppBar(title: String, backDescription: String, onBack: () -> Unit, action: @Composable () -> Unit = {}) {
     CenterAlignedTopAppBar(
-        title = { Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary) },
+        title = {
+            Text(
+                title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.semantics { heading() },
+            )
+        },
         navigationIcon = {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = backDescription) }
         },
@@ -223,11 +270,13 @@ fun CenterState(
     assertive: Boolean = false,
     artSize: Dp = 72.dp,
     leading: (@Composable () -> Unit)? = null,
+    /** False when the screen already announces its state through one stable announcer node. */
+    live: Boolean = true,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     Column(
         modifier.fillMaxWidth().padding(top = 28.dp)
-            .semantics { liveRegion = if (assertive) LiveRegionMode.Assertive else LiveRegionMode.Polite },
+            .then(if (live) Modifier.semantics { liveRegion = if (assertive) LiveRegionMode.Assertive else LiveRegionMode.Polite } else Modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         leading?.invoke()
@@ -254,22 +303,42 @@ fun CenterState(
 
 enum class StepState { DONE, NOW, TODO, RETRY }
 
-/** `.steps`: the analysing checklist, a polite live region. */
+@StringRes
+private fun stepStateLabel(state: StepState): Int = when (state) {
+    StepState.DONE -> R.string.a11y_step_done
+    StepState.NOW -> R.string.a11y_step_now
+    StepState.TODO -> R.string.a11y_step_todo
+    StepState.RETRY -> R.string.a11y_step_retry
+}
+
+/**
+ * `.steps`: the analysing checklist. Each row is one TalkBack stop with its state ("Done", "In progress"…); the
+ * current step's row is a polite live region.
+ */
 @Composable
 fun StepsList(steps: List<Pair<String, StepState>>, modifier: Modifier = Modifier, retryIcon: ImageVector? = null) {
     VaakCard(modifier = modifier.fillMaxWidth().padding(top = 24.dp), shape = RoundedCornerShape(18.dp)) {
-        Column(Modifier.padding(horizontal = 16.dp, vertical = 6.dp).semantics { liveRegion = LiveRegionMode.Polite }) {
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
             steps.forEachIndexed { i, (label, state) ->
-                Row(Modifier.heightIn(min = 48.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                val stateText = stringResource(stepStateLabel(state))
+                val current = state == StepState.NOW || state == StepState.RETRY
+                Row(
+                    Modifier.heightIn(min = 48.dp).fillMaxWidth().semantics(mergeDescendants = true) {
+                        stateDescription = stateText
+                        if (current) liveRegion = LiveRegionMode.Polite
+                    },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     when (state) {
                         StepState.DONE -> Icon(Icons.Rounded.CheckCircle, null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(22.dp))
-                        StepState.NOW -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 3.dp, trackColor = MaterialTheme.colorScheme.primaryContainer)
+                        StepState.NOW -> VaakSpinner(size = 20.dp)
                         StepState.TODO -> Icon(Icons.Rounded.RadioButtonUnchecked, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(22.dp))
                         StepState.RETRY -> Icon(retryIcon ?: Icons.Rounded.RadioButtonUnchecked, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(22.dp))
                     }
                     Spacer(Modifier.width(12.dp))
                     Text(
                         label,
+                        modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = if (state == StepState.DONE || state == StepState.NOW) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -297,16 +366,29 @@ fun Skeleton(widthFraction: Float, modifier: Modifier = Modifier, height: Dp = 1
     )
 }
 
-/** Section head `.sec-h`: serif title left, muted label right. */
+/**
+ * Section head `.sec-h`: serif title left, muted label right. The title gives way at large font scales so both
+ * wrap instead of clipping; [trailingDescription] replaces what TalkBack reads for the label.
+ */
 @Composable
-fun SectionHead(title: String, trailing: String?, modifier: Modifier = Modifier) {
+fun SectionHead(title: String, trailing: String?, modifier: Modifier = Modifier, trailingDescription: String? = null) {
     Row(
         modifier.fillMaxWidth().padding(top = VaakSpace.xl, bottom = VaakSpace.m, start = 2.dp, end = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom,
     ) {
-        Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
-        if (trailing != null) Text(trailing, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.weight(1f, fill = false).semantics { heading() },
+        )
+        if (trailing != null) {
+            Text(
+                trailing, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.End,
+                modifier = Modifier.padding(start = 8.dp)
+                    .then(if (trailingDescription != null) Modifier.semantics { contentDescription = trailingDescription } else Modifier),
+            )
+        }
     }
 }
 

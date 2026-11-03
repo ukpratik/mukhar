@@ -157,7 +157,7 @@ private fun StillFree(state: QuotaUiState, actions: QuotaActions) {
             stringResource(R.string.quota_still_free),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp),
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp).semantics { heading() },
         )
         VaakCard(Modifier.fillMaxWidth()) {
             if (state.due > 0) {
@@ -183,8 +183,11 @@ private fun FreeRow(icon: androidx.compose.ui.graphics.vector.ImageVector, title
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
-        Text(title, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
-        Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        // Title and count stack in one weighted column, so neither is squeezed at large font sizes.
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+            Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         Box { Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
 }

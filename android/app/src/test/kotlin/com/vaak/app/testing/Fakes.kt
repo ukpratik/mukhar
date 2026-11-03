@@ -23,7 +23,7 @@ import com.vaak.domain.model.Lang
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -131,7 +131,10 @@ class OnboardingHarness(
     }
 
     fun close() {
-        scope.cancel()
+        // Wait for DataStore's in-flight write to stop before deleting its folder; deleting first made a late write
+        // throw "Inoperable file" into the next test under a loaded full-suite run (flaky OnboardingUiTest, M6B).
+        kotlinx.coroutines.runBlocking { scope.coroutineContext[kotlinx.coroutines.Job]!!.cancelAndJoin() }
+        shadowOf(Looper.getMainLooper()).idle()
         dir.deleteRecursively()
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -40,6 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -127,7 +129,7 @@ fun RecoveredScreen(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding().navigationBarsPadding()
             .verticalScroll(rememberScrollState()).padding(horizontal = VaakSpace.gutter).padding(bottom = 28.dp),
     ) {
-        Row(Modifier.height(52.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onClose) { Icon(Icons.Rounded.Close, stringResource(R.string.rec_close_cd)) }
         }
         if (s != null) {
@@ -150,7 +152,7 @@ fun RecoveredScreen(
                         Spacer(Modifier.width(14.dp))
                         Column {
                             Text(stringResource(R.string.rec_card, duration, time), style = MaterialTheme.typography.labelLarge)
-                            Text("“${state.promptText.ifEmpty { if (baseline) TalkRepository.BASELINE_PROMPT else "" }}”", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                            Text("“${state.promptText.ifEmpty { if (baseline) TalkRepository.BASELINE_PROMPT else "" }}”", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }
@@ -158,11 +160,11 @@ fun RecoveredScreen(
             }
             Spacer(Modifier.heightIn(min = 32.dp))
             if (baseline) {
-                Button(onClick = { onResumeBaseline(s.id) }, modifier = Modifier.fillMaxWidth().height(54.dp).testTag(TAG_RESUME_BASELINE)) {
+                Button(onClick = { onResumeBaseline(s.id) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).testTag(TAG_RESUME_BASELINE)) {
                     Text(stringResource(R.string.rec_baseline_get))
                 }
             } else {
-                Button(onClick = { vm.getFeedback { onReport(vm.id) } }, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.rec_get)) }
+                Button(onClick = { vm.getFeedback { onReport(vm.id) } }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.rec_get)) }
                 TextButton(onClick = { onRecordAgain(s) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rec_again)) }
             }
             TextButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard)) }
@@ -171,8 +173,8 @@ fun RecoveredScreen(
     if (confirm) {
         ModalBottomSheet(onDismissRequest = { confirm = false }) {
             Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
-                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                Button(onClick = { confirm = false }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).height(54.dp)) { Text(stringResource(R.string.keep_it)) }
+                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
+                Button(onClick = { confirm = false }, modifier = Modifier.padding(top = 12.dp).fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.keep_it)) }
                 TextButton(onClick = { confirm = false; scope.launch { vm.discard(onClose) } }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard)) }
             }
         }

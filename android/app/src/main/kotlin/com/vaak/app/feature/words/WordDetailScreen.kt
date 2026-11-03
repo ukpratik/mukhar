@@ -263,7 +263,7 @@ private fun nextReview(w: WordItem, now: Instant): String {
 private fun Block(title: String, content: @Composable () -> Unit) {
     VaakCard(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(VaakSpace.l), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Eyebrow(title)
+            Eyebrow(title, Modifier.semantics { heading() })
             content()
         }
     }
@@ -271,7 +271,8 @@ private fun Block(title: String, content: @Composable () -> Unit) {
 
 @Composable
 private fun Stat(label: String, value: String, modifier: Modifier) {
-    VaakCard(modifier) {
+    // Read as one item: "Status, Learning".
+    VaakCard(modifier.semantics(mergeDescendants = true) {}) {
         Box(Modifier.padding(VaakSpace.l)) {
             Column {
                 Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)

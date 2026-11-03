@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -33,6 +36,7 @@ import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Psychology
 import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DoneAll
@@ -61,13 +65,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.role
@@ -214,7 +223,7 @@ fun ReviewContent(state: ReviewUiState, actions: ReviewActions, modifier: Modifi
 @Composable
 private fun TopBar(state: ReviewUiState, onClose: () -> Unit, showCount: Boolean) {
     val gym = state.mode == ReviewMode.GYM
-    Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = onClose) {
             Icon(Icons.Rounded.Close, stringResource(if (gym) R.string.review_close_cd else R.string.revise_close_cd))
         }
@@ -225,7 +234,7 @@ private fun TopBar(state: ReviewUiState, onClose: () -> Unit, showCount: Boolean
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f).semantics { heading() },
         )
-        Box(Modifier.width(VaakSpace.touch), contentAlignment = Alignment.Center) {
+        Box(Modifier.widthIn(min = VaakSpace.touch), contentAlignment = Alignment.Center) {
             if (showCount) {
                 val n = (state.index + 1).coerceAtMost(state.total)
                 val cd = stringResource(R.string.review_count_cd, n, state.total)
@@ -312,9 +321,18 @@ private fun WordCard(state: ReviewUiState, card: ReviewCard, actions: ReviewActi
     Crossfade(state.flipped, label = "flip") { flipped ->
         if (!flipped) {
             val cd = if (meaningFirst) stringResource(R.string.review_front_mw_cd, card.front) else stringResource(R.string.review_front_cd, lemma, meta)
+            // One sentence for TalkBack; the speaker inside is cleared with the rest, so it's offered as an action.
+            val hear = hearDescription(lemma, card.lang)
+            val canHear = !meaningFirst && state.voices[card.lang] == true
+            val flip = { actions.onEvent(ReviewEvent.Flip) }
             FlashCard(
-                Modifier.heightIn(min = 300.dp).testTag(TAG_FRONT).clearAndSetSemantics { contentDescription = cd; role = Role.Button },
-                onClick = { actions.onEvent(ReviewEvent.Flip) },
+                Modifier.heightIn(min = 300.dp).testTag(TAG_FRONT).clearAndSetSemantics {
+                    contentDescription = cd
+                    role = Role.Button
+                    onClick { flip(); true }
+                    if (canHear) customActions = listOf(CustomAccessibilityAction(hear) { actions.onEvent(ReviewEvent.Speak(lemma, card.lang)); true })
+                },
+                onClick = flip,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.weight(1f)) { TypeEyebrow(state, card) }
@@ -404,28 +422,36 @@ private fun MiniCard(card: ReviewCard) {
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 private fun Listening(state: ReviewUiState, card: ReviewCard, actions: ReviewActions) {
     MiniCard(card)
+    // "Recording started" once (design-system §10.4); the ticking clock is not read, so it never re-announces.
+    val started = stringResource(R.string.recording_started)
+    Text("", Modifier.semantics { liveRegion = LiveRegionMode.Polite; contentDescription = started })
     VaakCard(Modifier.fillMaxWidth().testTag(TAG_LISTENING)) {
-        Column(Modifier.padding(VaakSpace.l).semantics { liveRegion = LiveRegionMode.Polite }) {
+        Column(Modifier.padding(VaakSpace.l)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(12.dp).clip(CircleShape).background(VaakTheme.colors.accent))
                 Spacer(Modifier.width(10.dp))
                 Text(
                     stringResource(R.string.sentence_listening, card.word?.lemma.orEmpty()),
                     style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).semantics { liveRegion = LiveRegionMode.Polite },
                 )
-                Text(clock(state.sentence.elapsedMs), style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"))
+                Text(
+                    clock(state.sentence.elapsedMs),
+                    style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                    modifier = Modifier.clearAndSetSemantics {},
+                )
             }
             Text(stringResource(R.string.sentence_keyterm), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
-            Row(Modifier.padding(top = 8.dp)) {
-                Button(onClick = { actions.onEvent(ReviewEvent.StopSentence) }, modifier = Modifier.weight(1f)) {
+            FlowRow(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Button(onClick = { actions.onEvent(ReviewEvent.StopSentence) }, modifier = Modifier.weight(1f).heightIn(min = VaakSpace.touch)) {
                     Icon(Icons.Rounded.Stop, null)
                     Spacer(Modifier.width(6.dp))
                     Text(stringResource(R.string.sentence_stop))
                 }
-                TextButton(onClick = { actions.onEvent(ReviewEvent.CancelSentence) }) { Text(stringResource(R.string.sentence_cancel)) }
+                TextButton(onClick = { actions.onEvent(ReviewEvent.CancelSentence) }, modifier = Modifier.heightIn(min = VaakSpace.touch)) { Text(stringResource(R.string.sentence_cancel)) }
             }
         }
     }
@@ -436,7 +462,12 @@ private fun Checking(card: ReviewCard) {
     MiniCard(card)
     VaakCard(Modifier.fillMaxWidth().testTag(TAG_CHECKING)) {
         Column(Modifier.padding(VaakSpace.l)) {
-            Text(stringResource(R.string.sentence_checking), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.sentence_checking),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+            )
             Skeleton(0.9f)
             Skeleton(0.6f)
         }
@@ -444,6 +475,7 @@ private fun Checking(card: ReviewCard) {
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 private fun Verdict(state: ReviewUiState, card: ReviewCard, actions: ReviewActions) {
     MiniCard(card)
     val r = state.sentence.result
@@ -499,7 +531,7 @@ private fun Verdict(state: ReviewUiState, card: ReviewCard, actions: ReviewActio
     when (r.verdict) {
         SentenceVerdict.ALMOST -> if (r.corrected.isNotBlank()) {
             FixBox(stringResource(R.string.sentence_try_like)) { Text(diffText(LineDiff.diff(r.transcript, r.corrected).second), style = bodyStyle(card.lang).copy(fontWeight = FontWeight.SemiBold)) }
-            Row {
+            FlowRow {
                 TextButton(onClick = { actions.onEvent(ReviewEvent.RetrySentence) }) {
                     Icon(Icons.Rounded.Replay, null)
                     Spacer(Modifier.width(4.dp))
@@ -542,7 +574,7 @@ private fun Verdict(state: ReviewUiState, card: ReviewCard, actions: ReviewActio
 private fun FixBox(title: String, content: @Composable () -> Unit) {
     VaakCard(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large) {
         Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
-            Eyebrow(title)
+            Eyebrow(title, Modifier.semantics { heading() })
             content()
         }
     }
@@ -628,9 +660,23 @@ private fun Grades(state: ReviewUiState, card: ReviewCard, onGrade: (Rating) -> 
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp),
             )
         }
-        Row(Modifier.fillMaxWidth().semantics { contentDescription = group }.testTag(TAG_GRADES), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Rating.entries.forEach { rating ->
-                GradeButton(rating, state.intervals[rating], rating == suggested, { onGrade(rating) }, Modifier.weight(1f))
+        // The group label stays (it says whether the grade is the user's own call); the traversal group keeps
+        // the four buttons together in focus order.
+        val grades = Modifier.fillMaxWidth().semantics { contentDescription = group; isTraversalGroup = true }.testTag(TAG_GRADES)
+        if (LocalDensity.current.fontScale > LARGE_FONT_SCALE) {
+            // 2 × 2 at large text so labels and intervals never truncate (design-system §10.5).
+            Column(grades, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Rating.entries.chunked(2).forEach { pair ->
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        pair.forEach { rating -> GradeButton(rating, state.intervals[rating], rating == suggested, { onGrade(rating) }, Modifier.weight(1f)) }
+                    }
+                }
+            }
+        } else {
+            Row(grades, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Rating.entries.forEach { rating ->
+                    GradeButton(rating, state.intervals[rating], rating == suggested, { onGrade(rating) }, Modifier.weight(1f))
+                }
             }
         }
     }
@@ -649,15 +695,24 @@ private fun GradeButton(rating: Rating, interval: Duration?, suggested: Boolean,
     val short = interval?.let { intervalLabel(it) }.orEmpty()
     val spoken = interval?.let { intervalLabel(it, spoken = true) }.orEmpty()
     val cd = stringResource(if (suggested) R.string.grade_sugg_cd else R.string.grade_cd, label, spoken)
+    // The suggested grade is marked by a check and a thicker border, not by colour alone (design-system §10.3).
+    // The click is declared in the same block that clears the children, so it's never lost.
     Surface(
         onClick = onClick,
-        modifier = modifier.heightIn(min = 60.dp).clearAndSetSemantics { contentDescription = cd; role = Role.Button }.testTag("grade_${rating.name.lowercase()}"),
+        modifier = modifier.heightIn(min = 60.dp).testTag("grade_${rating.name.lowercase()}")
+            .clearAndSetSemantics { contentDescription = cd; role = Role.Button; onClick { onClick(); true } },
         shape = MaterialTheme.shapes.medium,
         color = if (suggested) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerLowest,
-        border = BorderStroke(1.5.dp, if (suggested) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+        border = if (suggested) BorderStroke(3.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline),
     ) {
-        Column(Modifier.padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(label, style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp), color = MaterialTheme.colorScheme.primary)
+        Column(Modifier.padding(horizontal = 4.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (suggested) {
+                    Icon(Icons.Rounded.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(2.dp))
+                }
+                Text(label, style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp), color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center)
+            }
             Text(short, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp, fontFeatureSettings = "tnum"), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -665,7 +720,7 @@ private fun GradeButton(rating: Rating, interval: Duration?, suggested: Boolean,
 
 @Composable
 private fun Done(mode: ReviewMode, d: DoneUi, actions: ReviewActions) {
-    Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = actions.onClose) { Icon(Icons.Rounded.Close, stringResource(R.string.done_close_cd)) }
     }
     Column(
@@ -702,8 +757,19 @@ private fun Done(mode: ReviewMode, d: DoneUi, actions: ReviewActions) {
                 Text(stringResource(R.string.done_short), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 10.dp))
             }
         }
-        val tally = stringResource(R.string.done_tally_a11y)
-        VaakCard(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = tally }) {
+        // One sentence with the counts (a bare "What you revised" hid them).
+        val title = stringResource(R.string.done_tally_a11y)
+        val words = pluralStringResource(R.plurals.done_tally_words, d.words, d.words)
+        val tally = if (mode == ReviewMode.REVISE) {
+            stringResource(
+                R.string.done_tally_revise_cd, title, words,
+                pluralStringResource(R.plurals.done_tally_fixes, d.fixes, d.fixes),
+                pluralStringResource(R.plurals.done_tally_lines, d.lines, d.lines),
+            )
+        } else {
+            stringResource(R.string.done_tally_gym_cd, title, words)
+        }
+        VaakCard(Modifier.fillMaxWidth().testTag(TAG_DONE_TALLY).clearAndSetSemantics { contentDescription = tally }) {
             Column(Modifier.padding(horizontal = VaakSpace.l, vertical = 4.dp)) {
                 TallyRow(Icons.AutoMirrored.Outlined.MenuBook, stringResource(R.string.done_words), d.words)
                 if (mode == ReviewMode.REVISE) {
@@ -743,6 +809,10 @@ private fun elapsed(ms: Long): String {
 }
 
 private const val QUOTA_SHOWN_FROM = 3
+
+/** Above this font scale the grade buttons go 2 × 2. */
+private const val LARGE_FONT_SCALE = 1.3f
+const val TAG_DONE_TALLY = "review_done_tally"
 const val TAG_REVIEW = "review"
 const val TAG_FRONT = "review_front"
 const val TAG_BACK = "review_back"

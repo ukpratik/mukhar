@@ -172,6 +172,16 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
 
     suspend fun markTtsTipShown(lang: Lang) = update { it[K.ttsTipShown] = it[K.ttsTipShown].orEmpty() + lang.code }
 
+    // M6: Sound Lab.
+
+    /**
+     * Sound Lab pair ids the user has practised (the "Practised" chip). Only the ids are kept: no audio, no score.
+     * Lives in this DataStore so it survives restarts and backup, and [clearAll] wipes it.
+     */
+    val soundLabPractised: Flow<Set<String>> = store.data.map { it[K.soundLabPractised].orEmpty() }.distinctUntilChanged()
+
+    suspend fun markSoundLabPractised(pairId: String) = update { it[K.soundLabPractised] = it[K.soundLabPractised].orEmpty() + pairId }
+
     // M5: settings screen, entitlement cache, server quota mirror, delete my data.
 
     val analyticsConsent: Flow<Boolean> = store.data.map { it[K.analyticsConsent] ?: false }.distinctUntilChanged()
@@ -333,6 +343,7 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val checksDay = stringPreferencesKey("checks_day")
         val checksUsed = intPreferencesKey("checks_used")
         val ttsTipShown = stringSetPreferencesKey("tts_tip_shown")
+        val soundLabPractised = stringSetPreferencesKey("soundlab_practised")
         val entPremium = booleanPreferencesKey("entitlement_premium")
         val entExpiry = longPreferencesKey("trial_expiry")
         val entTrial = booleanPreferencesKey("entitlement_is_trial")

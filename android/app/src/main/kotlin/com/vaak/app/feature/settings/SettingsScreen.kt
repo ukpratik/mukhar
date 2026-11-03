@@ -54,6 +54,8 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTimePickerState
@@ -65,14 +67,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -208,7 +214,10 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 Divider()
                 LinkRow(Icons.Outlined.CloudUpload, stringResource(R.string.settings_what_leaves), stringResource(R.string.settings_what_leaves_sub), onClick = actions.onDisclosure)
                 Divider()
-                LinkRow(Icons.Outlined.Policy, stringResource(R.string.settings_privacy), stringResource(R.string.settings_privacy_sub), trailing = Icons.AutoMirrored.Rounded.OpenInNew) { actions.onOpenUrl(Links.PRIVACY_POLICY) }
+                LinkRow(
+                    Icons.Outlined.Policy, stringResource(R.string.settings_privacy), stringResource(R.string.settings_privacy_sub),
+                    trailing = Icons.AutoMirrored.Rounded.OpenInNew, clickLabel = stringResource(R.string.settings_open_in_browser),
+                ) { actions.onOpenUrl(Links.PRIVACY_POLICY) }
             }
             OutlinedButton(
                 onClick = actions.onDeleteOpen,
@@ -297,10 +306,11 @@ private fun LinkRow(
     value: String? = null,
     trailing: ImageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
     tag: String? = null,
+    clickLabel: String? = null,
     onClick: () -> Unit,
 ) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(role = Role.Button, onClick = onClick)
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(onClickLabel = clickLabel, role = Role.Button, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp).semantics(mergeDescendants = true) {}
             .let { if (tag != null) it.testTag(tag) else it },
         verticalAlignment = Alignment.CenterVertically,
@@ -337,10 +347,26 @@ private fun <T> SegRow(icon: ImageVector, title: String, sub: String, options: L
             Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
             RowText(title, sub, Modifier.weight(1f))
         }
-        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(top = 10.dp).semantics { contentDescription = title }) {
-            options.forEachIndexed { i, o ->
-                SegmentedButton(selected = o == selected, onClick = { onPick(o) }, shape = SegmentedButtonDefaults.itemShape(i, options.size)) {
-                    Text(label(o), maxLines = 1)
+        // The visible title names the group (no container label). Above 150 % font size the segments would
+        // truncate, so the options become a radio list (design-system §10.5: never truncate).
+        if (LocalDensity.current.fontScale > SEG_MAX_FONT_SCALE) {
+            Column(Modifier.fillMaxWidth().padding(top = 6.dp).selectableGroup()) {
+                options.forEach { o ->
+                    Row(
+                        Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(selected = o == selected, role = Role.RadioButton) { onPick(o) },
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(selected = o == selected, onClick = null)
+                        Text(label(o), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 12.dp))
+                    }
+                }
+            }
+        } else {
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                options.forEachIndexed { i, o ->
+                    SegmentedButton(selected = o == selected, onClick = { onPick(o) }, shape = SegmentedButtonDefaults.itemShape(i, options.size)) {
+                        Text(label(o))
+                    }
                 }
             }
         }
@@ -362,7 +388,7 @@ private fun <T> MultiPick(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
-            Column {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 options.forEach { o ->
                     val on = o in picked
                     val enabled = on || picked.size < max
@@ -374,6 +400,15 @@ private fun <T> MultiPick(
                         Checkbox(checked = on, onCheckedChange = null, enabled = enabled)
                         Text(label(o), modifier = Modifier.padding(start = 12.dp))
                     }
+                }
+                // Why the other boxes are off, in words and announced (not only greyed out).
+                if (max < options.size && picked.size >= max) {
+                    Text(
+                        stringResource(R.string.settings_pick_max, max),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 8.dp).testTag(TAG_PICK_MAX).semantics { liveRegion = LiveRegionMode.Polite },
+                    )
                 }
             }
         },
@@ -389,7 +424,12 @@ private fun TimeDialog(time: LocalTime, onDone: (LocalTime) -> Unit, onDismiss: 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_reminder_time)) },
-        text = { TimePicker(picker) },
+        // The clock dial doesn't fit large text; the keyboard input does, and the dialog body scrolls.
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                if (LocalDensity.current.fontScale > LARGE_FONT_SCALE) TimeInput(picker) else TimePicker(picker)
+            }
+        },
         confirmButton = { TextButton(onClick = { onDone(LocalTime.of(picker.hour, picker.minute)) }) { Text(stringResource(R.string.settings_done)) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_cancel)) } },
     )
@@ -421,7 +461,7 @@ private fun PhraseDialog(phrase: String, onDone: (String) -> Unit, onDismiss: ()
 private fun DeleteSheet(state: SettingsUiState, actions: SettingsActions) {
     val sheet = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(onDismissRequest = actions.onDeleteCancel, sheetState = sheet) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = VaakSpace.gutter).padding(bottom = VaakSpace.l).testTag(TAG_DELETE_SHEET)) {
+        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = VaakSpace.gutter).padding(bottom = VaakSpace.l).testTag(TAG_DELETE_SHEET)) {
             Text(stringResource(R.string.delete_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
             Text(stringResource(R.string.delete_lead), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
             SubHead(R.string.delete_on_phone)
@@ -445,21 +485,30 @@ private fun DeleteSheet(state: SettingsUiState, actions: SettingsActions) {
                 enabled = state.deleteUnderstood && state.delete == DeleteStage.CONFIRM,
                 modifier = Modifier.padding(top = 12.dp).testTag(TAG_DELETE_CONFIRM),
             )
-            TextCta(stringResource(R.string.delete_keep), actions.onDeleteCancel)
+            if (state.delete == DeleteStage.DELETING) {
+                Text(
+                    stringResource(R.string.delete_deleting),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp).testTag(TAG_DELETING).semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            }
+            TextCta(stringResource(R.string.delete_keep), actions.onDeleteCancel, Modifier.testTag(TAG_DELETE_KEEP))
         }
     }
 }
 
 @Composable
 private fun SubHead(text: Int) {
-    Text(stringResource(text), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 14.dp, bottom = 4.dp))
+    Text(stringResource(text), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 14.dp, bottom = 4.dp).semantics { heading() })
 }
 
 @Composable
 private fun ListLine(icon: ImageVector, text: String) {
     Row(Modifier.padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Icon(icon, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
-        Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
     }
 }
 
@@ -470,12 +519,17 @@ private fun Deleted(onStartFresh: () -> Unit) {
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding().padding(horizontal = VaakSpace.gutter).testTag(TAG_DELETED),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.weight(1f))
-        ArtCircle(Icons.Rounded.Check)
-        Text(stringResource(R.string.deleted_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 20.dp).semantics { heading() })
-        Text(stringResource(R.string.deleted_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
-        Spacer(Modifier.weight(1f))
-        PrimaryCta(stringResource(R.string.deleted_start), onStartFresh, modifier = Modifier.padding(bottom = VaakSpace.l))
+        // The message scrolls at large font sizes; the CTA stays pinned below it.
+        Column(
+            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            ArtCircle(Icons.Rounded.Check)
+            Text(stringResource(R.string.deleted_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 20.dp).semantics { heading() })
+            Text(stringResource(R.string.deleted_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
+        }
+        PrimaryCta(stringResource(R.string.deleted_start), onStartFresh, modifier = Modifier.padding(top = VaakSpace.m, bottom = VaakSpace.l).testTag(TAG_START_FRESH))
     }
 }
 
@@ -491,3 +545,13 @@ const val TAG_DELETE_SHEET = "delete_sheet"
 const val TAG_DELETE_CHECK = "delete_check"
 const val TAG_DELETE_CONFIRM = "delete_confirm"
 const val TAG_DELETED = "deleted"
+const val TAG_DELETE_KEEP = "delete_keep"
+const val TAG_DELETING = "delete_deleting"
+const val TAG_START_FRESH = "deleted_start_fresh"
+const val TAG_PICK_MAX = "settings_pick_max"
+
+/** Above this the segmented controls become radio lists. */
+private const val SEG_MAX_FONT_SCALE = 1.5f
+
+/** Above this the time dial becomes keyboard input. */
+private const val LARGE_FONT_SCALE = 1.3f

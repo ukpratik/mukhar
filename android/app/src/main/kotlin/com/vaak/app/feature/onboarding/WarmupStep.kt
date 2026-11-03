@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,7 +43,8 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -51,6 +54,7 @@ import com.vaak.app.R
 import com.vaak.app.feature.onboarding.warmup.PaceBand
 import com.vaak.app.feature.onboarding.warmup.VolumeBand
 import com.vaak.app.feature.onboarding.warmup.WarmupAnalyzer
+import com.vaak.app.feature.talk.common.reducedMotion
 import com.vaak.domain.model.Lang
 import com.vaak.ui.theme.TileShape
 import com.vaak.ui.theme.VaakCard
@@ -78,7 +82,8 @@ fun WarmupBody(state: OnboardingUiState, onReadInHindi: (Boolean) -> Unit) {
                 }
                 when (w) {
                     WarmupUi.TooShort -> Banner(stringResource(R.string.warmup_too_short))
-                    WarmupUi.MicError -> Banner(stringResource(R.string.warmup_mic_error))
+                    // Errors use an assertive live region (design §10.4).
+                    WarmupUi.MicError -> Banner(stringResource(R.string.warmup_mic_error), assertive = true)
                     else -> MicWhy()
                 }
             }
@@ -120,32 +125,42 @@ private fun MicWhy() {
 }
 
 @Composable
-private fun Banner(text: String) {
+private fun Banner(text: String, assertive: Boolean = false) {
     Text(
         text,
         style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp),
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.fillMaxWidth().padding(top = VaakSpace.m).clip(MaterialTheme.shapes.medium)
             .background(VaakTheme.colors.accentTint).padding(horizontal = 14.dp, vertical = VaakSpace.m)
-            .semantics { liveRegion = LiveRegionMode.Polite },
+            .semantics { liveRegion = if (assertive) LiveRegionMode.Assertive else LiveRegionMode.Polite },
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RecordingBody(w: WarmupUi.Recording, lang: Lang) {
     val seconds = (w.elapsedMs / 1000).toInt()
     val a11y = stringResource(R.string.warmup_recording_a11y, seconds)
-    Row(Modifier.fillMaxWidth().padding(top = VaakSpace.xs), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    val started = stringResource(R.string.recording_started)
+    FlowRow(
+        Modifier.fillMaxWidth().padding(top = VaakSpace.xs),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(VaakSpace.s),
+        itemVerticalAlignment = Alignment.CenterVertically,
+    ) {
+        // Start is announced once here; the timer itself is not a live region (it would speak every second).
         Row(
             Modifier.clip(CircleShape).border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest).padding(horizontal = 14.dp, vertical = 9.dp),
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                .semantics(mergeDescendants = true) { contentDescription = started; liveRegion = LiveRegionMode.Polite }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(VaakSpace.s),
         ) {
             Box(Modifier.size(10.dp).clip(CircleShape).background(VaakTheme.colors.accent))
             Text(stringResource(R.string.warmup_listening), style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp), color = MaterialTheme.colorScheme.primary)
         }
-        Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y; liveRegion = LiveRegionMode.Polite }) {
+        Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y }) {
             Text(
                 "0:%02d".format(seconds),
                 style = MaterialTheme.typography.displayMedium.copy(fontSize = 40.sp, lineHeight = 40.sp),
@@ -161,24 +176,31 @@ private fun RecordingBody(w: WarmupUi.Recording, lang: Lang) {
 
 @Composable
 fun ProgressTrack(fraction: Float, modifier: Modifier = Modifier) {
+    val value = fraction.coerceIn(0f, 1f)
     Box(
-        modifier.fillMaxWidth().padding(top = 14.dp).height(6.dp).clip(RoundedCornerShape(6.dp)).background(VaakTheme.colors.track),
+        modifier.fillMaxWidth().padding(top = 14.dp).height(6.dp).clip(RoundedCornerShape(6.dp)).background(VaakTheme.colors.track)
+            .clearAndSetSemantics { progressBarRangeInfo = ProgressBarRangeInfo(value, 0f..1f) },
     ) {
         Box(Modifier.fillMaxWidth(fraction.coerceIn(0f, 1f)).height(6.dp).clip(RoundedCornerShape(6.dp)).background(MaterialTheme.colorScheme.primary))
     }
 }
 
-/** Live level bars (saffron fill). Decorative: TalkBack hears the timer instead. */
+/** Live level bars (saffron fill). Decorative: TalkBack hears the timer instead. Static with reduced motion (§8). */
 @Composable
 private fun Wave(levels: List<Float>) {
     val color = VaakTheme.colors.accent
+    val still = reducedMotion()
     Canvas(Modifier.fillMaxWidth().height(80.dp).padding(vertical = VaakSpace.s).clearAndSetSemantics {}) {
         val bars = 24
         val gap = 4.dp.toPx()
         val w = (size.width - gap * (bars - 1)) / bars
         for (i in 0 until bars) {
-            val level = levels.getOrNull(levels.size - bars + i) ?: -60f
-            val h = (((level + 60f) / 60f).coerceIn(0.08f, 1f)) * size.height
+            val h = if (still) {
+                STATIC_WAVE[i % STATIC_WAVE.size] * size.height
+            } else {
+                val level = levels.getOrNull(levels.size - bars + i) ?: -60f
+                (((level + 60f) / 60f).coerceIn(0.08f, 1f)) * size.height
+            }
             drawRoundRect(color, Offset(i * (w + gap), (size.height - h) / 2), Size(w, h), CornerRadius(w / 2))
         }
     }
@@ -193,7 +215,7 @@ fun StopControl(label: String, a11y: String, onClick: () -> Unit, modifier: Modi
     ) {
         Box(
             Modifier.size(72.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary)
-                .clickable(role = Role.Button, onClickLabel = a11y, onClick = onClick)
+                .clickable(role = Role.Button, onClick = onClick)
                 .semantics { contentDescription = a11y },
             contentAlignment = Alignment.Center,
         ) {
@@ -340,7 +362,6 @@ fun MicDeniedBody() {
             Icons.Outlined.Replay to stringResource(R.string.mic_denied_again),
         ),
         footer = stringResource(R.string.mic_denied_offline),
-        modifier = Modifier.semantics { heading() },
     )
 }
 
@@ -357,3 +378,6 @@ fun MicDeniedCta(permanentlyDenied: Boolean, onTryAgain: () -> Unit, onOpenSetti
         TextCta(stringResource(R.string.mic_continue_without), onContinueWithout)
     }
 }
+
+/** A fixed bar shape for the reduced-motion wave. */
+private val STATIC_WAVE = listOf(0.3f, 0.5f, 0.7f, 0.45f, 0.6f, 0.35f)

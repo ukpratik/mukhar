@@ -43,6 +43,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -137,7 +138,7 @@ private fun DefaultContent(habit: HabitSnapshot, card: StreakCardUi, talksEnable
         }
     }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.l)) {
-        StreakRing(card.covered, card.goal, card.met)
+        StreakRing(card.covered, card.goal, card.met, describe = true)
         Column {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
                 Icon(Icons.Rounded.LocalFireDepartment, contentDescription = null, tint = VaakTheme.colors.accent, modifier = Modifier.size(22.dp))
@@ -159,7 +160,12 @@ private fun DefaultContent(habit: HabitSnapshot, card: StreakCardUi, talksEnable
     HorizontalDivider(Modifier.padding(top = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
     Row(Modifier.fillMaxWidth().heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.sheet_freezes), style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.5.sp), color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                stringResource(R.string.sheet_freezes),
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.5.sp),
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.semantics { heading() },
+            )
             val held = habit.streak.freezesHeld
             Text(
                 habit.nextFreezeInDays?.let { pluralStringResource(R.plurals.sheet_next_freeze, it, held, it) }
@@ -219,7 +225,7 @@ private fun FreezeSlot(held: Boolean) {
 private fun GoalBlock(title: String, note: String, goal: Int, onGoal: (Int) -> Unit) {
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     Column(Modifier.padding(top = 10.dp, bottom = VaakSpace.m)) {
-        Text(title, style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.5.sp), color = MaterialTheme.colorScheme.onSurface)
+        Text(title, style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.5.sp), color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.semantics { heading() })
         Text(note, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(bottom = VaakSpace.s))
         WeeklyGoalPicker(goal, onGoal, withSubLabels = false)
     }
@@ -286,7 +292,11 @@ private fun RepairStep(label: String, done: Boolean, modifier: Modifier) {
     } else {
         base.background(MaterialTheme.colorScheme.surfaceContainerLowest).border(1.5.dp, MaterialTheme.colorScheme.outline, shape)
     }
-    Row(styled.padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.s)) {
+    // Done / to do is said in words too, not only by the icon and colour (design §10.3).
+    val state = stringResource(if (done) R.string.repair_step_done else R.string.repair_step_todo)
+    Row(
+        styled.semantics(mergeDescendants = true) { stateDescription = state }.testTag(TAG_REPAIR_STEP).padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.s)) {
         Icon(
             if (done) Icons.Rounded.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
             contentDescription = null,
@@ -304,13 +314,18 @@ private fun FreshContent(habit: HabitSnapshot, talksEnabled: Boolean, wordsLearn
     }
     Text(stringResource(R.string.sheet_fresh_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
     Text(stringResource(R.string.sheet_fresh_lead), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = VaakSpace.xs))
-    val keptA11y = stringResource(R.string.sheet_kept_a11y)
+    val best = pluralStringResource(R.plurals.sheet_best_days, habit.streak.best, habit.streak.best)
+    val bestLabel = stringResource(R.string.sheet_best_kept)
+    val words = pluralStringResource(R.plurals.sheet_words, wordsLearned, wordsLearned)
+    val wordsLabel = stringResource(R.string.sheet_words_kept)
+    // One sentence with the values in it; the heading alone would hide what is kept.
+    val keptA11y = stringResource(R.string.sheet_kept_list_a11y, stringResource(R.string.sheet_kept_a11y), best, bestLabel, words, wordsLabel)
     Row(
-        Modifier.fillMaxWidth().padding(vertical = VaakSpace.m).semantics(mergeDescendants = true) { contentDescription = keptA11y },
+        Modifier.fillMaxWidth().padding(vertical = VaakSpace.m).semantics(mergeDescendants = true) { contentDescription = keptA11y }.testTag(TAG_KEPT),
         horizontalArrangement = Arrangement.spacedBy(VaakSpace.s),
     ) {
-        KeptTile(pluralStringResource(R.plurals.sheet_best_days, habit.streak.best, habit.streak.best), stringResource(R.string.sheet_best_kept), Modifier.weight(1f))
-        KeptTile(pluralStringResource(R.plurals.sheet_words, wordsLearned, wordsLearned), stringResource(R.string.sheet_words_kept), Modifier.weight(1f))
+        KeptTile(best, bestLabel, Modifier.weight(1f))
+        KeptTile(words, wordsLabel, Modifier.weight(1f))
     }
     GoalBlock(stringResource(R.string.sheet_weekly_goal), stringResource(R.string.sheet_fresh_goal_note), habit.habit.weeklyGoal, onGoal)
     PrimaryCta(
@@ -348,3 +363,5 @@ private fun weekDescription(dots: List<DayDot>): String {
 }
 
 const val TAG_STREAK_SHEET = "streak_sheet"
+const val TAG_REPAIR_STEP = "streak_repair_step"
+const val TAG_KEPT = "streak_kept"

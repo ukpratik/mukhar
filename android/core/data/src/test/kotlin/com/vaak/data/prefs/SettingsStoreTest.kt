@@ -132,4 +132,15 @@ class SettingsStoreTest {
         store.setProfile(null, setOf(Lang.EN), setOf(GoalTrack.CONTENT_CREATION))
         assertThat(store.currentPrefs().tracksFor(Lang.EN)).isEqualTo(TalkPrefs.DEFAULT_TRACKS[Lang.EN])
     }
+
+    @Test
+    fun soundLabPractisedRoundTripsAndDeleteMyDataWipesIt() = runBlocking<Unit> {
+        assertThat(store.soundLabPractised.first()).isEmpty()
+        store.markSoundLabPractised("ship_sheep")
+        store.markSoundLabPractised("v_w")
+        store.markSoundLabPractised("ship_sheep") // idempotent
+        assertThat(store.soundLabPractised.first()).containsExactly("ship_sheep", "v_w")
+        store.clearAll()
+        assertThat(store.soundLabPractised.first()).isEmpty()
+    }
 }

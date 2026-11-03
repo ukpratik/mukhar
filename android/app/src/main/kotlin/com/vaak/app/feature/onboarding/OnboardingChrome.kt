@@ -32,11 +32,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -49,13 +51,14 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.vaak.app.R
 import com.vaak.ui.theme.VaakCard
 import com.vaak.ui.theme.VaakSpace
 import com.vaak.ui.theme.VaakTheme
 
-/** 56 dp top row: back (or a 48 dp gap) + the 6-segment progress + "n of 6" (S01 to S06 chrome). */
+/** 56 dp (minimum) top row: back (or a 48 dp gap) + the 6-segment progress + "n of 6" (S01 to S06 chrome). */
 @Composable
 fun ObTopBar(
     step: Int?,
@@ -64,7 +67,7 @@ fun ObTopBar(
     backLabel: String = stringResource(R.string.ob_back),
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().height(56.dp).padding(start = VaakSpace.xs, end = VaakSpace.l),
+        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp).padding(start = VaakSpace.xs, end = VaakSpace.l),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -132,7 +135,7 @@ fun ObQuestion(text: String, modifier: Modifier = Modifier, note: String? = null
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom,
     ) {
-        Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
+        Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f).semantics { heading() })
         if (note != null) {
             Text(note, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -300,6 +303,27 @@ fun annotatedResource(@StringRes id: Int): AnnotatedString {
         }
     }
 }
+
+/** True from about 150% font scale, where side-by-side text should stack instead (design §10.5). */
+@Composable
+fun largeFont(): Boolean = LocalDensity.current.fontScale > LARGE_FONT_SCALE
+
+/**
+ * Caps the font scale for text drawn inside a fixed graphic (the streak ring, a logo tile) so it stays inside its
+ * shape. Only for short labels whose meaning is also read out elsewhere; body text always scales fully.
+ */
+@Composable
+fun CappedFontScale(max: Float = GRAPHIC_FONT_SCALE_CAP, content: @Composable () -> Unit) {
+    val density = LocalDensity.current
+    if (density.fontScale <= max) {
+        content()
+    } else {
+        CompositionLocalProvider(LocalDensity provides Density(density.density, max), content = content)
+    }
+}
+
+private const val LARGE_FONT_SCALE = 1.5f
+private const val GRAPHIC_FONT_SCALE_CAP = 1.3f
 
 /** The UI locale, read observably (lint NonObservableLocale). */
 @Composable

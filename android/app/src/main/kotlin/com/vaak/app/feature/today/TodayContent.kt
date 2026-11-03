@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -66,6 +67,7 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vaak.app.R
@@ -75,6 +77,7 @@ import com.vaak.app.feature.habit.streakTitle
 import com.vaak.app.feature.onboarding.Eyebrow
 import com.vaak.app.feature.plan.TrialBanner
 import com.vaak.app.feature.onboarding.currentLocale
+import com.vaak.app.feature.onboarding.largeFont
 import com.vaak.app.feature.onboarding.label
 import com.vaak.app.feature.onboarding.timeLabel
 import com.vaak.app.feature.words.SpeakerSlot
@@ -194,7 +197,8 @@ private fun Header(state: TodayUiState, onOpenMe: () -> Unit) {
         ) {
             val initial = state.firstName?.firstOrNull()?.uppercaseChar()
             if (initial != null) {
-                Text(initial.toString(), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                // The button's label already says what it is; the initial is decoration.
+                Text(initial.toString(), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.clearAndSetSemantics {})
             } else {
                 Icon(Icons.Outlined.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             }
@@ -241,16 +245,27 @@ private fun StreakCard(card: StreakCardUi, onClick: () -> Unit) {
     } else {
         pluralStringResource(R.plurals.streak_card_a11y, card.goal, title, sub, card.covered, card.goal)
     }
-    VaakCard(Modifier.fillMaxWidth().testTag(TAG_STREAK_CARD).clearAndSetSemantics { contentDescription = a11y; role = Role.Button }, onClick = onClick) {
-        Row(Modifier.padding(VaakSpace.l), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.l)) {
-            StreakRing(card.covered, card.goal, card.met)
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Icon(Icons.Rounded.LocalFireDepartment, contentDescription = null, tint = VaakTheme.colors.accent, modifier = Modifier.size(22.dp))
-                    Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
-                }
-                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
-                if (card.line != StreakLine.COUNTED_QUEUED) WeekDots(card.dots)
+    // The description sits beside the card's click action; only the inner content is cleared, so TalkBack keeps
+    // "double-tap to activate" (clearing on the card itself would drop the action).
+    VaakCard(Modifier.fillMaxWidth().testTag(TAG_STREAK_CARD).semantics { contentDescription = a11y; role = Role.Button }, onClick = onClick) {
+        val body: @Composable () -> Unit = {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Icon(Icons.Rounded.LocalFireDepartment, contentDescription = null, tint = VaakTheme.colors.accent, modifier = Modifier.size(22.dp))
+                Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+            }
+            Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
+            if (card.line != StreakLine.COUNTED_QUEUED) WeekDots(card.dots)
+        }
+        if (largeFont()) {
+            // At large font sizes the ring sits above the text so the week dots keep the full width.
+            Column(Modifier.padding(VaakSpace.l).clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(VaakSpace.m)) {
+                StreakRing(card.covered, card.goal, card.met)
+                Column { body() }
+            }
+        } else {
+            Row(Modifier.padding(VaakSpace.l).clearAndSetSemantics {}, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.l)) {
+                StreakRing(card.covered, card.goal, card.met)
+                Column { body() }
             }
         }
     }
@@ -293,7 +308,8 @@ private fun TalkHero(talk: TalkCardUi, onStart: () -> Unit, onShuffle: () -> Uni
     val accent = colors.accent
     Card(
         onClick = onStart,
-        modifier = Modifier.fillMaxWidth().semantics { contentDescription = a11y }.testTag(TAG_TALK_CARD),
+        // Polite live region: a shuffled prompt is read out (design §10.4).
+        modifier = Modifier.fillMaxWidth().semantics { contentDescription = a11y; liveRegion = LiveRegionMode.Polite }.testTag(TAG_TALK_CARD),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = colors.hero, contentColor = colors.onHero),
         border = if (isSystemInDarkTheme()) BorderStroke(1.dp, colors.heroOutlineDark) else null,
@@ -308,8 +324,13 @@ private fun TalkHero(talk: TalkCardUi, onStart: () -> Unit, onShuffle: () -> Uni
             },
         ) {
             Column(Modifier.padding(VaakSpace.xl).clearAndSetSemantics {}) {
-                Eyebrow(eyebrow, color = colors.onHero2)
-                FlowRow(Modifier.padding(top = 10.dp, bottom = VaakSpace.m), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                // End padding keeps the eyebrow and chips clear of the shuffle button at any font size.
+                Eyebrow(eyebrow, color = colors.onHero2, modifier = Modifier.padding(end = SHUFFLE_CLEARANCE))
+                FlowRow(
+                    Modifier.padding(top = 10.dp, bottom = VaakSpace.m, end = SHUFFLE_CLEARANCE),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
                     HeroChip(lang)
                     HeroChip(track)
                     if (talk.easy) HeroChip(stringResource(R.string.talk_easy))
@@ -319,8 +340,13 @@ private fun TalkHero(talk: TalkCardUi, onStart: () -> Unit, onShuffle: () -> Uni
                     style = if (talk.prompt.lang == Lang.HI) VaakTheme.type.hiPrompt else VaakTheme.type.prompt.copy(fontSize = 21.sp, lineHeight = 27.sp),
                     color = colors.onHero,
                 )
-                Row(Modifier.fillMaxWidth().padding(top = 18.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                FlowRow(
+                    Modifier.fillMaxWidth().padding(top = 18.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    itemVerticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Icon(if (talk.analysedLater) Icons.Outlined.CloudOff else Icons.Outlined.Schedule, contentDescription = null, tint = colors.onHero2, modifier = Modifier.size(18.dp))
                         Text(
                             stringResource(
@@ -391,7 +417,7 @@ private fun DoneCard(state: TodayUiState) {
                     style = (if (p.lang == Lang.HI) VaakTheme.type.hiPrompt else VaakTheme.type.prompt).merge(
                         TextStyle(fontSize = 17.sp, brush = Brush.horizontalGradient(0.4f to ink, 1f to Color.Transparent)),
                     ),
-                    maxLines = 1,
+                    // Already cut to ~40 characters; it may wrap at large font sizes rather than clip.
                     modifier = Modifier.padding(top = VaakSpace.xs),
                 )
             }
@@ -420,7 +446,10 @@ private fun CardRow(
                 Badge.BRAND -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.primary
                 Badge.GLOW -> MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.tertiary
             }
-            Box(Modifier.size(52.dp).clip(MaterialTheme.shapes.medium).background(bg), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.sizeIn(minWidth = 52.dp, minHeight = 52.dp).clip(MaterialTheme.shapes.medium).background(bg).padding(VaakSpace.xs),
+                contentAlignment = Alignment.Center,
+            ) {
                 if (number != null) {
                     Text(number.toString(), style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold), color = fg)
                 } else if (icon != null) {
@@ -485,6 +514,7 @@ private fun BaselineCard(onClick: () -> Unit) {
 }
 
 /** Today's words (US-020): meaning, example, register and source, with the speaker when a voice is installed. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun WordsSection(state: TodayUiState, actions: TodayActions) {
     Row(Modifier.fillMaxWidth().padding(top = VaakSpace.s, start = 2.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -514,7 +544,7 @@ private fun WordsSection(state: TodayUiState, actions: TodayActions) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
-                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.Bottom) {
                         Text(
                             w.lemma,
                             style = if (w.lang == Lang.HI) VaakTheme.type.hiBodyLarge.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.titleMedium,
@@ -527,6 +557,7 @@ private fun WordsSection(state: TodayUiState, actions: TodayActions) {
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (w.source == WordSource.TALK) {
                         Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -547,6 +578,7 @@ private fun mmss(ms: Long): String = "%d:%02d".format(ms / 60_000, ms / 1000 % 6
 private fun clockTime(at: java.time.Instant): String = timeLabel(at.atZone(ZoneId.systemDefault()).toLocalTime())
 
 private const val TEASE_CHARS = 40
+private val SHUFFLE_CLEARANCE = 56.dp
 const val TAG_TODAY = "today"
 const val TAG_STREAK_CARD = "today_streak"
 const val TAG_TALK_CARD = "today_talk"

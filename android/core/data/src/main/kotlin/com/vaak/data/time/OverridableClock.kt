@@ -18,24 +18,28 @@ import javax.inject.Singleton
  */
 @Singleton
 class OverridableClock internal constructor(
-    private val prefs: android.content.SharedPreferences,
+    prefsProvider: () -> android.content.SharedPreferences,
     private val overridesAllowed: Boolean,
     private val system: () -> Instant,
 ) : Clock {
 
     @Inject
     constructor(@ApplicationContext context: Context) : this(
-        prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE),
+        prefsProvider = { context.getSharedPreferences(PREFS, Context.MODE_PRIVATE) },
         overridesAllowed = context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0,
         system = Instant::now,
     )
+
+    // NFR-002 (D-036): opened on first use, and never in a release build (overrides are off there), so cold start
+    // does no prefs disk read on the main thread.
+    private val prefs by lazy(prefsProvider)
 
     val isOverridden: Boolean get() = overridesAllowed && (offsetMs() != 0L || prefs.contains(KEY_ZONE))
 
     override fun now(): Instant = system().plusMillis(offsetMs())
 
     override fun zone(): ZoneId =
-        prefs.getString(KEY_ZONE, null)?.takeIf { overridesAllowed }?.let(ZoneId::of) ?: ZoneId.systemDefault()
+        (if (overridesAllowed) prefs.getString(KEY_ZONE, null) else null)?.let(ZoneId::of) ?: ZoneId.systemDefault()
 
     /** Makes [now] return [at] from this moment on (and keep running). Debug builds only. */
     fun setNow(at: Instant) = edit { putLong(KEY_OFFSET, Duration.between(system(), at).toMillis()) }

@@ -46,7 +46,6 @@ import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,10 +75,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -96,6 +100,7 @@ import com.vaak.app.feature.talk.common.StepState
 import com.vaak.app.feature.talk.common.StepsList
 import com.vaak.app.feature.talk.common.VaakAppBar
 import com.vaak.app.feature.talk.common.VaakBanner
+import com.vaak.app.feature.talk.common.VaakSpinner
 import com.vaak.app.feature.talk.common.clock
 import com.vaak.app.feature.talk.common.langLabel
 import com.vaak.app.feature.talk.common.rememberHaptics
@@ -198,18 +203,18 @@ fun ReportContent(
             when (phase) {
                 ReportPhase.READY -> CtaBar {
                     if (!state.isRetake) {
-                        Button(onClick = { actions.onSayAgain(state) }, modifier = Modifier.weight(1f).height(54.dp)) {
+                        Button(onClick = { actions.onSayAgain(state) }, modifier = Modifier.weight(1f).heightIn(min = 54.dp)) {
                             Icon(Icons.Rounded.Replay, null, tint = VaakTheme.colors.primaryIcon)
                             Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.say_again_cta, clock((state.retakeCapS ?: 0) * 1000)), maxLines = 2)
+                            Text(stringResource(R.string.say_again_cta, clock((state.retakeCapS ?: 0) * 1000)))
                         }
                     }
-                    OutlinedButton(onClick = actions.onBack, modifier = Modifier.height(54.dp).then(if (state.isRetake) Modifier.weight(1f) else Modifier)) {
+                    OutlinedButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = 54.dp).then(if (state.isRetake) Modifier.weight(1f) else Modifier)) {
                         Text(stringResource(R.string.done))
                     }
                 }
                 ReportPhase.HELPLINE -> CtaBar {
-                    OutlinedButton(onClick = actions.onBack, modifier = Modifier.weight(1f).height(54.dp)) { Text(stringResource(R.string.back_to_today)) }
+                    OutlinedButton(onClick = actions.onBack, modifier = Modifier.weight(1f).heightIn(min = 54.dp)) { Text(stringResource(R.string.back_to_today)) }
                 }
                 else -> Unit
             }
@@ -218,6 +223,7 @@ fun ReportContent(
         Column(
             Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = VaakSpace.gutter).padding(bottom = 24.dp),
         ) {
+            PhaseAnnouncer(state)
             when (phase) {
                 ReportPhase.LISTENING -> Listening(state)
                 ReportPhase.QUEUED, ReportPhase.BUSY -> Waiting(state, actions.onBack) { confirmDiscard = true }
@@ -240,13 +246,42 @@ fun ReportContent(
     if (confirmDiscard) {
         ModalBottomSheet(onDismissRequest = { confirmDiscard = false }) {
             Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
-                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                Button(onClick = { confirmDiscard = false }, modifier = Modifier.fillMaxWidth().height(54.dp).padding(top = 12.dp)) { Text(stringResource(R.string.keep_it)) }
+                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
+                Button(onClick = { confirmDiscard = false }, modifier = Modifier.padding(top = 12.dp).fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.keep_it)) }
                 TextButton(onClick = { confirmDiscard = false; onEvent(ReportEvent.Discard) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard)) }
             }
         }
     }
 }
+
+/**
+ * One stable live region for S10/S11 (design-system §10.4): the phase branches below are recreated on every phase
+ * change, so their own live regions are never read; this node stays and only its description changes.
+ */
+@Composable
+private fun PhaseAnnouncer(state: ReportUiState) {
+    val text = when (state.phase) {
+        ReportPhase.LISTENING -> stringResource(R.string.step_transcript)
+        ReportPhase.QUEUED -> stringResource(R.string.queued_title)
+        ReportPhase.BUSY -> stringResource(R.string.busy_title)
+        ReportPhase.STT_FAILED -> stringResource(R.string.stt_title)
+        ReportPhase.TOO_LITTLE -> stringResource(R.string.low_title)
+        ReportPhase.HELPLINE -> stringResource(R.string.help_title)
+        ReportPhase.METRICS_READY -> stringResource(R.string.a11y_report_metrics_ready)
+        ReportPhase.READY -> stringResource(R.string.a11y_report_ready)
+        ReportPhase.FEEDBACK_FAILED -> stringResource(R.string.a11y_report_notes_missing)
+        ReportPhase.GONE -> ""
+    }
+    val urgent = state.phase == ReportPhase.STT_FAILED || state.phase == ReportPhase.TOO_LITTLE || state.phase == ReportPhase.FEEDBACK_FAILED
+    Spacer(
+        Modifier.fillMaxWidth().height(1.dp).testTag(TAG_REPORT_ANNOUNCER).semantics {
+            liveRegion = if (urgent) LiveRegionMode.Assertive else LiveRegionMode.Polite
+            contentDescription = text
+        },
+    )
+}
+
+const val TAG_REPORT_ANNOUNCER = "report_announcer"
 
 /** `.cta-bar`: sticky, paper gradient above, padded for the navigation bar (edge-to-edge). */
 @Composable
@@ -294,7 +329,8 @@ private fun ColumnScope.Listening(state: ReportUiState) {
         icon = null,
         title = stringResource(R.string.listening),
         body = stringResource(R.string.listening_body),
-        leading = { CircularProgressIndicator(Modifier.size(64.dp), strokeWidth = 5.dp, trackColor = MaterialTheme.colorScheme.primaryContainer) },
+        leading = { VaakSpinner(size = 64.dp, strokeWidth = 5.dp) },
+        live = false,
     ) {
         state.credit?.let { CreditPill(it, Modifier.padding(top = 16.dp)) }
         StepsList(
@@ -315,6 +351,7 @@ private fun ColumnScope.Waiting(state: ReportUiState, onBack: () -> Unit, onDisc
         icon = if (busy) Icons.Rounded.HourglassTop else Icons.Rounded.CloudUpload,
         title = stringResource(if (busy) R.string.busy_title else R.string.queued_title),
         body = stringResource(if (busy) R.string.busy_body else R.string.queued_body),
+        live = false,
     ) {
         state.credit?.let { CreditPill(it, Modifier.padding(top = 16.dp)) }
         VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 18.dp)) {
@@ -328,7 +365,7 @@ private fun ColumnScope.Waiting(state: ReportUiState, onBack: () -> Unit, onDisc
                     val m = state.meta
                     if (m != null) {
                         val time = m.createdAt.atZone(m.zone).format(DateTimeFormatter.ofPattern("h:mm a", Locale.US)).lowercase(Locale.US)
-                        Text(stringResource(R.string.quoted_with_time, state.promptText, time), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                        Text(stringResource(R.string.quoted_with_time, state.promptText, time), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }
@@ -336,13 +373,13 @@ private fun ColumnScope.Waiting(state: ReportUiState, onBack: () -> Unit, onDisc
         InfoNote(Icons.Rounded.Notifications, stringResource(if (busy) R.string.busy_note else R.string.queued_note), Modifier.padding(top = 12.dp))
     }
     Spacer(Modifier.height(24.dp))
-    Button(onClick = onBack, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.back_to_today)) }
+    Button(onClick = onBack, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.back_to_today)) }
     if (!busy) TextButton(onClick = onDiscard, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard_talk)) }
 }
 
 @Composable
 private fun ColumnScope.SttFailed(state: ReportUiState, onRetry: () -> Unit, onLater: () -> Unit) {
-    CenterState(Icons.Rounded.GraphicEq, stringResource(R.string.stt_title), stringResource(R.string.stt_body), assertive = true) {
+    CenterState(Icons.Rounded.GraphicEq, stringResource(R.string.stt_title), stringResource(R.string.stt_body), assertive = true, live = false) {
         state.credit?.let { CreditPill(it, Modifier.padding(top = 16.dp)) }
         StepsList(
             listOf(
@@ -355,7 +392,7 @@ private fun ColumnScope.SttFailed(state: ReportUiState, onRetry: () -> Unit, onL
         )
     }
     Spacer(Modifier.height(24.dp))
-    Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(54.dp)) {
+    Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) {
         Icon(Icons.Rounded.Refresh, null)
         Spacer(Modifier.width(8.dp))
         Text(stringResource(R.string.try_again))
@@ -365,9 +402,9 @@ private fun ColumnScope.SttFailed(state: ReportUiState, onRetry: () -> Unit, onL
 
 @Composable
 private fun ColumnScope.TooLittle(state: ReportUiState, onRetry: () -> Unit, onBack: () -> Unit) {
-    CenterState(Icons.Rounded.Hearing, stringResource(R.string.low_title), pluralStringResource(R.plurals.low_body, (state.speechMs / 1000).toInt(), (state.speechMs / 1000).toInt()), assertive = true, artSize = 88.dp)
+    CenterState(Icons.Rounded.Hearing, stringResource(R.string.low_title), pluralStringResource(R.plurals.low_body, (state.speechMs / 1000).toInt(), (state.speechMs / 1000).toInt()), assertive = true, artSize = 88.dp, live = false)
     Spacer(Modifier.height(24.dp))
-    Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.try_again)) }
+    Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.try_again)) }
     TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.back_to_today)) }
 }
 
@@ -388,7 +425,7 @@ private fun ColumnScope.Helpline(state: ReportUiState, onInfo: (MetricKind) -> U
         Text(stringResource(R.string.help_body), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, modifier = Modifier.padding(bottom = 14.dp))
         Button(
             onClick = { context.startActivity(Intent(Intent.ACTION_DIAL, "tel:14416".toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) },
-            modifier = Modifier.fillMaxWidth().height(54.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
         ) {
             Icon(Icons.Rounded.Call, null)
             Spacer(Modifier.width(8.dp))
@@ -406,12 +443,16 @@ private fun ColumnScope.Helpline(state: ReportUiState, onInfo: (MetricKind) -> U
 
 @Composable
 private fun ExpandRow(label: String, expanded: Boolean, onClick: () -> Unit) {
+    val stateText = stringResource(if (expanded) R.string.a11y_expanded else R.string.a11y_collapsed)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(MaterialTheme.shapes.small).clickable(onClick = onClick).padding(horizontal = 4.dp),
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(MaterialTheme.shapes.small)
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { stateDescription = stateText }
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
+        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary, modifier = Modifier.weight(1f, fill = false))
         Icon(if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore, null, tint = MaterialTheme.colorScheme.secondary)
     }
 }
@@ -448,14 +489,18 @@ private fun ColumnScope.Report(
     }
 
     if (phase == ReportPhase.FEEDBACK_FAILED) {
-        DashedCard(Modifier.padding(top = 16.dp, bottom = 10.dp).semantics { liveRegion = LiveRegionMode.Assertive }) {
+        DashedCard(Modifier.padding(top = 16.dp, bottom = 10.dp)) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(Icons.Rounded.EditNote, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(34.dp))
                 Text(stringResource(R.string.fb_error_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
                 Text(stringResource(R.string.fb_error_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 4.dp, bottom = 14.dp))
-                Button(onClick = { onEvent(ReportEvent.RetryFeedback) }, enabled = !state.retrying) {
+                val tryingAgain = stringResource(R.string.a11y_trying_again)
+                Button(
+                    onClick = { onEvent(ReportEvent.RetryFeedback) }, enabled = !state.retrying,
+                    modifier = Modifier.heightIn(min = 48.dp).then(if (state.retrying) Modifier.semantics { contentDescription = tryingAgain } else Modifier),
+                ) {
                     if (state.retrying) {
-                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                        VaakSpinner(size = 20.dp, strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else {
                         Icon(Icons.Rounded.Refresh, null)
                         Spacer(Modifier.width(8.dp))
@@ -472,7 +517,8 @@ private fun ColumnScope.Report(
 
     state.transcript?.let { t ->
         val (from, to) = transcriptRange(t, expanded)
-        SectionHead(stringResource(R.string.transcript_title), stringResource(R.string.transcript_range, from, to))
+        val range = stringResource(R.string.transcript_range, from, to)
+        SectionHead(stringResource(R.string.transcript_title), range, trailingDescription = stringResource(R.string.a11y_label_pair, stringResource(R.string.transcript_cd), range))
         if (phase == ReportPhase.READY) TranscriptLegend(t, lang)
         TranscriptCard(t, lang, expanded, Modifier.bringIntoViewRequester(transcriptAnchor))
         if (t.paragraphs.size > ReportMapper.COLLAPSED_PARAGRAPHS) {
@@ -484,8 +530,8 @@ private fun ColumnScope.Report(
     }
 
     if (phase == ReportPhase.METRICS_READY) {
-        Row(Modifier.padding(top = 18.dp, bottom = 10.dp).semantics { liveRegion = LiveRegionMode.Polite }, verticalAlignment = Alignment.CenterVertically) {
-            CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 3.dp, trackColor = MaterialTheme.colorScheme.primaryContainer)
+        Row(Modifier.padding(top = 18.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+            VaakSpinner(size = 20.dp)
             Spacer(Modifier.width(10.dp))
             Text(stringResource(R.string.writing_notes), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }

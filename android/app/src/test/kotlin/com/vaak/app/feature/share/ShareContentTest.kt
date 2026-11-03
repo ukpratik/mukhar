@@ -37,7 +37,7 @@ class ShareContentTest {
         val s = state()
         compose.setContent { VaakTheme { ShareContent(s, ShareActions()) } }
         compose.onNodeWithContentDescription("4 weeks of speaking practice", substring = true).assertExists()
-        compose.onNodeWithContentDescription("Fillers a minute. 5.8. 2.0", substring = true).assertExists()
+        compose.onNodeWithContentDescription("Fillers a minute: from 5.8 to 2.0", substring = true).assertExists()
         compose.onNodeWithContentDescription("19-day streak", substring = true).assertExists()
         compose.onNodeWithContentDescription("Vaak. speaking coach", substring = true).assertExists()
         compose.onNodeWithText("Show my streak").assertExists()

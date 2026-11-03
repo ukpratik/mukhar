@@ -3,7 +3,12 @@ package com.vaak.app.feature.today
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -62,7 +67,10 @@ class TodayContentTest {
         var streakOpened = false
         show(TodayFixtures.midDay, TodayActions(onOpenStreak = { streakOpened = true }))
         exists("Good afternoon,\nRohan")
+        // The description and the click action live on the same node, so TalkBack can open the sheet.
         described("12-day streak. One talk today and this week's goal is met. 1 freeze saved. Weekly goal 4 of 5 days. Open streak details")
+            .assertHasClickAction()
+        compose.onNodeWithTag(TAG_STREAK_CARD).assertHasClickAction()
         compose.onNode(hasContentDescription("Today's talk, English", substring = true)).performScrollTo()
         compose.onNodeWithContentDescription("Revise · 8 due. ~3 min").performScrollTo()
         compose.onAllNodes(hasContentDescription("starting point", substring = true)).assertCountEquals(0)
@@ -88,6 +96,8 @@ class TodayContentTest {
         compose.onNode(hasContentDescription("1 talk waiting. Recorded", substring = true)).performScrollTo()
         compose.onNode(hasContentDescription("day counted", substring = true)).performScrollTo()
         compose.onNode(hasContentDescription("Practise again, English", substring = true)).performScrollTo()
+        // A shuffled prompt is read out: the talk card is a polite live region.
+        compose.onNodeWithTag(TAG_TALK_CARD).assert(SemanticsMatcher.expectValue(SemanticsProperties.LiveRegion, LiveRegionMode.Polite))
         compose.onNodeWithContentDescription("Revise · 6 due. Works offline · ~2 min").performScrollTo()
     }
 

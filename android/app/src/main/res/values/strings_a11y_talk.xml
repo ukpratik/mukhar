@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TalkBack-only copy for the talk flow and Share (NFR-008, M6 a11y pass). Copy never shames (design-system §10.8). -->
+<resources>
+    <!-- Analysing checklist row states -->
+    <string name="a11y_step_done">Done</string>
+    <string name="a11y_step_now">In progress</string>
+    <string name="a11y_step_todo">Not started</string>
+    <string name="a11y_step_retry">Needs a retry</string>
+
+    <!-- S10/S11 phase announcements -->
+    <string name="a11y_report_metrics_ready">Transcript ready. Writing your notes</string>
+    <string name="a11y_report_ready">Your feedback is ready</string>
+    <string name="a11y_report_notes_missing">Notes couldn\'t load. Your numbers and transcript are here</string>
+    <string name="a11y_trying_again">Trying again</string>
+
+    <!-- S09 recording announcements -->
+    <string name="a11y_rec_paused">Recording paused</string>
+    <string name="a11y_rec_resumed">Recording resumed</string>
+
+    <!-- Metric tiles -->
+    <string name="a11y_metric_pair">%1$s. %2$s</string>
+    <string name="a11y_unit_wpm">words per minute</string>
+    <string name="a11y_unit_per_min">per minute</string>
+    <string name="a11y_metric_better">Better than your average</string>
+    <string name="a11y_delta_row">%1$s: from %2$s to %3$s %4$s. %5$s</string>
+
+    <!-- Transcript markers read in place of colour -->
+    <string name="a11y_tx_filler">(filler)</string>
+    <string name="a11y_tx_repeat">(repeat)</string>
+    <string name="a11y_tx_unsure">(unsure)</string>
+    <string name="a11y_tx_glow">(glow quote)</string>
+    <string name="a11y_tx_grow">(grow quote)</string>
+    <string name="a11y_label_pair">%1$s, %2$s</string>
+
+    <!-- Feedback cards -->
+    <string name="a11y_show_in_transcript">Show in transcript</string>
+    <string name="a11y_you_said">You said: %1$s</string>
+    <string name="a11y_try_instead">Try instead: %1$s</string>
+    <string name="a11y_expanded">Expanded</string>
+    <string name="a11y_collapsed">Collapsed</string>
+
+    <!-- Share image -->
+    <string name="a11y_share_row">%1$s: from %2$s to %3$s</string>
+</resources>

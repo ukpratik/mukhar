@@ -13,6 +13,8 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -38,7 +40,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.paneTitle
+import androidx.compose.ui.semantics.semantics
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -47,6 +52,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vaak.app.R
+import com.vaak.app.feature.settings.Links
+import com.vaak.app.feature.talk.common.reducedMotion
 import com.vaak.ui.theme.VaakSpace
 
 @Composable
@@ -74,6 +81,8 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
     var micPermanentlyDenied by rememberSaveable { mutableStateOf(false) }
     val paragraph = readAloudText(state.readAloudLang)
     val phoneLanguage = currentLocale().language
+    val uriHandler = LocalUriHandler.current
+    val reduced = reducedMotion()
 
     LaunchedEffect(viewModel) {
         viewModel.preselectLanguage(phoneLanguage)
@@ -146,12 +155,17 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
         )
         AnimatedContent(
             targetState = step,
-            transitionSpec = { fadeIn(tween(220)) togetherWith fadeOut(tween(150)) },
+            // Reduced motion (design §8): the step swaps with no fade.
+            transitionSpec = {
+                if (reduced) EnterTransition.None togetherWith ExitTransition.None else fadeIn(tween(220)) togetherWith fadeOut(tween(150))
+            },
             modifier = Modifier.weight(1f),
             label = "onboarding-step",
         ) { s ->
+            // The pane title is announced when the step changes, so TalkBack users hear where they landed.
+            val pane = stepTitle(s, state)
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                Modifier.fillMaxSize().semantics { paneTitle = pane }.verticalScroll(rememberScrollState())
                     .padding(horizontal = VaakSpace.gutter).padding(bottom = VaakSpace.l),
             ) {
                 when (s) {
@@ -160,7 +174,9 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
                     OnboardingStep.LANGUAGES -> LanguagesBody(state, viewModel::onNameChange, viewModel::onLangChoice, viewModel::onToggleTrack)
                     OnboardingStep.WARMUP -> WarmupBody(state, viewModel::onReadInHindi)
                     OnboardingStep.MIC_DENIED -> MicDeniedBody()
-                    OnboardingStep.DISCLOSURE -> DisclosureBody(state.analyticsOptIn, viewModel::onAnalyticsOptIn)
+                    OnboardingStep.DISCLOSURE -> DisclosureBody(state.analyticsOptIn, viewModel::onAnalyticsOptIn) {
+                        runCatching { uriHandler.openUri(Links.PRIVACY_POLICY) }
+                    }
                     OnboardingStep.DECLINED -> DeclinedBody()
                     OnboardingStep.BASELINE -> BaselineBody(state)
                     OnboardingStep.REMINDER -> ReminderBody(state, viewModel::onRoutine, viewModel::onCustomPhrase, viewModel::onTime, viewModel::onWeeklyGoal)
@@ -212,6 +228,22 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
             },
             onDismiss = viewModel::onOemGuideClosed,
         )
+    }
+}
+
+@Composable
+private fun stepTitle(step: OnboardingStep, state: OnboardingUiState): String = when (step) {
+    OnboardingStep.WELCOME -> stringResource(R.string.welcome_title)
+    OnboardingStep.BLOCKED -> stringResource(R.string.blocked_title)
+    OnboardingStep.LANGUAGES -> stringResource(R.string.profile_title)
+    OnboardingStep.WARMUP -> stringResource(R.string.warmup_title)
+    OnboardingStep.MIC_DENIED -> stringResource(R.string.mic_denied_title)
+    OnboardingStep.DISCLOSURE -> stringResource(R.string.disclosure_title)
+    OnboardingStep.DECLINED -> stringResource(R.string.declined_title)
+    OnboardingStep.BASELINE -> stringResource(R.string.baseline_title)
+    OnboardingStep.REMINDER -> stringResource(R.string.reminder_title)
+    OnboardingStep.REMINDER_DENIED, OnboardingStep.DONE -> state.firstName.trim().let {
+        if (it.isEmpty()) stringResource(R.string.reminder_all_set) else stringResource(R.string.reminder_all_set_name, it)
     }
 }
 

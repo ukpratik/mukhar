@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Autorenew
@@ -49,10 +49,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,6 +72,7 @@ import com.vaak.app.feature.talk.common.trackLabel
 import com.vaak.app.feature.soundlab.SoundLabEntryCard // M6
 import com.vaak.domain.model.Lang
 import com.vaak.domain.prompt.Prompt
+import com.vaak.ui.text.mixedScript
 import com.vaak.ui.theme.NotoDeva
 import com.vaak.ui.theme.VaakCard
 import com.vaak.ui.theme.VaakSpace
@@ -106,19 +112,21 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
                         onClick = { onEvent(PromptEvent.SelectLang(l)) },
                         shape = SegmentedButtonDefaults.itemShape(i, state.langs.size),
                     ) {
-                        Text(stringResource(if (l == Lang.HI) R.string.lang_hi_native else R.string.lang_en), fontFamily = if (l == Lang.HI) NotoDeva else null)
+                        val name = stringResource(if (l == Lang.HI) R.string.lang_hi_native else R.string.lang_en)
+                        Text(if (l == Lang.HI) mixedScript(name) else AnnotatedString(name), fontFamily = if (l == Lang.HI) NotoDeva else null)
                     }
                 }
             }
         }
 
+        // The visible label names the chip group; the Row itself carries no description (no extra TalkBack stop).
+        val trackCd = stringResource(R.string.studio_track_cd)
         Text(
             stringResource(R.string.studio_track).uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 2.dp, top = 16.dp, bottom = 6.dp),
+            modifier = Modifier.padding(start = 2.dp, top = 16.dp, bottom = 6.dp).semantics { contentDescription = trackCd },
         )
-        val trackCd = stringResource(R.string.studio_track_cd)
         Row(
-            Modifier.horizontalScroll(rememberScrollState()).selectableGroup().semantics { contentDescription = trackCd },
+            Modifier.horizontalScroll(rememberScrollState()).selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             for (t in state.tracks) {
@@ -126,8 +134,22 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
             }
         }
 
+        // One stable polite live region: a shuffled prompt is read out once ("Prompt. …"); the card's own copy of
+        // the text is hidden from TalkBack so it isn't read twice.
+        val promptLabel = stringResource(R.string.prompt_section)
+        val spokenPrompt = state.prompt?.let { p ->
+            buildAnnotatedString {
+                append(promptLabel)
+                append(". ")
+                append(if (p.lang == Lang.HI) mixedScript(p.text) else AnnotatedString(p.text))
+            }
+        }
         AnimatedContent(
             targetState = state.prompt,
+            modifier = Modifier.semantics {
+                liveRegion = LiveRegionMode.Polite
+                if (spokenPrompt != null) text = spokenPrompt
+            },
             transitionSpec = {
                 (fadeIn(tween(160)) + slideInVertically(tween(160)) { it / 12 }) togetherWith (fadeOut(tween(160)) + slideOutVertically(tween(160)) { -it / 12 })
             },
@@ -155,9 +177,9 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
             val shuffleCd = stringResource(R.string.shuffle_cd)
             OutlinedButton(
                 onClick = { onEvent(PromptEvent.Shuffle) },
-                modifier = Modifier.height(54.dp).widthIn(min = 54.dp).semantics { contentDescription = shuffleCd },
+                modifier = Modifier.heightIn(min = 54.dp).widthIn(min = 54.dp).semantics { contentDescription = shuffleCd },
             ) { Icon(Icons.Rounded.Shuffle, null) }
-            Button(onClick = onRecord, enabled = state.prompt != null, modifier = Modifier.weight(1f).height(54.dp)) {
+            Button(onClick = onRecord, enabled = state.prompt != null, modifier = Modifier.weight(1f).heightIn(min = 54.dp)) {
                 Icon(Icons.Rounded.Mic, null, tint = VaakTheme.colors.primaryIcon)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.record))
@@ -171,8 +193,7 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
 @Composable
 private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEvent) -> Unit) {
     val hi = prompt.lang == Lang.HI
-    val cd = stringResource(R.string.prompt_section)
-    VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp).semantics { contentDescription = cd; liveRegion = LiveRegionMode.Polite }) {
+    VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Column(Modifier.padding(18.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -188,7 +209,7 @@ private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEve
                 prompt.text,
                 style = if (hi) VaakTheme.type.hiPrompt.copy(fontSize = 21.sp) else VaakTheme.type.prompt,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 10.dp),
+                modifier = Modifier.padding(top = 10.dp).clearAndSetSemantics {},
             )
             val translit = prompt.translit
             if (hi && state.transliteration && translit != null) {
@@ -202,7 +223,7 @@ private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEve
             if (state.structureHint && prompt.prep.size == 4) {
                 Column(Modifier.padding(top = 6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     listOf("P", "R", "E", "P").zip(prompt.prep).forEach { (letter, line) ->
-                        Row(verticalAlignment = Alignment.Top) {
+                        Row(verticalAlignment = Alignment.Top, modifier = Modifier.semantics(mergeDescendants = true) {}) {
                             Text(
                                 letter,
                                 style = MaterialTheme.typography.labelSmall,
@@ -211,7 +232,10 @@ private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEve
                                 modifier = Modifier.clip(MaterialTheme.shapes.extraSmall).background(VaakTheme.colors.accentTint).widthIn(min = 22.dp).padding(horizontal = 6.dp, vertical = 2.dp),
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(line, style = MaterialTheme.typography.bodySmall.copy(fontFamily = if (hi) NotoDeva else MaterialTheme.typography.bodySmall.fontFamily, lineHeight = if (hi) 21.sp else 19.sp))
+                            Text(
+                                if (hi) mixedScript(line) else AnnotatedString(line),
+                                style = MaterialTheme.typography.bodySmall.copy(fontFamily = if (hi) NotoDeva else MaterialTheme.typography.bodySmall.fontFamily, lineHeight = if (hi) 21.sp else 19.sp),
+                            )
                         }
                     }
                 }
@@ -222,8 +246,13 @@ private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEve
 
 @Composable
 private fun SwitchRow(label: String, cd: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+    // The whole row is the switch: one TalkBack stop and a full-width target.
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
+            .semantics { contentDescription = cd },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(label, style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.semantics { contentDescription = cd })
+        Switch(checked = checked, onCheckedChange = null)
     }
 }

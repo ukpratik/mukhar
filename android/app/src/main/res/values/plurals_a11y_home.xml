@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The weekly ring's state for TalkBack; quantity follows the goal (%2$d). -->
+    <plurals name="streak_ring_state">
+        <item quantity="one">Weekly goal %1$d of %2$d day</item>
+        <item quantity="other">Weekly goal %1$d of %2$d days</item>
+    </plurals>
+</resources>

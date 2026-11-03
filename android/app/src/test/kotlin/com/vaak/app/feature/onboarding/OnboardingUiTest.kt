@@ -1,5 +1,7 @@
 package com.vaak.app.feature.onboarding
 
+import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
@@ -98,6 +100,18 @@ class OnboardingUiTest {
         waitForText("No problem. Your call.")
         assertThat(settings().disclosureConsentAt).isNull()
         assertThat(settings().analyticsConsent).isTrue()
+    }
+
+    @Test
+    fun thePrivacyPolicyRowOpensThePolicy() {
+        var opened = 0
+        compose.setContent { VaakTheme { DisclosureBody(analyticsOptIn = false, onAnalytics = {}, onOpenPolicy = { opened++ }) } }
+        compose.onNodeWithTag(TAG_POLICY).assertHasClickAction().performClick()
+        assertThat(opened).isEqualTo(1)
+        // The analytics switch reads its body too (consent copy is never hidden).
+        compose.onNodeWithTag(TAG_ANALYTICS).assertContentDescriptionEquals(
+            "Share usage and crash reports (optional). Optional. Helps us fix bugs. No audio or transcripts.",
+        )
     }
 
     @Test

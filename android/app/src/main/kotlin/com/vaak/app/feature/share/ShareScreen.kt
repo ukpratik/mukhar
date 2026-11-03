@@ -43,8 +43,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -53,6 +58,8 @@ import com.vaak.app.R
 import com.vaak.app.feature.onboarding.CtaBar
 import com.vaak.app.feature.onboarding.PrimaryCta
 import com.vaak.app.feature.talk.common.CenterState
+import com.vaak.domain.model.Lang
+import com.vaak.ui.text.mixedScript
 import com.vaak.ui.theme.VaakSpace
 import java.io.File
 
@@ -86,7 +93,12 @@ fun ShareScreen(onClose: () -> Unit, viewModel: ShareViewModel = hiltViewModel()
 fun ShareContent(state: ShareUiState, actions: ShareActions, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding().testTag(TAG_SHARE)) {
         CenterAlignedTopAppBar(
-            title = { Text(stringResource(R.string.share_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary) },
+            title = {
+                Text(
+                    stringResource(R.string.share_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.semantics { heading() },
+                )
+            },
             navigationIcon = { IconButton(onClick = actions.onClose) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.close)) } },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
         )
@@ -101,9 +113,15 @@ fun ShareContent(state: ShareUiState, actions: ShareActions, modifier: Modifier 
         val inPreview = LocalInspectionMode.current
         val bitmap = remember(text) { if (inPreview) null else runCatching { ShareCardRenderer.render(context, text, model.lang == com.vaak.domain.model.Lang.HI) }.getOrNull() }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = VaakSpace.gutter)) {
-            val desc = stringResource(R.string.share_image_a11y, text.all().joinToString(". "))
+            val desc = stringResource(R.string.share_image_a11y, spokenCard(text))
+            val hindi = model.lang == Lang.HI
+            // One image node; a Hindi card is read in a Hindi voice (the description goes out as locale-tagged text).
             val imageModifier = Modifier.fillMaxWidth().aspectRatio(ShareCardRenderer.WIDTH / ShareCardRenderer.HEIGHT.toFloat())
-                .clip(MaterialTheme.shapes.extraLarge).testTag(TAG_SHARE_IMAGE).semantics { contentDescription = desc }
+                .clip(MaterialTheme.shapes.extraLarge).testTag(TAG_SHARE_IMAGE)
+                .clearAndSetSemantics {
+                    role = Role.Image
+                    if (hindi) this.text = mixedScript(desc) else contentDescription = desc
+                }
             if (bitmap != null) {
                 Image(bitmap.asImageBitmap(), contentDescription = null, modifier = imageModifier)
             } else {
@@ -136,6 +154,14 @@ fun ShareContent(state: ShareUiState, actions: ShareActions, modifier: Modifier 
             PrimaryCta(stringResource(R.string.share_cta), { actions.onShare(text, bitmap) }, leading = Icons.Rounded.Share, modifier = Modifier.testTag(TAG_SHARE_CTA))
         }
     }
+}
+
+/** The card as one spoken sentence list: "12 Oct to 6 Nov. … Fillers a minute: from 5.8 to 2.0. …". */
+@Composable
+private fun spokenCard(text: ShareCardText): String {
+    val dates = text.eyebrow.split(" → ").takeIf { it.size == 2 }?.let { stringResource(R.string.transcript_range, it[0], it[1]) } ?: text.eyebrow
+    val rows = text.rows.map { (label, from, to) -> stringResource(R.string.a11y_share_row, label, from, to) }
+    return (listOf(dates, text.headline) + rows + listOfNotNull(text.streak) + listOf(text.brand, text.tagline)).joinToString(". ")
 }
 
 @Composable

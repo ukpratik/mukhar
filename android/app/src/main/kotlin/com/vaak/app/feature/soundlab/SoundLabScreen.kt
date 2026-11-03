@@ -56,13 +56,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -91,6 +95,10 @@ import com.vaak.ui.theme.VaakTheme
 const val TAG_SOUNDLAB_LIST = "soundlab_list"
 const val TAG_SOUNDLAB_REVEAL = "soundlab_reveal"
 const val TAG_SOUNDLAB_PREVIEW = "soundlab_preview"
+const val TAG_SOUNDLAB_STATUS = "soundlab_status"
+
+/** Above this font scale the Pick step's two buttons stack. */
+private const val LARGE_FONT_SCALE = 1.3f
 
 /** S22 Sound Lab lite (US-070), opened from the Practice tab. */
 @Composable
@@ -121,9 +129,11 @@ fun SoundLabScreen(onBack: () -> Unit, vm: SoundLabViewModel = hiltViewModel()) 
 @Composable
 fun SoundLabContent(state: SoundLabUiState, onAction: (SoundLabAction) -> Unit, onBack: () -> Unit) {
     val session = state.lab.session
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    val title = session?.pair?.label ?: stringResource(R.string.soundlab_title)
+    // The pane title changes between the pair list and a pair, so TalkBack announces where the user now is.
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).semantics { paneTitle = title }) {
         VaakAppBar(
-            title = session?.pair?.label ?: stringResource(R.string.soundlab_title),
+            title = title,
             backDescription = stringResource(if (session != null) R.string.soundlab_back_pairs_cd else R.string.soundlab_back_cd),
             onBack = { if (session != null) onAction(SoundLabAction.Lab(LabEvent.Back)) else onBack() },
         )
@@ -213,11 +223,15 @@ private fun StepsRow(step: LabStep) {
                 now -> stringResource(R.string.soundlab_step_now_cd, text)
                 else -> text
             }
+            // The current step is a polite live region, so moving Listen → Pick → Say is announced once.
             Row(
-                Modifier.weight(1f).clip(CircleShape)
+                Modifier.weight(1f).clip(RoundedCornerShape(16.dp))
                     .background(if (now) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant)
                     .padding(vertical = 6.dp)
-                    .semantics(mergeDescendants = true) { contentDescription = cd },
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = cd
+                        if (now) liveRegion = LiveRegionMode.Polite
+                    },
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -268,7 +282,7 @@ private fun ListenStep(s: PairSession, state: SoundLabUiState, onAction: (SoundL
             more.forEach { w -> SmallPlay(w, state, pair.lang, onAction) }
         }
     }
-    Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.TestMyEar)) }, modifier = Modifier.fillMaxWidth().padding(top = 18.dp).height(54.dp)) {
+    Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.TestMyEar)) }, modifier = Modifier.fillMaxWidth().padding(top = 18.dp).heightIn(min = 54.dp)) {
         Text(stringResource(R.string.soundlab_test_ear))
     }
 }
@@ -348,12 +362,16 @@ private fun PickStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLab
     val n = s.round + 1
     val total = s.rounds.size
     val roundCd = stringResource(R.string.soundlab_play_round_cd, n, total)
+    val playingState = stringResource(R.string.soundlab_playing)
     VaakCard(modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)) {
         Column(Modifier.fillMaxWidth().padding(18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 Modifier.size(76.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary)
                     .clickable(enabled = state.canPlay(round.word, pair.lang), role = Role.Button) { onAction(SoundLabAction.PlayRound) }
-                    .semantics { contentDescription = roundCd },
+                    .semantics {
+                        contentDescription = roundCd
+                        if (playing) stateDescription = playingState
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(if (playing) Icons.Rounded.Pause else Icons.Rounded.Replay, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(40.dp))
@@ -386,14 +404,28 @@ private fun PickStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLab
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 4.dp),
             )
         }
-        Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            OutlinedButton(onClick = { onAction(SoundLabAction.HearBoth) }, modifier = Modifier.weight(1f).height(54.dp)) {
-                Text(stringResource(R.string.soundlab_hear_both))
+        val hearBoth = @Composable { m: Modifier ->
+            OutlinedButton(onClick = { onAction(SoundLabAction.HearBoth) }, modifier = m.heightIn(min = 54.dp)) {
+                Text(stringResource(R.string.soundlab_hear_both), textAlign = TextAlign.Center)
             }
-            Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.NextClip)) }, modifier = Modifier.weight(1f).height(54.dp)) {
-                Text(stringResource(if (s.isLastRound) R.string.soundlab_to_say else R.string.soundlab_next_clip))
+        }
+        val next = @Composable { m: Modifier ->
+            Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.NextClip)) }, modifier = m.heightIn(min = 54.dp)) {
+                Text(stringResource(if (s.isLastRound) R.string.soundlab_to_say else R.string.soundlab_next_clip), textAlign = TextAlign.Center)
                 Spacer(Modifier.width(6.dp))
                 Icon(Icons.AutoMirrored.Rounded.ArrowForward, null, Modifier.size(18.dp))
+            }
+        }
+        // Side by side; stacked (next first) at large text so neither label is squeezed.
+        if (LocalDensity.current.fontScale > LARGE_FONT_SCALE) {
+            Column(Modifier.fillMaxWidth().padding(top = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                next(Modifier.fillMaxWidth())
+                hearBoth(Modifier.fillMaxWidth())
+            }
+        } else {
+            Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                hearBoth(Modifier.weight(1f))
+                next(Modifier.weight(1f))
             }
         }
     }
@@ -452,7 +484,7 @@ private fun SayStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLabA
             meta = stringResource(if (preview) R.string.soundlab_preview_voice else if (pair.lang == Lang.HI) R.string.soundlab_recorded_voice_hi else R.string.soundlab_recorded_voice_en),
             playing = state.playing == target.id,
             enabled = state.canPlay(target, pair.lang),
-            playCd = stringResource(R.string.soundlab_play_cd, stringResource(R.string.soundlab_model, target.text)),
+            playCd = stringResource(if (state.playing == target.id) R.string.soundlab_stop_cd else R.string.soundlab_play_cd, stringResource(R.string.soundlab_model, target.text)),
         ) { onAction(SoundLabAction.Play(target)) }
         val take = s.take
         if (take is Take.Ready) {
@@ -461,7 +493,10 @@ private fun SayStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLabA
                 meta = stringResource(R.string.soundlab_take_meta, clock(take.durationMs)),
                 playing = state.playing == SoundLabUiState.MY_TAKE,
                 enabled = true,
-                playCd = stringResource(R.string.soundlab_play_cd, stringResource(R.string.soundlab_you, target.text)),
+                playCd = stringResource(
+                    if (state.playing == SoundLabUiState.MY_TAKE) R.string.soundlab_stop_cd else R.string.soundlab_play_cd,
+                    stringResource(R.string.soundlab_you, target.text),
+                ),
             ) { onAction(SoundLabAction.PlayMine) }
         }
     }
@@ -469,7 +504,7 @@ private fun SayStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLabA
     when (s.take) {
         Take.Retry -> InfoNote(Icons.Rounded.Info, stringResource(R.string.soundlab_retry), Modifier.padding(top = 8.dp).semantics { liveRegion = LiveRegionMode.Polite })
         Take.MicDenied -> {
-            InfoNote(Icons.Rounded.Mic, stringResource(R.string.soundlab_mic_denied), Modifier.padding(top = 8.dp))
+            InfoNote(Icons.Rounded.Mic, stringResource(R.string.soundlab_mic_denied), Modifier.padding(top = 8.dp).semantics { liveRegion = LiveRegionMode.Polite })
             TextButton(onClick = { onAction(SoundLabAction.StartRecord) }, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.soundlab_allow_mic)) }
         }
         else -> Unit
@@ -481,7 +516,7 @@ private fun SayStep(s: PairSession, state: SoundLabUiState, onAction: (SoundLabA
         Icon(Icons.Rounded.SelfImprovement, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
         Text(mixedScript(pair.selfCheck), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
     }
-    Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.Done)) }, modifier = Modifier.fillMaxWidth().padding(top = 18.dp).height(54.dp)) {
+    Button(onClick = { onAction(SoundLabAction.Lab(LabEvent.Done)) }, modifier = Modifier.fillMaxWidth().padding(top = 18.dp).heightIn(min = 54.dp)) {
         Text(stringResource(R.string.soundlab_done_pair))
     }
 }
@@ -521,11 +556,18 @@ private fun RecordButton(take: Take, onAction: (SoundLabAction) -> Unit) {
         take is Take.Ready -> stringResource(R.string.soundlab_record_again)
         else -> stringResource(R.string.soundlab_record)
     }
-    val cd = if (recording != null) stringResource(R.string.soundlab_stop) else label
+    val cd = if (recording != null) stringResource(R.string.soundlab_stop_recording_cd) else label
+    // Announced once each (polite): "Recording started", then "Your take is ready". The ticking clock isn't.
+    val status = when (take) {
+        is Take.Recording -> stringResource(R.string.recording_started)
+        is Take.Ready -> stringResource(R.string.soundlab_take_ready)
+        else -> null
+    }
+    if (status != null) Text("", Modifier.testTag(TAG_SOUNDLAB_STATUS).semantics { liveRegion = LiveRegionMode.Polite; contentDescription = status })
     Column(
         Modifier.padding(top = 4.dp, bottom = 6.dp).clip(RoundedCornerShape(18.dp))
             .clickable(role = Role.Button) { onAction(if (recording != null) SoundLabAction.StopRecord else SoundLabAction.StartRecord) }
-            .semantics(mergeDescendants = true) { contentDescription = cd }
+            .clearAndSetSemantics { contentDescription = cd; role = Role.Button; onClick { onAction(if (recording != null) SoundLabAction.StopRecord else SoundLabAction.StartRecord); true } }
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

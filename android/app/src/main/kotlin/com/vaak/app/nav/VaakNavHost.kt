@@ -8,8 +8,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -36,6 +40,21 @@ import com.vaak.app.feature.talk.sayagain.SayAgainScreen
 import com.vaak.app.feature.words.WordDetailScreen
 import com.vaak.app.feature.words.WordsScreen
 import com.vaak.app.feature.words.review.ReviewScreen
+
+/**
+ * The bar has a fixed height, so its labels stop growing at 150 % (TalkBack still reads the full label, and the
+ * icons carry the meaning); one line, ellipsised rather than clipped (design-system §10.5).
+ */
+@Composable
+private fun TabLabel(text: String) {
+    val density = LocalDensity.current
+    val capped = Density(density.density, density.fontScale.coerceAtMost(MAX_TAB_LABEL_SCALE))
+    CompositionLocalProvider(LocalDensity provides capped) {
+        Text(text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+private const val MAX_TAB_LABEL_SCALE = 1.5f
 
 @Composable
 fun VaakNavHost(
@@ -80,7 +99,7 @@ fun VaakNavHost(
                                 }
                             },
                             icon = { Icon(if (selected) tab.selectedIcon else tab.icon, contentDescription = null) },
-                            label = { Text(stringResource(tab.label)) },
+                            label = { TabLabel(stringResource(tab.label)) },
                         )
                     }
                 }

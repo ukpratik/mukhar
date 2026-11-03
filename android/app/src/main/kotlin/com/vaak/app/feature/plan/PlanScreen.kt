@@ -7,6 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +59,11 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -72,6 +78,7 @@ import com.vaak.app.feature.onboarding.CtaBar
 import com.vaak.app.feature.onboarding.OutlineCta
 import com.vaak.app.feature.onboarding.PrimaryCta
 import com.vaak.app.feature.onboarding.TextCta
+import com.vaak.app.feature.onboarding.largeFont
 import com.vaak.app.feature.progress.shortDate
 import com.vaak.app.feature.settings.Links
 import com.vaak.app.feature.talk.common.InfoNote
@@ -144,7 +151,7 @@ fun PlanContent(state: PlanUiState, actions: PlanActions, modifier: Modifier = M
 @Composable
 private fun TopBar(title: String, close: Boolean, onClose: () -> Unit) {
     CenterAlignedTopAppBar(
-        title = { Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary) },
+        title = { Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() }) },
         navigationIcon = {
             IconButton(onClick = onClose, modifier = Modifier.testTag(TAG_PLAN_CLOSE)) {
                 if (close) {
@@ -158,6 +165,7 @@ private fun TopBar(title: String, close: Boolean, onClose: () -> Unit) {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun androidx.compose.foundation.layout.ColumnScope.Paywall(state: PlanUiState, actions: PlanActions) {
     // Close is always visible (US-060/061: no dark patterns).
@@ -170,15 +178,43 @@ private fun androidx.compose.foundation.layout.ColumnScope.Paywall(state: PlanUi
         Text(stringResource(R.string.paywall_lead), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Included()
         when {
-            state.loading -> Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            state.loading -> Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
+                val loading = stringResource(R.string.plan_loading_a11y)
+                CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
+            }
             state.loadFailed -> Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.paywall_load_failed), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+                Text(
+                    stringResource(R.string.paywall_load_failed),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
+                )
                 TextButton(onClick = actions.onRetry) { Text(stringResource(R.string.paywall_retry)) }
             }
             else -> Plans(state, actions.onSelect)
         }
         state.selectedOffer?.let { offer -> offer.trialDays?.let { Timeline(offer, it) } }
         InfoBlock(Icons.Outlined.HelpOutline, stringResource(R.string.paywall_cancel_title), stringResource(R.string.paywall_cancel_body))
+        // Restore, the fine print and the links end the scroll, so the sticky bar stays short at 200% font scale.
+        Column(Modifier.fillMaxWidth().padding(bottom = VaakSpace.l)) {
+            TextCta(stringResource(R.string.paywall_restore), actions.onRestore)
+            Text(
+                if (state.selected == Plan.FOUNDING) stringResource(R.string.paywall_fine_founding) else stringResource(R.string.paywall_fine),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                TextButton(onClick = { actions.onOpenUrl(Links.TERMS) }, modifier = Modifier.heightIn(min = VaakSpace.touch)) {
+                    Text(stringResource(R.string.paywall_terms), style = MaterialTheme.typography.labelSmall)
+                }
+                TextButton(onClick = { actions.onOpenUrl(Links.PRIVACY_POLICY) }, modifier = Modifier.heightIn(min = VaakSpace.touch)) {
+                    Text(stringResource(R.string.paywall_privacy), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
     }
     CtaBar {
         val offer = state.selectedOffer
@@ -207,22 +243,14 @@ private fun androidx.compose.foundation.layout.ColumnScope.Paywall(state: PlanUi
                 modifier = Modifier.testTag(TAG_BUY),
             )
         }
-        TextCta(stringResource(R.string.paywall_restore), actions.onRestore)
         if (state.confirming) {
-            Text(stringResource(R.string.paywall_confirming), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Text(
-                if (state.selected == Plan.FOUNDING) stringResource(R.string.paywall_fine_founding) else stringResource(R.string.paywall_fine),
-                style = MaterialTheme.typography.labelSmall,
+                stringResource(R.string.paywall_confirming),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp).semantics { liveRegion = LiveRegionMode.Polite },
                 textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f, fill = false),
             )
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            TextButton(onClick = { actions.onOpenUrl(Links.TERMS) }) { Text(stringResource(R.string.paywall_terms), style = MaterialTheme.typography.labelSmall) }
-            TextButton(onClick = { actions.onOpenUrl(Links.PRIVACY_POLICY) }) { Text(stringResource(R.string.paywall_privacy), style = MaterialTheme.typography.labelSmall) }
         }
     }
 }
@@ -247,6 +275,7 @@ private fun Plans(state: PlanUiState, onSelect: (Plan) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PlanCard(offer: PlanOffer, selected: Boolean, onClick: () -> Unit) {
     val border = if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -259,10 +288,15 @@ private fun PlanCard(offer: PlanOffer, selected: Boolean, onClick: () -> Unit) {
         border = border,
         modifier = Modifier.fillMaxWidth().selectable(selected = selected, role = Role.RadioButton, onClick = onClick).testTag(TAG_PLAN_PREFIX + offer.plan.basePlanId),
     ) {
-        Row(Modifier.padding(start = 6.dp, end = 16.dp, top = 12.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        val large = largeFont()
+        Row(Modifier.padding(start = 6.dp, end = 16.dp, top = 12.dp, bottom = 12.dp), verticalAlignment = if (large) Alignment.Top else Alignment.CenterVertically) {
             RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    itemVerticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(stringResource(planName(offer.plan)), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                     if (offer.plan == Plan.FOUNDING) {
                         Surface(shape = CircleShape, color = VaakTheme.colors.accentTint, contentColor = VaakTheme.colors.accentInk) {
@@ -275,20 +309,33 @@ private fun PlanCard(offer: PlanOffer, selected: Boolean, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                // At large font sizes the price moves under the name instead of starving it of width.
+                if (large) Price(offer, yearly, Modifier.padding(top = 6.dp), Alignment.Start)
             }
-            Column(horizontalAlignment = Alignment.End) {
-                Text(offer.formattedPrice, style = VaakTheme.type.metric.copy(fontSize = 20.sp), color = MaterialTheme.colorScheme.onSurface)
-                Text(stringResource(if (yearly) R.string.paywall_per_year else R.string.paywall_per_month), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+            if (!large) Price(offer, yearly, Modifier.padding(start = 8.dp), Alignment.End)
         }
     }
 }
 
 @Composable
+private fun Price(offer: PlanOffer, yearly: Boolean, modifier: Modifier, align: Alignment.Horizontal) {
+    Column(modifier, horizontalAlignment = align) {
+        Text(offer.formattedPrice, style = VaakTheme.type.metric.copy(fontSize = 20.sp), color = MaterialTheme.colorScheme.onSurface)
+        Text(stringResource(if (yearly) R.string.paywall_per_year else R.string.paywall_per_month), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** How the trial runs: a visible heading, then each step read with its day and price (nothing hidden behind a summary). */
+@Composable
 private fun Timeline(offer: PlanOffer, trialDays: Int) {
-    val desc = stringResource(R.string.paywall_tl_a11y)
-    VaakCard(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = desc }) {
+    VaakCard(Modifier.fillMaxWidth().testTag(TAG_TIMELINE)) {
         Column(Modifier.padding(VaakSpace.l), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                stringResource(R.string.paywall_tl_a11y),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.semantics { heading() },
+            )
             Step(Icons.Rounded.LockOpen, pluralStringResource(R.plurals.paywall_tl_today, trialDays, trialDays), stringResource(R.string.paywall_tl_today_sub))
             Step(Icons.Rounded.Notifications, stringResource(R.string.paywall_tl_remind, trialDays - 1), stringResource(R.string.paywall_tl_remind_sub))
             Step(
@@ -302,7 +349,7 @@ private fun Timeline(offer: PlanOffer, trialDays: Int) {
 
 @Composable
 private fun Step(icon: ImageVector, title: String, sub: String) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+    Row(Modifier.semantics(mergeDescendants = true) {}, horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
         Box(Modifier.size(32.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
             Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
         }
@@ -353,13 +400,21 @@ private fun androidx.compose.foundation.layout.ColumnScope.PlanFacts(state: Plan
                 }
                 val day = state.trialDay
                 if (trial && day != null) {
+                    // One stop for TalkBack: the bar says "Day 6 of 7"; the visible caption is not read twice.
+                    val dayText = stringResource(R.string.plan_trial_day, day, TRIAL_DAYS)
                     LinearProgressIndicator(
                         progress = { day / TRIAL_DAYS.toFloat() },
-                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).height(6.dp).clip(RoundedCornerShape(6.dp)),
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).height(6.dp).clip(RoundedCornerShape(6.dp))
+                            .semantics { stateDescription = dayText }.testTag(TAG_TRIAL_PROGRESS),
                         trackColor = VaakTheme.colors.track,
                         drawStopIndicator = {},
                     )
-                    Text(stringResource(R.string.plan_trial_day, day, TRIAL_DAYS), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
+                    Text(
+                        dayText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp).clearAndSetSemantics {},
+                    )
                 }
                 Column(Modifier.padding(top = 8.dp)) {
                     e.plan?.let { plan ->
@@ -391,8 +446,15 @@ private fun androidx.compose.foundation.layout.ColumnScope.PlanFacts(state: Plan
 private fun FactRow(label: String, value: String) {
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(top = 8.dp))
     Row(Modifier.fillMaxWidth().heightIn(min = 36.dp).padding(top = 8.dp).semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-        Text(value, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurface)
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f).padding(end = 8.dp))
+        // The value may wrap but never pushes the label off screen.
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f, fill = false),
+        )
     }
 }
 
@@ -409,3 +471,5 @@ const val TAG_PLAN_CLOSE = "plan_close"
 const val TAG_BUY = "paywall_buy"
 const val TAG_CTA_NOTE = "paywall_cta_note"
 const val TAG_PLAN_PREFIX = "plan_"
+const val TAG_TIMELINE = "paywall_timeline"
+const val TAG_TRIAL_PROGRESS = "plan_trial_progress"

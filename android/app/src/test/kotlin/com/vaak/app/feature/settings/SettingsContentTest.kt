@@ -3,6 +3,10 @@ package com.vaak.app.feature.settings
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
@@ -70,5 +74,25 @@ class SettingsContentTest {
         assertThat(confirmed).isEqualTo(1)
         compose.onNodeWithText("Your data is deleted").assertExists()
         compose.onNodeWithText("Start fresh").assertExists()
+    }
+
+    @Test
+    fun goalPickerSaysWhyAFourthIsOffAndHeadingsNameTheSheet() {
+        compose.setContent { VaakTheme { SettingsContent(SettingsUiState(loading = false, settings = settings), SettingsActions()) } }
+        // Privacy policy says it opens the browser.
+        val privacy = compose.onNodeWithText("Privacy policy").performScrollTo().fetchSemanticsNode()
+        assertThat(privacy.config[SemanticsActions.OnClick].label).isEqualTo("open in browser")
+        compose.onNodeWithText("Goal tracks").performScrollTo().performClick()
+        compose.onNodeWithTag(TAG_PICK_MAX).assertDoesNotExist()
+        compose.onNodeWithText("Public speaking").performClick()
+        compose.onNodeWithTag(TAG_PICK_MAX).assertExists().assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.LiveRegion))
+        compose.onNodeWithText("You can pick up to 3").assertExists()
+    }
+
+    @Test
+    fun deleteSheetSubheadsAreHeadings() {
+        compose.setContent { VaakTheme { SettingsContent(SettingsUiState(loading = false, settings = settings, delete = DeleteStage.CONFIRM), SettingsActions()) } }
+        compose.onNodeWithText("On this phone, right away").assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
+        compose.onNodeWithText("On our servers, within 30 days").assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
     }
 }

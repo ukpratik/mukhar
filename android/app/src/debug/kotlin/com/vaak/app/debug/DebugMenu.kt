@@ -75,8 +75,11 @@ fun DebugMenuEntry() {
     var open by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     Row(Modifier.padding(horizontal = 20.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
-        OutlinedButton(onClick = { open = true }) { Text(stringResource(R.string.debug_menu)) }
-        OutlinedButton(onClick = { context.startActivity(android.content.Intent(context, DebugClockActivity::class.java)) }) {
+        OutlinedButton(onClick = { open = true }, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.debug_menu)) }
+        OutlinedButton(
+            onClick = { context.startActivity(android.content.Intent(context, DebugClockActivity::class.java)) },
+            modifier = Modifier.heightIn(min = 48.dp),
+        ) {
             Text(stringResource(R.string.debug_open_clock))
         }
     }

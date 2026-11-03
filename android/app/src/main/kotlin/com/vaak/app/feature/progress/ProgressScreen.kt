@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -59,6 +61,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -170,10 +173,33 @@ private fun Header(onSettings: () -> Unit) {
 private fun TotalsRow(state: ProgressUiState) {
     val t = state.totals
     val desc = stringResource(R.string.progress_totals_a11y)
-    Row(Modifier.fillMaxWidth().semantics { contentDescription = desc }, horizontalArrangement = Arrangement.spacedBy(VaakSpace.s)) {
-        TotalTile(t.talks.toString(), pluralStringResource(R.plurals.progress_total_talks, t.talks), Modifier.weight(1f))
-        TotalTile(t.minutesSpoken.toString(), stringResource(R.string.progress_total_minutes), Modifier.weight(1f))
-        TotalTile(t.wordsLearned.toString(), stringResource(R.string.progress_total_words), Modifier.weight(1f))
+    // 3-up; one column at large text (design-system §10.5: tiles reflow).
+    Reflow(Modifier.fillMaxWidth().testTag(TAG_TOTALS).semantics { contentDescription = desc; isTraversalGroup = true }, VaakSpace.s) {
+        tile { TotalTile(t.talks.toString(), pluralStringResource(R.plurals.progress_total_talks, t.talks), it) }
+        tile { TotalTile(t.minutesSpoken.toString(), stringResource(R.string.progress_total_minutes), it) }
+        tile { TotalTile(t.wordsLearned.toString(), stringResource(R.string.progress_total_words), it) }
+    }
+}
+
+/** True above 130 % font size: multi-column rows stack. */
+@Composable
+private fun largeFont(): Boolean = LocalDensity.current.fontScale > LARGE_FONT_SCALE
+
+private class ReflowScope {
+    val tiles = mutableListOf<@Composable (Modifier) -> Unit>()
+    fun tile(content: @Composable (Modifier) -> Unit) {
+        tiles += content
+    }
+}
+
+/** Tiles side by side with equal widths, or one per line at large text. */
+@Composable
+private fun Reflow(modifier: Modifier, spacing: androidx.compose.ui.unit.Dp, content: ReflowScope.() -> Unit) {
+    val tiles = ReflowScope().apply(content).tiles
+    if (largeFont()) {
+        Column(modifier, verticalArrangement = Arrangement.spacedBy(spacing)) { tiles.forEach { it(Modifier.fillMaxWidth()) } }
+    } else {
+        Row(modifier, horizontalArrangement = Arrangement.spacedBy(spacing)) { tiles.forEach { it(Modifier.weight(1f)) } }
     }
 }
 
@@ -212,7 +238,7 @@ private fun EmptyTrends(onTalk: () -> Unit) {
 private fun RangeSwitch(range: TrendRange, onRange: (TrendRange) -> Unit) {
     val desc = stringResource(R.string.progress_range_a11y)
     val labels = mapOf(TrendRange.FOUR to R.string.progress_range_4, TrendRange.TWELVE to R.string.progress_range_12, TrendRange.ALL to R.string.progress_range_all)
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = desc }) {
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = desc; isTraversalGroup = true }) {
         TrendRange.entries.forEachIndexed { i, r ->
             SegmentedButton(
                 selected = r == range,
@@ -226,7 +252,7 @@ private fun RangeSwitch(range: TrendRange, onRange: (TrendRange) -> Unit) {
 @Composable
 private fun LangSwitch(lang: Lang, langs: List<Lang>, onLang: (Lang) -> Unit) {
     val desc = stringResource(R.string.progress_lang_a11y)
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = desc }) {
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = desc; isTraversalGroup = true }) {
         langs.forEachIndexed { i, l ->
             SegmentedButton(selected = l == lang, onClick = { onLang(l) }, shape = SegmentedButtonDefaults.itemShape(i, langs.size)) {
                 Text(stringResource(langLabel(l)))
@@ -239,7 +265,8 @@ private fun LangSwitch(lang: Lang, langs: List<Lang>, onLang: (Lang) -> Unit) {
 private fun TrendGrid(state: ProgressUiState, trends: com.vaak.domain.progress.Trends) {
     val hi = state.lang == Lang.HI
     Column(Modifier.fillMaxWidth().testTag(TAG_TRENDS), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Reflow(Modifier.fillMaxWidth(), 10.dp) {
+            tile {
             MetricTrend(
                 label = stringResource(R.string.progress_pace),
                 trend = trends.pace,
@@ -248,8 +275,10 @@ private fun TrendGrid(state: ProgressUiState, trends: com.vaak.domain.progress.T
                 format = { stringResource(R.string.percent, pct(it)) },
                 fixedMin = 0.0,
                 fixedMax = 100.0,
-                modifier = Modifier.weight(1f).testTag(TAG_TREND_PACE),
+                modifier = it.testTag(TAG_TREND_PACE),
             )
+            }
+            tile {
             MetricTrend(
                 label = stringResource(R.string.progress_fillers),
                 trend = trends.fillers,
@@ -257,10 +286,12 @@ private fun TrendGrid(state: ProgressUiState, trends: com.vaak.domain.progress.T
                 unit = stringResource(R.string.progress_per_min),
                 format = { oneDecimal(it) },
                 lowerIsBetter = true,
-                modifier = Modifier.weight(1f).testTag(TAG_TREND_FILLERS),
+                modifier = it.testTag(TAG_TREND_FILLERS),
             )
+            }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Reflow(Modifier.fillMaxWidth(), 10.dp) {
+            tile {
             MetricTrend(
                 label = stringResource(if (hi) R.string.progress_variety_hi else R.string.progress_variety),
                 trend = trends.variety,
@@ -268,9 +299,10 @@ private fun TrendGrid(state: ProgressUiState, trends: com.vaak.domain.progress.T
                 unit = null,
                 format = { twoDecimals(it) },
                 emptyText = stringResource(R.string.progress_variety_locked),
-                modifier = Modifier.weight(1f).testTag(TAG_TREND_VARIETY),
+                modifier = it.testTag(TAG_TREND_VARIETY),
             )
-            TalksTile(trends, Modifier.weight(1f).testTag(TAG_TREND_TALKS))
+            }
+            tile { TalksTile(trends, it.testTag(TAG_TREND_TALKS)) }
         }
     }
 }
@@ -299,7 +331,7 @@ private fun MetricTrend(
     val desc = stringResource(R.string.progress_trend_a11y, label, valueText.ifEmpty { "–" }, deltaText)
     VaakCard(modifier.clearAndSetSemantics { contentDescription = desc }) {
         Column(Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 10.dp)) {
-            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(top = 2.dp)) {
                 Text(value ?: "–", style = VaakTheme.type.metric.copy(fontSize = 22.sp), color = MaterialTheme.colorScheme.onSurface)
                 if (unit != null && value != null) {
@@ -357,14 +389,22 @@ private fun InsightCard(insight: InsightUi, canShare: Boolean, actions: Progress
         color = MaterialTheme.colorScheme.tertiaryContainer,
         modifier = Modifier.fillMaxWidth().testTag(TAG_INSIGHT).semantics { liveRegion = LiveRegionMode.Polite },
     ) {
-        Box {
-            Column(Modifier.padding(start = VaakSpace.l, end = VaakSpace.l, top = VaakSpace.l, bottom = if (canShare) 4.dp else VaakSpace.l)) {
-                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.surfaceContainerLowest, contentColor = MaterialTheme.colorScheme.tertiary) {
-                    Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Rounded.Star, null, Modifier.size(16.dp))
-                        Text(stringResource(R.string.progress_insight_tag), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(start = 4.dp))
+        Column(Modifier.padding(start = VaakSpace.l, end = 4.dp, top = 4.dp, bottom = if (canShare) 4.dp else VaakSpace.l)) {
+            // The pill and the close button share a row, so close never overlaps the text and is read in order.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.weight(1f).padding(top = VaakSpace.l - 4.dp)) {
+                    Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainerLowest, contentColor = MaterialTheme.colorScheme.tertiary) {
+                        Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.Star, null, Modifier.size(16.dp))
+                            Text(stringResource(R.string.progress_insight_tag), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(start = 4.dp))
+                        }
                     }
                 }
+                IconButton(onClick = { actions.onDismissInsight(insight.key) }) {
+                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.progress_insight_dismiss), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Column(Modifier.padding(end = VaakSpace.l - 4.dp)) {
                 Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 10.dp).semantics { heading() })
                 Text(body, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 4.dp))
                 if (canShare) {
@@ -373,9 +413,6 @@ private fun InsightCard(insight: InsightUi, canShare: Boolean, actions: Progress
                         Text(stringResource(R.string.progress_share_cta), modifier = Modifier.padding(start = 6.dp))
                     }
                 }
-            }
-            IconButton(onClick = { actions.onDismissInsight(insight.key) }, modifier = Modifier.align(Alignment.TopEnd).padding(4.dp)) {
-                Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.progress_insight_dismiss), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -414,27 +451,36 @@ private fun Compare(c: CompareUi, canShare: Boolean, onShare: () -> Unit, player
     val before = shortDate(c.baselineDate)
     val after = shortDate(c.latestDate)
     val desc = stringResource(R.string.compare_a11y, before, after)
+    val large = largeFont()
     VaakCard(Modifier.fillMaxWidth().testTag(TAG_COMPARE).semantics { contentDescription = desc }) {
-        Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp)) {
-            Text("", Modifier.weight(1f))
+        // The column heads are visual only: each row reads as one sentence with both values.
+        Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp).clearAndSetSemantics {}) {
+            // At large text the metric label gets its own line, so the two value columns take the full width.
+            if (!large) Spacer(Modifier.weight(1f))
             ColHead(stringResource(R.string.progress_baseline_col), before, Modifier.weight(1f))
             ColHead(stringResource(R.string.progress_latest_col), after, Modifier.weight(1f))
         }
         c.rows.forEach { row ->
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            CompareRow(row)
+            CompareRow(row, large)
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Row(
-            Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant).padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            // Baseline: its player, or a dashed "Audio not kept" note. Latest: only if that talk was saved (S16 notes).
-            PlayerChip(c.baselineAudio, c.baselineDurationMs, then = true, player = player, modifier = Modifier.weight(1f))
-            if (c.latestAudio != null) {
-                PlayerChip(c.latestAudio, c.latestDurationMs, then = false, player = player, modifier = Modifier.weight(1f))
-            } else {
-                Spacer(Modifier.weight(1f))
+        // Baseline: its player, or a dashed "Audio not kept" note. Latest: only if that talk was saved (S16 notes).
+        // Side by side, or stacked at large text.
+        val chips = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant).padding(horizontal = 16.dp, vertical = 12.dp)
+        if (large) {
+            Column(chips, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                PlayerChip(c.baselineAudio, c.baselineDurationMs, then = true, player = player, modifier = Modifier.fillMaxWidth())
+                if (c.latestAudio != null) PlayerChip(c.latestAudio, c.latestDurationMs, then = false, player = player, modifier = Modifier.fillMaxWidth())
+            }
+        } else {
+            Row(chips, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PlayerChip(c.baselineAudio, c.baselineDurationMs, then = true, player = player, modifier = Modifier.weight(1f))
+                if (c.latestAudio != null) {
+                    PlayerChip(c.latestAudio, c.latestDurationMs, then = false, player = player, modifier = Modifier.weight(1f))
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
     }
@@ -459,7 +505,7 @@ private fun ColHead(title: String, date: String, modifier: Modifier) {
 }
 
 @Composable
-private fun CompareRow(row: CompareRowUi) {
+private fun CompareRow(row: CompareRowUi, large: Boolean) {
     val (label, unit) = when (row.kind) {
         CompareKind.PACE -> R.string.compare_pace to R.string.unit_wpm
         CompareKind.FILLERS -> R.string.compare_fillers to R.string.progress_per_min
@@ -472,11 +518,20 @@ private fun CompareRow(row: CompareRowUi) {
         else -> ::oneDecimal
     }
     val delta = compareDelta(row)
-    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).semantics(mergeDescendants = true) {}) {
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(stringResource(label), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-            ValueText(fmt(row.before), unit?.let { stringResource(it) }, strong = false, modifier = Modifier.weight(1f))
-            ValueText(fmt(row.after), unit?.let { stringResource(it) }, strong = true, modifier = Modifier.weight(1f))
+    val name = stringResource(label)
+    val unitText = unit?.let { stringResource(it) }
+    fun withUnit(v: Double) = listOfNotNull(fmt(v), unitText).joinToString(" ")
+    // "Pace: baseline 152 wpm, latest 138 wpm. Now in your comfortable band"
+    val cd = stringResource(R.string.compare_row_cd, name, withUnit(row.before), withUnit(row.after), delta)
+    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).testTag("compare_${row.kind.name.lowercase()}").clearAndSetSemantics { contentDescription = cd }) {
+        if (large) {
+            Text(name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(verticalAlignment = Alignment.Bottom) { CompareValues(row, fmt, unitText) }
+        } else {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                CompareValues(row, fmt, unitText)
+            }
         }
         val icon = when (row.delta) {
             CompareDelta.IntoBand, CompareDelta.StillInBand -> Icons.Rounded.CheckCircle
@@ -486,6 +541,12 @@ private fun CompareRow(row: CompareRowUi) {
         }
         Row(Modifier.padding(top = 2.dp)) { DeltaLine(icon, delta, row.delta.good) }
     }
+}
+
+@Composable
+private fun RowScope.CompareValues(row: CompareRowUi, fmt: (Double) -> String, unit: String?) {
+    ValueText(fmt(row.before), unit, strong = false, modifier = Modifier.weight(1f))
+    ValueText(fmt(row.after), unit, strong = true, modifier = Modifier.weight(1f))
 }
 
 @Composable
@@ -514,10 +575,12 @@ private fun ValueText(value: String, unit: String?, strong: Boolean, modifier: M
 
 @Composable
 private fun PlayerChip(file: File?, durationMs: Long, then: Boolean, player: TalkPlayer?, modifier: Modifier) {
+    // Rounded rectangles, not circles, so a label that wraps at large text isn't clipped.
+    val shape = RoundedCornerShape(24.dp)
     if (file == null) {
         Box(
-            modifier.heightIn(min = VaakSpace.touch).clip(CircleShape)
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape).padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier.heightIn(min = VaakSpace.touch).clip(shape)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape).padding(horizontal = 12.dp, vertical = 6.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             Text(stringResource(R.string.player_not_kept), style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -534,13 +597,13 @@ private fun PlayerChip(file: File?, durationMs: Long, then: Boolean, player: Tal
             else -> R.string.player_play_latest
         },
     )
-    Surface(modifier.heightIn(min = VaakSpace.touch), shape = CircleShape, color = MaterialTheme.colorScheme.surfaceContainerLowest, border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 12.dp)) {
+    Surface(modifier.heightIn(min = VaakSpace.touch), shape = shape, color = MaterialTheme.colorScheme.surfaceContainerLowest, border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 12.dp, top = 2.dp, bottom = 2.dp)) {
             FilledTonalIconButton(onClick = { player?.toggle(file) }) {
                 Icon(if (playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, contentDescription = action)
             }
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
+                Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface)
                 val progress = if (playing && durationMs > 0) (player.positionMs.toFloat() / durationMs).coerceIn(0f, 1f) else 0f
                 LinearProgressIndicator(
                     progress = { progress },
@@ -595,7 +658,10 @@ private fun pct(v: Double): String = Math.round(v).toString()
 fun oneDecimal(v: Double): String = String.format(Locale.US, "%.1f", v)
 fun twoDecimals(v: Double): String = String.format(Locale.US, "%.2f", v)
 
+private const val LARGE_FONT_SCALE = 1.3f
+
 const val TAG_PROGRESS = "progress"
+const val TAG_TOTALS = "progress_totals"
 const val TAG_SETTINGS = "progress_settings"
 const val TAG_EMPTY = "progress_empty"
 const val TAG_TRENDS = "progress_trends"

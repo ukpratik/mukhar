@@ -1,6 +1,7 @@
 package com.vaak.app.feature.onboarding
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,13 +38,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.vaak.app.R
 import com.vaak.ui.theme.VaakSpace
 
 /** S04, Play's prominent disclosure: what is sent, to whom, why, and that nothing is stored on our server. */
 @Composable
-fun DisclosureBody(analyticsOptIn: Boolean, onAnalytics: (Boolean) -> Unit) {
+fun DisclosureBody(analyticsOptIn: Boolean, onAnalytics: (Boolean) -> Unit, onOpenPolicy: () -> Unit = {}) {
     Column {
         Eyebrow(stringResource(R.string.disclosure_eyebrow))
         ObHeadline(stringResource(R.string.disclosure_title))
@@ -65,12 +67,20 @@ fun DisclosureBody(analyticsOptIn: Boolean, onAnalytics: (Boolean) -> Unit) {
             )
         }
         AnalyticsSwitchRow(analyticsOptIn, onAnalytics, Modifier.padding(top = VaakSpace.l))
+        // Looks like a link, so it is one: opens the privacy policy in the browser.
         Row(
-            Modifier.fillMaxWidth().heightIn(min = VaakSpace.touch).padding(top = VaakSpace.xs),
+            Modifier.padding(top = VaakSpace.xs).fillMaxWidth().heightIn(min = VaakSpace.touch)
+                .clickable(role = Role.Button, onClickLabel = stringResource(R.string.disclosure_policy_open), onClick = onOpenPolicy)
+                .testTag(TAG_POLICY),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(VaakSpace.xs),
         ) {
-            Text(stringResource(R.string.disclosure_policy), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
+            Text(
+                stringResource(R.string.disclosure_policy),
+                style = MaterialTheme.typography.labelMedium.copy(textDecoration = TextDecoration.Underline),
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.weight(1f, fill = false),
+            )
             Icon(Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(18.dp))
         }
     }
@@ -110,7 +120,8 @@ private fun FlowItem(
 /** The optional usage and crash-reports switch: OFF by default, independent of Agree (D-026, D-028). */
 @Composable
 fun AnalyticsSwitchRow(checked: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    val a11y = stringResource(R.string.disclosure_analytics_a11y)
+    // The label and the body are both read: the body says what is shared (consent copy is never hidden).
+    val a11y = stringResource(R.string.a11y_label_detail, stringResource(R.string.disclosure_analytics_a11y), stringResource(R.string.disclosure_analytics_body))
     Row(
         modifier.fillMaxWidth().clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.surfaceVariant)
             .toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
@@ -162,3 +173,4 @@ fun DeclinedCta(onContinue: () -> Unit, onChangedMind: () -> Unit) {
 
 const val TAG_ANALYTICS = "disclosure_analytics"
 const val TAG_AGREE = "disclosure_agree"
+const val TAG_POLICY = "disclosure_policy"

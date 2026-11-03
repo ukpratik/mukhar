@@ -46,8 +46,8 @@ class ResultsScreenTest {
         compose.onNodeWithText("What you said").assertExists()
         compose.onNodeWithText("filler").assertExists() // legend
         compose.onNodeWithText("unsure").assertExists() // "Zuora" was low confidence
-        compose.onNodeWithText("GLOW · WHAT WORKED").assertExists()
-        compose.onNodeWithText("GROW · ONE THING TO TRY").assertExists()
+        compose.onNodeWithText("Glow · what worked").assertExists()
+        compose.onNodeWithText("Grow · one thing to try").assertExists()
         compose.onNodeWithText("“I sat with the finance team every Tuesday and we mapped each report one by one.”").assertExists()
         compose.onNodeWithText("Better versions").assertExists()
         compose.onNodeWithText("3 lines").assertExists()
@@ -66,9 +66,8 @@ class ResultsScreenTest {
     fun hindiReportUsesDevanagariAndHindiSubtitles() {
         show(TalkFixtures.report(lang = Lang.HI))
         compose.onNodeWithText("सुझाव साफ़ और ठोस है। बस शुरुआत को थोड़ा कसिए।").assertExists()
-        compose.onNodeWithText("GLOW · ").assertExists()
-        compose.onNodeWithText("क्या अच्छा रहा").assertExists()
-        compose.onNodeWithText("एक चीज़ आज़माएँ").assertExists()
+        compose.onNodeWithText("Glow · क्या अच्छा रहा").assertExists() // one heading, Hindi part in a Hindi voice
+        compose.onNodeWithText("Grow · एक चीज़ आज़माएँ").assertExists()
         compose.onNodeWithText("क्यों").assertExists()
         compose.onNodeWithText("कैसे").assertExists()
         compose.onNodeWithText("Comfortable · provisional", substring = true).assertExists()
@@ -92,7 +91,7 @@ class ResultsScreenTest {
         compose.onNodeWithText("Your numbers are in. Fillers are down from your average.").assertExists()
         compose.onNodeWithText("What you said").assertExists()
         compose.onNodeWithText("PACE").assertExists()
-        compose.onAllNodesWithText("GLOW · WHAT WORKED").assertCountEquals(0)
+        compose.onAllNodesWithText("Glow · what worked").assertCountEquals(0)
         compose.onNodeWithText("Try again").performSemanticsAction(SemanticsActions.OnClick)
         assertThat(events).containsExactly(ReportEvent.RetryFeedback)
     }
@@ -101,8 +100,8 @@ class ResultsScreenTest {
     fun feedbackStillFailingShowsTheMetricsFallback() {
         show(TalkFixtures.report(status = TalkStatus.FEEDBACK_FAILED, withFeedback = false, errorCode = "LLM_FAILED", manualRetryFailed = true))
         compose.onNodeWithText("Try again later").assertExists()
-        compose.onNodeWithText("GLOW · WHAT WORKED").assertExists()
-        compose.onNodeWithText("GROW · ONE THING TO TRY").assertExists()
+        compose.onNodeWithText("Glow · what worked").assertExists()
+        compose.onNodeWithText("Grow · one thing to try").assertExists()
     }
 
     @Test

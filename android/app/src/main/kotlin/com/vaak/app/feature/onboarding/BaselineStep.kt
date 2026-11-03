@@ -42,6 +42,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
@@ -53,6 +54,8 @@ import com.vaak.ui.theme.TileShape
 import com.vaak.ui.theme.VaakCard
 import com.vaak.ui.theme.VaakSpace
 import com.vaak.ui.theme.VaakTheme
+
+private const val ANNOUNCE_MS = 30_000L
 
 private fun mmss(ms: Long): String = "%d:%02d".format(ms / 60_000, ms / 1000 % 60)
 
@@ -173,11 +176,15 @@ fun BaselineCardPreview(modifier: Modifier = Modifier, onClick: (() -> Unit)? = 
 
 @Composable
 private fun BaselineRecording(elapsedMs: Long) {
-    val a11y = (elapsedMs / 1000).toInt().let { pluralStringResource(R.plurals.baseline_recording_a11y, it, it) }
+    // Elapsed time is announced every 30 s, not every second (design §10.4).
+    val a11y = (elapsedMs / ANNOUNCE_MS * ANNOUNCE_MS / 1000).toInt().let { pluralStringResource(R.plurals.baseline_recording_a11y, it, it) }
+    val started = stringResource(R.string.recording_started)
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Row(
             Modifier.clip(CircleShape).border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest).padding(horizontal = 14.dp, vertical = 9.dp),
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                .semantics(mergeDescendants = true) { contentDescription = started; liveRegion = LiveRegionMode.Polite }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(VaakSpace.s),
         ) {
@@ -199,7 +206,8 @@ private fun BaselineRecording(elapsedMs: Long) {
         Text(stringResource(R.string.baseline_of), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
     ProgressTrack(elapsedMs.toFloat() / BaselineRecorder.MAX_MS)
-    Row(Modifier.fillMaxWidth().padding(top = 6.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+    // The track's ends are drawn labels; the track itself reports its progress.
+    Row(Modifier.fillMaxWidth().padding(top = 6.dp).clearAndSetSemantics {}, horizontalArrangement = Arrangement.SpaceBetween) {
         Text("0:00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("1:00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
@@ -256,7 +264,8 @@ fun KeepRecordingSheet(keep: Boolean, onKeep: (Boolean) -> Unit, onContinue: () 
         Text(stringResource(R.string.baseline_keep_lead), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = VaakSpace.xs, bottom = VaakSpace.m))
         val label = stringResource(R.string.baseline_keep_switch)
         Row(
-            Modifier.fillMaxWidth().toggleable(keep, role = Role.Switch, onValueChange = onKeep).semantics { contentDescription = label }.padding(vertical = VaakSpace.s),
+            // No description override: the size and "delete any time" line is read with the label.
+            Modifier.fillMaxWidth().toggleable(keep, role = Role.Switch, onValueChange = onKeep).padding(vertical = VaakSpace.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {

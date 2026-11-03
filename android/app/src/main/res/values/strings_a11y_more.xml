@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- M6 accessibility pass (NFR-008) for Words, Progress, Settings and Sound Lab. Copy never shames. -->
+
+    <!-- Settings -->
+    <string name="delete_deleting">Deleting your data…</string>
+    <string name="settings_open_in_browser">open in browser</string>
+    <string name="settings_pick_max">You can pick up to %1$d</string>
+
+    <!-- Word Gym / Revise done tally -->
+    <string name="done_tally_revise_cd">%1$s: %2$s, %3$s, %4$s</string>
+    <string name="done_tally_gym_cd">%1$s: %2$s</string>
+    <plurals name="done_tally_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <plurals name="done_tally_fixes">
+        <item quantity="one">%d fix</item>
+        <item quantity="other">%d fixes</item>
+    </plurals>
+    <plurals name="done_tally_lines">
+        <item quantity="one">%d saved line</item>
+        <item quantity="other">%d saved lines</item>
+    </plurals>
+
+    <!-- Progress -->
+    <string name="compare_row_cd">%1$s: baseline %2$s, latest %3$s. %4$s</string>
+
+    <!-- Sound Lab -->
+    <string name="soundlab_stop_recording_cd">Stop recording</string>
+    <string name="soundlab_take_ready">Your take is ready</string>
+    <string name="soundlab_playing">Playing</string>
+</resources>

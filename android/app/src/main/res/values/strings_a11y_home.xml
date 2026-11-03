@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TalkBack copy for onboarding, Today, the streak sheet, the paywall and the quota screen (NFR-008, design §10). -->
+<resources>
+    <!-- A label followed by its detail, read as one sentence ("Share usage and crash reports (optional). Helps us fix bugs."). -->
+    <string name="a11y_label_detail">%1$s. %2$s</string>
+    <!-- A goal segment: "3 days, Easy". -->
+    <string name="goal_option_a11y">%1$s, %2$s</string>
+    <string name="disclosure_policy_open">Open the privacy policy</string>
+    <string name="reminder_time_title">Reminder time</string>
+    <string name="repair_step_done">Done</string>
+    <string name="repair_step_todo">To do</string>
+    <!-- "What you keep: 18 days, your best streak, kept. 128 words, learned, all still yours." -->
+    <string name="sheet_kept_list_a11y">%1$s: %2$s, %3$s. %4$s, %5$s.</string>
+    <string name="plan_loading_a11y">Loading prices from Google Play</string>
+</resources>

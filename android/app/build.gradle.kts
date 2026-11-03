@@ -3,6 +3,7 @@ plugins {
     id("vaak.android.compose")
     id("vaak.hilt")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -11,7 +12,23 @@ android {
     defaultConfig {
         applicationId = "com.vaak.app"
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
+    }
+
+    // Upload key for Google Play (Play App Signing re-signs for users), same pattern as Folio. Credentials live in
+    // ~/.gradle/gradle.properties (VAAK_RELEASE_*), the keystore in ~/.android-keys/, never in the repo
+    // (LLD §7, launch-checklist "Signing setup"). Without them the release build is signed with the debug key so it
+    // still builds and installs locally (D-036); such an APK must never be uploaded (Play rejects debug-signed APKs).
+    val releaseStore = providers.gradleProperty("VAAK_RELEASE_STORE_FILE").orNull
+    signingConfigs {
+        if (releaseStore != null) {
+            create("upload") {
+                storeFile = file(releaseStore)
+                storePassword = providers.gradleProperty("VAAK_RELEASE_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("VAAK_RELEASE_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("VAAK_RELEASE_KEY_PASSWORD").get()
+            }
+        }
     }
 
     buildTypes {
@@ -19,10 +36,12 @@ android {
             applicationIdSuffix = ".debug"
         }
         release {
+            // R8 full mode (AGP default). The mapping file is kept at build/outputs/mapping/release/mapping.txt and
+            // archived with each build in ~/Desktop/PersonalProjects/builds/vaak/<version>/ (NFR-005 crash triage).
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Signing (LLD §7): ~/.android-keys/vaak-upload.jks, passwords in ~/.gradle/gradle.properties. Added at M6.
+            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
         }
     }
 
@@ -30,6 +49,13 @@ android {
 
     // Robolectric Compose tests need merged resources.
     testOptions.unitTests.isIncludeAndroidResources = true
+}
+
+// NFR-002: the Baseline Profile (startup → Today → Talk) is generated on a device by :baselineprofile and committed
+// under src/release/generated/baselineProfiles; profileinstaller compiles it on first launch for sideloads too.
+baselineProfile {
+    // Generation needs a connected device or emulator; normal builds just use the committed profile.
+    automaticGenerationDuringBuild = false
 }
 
 dependencies {
@@ -47,6 +73,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.work)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

@@ -6,6 +6,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.BookmarkAdded
 import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material3.Button
@@ -39,10 +43,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -171,7 +180,7 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
             modifier = Modifier.padding(top = 6.dp).semantics { heading() },
         )
         val sectionLabel = stringResource(R.string.words_section_a11y)
-        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = sectionLabel }) {
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = sectionLabel; isTraversalGroup = true }) {
             WordsSection.entries.forEachIndexed { i, s ->
                 SegmentedButton(
                     selected = state.section == s,
@@ -195,14 +204,22 @@ private fun GymRow(state: WordBankUiState, onOpen: () -> Unit) {
     } else {
         stringResource(R.string.words_gym_nothing_a11y)
     }
+    // One sentence; the click is declared in the clearing block so it's kept with the label.
     VaakCard(
-        Modifier.fillMaxWidth().testTag(TAG_GYM_ROW).clearAndSetSemantics { contentDescription = a11y; if (due > 0) role = Role.Button },
+        Modifier.fillMaxWidth().testTag(TAG_GYM_ROW).clearAndSetSemantics {
+            contentDescription = a11y
+            if (due > 0) {
+                role = Role.Button
+                onClick { onOpen(); true }
+            }
+        },
         onClick = if (due > 0) onOpen else null,
     ) {
         Row(Modifier.padding(VaakSpace.l), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             Box(
-                Modifier.size(52.dp).clip(MaterialTheme.shapes.medium)
-                    .background(if (due > 0) VaakTheme.colors.accentTint else MaterialTheme.colorScheme.tertiaryContainer),
+                Modifier.sizeIn(minWidth = 52.dp, minHeight = 52.dp).clip(MaterialTheme.shapes.medium)
+                    .background(if (due > 0) VaakTheme.colors.accentTint else MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(horizontal = 6.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 if (due > 0) {
@@ -236,13 +253,14 @@ private fun Bank(state: WordBankUiState, actions: WordBankActions) {
     }
     val filterLabel = stringResource(R.string.words_filter_a11y)
     Row(
-        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).semantics { contentDescription = filterLabel },
+        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).semantics { contentDescription = filterLabel; isTraversalGroup = true },
         horizontalArrangement = Arrangement.spacedBy(VaakSpace.s),
     ) {
         SourceFilter.entries.forEach { f ->
             FilterChip(
                 selected = state.source == f,
                 onClick = { actions.onEvent(WordBankEvent.Source(f)) },
+                leadingIcon = selectedCheck(state.source == f),
                 label = {
                     Text(
                         stringResource(
@@ -258,7 +276,12 @@ private fun Bank(state: WordBankUiState, actions: WordBankActions) {
         }
         state.trackChips.forEach { t ->
             goalTrackRes(t)?.let { res ->
-                FilterChip(selected = t in state.tracks, onClick = { actions.onEvent(WordBankEvent.ToggleTrack(t)) }, label = { Text(stringResource(res)) })
+                FilterChip(
+                    selected = t in state.tracks,
+                    onClick = { actions.onEvent(WordBankEvent.ToggleTrack(t)) },
+                    label = { Text(stringResource(res)) },
+                    leadingIcon = selectedCheck(t in state.tracks),
+                )
             }
         }
     }
@@ -271,7 +294,7 @@ private fun Bank(state: WordBankUiState, actions: WordBankActions) {
         },
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 2.dp),
+        modifier = Modifier.padding(horizontal = 2.dp).testTag(TAG_WORDS_COUNT).semantics { liveRegion = LiveRegionMode.Polite },
     )
     if (visible.isEmpty()) {
         Text(stringResource(R.string.words_none_match), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -285,24 +308,29 @@ private fun Bank(state: WordBankUiState, actions: WordBankActions) {
     }
 }
 
+/** Selection shown by a check, not by colour alone (design-system §10.3). */
+private fun selectedCheck(selected: Boolean): (@Composable () -> Unit)? =
+    if (selected) ({ Icon(Icons.Rounded.Check, null, Modifier.size(18.dp)) }) else null
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun WordRow(w: WordItem, onClick: () -> Unit) {
     val meta = posAndRegister(w)
     val status = statusLabel(w)
     val a11y = stringResource(R.string.word_row_a11y, w.lemma, meta, w.meaning, status)
     Row(
-        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick).clearAndSetSemantics { contentDescription = a11y }
-            .padding(horizontal = VaakSpace.l, vertical = 14.dp).testTag("word_${w.id}"),
+        Modifier.fillMaxWidth().testTag("word_${w.id}").clickable(role = Role.Button, onClick = onClick).clearAndSetSemantics { contentDescription = a11y }
+            .padding(horizontal = VaakSpace.l, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.Bottom) {
+            // Wraps the meta under the lemma at large text instead of squeezing it.
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.Bottom) {
                 Text(
                     w.lemma,
                     style = if (w.lang == Lang.HI) VaakTheme.type.hiBodyLarge.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                Spacer(Modifier.width(8.dp))
                 Text(meta, style = MaterialTheme.typography.bodySmall.copy(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(
@@ -310,6 +338,7 @@ private fun WordRow(w: WordItem, onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             if (w.source == WordSource.TALK) {
                 Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -370,7 +399,13 @@ private fun Lines(state: WordBankUiState) {
     if (state.lines.isEmpty()) {
         Column(Modifier.fillMaxWidth().padding(top = VaakSpace.xl), horizontalAlignment = Alignment.CenterHorizontally) {
             ArtCircle(Icons.Outlined.BookmarkAdded)
-            Text(stringResource(R.string.words_lines_empty_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 18.dp))
+            Text(
+                stringResource(R.string.words_lines_empty_title),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.padding(top = 18.dp).semantics { heading() },
+            )
             Text(
                 stringResource(R.string.words_lines_empty_body),
                 style = MaterialTheme.typography.bodyMedium,
@@ -399,3 +434,4 @@ private fun Lines(state: WordBankUiState) {
 const val TAG_WORD_BANK = "word_bank"
 const val TAG_GYM_ROW = "word_gym_row"
 const val TAG_WORDS_EMPTY = "words_empty"
+const val TAG_WORDS_COUNT = "words_count"

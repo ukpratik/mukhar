@@ -49,6 +49,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -75,6 +77,7 @@ import com.vaak.app.feature.talk.report.CtaBar
 import com.vaak.app.feature.talk.report.GrowCard
 import com.vaak.app.feature.talk.report.ReportActions
 import com.vaak.app.feature.talk.report.ReportContent
+import com.vaak.domain.talk.SayItAgain
 import com.vaak.ui.theme.FrauncesText
 import com.vaak.ui.theme.VaakCard
 import com.vaak.ui.theme.VaakSpace
@@ -92,12 +95,37 @@ fun SayAgainScreen(
     val haptics = rememberHaptics()
     LaunchedEffect(state.deltas?.celebrate) { if (state.deltas?.celebrate == true) haptics.confirm() }
     val report = state.retakeReport
-    if (state.deltas == null && report != null) {
-        // Still analysing (or waiting offline): the S10 states for the re-take.
-        ReportContent(report, vm::onReportEvent, ReportActions(onBack = onBack, onSayAgain = {}, onRecordAgain = { onOnceMore(state) }, onSettings = onBack))
-        return
+    Box(Modifier.fillMaxSize()) {
+        if (state.deltas == null && report != null) {
+            // Still analysing (or waiting offline): the S10 states for the re-take.
+            ReportContent(report, vm::onReportEvent, ReportActions(onBack = onBack, onSayAgain = {}, onRecordAgain = { onOnceMore(state) }, onSettings = onBack))
+        } else {
+            SayAgainContent(state, onBack, onDone, { onReport(vm.retakeId) }, { onOnceMore(state) }, vm::toggleWord)
+        }
+        // Stays in place while the screen swaps from analysing to the comparison, so the result is read out.
+        HeroAnnouncer(state)
     }
-    SayAgainContent(state, onBack, onDone, { onReport(vm.retakeId) }, { onOnceMore(state) }, vm::toggleWord)
+}
+
+@Composable
+private fun HeroAnnouncer(state: SayAgainUiState) {
+    val text = state.deltas?.let { stringResource(heroText(it).first) }
+    Spacer(
+        Modifier.fillMaxWidth().height(1.dp).testTag(TAG_SAY_AGAIN_ANNOUNCER).semantics {
+            liveRegion = LiveRegionMode.Polite
+            if (text != null) contentDescription = text
+        },
+    )
+}
+
+const val TAG_SAY_AGAIN_ANNOUNCER = "say_again_announcer"
+
+private fun heroText(d: SayItAgain.Deltas): Pair<Int, Int> = when {
+    d.fillersImproved && d.pausesImproved -> R.string.sa_title_both to R.string.sa_body_both
+    d.fillersImproved -> R.string.sa_title_fillers to R.string.sa_body_fillers
+    d.pausesImproved -> R.string.sa_title_pauses to R.string.sa_body_pauses
+    d.paceImproved -> R.string.sa_title_pace to R.string.sa_body_pace
+    else -> R.string.sa_title_same to R.string.sa_body_same
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -117,15 +145,15 @@ fun SayAgainContent(
         topBar = { VaakAppBar(stringResource(R.string.retake_title), stringResource(R.string.back_report_cd), onBack) },
         bottomBar = {
             CtaBar {
-                Button(onClick = onDone, modifier = Modifier.weight(1f).height(54.dp)) { Text(stringResource(R.string.done_for_today)) }
+                Button(onClick = onDone, modifier = Modifier.weight(1f).heightIn(min = 54.dp)) { Text(stringResource(R.string.done_for_today)) }
                 when {
                     d.celebrate -> {
                         val cd = stringResource(R.string.report_button_cd)
-                        OutlinedButton(onClick = onReport, modifier = Modifier.height(54.dp).semantics { contentDescription = cd }) { Text(stringResource(R.string.report_button)) }
+                        OutlinedButton(onClick = onReport, modifier = Modifier.heightIn(min = 54.dp).semantics { contentDescription = cd }) { Text(stringResource(R.string.report_button)) }
                     }
                     state.premium -> {
                         val cd = stringResource(R.string.once_more_cd)
-                        OutlinedButton(onClick = onOnceMore, modifier = Modifier.height(54.dp).semantics { contentDescription = cd }) { Text(stringResource(R.string.once_more)) }
+                        OutlinedButton(onClick = onOnceMore, modifier = Modifier.heightIn(min = 54.dp).semantics { contentDescription = cd }) { Text(stringResource(R.string.once_more)) }
                     }
                 }
             }
@@ -164,17 +192,11 @@ fun SayAgainContent(
 @Composable
 private fun Hero(state: SayAgainUiState) {
     val d = state.deltas ?: return
-    val (title, body) = when {
-        d.fillersImproved && d.pausesImproved -> R.string.sa_title_both to R.string.sa_body_both
-        d.fillersImproved -> R.string.sa_title_fillers to R.string.sa_body_fillers
-        d.pausesImproved -> R.string.sa_title_pauses to R.string.sa_body_pauses
-        d.paceImproved -> R.string.sa_title_pace to R.string.sa_body_pace
-        else -> R.string.sa_title_same to R.string.sa_body_same
-    }
+    val (title, body) = heroText(d)
     val scale = remember { Animatable(if (d.celebrate) 0.8f else 1f) }
     val still = reducedMotion()
     LaunchedEffect(d.celebrate) { if (d.celebrate && !still) scale.animateTo(1f, tween(400)) else scale.snapTo(1f) }
-    Column(Modifier.padding(top = 10.dp, bottom = 6.dp).semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }) {
+    Column(Modifier.padding(top = 10.dp, bottom = 6.dp).semantics(mergeDescendants = true) {}) {
         Box(
             Modifier.size(64.dp).scale(scale.value).clip(CircleShape)
                 .background(if (d.celebrate) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.primaryContainer),
@@ -198,8 +220,10 @@ private fun Hero(state: SayAgainUiState) {
 @Composable
 private fun Deltas(state: SayAgainUiState) {
     val cd = stringResource(R.string.deltas_cd)
-    VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp).semantics { contentDescription = cd }) {
+    VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            // Heading navigation lands on the comparison; nothing is drawn and the card adds no extra stop.
+            Spacer(Modifier.fillMaxWidth().height(1.dp).semantics { heading(); contentDescription = cd })
             val rows = state.rows
             rows.forEachIndexed { i, r ->
                 DeltaRowView(r)
@@ -219,9 +243,12 @@ private fun DeltaRowView(r: DeltaRowUi) {
         },
     )
     val unit = stringResource(if (r.kind == DeltaKind.PACE) R.string.unit_wpm else R.string.unit_per_min)
+    val unitSpoken = stringResource(if (r.kind == DeltaKind.PACE) R.string.a11y_unit_wpm else R.string.a11y_unit_per_min)
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
-    Row(Modifier.fillMaxWidth().padding(vertical = 11.dp), verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f)) {
+    val text = chipText(r)
+    val spoken = stringResource(R.string.a11y_delta_row, label, r.first, r.retake, unitSpoken, text)
+    val values = @Composable { modifier: Modifier ->
+        Column(modifier) {
             Text(label, style = MaterialTheme.typography.labelMedium, color = muted)
             Text(
                 buildAnnotatedString {
@@ -233,29 +260,46 @@ private fun DeltaRowView(r: DeltaRowUi) {
                 style = MaterialTheme.typography.titleMedium.copy(fontFamily = FrauncesText, fontSize = 19.sp, fontFeatureSettings = "tnum"),
             )
         }
-        val text = when (r.chip) {
-            Chip.FEWER -> stringResource(R.string.chip_fewer, r.percent)
-            Chip.SAME -> stringResource(R.string.chip_same)
-            Chip.MORE -> stringResource(R.string.chip_more)
-            Chip.STILL_COMFORTABLE -> stringResource(R.string.chip_still_comfortable)
-            Chip.FASTER_COMFORTABLE -> stringResource(R.string.chip_faster_comfortable)
-            Chip.SLOWER_COMFORTABLE -> stringResource(R.string.chip_slower_comfortable)
-            Chip.NOW_COMFORTABLE -> stringResource(R.string.chip_now_comfortable)
-            Chip.FASTER -> stringResource(R.string.chip_faster)
-            Chip.SLOWER -> stringResource(R.string.chip_slower)
-        }
-        val icon = when (r.chip) {
-            Chip.FEWER, Chip.SLOWER, Chip.SLOWER_COMFORTABLE -> Icons.Rounded.ArrowDownward
-            Chip.MORE, Chip.FASTER, Chip.FASTER_COMFORTABLE -> Icons.Rounded.ArrowUpward
-            Chip.SAME -> Icons.Rounded.HorizontalRule
-            Chip.STILL_COMFORTABLE, Chip.NOW_COMFORTABLE -> Icons.Rounded.Check
-        }
+    }
+    val icon = when (r.chip) {
+        Chip.FEWER, Chip.SLOWER, Chip.SLOWER_COMFORTABLE -> Icons.Rounded.ArrowDownward
+        Chip.MORE, Chip.FASTER, Chip.FASTER_COMFORTABLE -> Icons.Rounded.ArrowUpward
+        Chip.SAME -> Icons.Rounded.HorizontalRule
+        Chip.STILL_COMFORTABLE, Chip.NOW_COMFORTABLE -> Icons.Rounded.Check
+    }
+    val chip = @Composable {
         if (r.good) {
             InfoChip(text, MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary, icon = icon)
         } else {
             InfoChip(text, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, icon = icon)
         }
     }
+    // One TalkBack stop per row: "Fillers: from 9.0 to 4.1 per minute. 54% fewer".
+    val rowSemantics = Modifier.fillMaxWidth().padding(vertical = 11.dp).semantics(mergeDescendants = true) { contentDescription = spoken }
+    if (LocalDensity.current.fontScale > 1.5f) {
+        Column(rowSemantics, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            values(Modifier)
+            chip()
+        }
+    } else {
+        Row(rowSemantics, verticalAlignment = Alignment.CenterVertically) {
+            values(Modifier.weight(1f))
+            chip()
+        }
+    }
+}
+
+@Composable
+private fun chipText(r: DeltaRowUi): String = when (r.chip) {
+    Chip.FEWER -> stringResource(R.string.chip_fewer, r.percent)
+    Chip.SAME -> stringResource(R.string.chip_same)
+    Chip.MORE -> stringResource(R.string.chip_more)
+    Chip.STILL_COMFORTABLE -> stringResource(R.string.chip_still_comfortable)
+    Chip.FASTER_COMFORTABLE -> stringResource(R.string.chip_faster_comfortable)
+    Chip.SLOWER_COMFORTABLE -> stringResource(R.string.chip_slower_comfortable)
+    Chip.NOW_COMFORTABLE -> stringResource(R.string.chip_now_comfortable)
+    Chip.FASTER -> stringResource(R.string.chip_faster)
+    Chip.SLOWER -> stringResource(R.string.chip_slower)
 }
 
 /** `.wchip`: one tap adds the word to Word Gym (US-021); toggles like the S11 chips. */
@@ -264,16 +308,21 @@ private fun WordChip(word: String, added: Boolean, onClick: () -> Unit) {
     val bg = if (added) MaterialTheme.colorScheme.primary else VaakTheme.colors.accentTint
     val fg = if (added) MaterialTheme.colorScheme.onPrimary else VaakTheme.colors.accentInk
     val cd = stringResource(if (added) R.string.added_word_cd else R.string.add_word_cd, word)
-    Row(
-        Modifier.padding(vertical = 4.dp).heightIn(min = 40.dp).clip(CircleShape).background(bg)
+    // 48 dp touch target around the 40 dp pill (design-system §10.2: chips get invisible padding).
+    Box(
+        Modifier.heightIn(min = 48.dp).clip(CircleShape)
             .toggleable(value = added, role = Role.Switch, onValueChange = { onClick() })
-            .semantics { contentDescription = cd }
-            .padding(start = 12.dp, end = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .semantics { contentDescription = cd },
+        contentAlignment = Alignment.Center,
     ) {
-        Icon(if (added) Icons.Rounded.Check else Icons.Rounded.Add, null, tint = fg, modifier = Modifier.size(18.dp))
-        Spacer(Modifier.width(6.dp))
-        Text(word, style = MaterialTheme.typography.labelMedium, color = fg)
+        Row(
+            Modifier.heightIn(min = 40.dp).clip(CircleShape).background(bg).padding(start = 12.dp, end = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(if (added) Icons.Rounded.Check else Icons.Rounded.Add, null, tint = fg, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(word, style = MaterialTheme.typography.labelMedium, color = fg)
+        }
     }
 }
 

@@ -57,7 +57,7 @@ class ProgressContentTest {
         compose.onNodeWithText("4 weeks").performClick()
         assertThat(range).isEqualTo(TrendRange.FOUR)
         compose.onNodeWithText("Then and now").performScrollTo()
-        compose.onNodeWithText("Now in your comfortable band").performScrollTo()
+        compose.onNodeWithContentDescription("Now in your comfortable band", substring = true).performScrollTo() // one sentence per row
         compose.onNodeWithText("Audio not kept").performScrollTo()
         compose.onNodeWithText("Free plan").performScrollTo()
     }

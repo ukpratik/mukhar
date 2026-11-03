@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -58,7 +59,6 @@ import androidx.compose.material.icons.rounded.RecordVoiceOver
 import androidx.compose.material.icons.rounded.SdCardAlert
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,18 +87,22 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,6 +116,7 @@ import com.vaak.app.R
 import com.vaak.app.feature.talk.common.BannerTone
 import com.vaak.app.feature.talk.common.CenterState
 import com.vaak.app.feature.talk.common.VaakBanner
+import com.vaak.app.feature.talk.common.VaakSpinner
 import com.vaak.app.feature.talk.common.clock
 import com.vaak.app.feature.talk.common.langLabel
 import com.vaak.app.feature.talk.common.reducedMotion
@@ -218,8 +223,11 @@ fun RecordContent(
                 .padding(horizontal = VaakSpace.gutter).padding(bottom = 28.dp),
         ) {
             TopRow(state, onEvent)
+            RecordAnnouncer(state)
             when (state.phase) {
-                RecordPhase.LOADING, RecordPhase.SAVING -> Box(Modifier.fillMaxWidth().padding(top = 80.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                RecordPhase.LOADING, RecordPhase.SAVING -> Box(Modifier.fillMaxWidth().padding(top = 80.dp), contentAlignment = Alignment.Center) {
+                    VaakSpinner(size = 40.dp, strokeWidth = 4.dp)
+                }
                 RecordPhase.PERMISSION -> Permission(state.permissionDenied, onAllowAgain)
                 RecordPhase.READY -> Ready(state, onEvent)
                 RecordPhase.THINK -> Think(state, onEvent)
@@ -232,18 +240,62 @@ fun RecordContent(
     if (state.discardSheet) {
         ModalBottomSheet(onDismissRequest = { onEvent(RecordEvent.KeepTalking) }) {
             Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
-                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                Button(onClick = { onEvent(RecordEvent.KeepTalking) }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).height(54.dp)) { Text(stringResource(R.string.keep_talking)) }
+                Text(stringResource(R.string.discard_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
+                Button(onClick = { onEvent(RecordEvent.KeepTalking) }, modifier = Modifier.padding(top = 12.dp).fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.keep_talking)) }
                 TextButton(onClick = { onEvent(RecordEvent.ConfirmDiscard) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.discard)) }
             }
         }
     }
 }
 
+/** Remembers the 30 s slot in which recording last resumed, so that slot is announced as "resumed", not "started". */
+private class ResumeTracker(var phase: RecordPhase) {
+    var resumedSlot = -1L
+
+    fun update(next: RecordPhase, slot: Long): Long {
+        if (next != phase) {
+            if (phase == RecordPhase.PAUSED && next == RecordPhase.RECORDING) resumedSlot = slot
+            phase = next
+        }
+        return resumedSlot
+    }
+}
+
+/**
+ * The one stable live region for S09 (design-system §10.4). Phase branches are recreated on every change, so their
+ * own live regions are never read; this node stays and only its description changes: "Recording started", elapsed
+ * time every 30 s, "Recording paused", "Recording resumed", and think time every 10 s.
+ */
+@Composable
+private fun RecordAnnouncer(state: RecordUiState) {
+    val slot = state.elapsedMs / 30_000
+    val tracker = remember { ResumeTracker(state.phase) }
+    val resumedSlot = tracker.update(state.phase, slot)
+    val thinkSlot = (state.thinkLeft + 9) / 10 * 10
+    val text = when (state.phase) {
+        RecordPhase.THINK -> pluralStringResource(R.plurals.think_live, thinkSlot, thinkSlot)
+        RecordPhase.PAUSED -> stringResource(R.string.a11y_rec_paused)
+        RecordPhase.RECORDING -> when {
+            slot == resumedSlot -> stringResource(R.string.a11y_rec_resumed)
+            slot == 0L -> stringResource(R.string.recording_started)
+            else -> stringResource(R.string.recording_live, clock(slot * 30_000), clock(state.capMs))
+        }
+        else -> ""
+    }
+    Spacer(
+        Modifier.fillMaxWidth().height(1.dp).testTag(TAG_RECORD_ANNOUNCER).semantics {
+            liveRegion = LiveRegionMode.Polite
+            if (text.isNotEmpty()) contentDescription = text
+        },
+    )
+}
+
+const val TAG_RECORD_ANNOUNCER = "record_announcer"
+
 @Composable
 private fun TopRow(state: RecordUiState, onEvent: (RecordEvent) -> Unit) {
     val active = state.phase == RecordPhase.RECORDING || state.phase == RecordPhase.PAUSED
-    Row(Modifier.fillMaxWidth().height(52.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = { onEvent(RecordEvent.Close) }) {
             Icon(Icons.Rounded.Close, stringResource(if (active) R.string.close_discard_cd else R.string.close))
         }
@@ -251,8 +303,8 @@ private fun TopRow(state: RecordUiState, onEvent: (RecordEvent) -> Unit) {
             when (state.phase) {
                 RecordPhase.READY -> StatusPill(stringResource(R.string.status_ready)) { HollowDot() }
                 RecordPhase.THINK -> StatusPill(stringResource(R.string.status_think)) { Icon(Icons.Rounded.Psychology, null, Modifier.size(18.dp)) }
-                RecordPhase.RECORDING -> StatusPill(stringResource(R.string.status_recording), live = true) { RecDot() }
-                RecordPhase.PAUSED -> StatusPill(stringResource(R.string.status_paused), live = true) { Icon(Icons.Rounded.Pause, null, Modifier.size(18.dp)) }
+                RecordPhase.RECORDING -> StatusPill(stringResource(R.string.status_recording)) { RecDot() }
+                RecordPhase.PAUSED -> StatusPill(stringResource(R.string.status_paused)) { Icon(Icons.Rounded.Pause, null, Modifier.size(18.dp)) }
                 else -> Unit
             }
         }
@@ -261,13 +313,13 @@ private fun TopRow(state: RecordUiState, onEvent: (RecordEvent) -> Unit) {
 }
 
 @Composable
-private fun StatusPill(text: String, live: Boolean = false, icon: @Composable () -> Unit) {
+private fun StatusPill(text: String, icon: @Composable () -> Unit) {
     Surface(
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surfaceContainerLowest,
         contentColor = MaterialTheme.colorScheme.primary,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = if (live) Modifier.semantics { liveRegion = LiveRegionMode.Polite } else Modifier,
+        modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
             icon()
@@ -369,13 +421,17 @@ private fun ColumnScope.Ready(state: RecordUiState, onEvent: (RecordEvent) -> Un
     if (check != null) LevelCard(check.bars, noisy)
     if (!noisy) {
         VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
-            Row(Modifier.padding(start = 16.dp, end = 12.dp, top = 4.dp, bottom = 4.dp).heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
+            // The whole row is the switch: one TalkBack stop, one big target.
+            Row(
+                Modifier.toggleable(value = state.thinkTime, role = Role.Switch, onValueChange = { onEvent(RecordEvent.SetThinkTime(it)) })
+                    .padding(start = 16.dp, end = 12.dp, top = 4.dp, bottom = 4.dp).heightIn(min = 56.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.think_switch), style = MaterialTheme.typography.labelLarge)
                     Text(stringResource(R.string.think_switch_sub), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                val cd = stringResource(R.string.think_switch)
-                Switch(checked = state.thinkTime, onCheckedChange = { onEvent(RecordEvent.SetThinkTime(it)) }, modifier = Modifier.semantics { contentDescription = cd })
+                Switch(checked = state.thinkTime, onCheckedChange = null)
             }
         }
     }
@@ -395,7 +451,11 @@ private fun ColumnScope.Ready(state: RecordUiState, onEvent: (RecordEvent) -> Un
 @Composable
 private fun LevelCard(bars: Int, noisy: Boolean) {
     VaakCard(modifier = Modifier.fillMaxWidth().padding(top = 14.dp), shape = MaterialTheme.shapes.medium) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp).semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }, verticalAlignment = Alignment.CenterVertically) {
+        // When it's noisy the assertive banner above already says so; a second live region would repeat it.
+        Row(
+            Modifier.padding(horizontal = 14.dp, vertical = 10.dp).semantics(mergeDescendants = true) { if (!noisy) liveRegion = LiveRegionMode.Polite },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Row(Modifier.height(20.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 val heights = listOf(6, 10, 14, 17, 20)
                 heights.forEachIndexed { i, h ->
@@ -428,7 +488,14 @@ private fun ColumnScope.Think(state: RecordUiState, onEvent: (RecordEvent) -> Un
     val track = VaakTheme.colors.track
     val accent = VaakTheme.colors.accent
     val fraction = state.thinkLeft / 30f
-    Box(Modifier.padding(top = 22.dp).size(150.dp).align(Alignment.CenterHorizontally), contentAlignment = Alignment.Center) {
+    // Capped like timerStyle(): the clock must stay inside its 150 dp ring at 200% font scale.
+    val fontScale = LocalDensity.current.fontScale
+    val clockSize = 48f * minOf(fontScale, 1.3f) / fontScale
+    Box(
+        Modifier.padding(top = 22.dp).size(150.dp).align(Alignment.CenterHorizontally)
+            .semantics(mergeDescendants = true) { progressBarRangeInfo = ProgressBarRangeInfo(fraction.coerceIn(0f, 1f), 0f..1f) },
+        contentAlignment = Alignment.Center,
+    ) {
         Canvas(Modifier.size(150.dp)) {
             val stroke = 6.dp.toPx()
             val inset = stroke / 2 + 3.dp.toPx()
@@ -437,15 +504,13 @@ private fun ColumnScope.Think(state: RecordUiState, onEvent: (RecordEvent) -> Un
             drawArc(accent, -90f, 360f * fraction, false, Offset(inset, inset), arcSize, style = Stroke(stroke, cap = StrokeCap.Round))
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(clock(state.thinkLeft * 1000L), style = MaterialTheme.typography.displayMedium.copy(fontSize = 48.sp, lineHeight = 48.sp, fontFamily = FrauncesDisplay))
+            Text(clock(state.thinkLeft * 1000L), style = MaterialTheme.typography.displayMedium.copy(fontSize = clockSize.sp, lineHeight = clockSize.sp, fontFamily = FrauncesDisplay))
             Text(stringResource(R.string.think_left), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
-    val live = pluralStringResource(R.plurals.think_live, state.thinkLeft, state.thinkLeft)
-    Text("", Modifier.semantics { liveRegion = LiveRegionMode.Polite; contentDescription = if (state.thinkLeft % 10 == 0) live else "" })
     Text(stringResource(R.string.think_nudge), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
     Spacer(Modifier.weight(1f).heightIn(min = 32.dp))
-    Button(onClick = { onEvent(RecordEvent.StartNow) }, modifier = Modifier.fillMaxWidth().height(54.dp)) {
+    Button(onClick = { onEvent(RecordEvent.StartNow) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) {
         Icon(Icons.Rounded.Mic, null, tint = VaakTheme.colors.primaryIcon)
         Spacer(Modifier.width(8.dp))
         Text(stringResource(R.string.start_now))
@@ -461,16 +526,11 @@ private fun ColumnScope.Recording(state: RecordUiState, onEvent: (RecordEvent) -
     }
     if (!paused) PromptCard(state, showHint = false)
     val cap = clock(state.capMs)
-    // TalkBack: elapsed time every 30 s (design-system §10).
-    val announce = stringResource(R.string.recording_live, clock(state.elapsedMs / 30_000 * 30_000), cap)
-    val started = stringResource(R.string.recording_started)
-    Text("", Modifier.semantics { liveRegion = LiveRegionMode.Polite; contentDescription = if (state.elapsedMs < 30_000) started else announce })
     Column(Modifier.fillMaxWidth().padding(top = 26.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             clock(state.elapsedMs),
             style = timerStyle(),
             color = if (paused) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.semantics { heading() },
         )
         Text(
             stringResource(if (paused) R.string.timer_of_paused else R.string.timer_of, cap),
@@ -522,7 +582,13 @@ private fun ProgressTrack(elapsedMs: Long, capMs: Long, paused: Boolean) {
     val fillColor by animateColorAsState(if (warm) VaakTheme.colors.accent else brand, label = "fill")
     val fraction = (elapsedMs.toFloat() / capMs).coerceIn(0f, 1f)
     val markers = listOf(60_000L, 120_000L).filter { it < capMs }
-    Column(Modifier.fillMaxWidth().padding(top = 22.dp)) {
+    val progressText = clock(elapsedMs) + " " + stringResource(if (paused) R.string.timer_of_paused else R.string.timer_of, clock(capMs))
+    Column(
+        Modifier.fillMaxWidth().padding(top = 22.dp).semantics(mergeDescendants = true) {
+            progressBarRangeInfo = ProgressBarRangeInfo(fraction, 0f..1f)
+            stateDescription = progressText
+        },
+    ) {
         Canvas(Modifier.fillMaxWidth().height(16.dp).padding(horizontal = 6.dp)) {
             val h = 6.dp.toPx()
             val top = (size.height - h) / 2
@@ -537,7 +603,7 @@ private fun ProgressTrack(elapsedMs: Long, capMs: Long, paused: Boolean) {
             drawCircle(passedColor, 7.dp.toPx(), Offset(hx, size.height / 2))
             drawCircle(brand, 7.dp.toPx(), Offset(hx, size.height / 2), style = Stroke(3.dp.toPx()))
         }
-        BoxWithConstraints(Modifier.fillMaxWidth().height(20.dp).padding(horizontal = 6.dp).semantics { invisibleToUser() }) {
+        BoxWithConstraints(Modifier.fillMaxWidth().heightIn(min = 20.dp).padding(horizontal = 6.dp).semantics { invisibleToUser() }) {
             for (m in markers) {
                 val x = maxWidth * (m.toFloat() / capMs)
                 Text(clock(m), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.offset(x = x - 12.dp, y = 4.dp))
@@ -590,7 +656,7 @@ private fun ColumnScope.TooShort(state: RecordUiState, onEvent: (RecordEvent) ->
         }
     }
     Spacer(Modifier.weight(1f).heightIn(min = 24.dp))
-    Button(onClick = { onEvent(RecordEvent.TryAgain) }, modifier = Modifier.fillMaxWidth().height(54.dp)) {
+    Button(onClick = { onEvent(RecordEvent.TryAgain) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) {
         Icon(Icons.Rounded.Mic, null, tint = VaakTheme.colors.primaryIcon)
         Spacer(Modifier.width(8.dp))
         Text(stringResource(R.string.try_again))
@@ -613,7 +679,7 @@ private fun ColumnScope.Permission(denied: Boolean, onAllow: () -> Unit) {
     CenterState(Icons.Rounded.Mic, stringResource(R.string.perm_title), stringResource(R.string.perm_denied_body), artSize = 88.dp)
     Text(stringResource(R.string.perm_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
     Spacer(Modifier.weight(1f).heightIn(min = 24.dp))
-    Button(onClick = onAllow, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.perm_allow)) }
+    Button(onClick = onAllow, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.perm_allow)) }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -625,16 +691,16 @@ private fun StorageSheetView(state: RecordUiState, onEvent: (RecordEvent) -> Uni
             Box(Modifier.size(44.dp).clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
                 Icon(Icons.Rounded.SdCardAlert, null, tint = MaterialTheme.colorScheme.primary)
             }
-            Text(stringResource(R.string.storage_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 12.dp))
+            Text(stringResource(R.string.storage_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 12.dp).semantics { heading() })
             Text(
                 stringResource(if (block) R.string.storage_block_body else R.string.storage_body, state.availableMb),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
             )
             if (block) {
-                Button(onClick = onOpenStorage, modifier = Modifier.fillMaxWidth().height(54.dp)) { Text(stringResource(R.string.open_storage)) }
+                Button(onClick = onOpenStorage, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) { Text(stringResource(R.string.open_storage)) }
                 TextButton(onClick = { onEvent(RecordEvent.DismissStorage) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.close)) }
             } else {
-                Button(onClick = { onEvent(RecordEvent.RecordAnyway) }, modifier = Modifier.fillMaxWidth().height(54.dp)) {
+                Button(onClick = { onEvent(RecordEvent.RecordAnyway) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp)) {
                     Icon(Icons.Rounded.Mic, null, tint = VaakTheme.colors.primaryIcon)
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.record_anyway))

@@ -21,7 +21,7 @@ class OverridableClockTest {
 
     @Test
     fun debugBuildsCanShiftTimeAndZone() {
-        val clock = OverridableClock(prefs("debug_a"), overridesAllowed = true) { real }
+        val clock = OverridableClock({ prefs("debug_a") }, overridesAllowed = true) { real }
         assertThat(clock.isOverridden).isFalse()
         clock.setNow(Instant.parse("2026-11-09T21:29:00Z"))
         assertThat(clock.now()).isEqualTo(Instant.parse("2026-11-09T21:29:00Z"))
@@ -41,7 +41,7 @@ class OverridableClockTest {
     fun releaseBuildsIgnoreAStoredOverride() {
         val p = prefs("debug_b")
         p.edit().putLong("offset_ms", 86_400_000L).putString("zone", "America/New_York").commit()
-        val clock = OverridableClock(p, overridesAllowed = false) { real }
+        val clock = OverridableClock({ p }, overridesAllowed = false) { real }
         assertThat(clock.now()).isEqualTo(real)
         assertThat(clock.zone()).isEqualTo(ZoneId.systemDefault())
         assertThat(clock.isOverridden).isFalse()
@@ -49,6 +49,6 @@ class OverridableClockTest {
 
     @Test(expected = IllegalStateException::class)
     fun releaseBuildsCantWriteAnOverride() {
-        OverridableClock(prefs("debug_c"), overridesAllowed = false) { real }.shiftBy(Duration.ofHours(1))
+        OverridableClock({ prefs("debug_c") }, overridesAllowed = false) { real }.shiftBy(Duration.ofHours(1))
     }
 }

@@ -1,6 +1,13 @@
 package com.vaak.app.feature.habit
 
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.isHeading
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -54,6 +61,12 @@ class StreakSheetTest {
         show(h)
         exists("12-day streak")
         exists("Your best: 12 days")
+        // The ring is a progress bar for TalkBack in the sheet.
+        compose.onNodeWithTag(TAG_STREAK_RING)
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Weekly goal 4 of 5 days"))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ProgressBarRangeInfo, ProgressBarRangeInfo(4f, 0f..5f, steps = 4)))
+        compose.onNode(hasText("Freezes") and isHeading()).assertExists()
+        compose.onNode(hasText("Weekly goal") and isHeading()).assertExists()
         exists("Freezes")
         exists("2 of 2 held. A missed day uses one for you.")
         exists("Weekly goal")
@@ -101,6 +114,9 @@ class StreakSheetTest {
         exists("REPAIR · 1 OF 2 DONE")
         exists("Revise · 5+ cards")
         exists("A talk · 30 s+")
+        // Done / to do is said in words, not only by the icon and colour.
+        val steps = compose.onAllNodesWithTag(TAG_REPAIR_STEP).fetchSemanticsNodes().map { it.config[SemanticsProperties.StateDescription] }
+        assertThat(steps).containsExactly("Done", "To do").inOrder()
         exists("Do a talk to finish")
         exists("Not today")
         noShaming()
@@ -118,6 +134,13 @@ class StreakSheetTest {
         exists("your best streak, kept")
         exists("128 words")
         exists("learned, all still yours")
+        // The kept tiles read with their values.
+        compose.onNodeWithTag(TAG_KEPT).assert(
+            SemanticsMatcher.expectValue(
+                SemanticsProperties.ContentDescription,
+                listOf("What you keep: 18 days, your best streak, kept. 128 words, learned, all still yours."),
+            ),
+        )
         exists("Want a gentler restart? 3 days a week is a great rhythm.")
         exists("Start Day 1")
         noShaming()

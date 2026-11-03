@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -134,9 +136,9 @@ fun ReminderBody(
             stringResource(R.string.reminder_after_my),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(top = VaakSpace.xl, bottom = VaakSpace.xs),
+            modifier = Modifier.padding(top = VaakSpace.xl, bottom = VaakSpace.xs).semantics { heading() },
         )
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Routine.entries.forEach { routine ->
                 val selected = state.routine == routine
                 FilterChip(
@@ -152,19 +154,24 @@ fun ReminderBody(
         }
         val (t, ampm) = timeParts(state.time)
         val timeA11y = stringResource(R.string.reminder_time_a11y, timeLabel(state.time))
-        Row(Modifier.fillMaxWidth().padding(top = VaakSpace.m), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (state.routine == Routine.CUSTOM) {
-                val label = stringResource(R.string.reminder_custom_label)
-                OutlinedTextField(
-                    value = state.customPhrase,
-                    onValueChange = onCustom,
-                    singleLine = true,
-                    placeholder = { Text(label) },
-                    shape = RoundedCornerShape(14.dp),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    modifier = Modifier.weight(1f).semantics { contentDescription = label },
-                )
-            }
+        if (state.routine == Routine.CUSTOM) {
+            // The custom routine gets its own line, so "at" and the time never squeeze it at large font sizes.
+            val label = stringResource(R.string.reminder_custom_label)
+            OutlinedTextField(
+                value = state.customPhrase,
+                onValueChange = onCustom,
+                singleLine = true,
+                placeholder = { Text(label) },
+                shape = RoundedCornerShape(14.dp),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                modifier = Modifier.fillMaxWidth().padding(top = VaakSpace.m).semantics { contentDescription = label },
+            )
+        }
+        FlowRow(
+            Modifier.fillMaxWidth().padding(top = VaakSpace.m),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            itemVerticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(stringResource(R.string.reminder_at), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
             Row(
                 Modifier.heightIn(min = VaakSpace.touch).clip(MaterialTheme.shapes.medium).clickable(role = Role.Button) { picking = true }
@@ -193,6 +200,7 @@ fun ReminderBody(
                 }) { Text(stringResource(android.R.string.ok)) }
             },
             dismissButton = { TextButton(onClick = { picking = false }) { Text(stringResource(android.R.string.cancel)) } },
+            title = { Text(stringResource(R.string.reminder_time_title)) },
             text = { TimePicker(pickerState) },
         )
     }
@@ -205,7 +213,7 @@ private fun NotificationPreview(reminder: ReminderSettings, time: LocalTime, mod
     VaakCard(modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = a11y }, shape = MaterialTheme.shapes.medium) {
         Row(Modifier.padding(VaakSpace.m), horizontalArrangement = Arrangement.spacedBy(VaakSpace.m)) {
             Box(Modifier.size(28.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
-                Text("V", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimary)
+                CappedFontScale { Text("V", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimary) }
             }
             Column {
                 Text(stringResource(R.string.reminder_preview_header, timeLabel(time)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -227,7 +235,9 @@ fun WeeklyGoalPicker(goal: Int, onGoal: (Int) -> Unit, withSubLabels: Boolean, m
                 shape = SegmentedButtonDefaults.itemShape(i, options.size),
             ) {
                 if (withSubLabels) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Read as "3 days, Easy" rather than "3, Easy".
+                    val a11y = stringResource(R.string.goal_option_a11y, pluralStringResource(R.plurals.goal_days, n, n), stringResource(sub))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clearAndSetSemantics { contentDescription = a11y }) {
                         Text(n.toString(), style = MaterialTheme.typography.titleMedium)
                         Text(stringResource(sub), style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp))
                     }
@@ -303,9 +313,16 @@ fun OemGuideContent(oem: Oem, onOpen: () -> Unit, onDismiss: () -> Unit) {
         Text(stringResource(R.string.oem_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
         Text(stringResource(oem.lead), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = VaakSpace.xs, bottom = VaakSpace.m))
         listOf(oem.step1, oem.step2).forEachIndexed { i, step ->
-            Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.m)) {
-                Box(Modifier.size(28.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
-                    Text((i + 1).toString(), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Row(
+                Modifier.padding(vertical = 6.dp).semantics(mergeDescendants = true) {},
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(VaakSpace.m),
+            ) {
+                Box(
+                    Modifier.sizeIn(minWidth = 28.dp, minHeight = 28.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CappedFontScale { Text((i + 1).toString(), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                 }
                 Text(annotatedResource(step), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
             }

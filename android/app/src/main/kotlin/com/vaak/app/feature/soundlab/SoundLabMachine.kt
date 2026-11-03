@@ -45,7 +45,7 @@ data class PairSession(
 data class SoundLabState(
     val loading: Boolean = true,
     val pairs: List<MinimalPair> = emptyList(),
-    /** Pairs finished in this app session: a quiet "Practised" chip, never a score. */
+    /** Pairs the user has finished (pair ids only, kept by the ViewModel): a quiet "Practised" chip, never a score. */
     val practised: Set<String> = emptySet(),
     val session: PairSession? = null,
 )

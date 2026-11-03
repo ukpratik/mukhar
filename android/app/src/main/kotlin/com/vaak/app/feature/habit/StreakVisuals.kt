@@ -26,21 +26,39 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vaak.app.R
+import com.vaak.app.feature.onboarding.CappedFontScale
 import com.vaak.app.feature.today.DayDot
 import com.vaak.ui.theme.VaakTheme
 
-/** The weekly ring (design `.ring`): 76 dp, 8 dp stroke; turns `glow` when the goal is met. Never red. */
+/**
+ * The weekly ring (design `.ring`): 76 dp, 8 dp stroke; turns `glow` when the goal is met. Never red.
+ * Silent by default (the Today card reads it in its sentence); with [describe] it is a progress bar for TalkBack.
+ */
 @Composable
-fun StreakRing(covered: Int, goal: Int, met: Boolean, modifier: Modifier = Modifier) {
+fun StreakRing(covered: Int, goal: Int, met: Boolean, modifier: Modifier = Modifier, describe: Boolean = false) {
     val track = MaterialTheme.colorScheme.primaryContainer
     val arc = if (met) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
-    Box(modifier.size(76.dp).clearAndSetSemantics {}, contentAlignment = Alignment.Center) {
+    val state = pluralStringResource(R.plurals.streak_ring_state, goal, covered, goal)
+    val semantics = if (describe) {
+        Modifier.clearAndSetSemantics {
+            stateDescription = state
+            progressBarRangeInfo = ProgressBarRangeInfo(covered.coerceIn(0, goal).toFloat(), 0f..goal.toFloat(), steps = (goal - 1).coerceAtLeast(0))
+        }
+    } else {
+        Modifier.clearAndSetSemantics {}
+    }
+    Box(modifier.size(76.dp).testTag(TAG_STREAK_RING).then(semantics), contentAlignment = Alignment.Center) {
         Canvas(Modifier.size(76.dp)) {
             val stroke = 8.dp.toPx()
             val inset = stroke / 2 + 3.dp.toPx()
@@ -49,19 +67,27 @@ fun StreakRing(covered: Int, goal: Int, met: Boolean, modifier: Modifier = Modif
             val sweep = 360f * (covered.toFloat() / goal).coerceIn(0f, 1f)
             if (sweep > 0f) drawArc(arc, -90f, sweep, false, Offset(inset, inset), box, style = Stroke(stroke, cap = StrokeCap.Round))
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                "$covered/$goal",
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp, lineHeight = 20.sp),
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                stringResource(R.string.streak_week).uppercase(),
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 10.sp, fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 3.dp),
-            )
+        // The ring is a fixed 76 dp graphic: its label scales to 130% at most (the same facts are read out in full).
+        CappedFontScale {
+            RingLabel(covered, goal)
         }
+    }
+}
+
+@Composable
+private fun RingLabel(covered: Int, goal: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            "$covered/$goal",
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp, lineHeight = 20.sp),
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            stringResource(R.string.streak_week).uppercase(),
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 10.sp, fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 3.dp),
+        )
     }
 }
 
@@ -108,3 +134,5 @@ private fun Dot(dot: DayDot) {
         DayDot.EMPTY -> Box(Modifier.size(22.dp).border(1.5.dp, VaakTheme.colors.lineStrong, CircleShape))
     }
 }
+
+const val TAG_STREAK_RING = "streak_ring"

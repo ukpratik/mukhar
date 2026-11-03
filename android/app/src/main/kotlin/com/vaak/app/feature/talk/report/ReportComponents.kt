@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
@@ -71,9 +72,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -82,16 +91,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.vaak.app.R
 import com.vaak.app.feature.talk.common.clock
 import com.vaak.domain.feedback.UpgradedWord
 import com.vaak.domain.metrics.WpmBand
 import com.vaak.domain.model.Lang
+import com.vaak.ui.text.mixedScript
 import com.vaak.ui.theme.NotoDeva
 import com.vaak.ui.theme.TileShape
 import com.vaak.ui.theme.VaakCard
@@ -115,7 +127,9 @@ fun metricLabel(kind: MetricKind): String = stringResource(
 fun MetricsGrid(tiles: List<MetricTileUi>, onInfo: (MetricKind) -> Unit, modifier: Modifier = Modifier) {
     val oneColumn = LocalDensity.current.fontScale > 1.5f
     val metricsCd = stringResource(R.string.metrics_cd)
-    Column(modifier.fillMaxWidth().semantics { contentDescription = metricsCd }, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        // Heading navigation lands here; nothing is drawn.
+        Spacer(Modifier.fillMaxWidth().height(1.dp).semantics { heading(); contentDescription = metricsCd })
         val rows = mutableListOf<List<MetricTileUi>>()
         var pending = mutableListOf<MetricTileUi>()
         for (t in tiles) {
@@ -140,6 +154,7 @@ fun MetricsGrid(tiles: List<MetricTileUi>, onInfo: (MetricKind) -> Unit, modifie
 @Composable
 private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: Modifier) {
     val label = metricLabel(t.kind)
+    val spoken = metricSpoken(t, label)
     if (t.off) {
         val dash = VaakTheme.colors.lineStrong
         Column(
@@ -152,7 +167,8 @@ private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: 
                         cornerRadius = CornerRadius(18.dp.toPx()),
                     )
                 }
-                .padding(horizontal = 14.dp, vertical = 12.dp),
+                .padding(horizontal = 14.dp, vertical = 12.dp)
+                .semantics(mergeDescendants = true) { contentDescription = spoken },
         ) {
             Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(stringResource(R.string.not_scored), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp))
@@ -160,13 +176,44 @@ private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: 
         return
     }
     VaakCard(modifier = modifier, shape = TileShape) {
-        Column(Modifier.padding(start = 14.dp, end = 4.dp, top = 2.dp, bottom = 12.dp)) {
+        Column(Modifier.padding(start = 14.dp, end = 4.dp, top = 2.dp, bottom = 12.dp).semantics(mergeDescendants = true) { contentDescription = spoken }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                IconButton(onClick = { onInfo(t.kind) }) {
+                // A real 48 dp box: the tile's clip would cut M3's expanded touch area at the card edge (NFR-008).
+                IconButton(onClick = { onInfo(t.kind) }, modifier = Modifier.size(48.dp)) {
                     Icon(Icons.Rounded.Info, stringResource(R.string.about_metric_cd, label), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                 }
             }
+            MetricBody(t)
+        }
+    }
+}
+
+/**
+ * What TalkBack reads for a tile ("Pace. 142 words per minute. Comfortable band."): the tile's description
+ * replaces its separate texts, and the ⓘ button stays its own stop.
+ */
+@Composable
+private fun metricSpoken(t: MetricTileUi, label: String): String {
+    if (t.off) return stringResource(R.string.a11y_metric_pair, label, stringResource(R.string.not_scored))
+    if (t.locked) return stringResource(R.string.a11y_metric_pair, label, stringResource(R.string.variety_locked))
+    val unit = when (t.unit) {
+        MetricUnit.WPM -> stringResource(R.string.a11y_unit_wpm)
+        null -> null
+        else -> stringResource(R.string.a11y_unit_per_min)
+    }
+    val value = listOfNotNull(t.value, unit).joinToString(" ")
+    val delta = t.delta?.let { deltaContent(it).second }
+    val better = if (t.good && t.delta != null && t.delta !is MetricDelta.Band && t.delta != MetricDelta.HindiProvisional) {
+        stringResource(R.string.a11y_metric_better)
+    } else {
+        null
+    }
+    return listOfNotNull(label, value.ifEmpty { null }, delta, better).joinToString(". ")
+}
+
+@Composable
+private fun MetricBody(t: MetricTileUi) {
             if (t.locked) {
                 Text(stringResource(R.string.variety_locked), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -183,8 +230,6 @@ private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: 
             }
             t.bandPosition?.let { PaceBand(it, Modifier.padding(top = 8.dp, end = 10.dp)) }
             t.delta?.let { DeltaRow(it, t.good) }
-        }
-    }
 }
 
 /** `.band`: slow · comfortable · fast with an indigo marker (custom Canvas). */
@@ -206,7 +251,18 @@ fun PaceBand(position: Float, modifier: Modifier = Modifier) {
 
 @Composable
 private fun DeltaRow(delta: MetricDelta, good: Boolean) {
-    val (icon, text) = when (delta) {
+    val (icon, text) = deltaContent(delta)
+    val color = if (good) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant
+    Row(Modifier.padding(top = 3.dp, end = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, tint = color, modifier = Modifier.size(15.dp))
+        Spacer(Modifier.width(3.dp))
+        Text(text, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = color)
+    }
+}
+
+@Composable
+private fun deltaContent(delta: MetricDelta): Pair<ImageVector, String> {
+    return when (delta) {
         is MetricDelta.Band -> {
             val band = stringResource(
                 when (delta.band) {
@@ -225,12 +281,6 @@ private fun DeltaRow(delta: MetricDelta, good: Boolean) {
         is MetricDelta.VarietyDown -> Icons.Rounded.ArrowDownward to stringResource(R.string.delta_variety_down, delta.from)
         MetricDelta.HindiProvisional -> Icons.Rounded.Science to stringResource(R.string.variety_hi)
     }
-    val color = if (good) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant
-    Row(Modifier.padding(top = 3.dp, end = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, tint = color, modifier = Modifier.size(15.dp))
-        Spacer(Modifier.width(3.dp))
-        Text(text, style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = color)
-    }
 }
 
 /** Body text style by the talk's language (design-system §9.2: Hindi content uses the `hi*` styles). */
@@ -240,10 +290,14 @@ fun transcriptStyle(lang: Lang): TextStyle = if (lang == Lang.HI) VaakTheme.type
 @Composable
 fun feedbackStyle(lang: Lang): TextStyle = if (lang == Lang.HI) VaakTheme.type.hiBodyMedium else MaterialTheme.typography.bodyMedium
 
+/** The superscript "?" after an unsure word: the non-colour marker (design-system §10.3). */
+private val UnsureMark = SpanStyle(baselineShift = BaselineShift.Superscript, fontSize = 0.7.em, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Bold)
+
 /**
  * Transcript paragraph as plain `SpanStyle`s (R1): filler = accent tint + bold + solid underline in accent-ink,
- * repeat = brand-2 + underline, unsure = faint (+ italic for Latin), glow/grow quotes = background highlights.
- * Spans are whole tokens, so nukta and ZWJ clusters are never split.
+ * repeat = brand-2 + underline, unsure = faint + a superscript "?" (+ italic for Latin), glow quote = green
+ * highlight, grow quote = indigo highlight + underline. Spans are whole tokens, so nukta and ZWJ clusters are
+ * never split.
  */
 @Composable
 fun transcriptText(tokens: List<TokenUi>, range: IntRange, lang: Lang): AnnotatedString {
@@ -263,21 +317,50 @@ fun transcriptText(tokens: List<TokenUi>, range: IntRange, lang: Lang): Annotate
                     // Keep the quote highlight continuous across the space between two quoted words.
                     when {
                         inGlow -> withStyle(SpanStyle(background = glowMark)) { append(' ') }
-                        inGrow -> withStyle(SpanStyle(background = growMark)) { append(' ') }
+                        inGrow -> withStyle(SpanStyle(background = growMark, textDecoration = TextDecoration.Underline)) { append(' ') }
                         else -> append(' ')
                     }
                 }
                 var style = SpanStyle()
                 if (t.glow) style = style.merge(SpanStyle(background = glowMark))
-                if (t.grow) style = style.merge(SpanStyle(background = growMark))
+                if (t.grow) style = style.merge(SpanStyle(background = growMark, textDecoration = TextDecoration.Underline))
                 if (t.unsure) style = style.merge(SpanStyle(color = faint, fontStyle = if (lang == Lang.HI) FontStyle.Normal else FontStyle.Italic))
                 if (t.repeat) style = style.merge(SpanStyle(color = repeat, textDecoration = TextDecoration.Underline))
                 if (t.filler) {
                     style = style.merge(SpanStyle(background = accentTint, color = accentInk, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline))
                 }
-                withStyle(style) { append(t.text) }
+                withStyle(style) {
+                    append(t.text)
+                    if (t.unsure) withStyle(UnsureMark) { append('?') }
+                }
             }
         }
+    }
+}
+
+/** The words TalkBack reads in place of the colours: "(filler)", "(repeat)", "(unsure)", and where a quote starts. */
+data class TranscriptMarks(val filler: String, val repeat: String, val unsure: String, val glow: String, val grow: String)
+
+@Composable
+fun transcriptMarks() = TranscriptMarks(
+    filler = stringResource(R.string.a11y_tx_filler),
+    repeat = stringResource(R.string.a11y_tx_repeat),
+    unsure = stringResource(R.string.a11y_tx_unsure),
+    glow = stringResource(R.string.a11y_tx_glow),
+    grow = stringResource(R.string.a11y_tx_grow),
+)
+
+/** Spoken transcript paragraph; Devanagari runs carry `localeList = hi` so TalkBack switches to a Hindi voice. */
+fun transcriptA11yText(tokens: List<TokenUi>, range: IntRange, lang: Lang, marks: TranscriptMarks): AnnotatedString = buildAnnotatedString {
+    for (i in range) {
+        val t = tokens[i]
+        if (i > range.first) append(' ')
+        if (t.glow && (i == range.first || !tokens[i - 1].glow)) append(marks.glow).also { append(' ') }
+        if (t.grow && (i == range.first || !tokens[i - 1].grow)) append(marks.grow).also { append(' ') }
+        if (lang == Lang.HI) append(mixedScript(t.text)) else append(t.text)
+        if (t.filler) append(' ').append(marks.filler)
+        if (t.repeat) append(' ').append(marks.repeat)
+        if (t.unsure) append(' ').append(marks.unsure)
     }
 }
 
@@ -287,9 +370,9 @@ fun TranscriptLegend(t: TranscriptUi, lang: Lang) {
     val accentTint = VaakTheme.colors.accentTint
     val accentInk = VaakTheme.colors.accentInk
     @Composable
-    fun item(sample: String, label: String, style: SpanStyle) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(AnnotatedString(sample, style), style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp))
+    fun item(sample: AnnotatedString, label: String) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.semantics(mergeDescendants = true) {}) {
+            Text(sample, style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp), modifier = Modifier.clearAndSetSemantics {})
             Spacer(Modifier.width(6.dp))
             Text(label, style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp, fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -297,23 +380,39 @@ fun TranscriptLegend(t: TranscriptUi, lang: Lang) {
     FlowRow(Modifier.padding(start = 2.dp, end = 2.dp, bottom = 10.dp), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (t.hasFiller) {
             val sample = stringResource(if (lang == Lang.HI) R.string.legend_sample_filler_hi else R.string.legend_sample_filler)
-            item(sample, stringResource(R.string.legend_filler), SpanStyle(background = accentTint, color = accentInk, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline))
+            item(AnnotatedString(sample, SpanStyle(background = accentTint, color = accentInk, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)), stringResource(R.string.legend_filler))
         }
-        if (t.hasRepeat) item(stringResource(R.string.legend_sample_repeat), stringResource(R.string.legend_repeat), SpanStyle(color = MaterialTheme.colorScheme.secondary, textDecoration = TextDecoration.Underline))
-        if (t.hasUnsure) item(stringResource(R.string.legend_sample_unsure), stringResource(R.string.legend_unsure), SpanStyle(color = VaakTheme.colors.faint, fontStyle = FontStyle.Italic))
-        if (t.hasGlow) item(stringResource(R.string.legend_sample_quote), stringResource(R.string.legend_glow), SpanStyle(background = VaakTheme.colors.glowMark))
-        if (t.hasGrow) item(stringResource(R.string.legend_sample_quote), stringResource(R.string.legend_grow), SpanStyle(background = MaterialTheme.colorScheme.primaryContainer))
+        if (t.hasRepeat) item(AnnotatedString(stringResource(R.string.legend_sample_repeat), SpanStyle(color = MaterialTheme.colorScheme.secondary, textDecoration = TextDecoration.Underline)), stringResource(R.string.legend_repeat))
+        if (t.hasUnsure) {
+            val faint = VaakTheme.colors.faint
+            val sample = stringResource(R.string.legend_sample_unsure)
+            val unsure = buildAnnotatedString {
+                withStyle(SpanStyle(color = faint, fontStyle = if (lang == Lang.HI) FontStyle.Normal else FontStyle.Italic)) {
+                    append(sample)
+                    withStyle(UnsureMark) { append('?') }
+                }
+            }
+            item(unsure, stringResource(R.string.legend_unsure))
+        }
+        if (t.hasGlow) item(AnnotatedString(stringResource(R.string.legend_sample_quote), SpanStyle(background = VaakTheme.colors.glowMark)), stringResource(R.string.legend_glow))
+        if (t.hasGrow) {
+            item(AnnotatedString(stringResource(R.string.legend_sample_quote), SpanStyle(background = MaterialTheme.colorScheme.primaryContainer, textDecoration = TextDecoration.Underline)), stringResource(R.string.legend_grow))
+        }
     }
 }
 
 @Composable
 fun TranscriptCard(t: TranscriptUi, lang: Lang, expanded: Boolean, modifier: Modifier = Modifier) {
     val visible = if (expanded) t.paragraphs else t.paragraphs.take(ReportMapper.COLLAPSED_PARAGRAPHS)
-    val cd = stringResource(R.string.transcript_cd)
-    VaakCard(modifier = modifier.fillMaxWidth().semantics { contentDescription = cd }) {
+    val marks = transcriptMarks()
+    VaakCard(modifier = modifier.fillMaxWidth()) {
         Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp)) {
             for (p in visible) {
-                Text(transcriptText(t.tokens, p, lang), style = transcriptStyle(lang), color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(bottom = 10.dp))
+                val spoken = remember(t.tokens, p, lang, marks) { transcriptA11yText(t.tokens, p, lang, marks) }
+                Text(
+                    transcriptText(t.tokens, p, lang), style = transcriptStyle(lang), color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(bottom = 10.dp).clearAndSetSemantics { text = spoken },
+                )
             }
         }
     }
@@ -328,14 +427,22 @@ fun transcriptRange(t: TranscriptUi, expanded: Boolean): Pair<String, String> {
 /** `.tag` pill on a glow or grow card; Hindi talks get a Devanagari subtitle (section chrome stays English in R1). */
 @Composable
 private fun FeedbackTag(icon: ImageVector, english: String, short: String, hindi: String, lang: Lang, container: Color, content: Color) {
-    Surface(shape = CircleShape, color = container, contentColor = content) {
+    val spoken = if (lang == Lang.HI) {
+        buildAnnotatedString {
+            append("$short · ")
+            append(mixedScript(hindi))
+        }
+    } else {
+        AnnotatedString(english)
+    }
+    Surface(shape = CircleShape, color = container, contentColor = content, modifier = Modifier.clearAndSetSemantics { heading(); text = spoken }) {
         Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, null, Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
             val tagStyle = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = 0.72.sp)
             if (lang == Lang.HI) {
                 Text("${short.uppercase()} · ", style = tagStyle)
-                Text(hindi, style = tagStyle.copy(fontFamily = NotoDeva, fontWeight = FontWeight.SemiBold, letterSpacing = 0.sp))
+                Text(mixedScript(hindi), style = tagStyle.copy(fontFamily = NotoDeva, fontWeight = FontWeight.SemiBold, letterSpacing = 0.sp))
             } else {
                 Text(english.uppercase(), style = tagStyle)
             }
@@ -347,13 +454,18 @@ private fun FeedbackTag(icon: ImageVector, english: String, short: String, hindi
 private fun Quote(text: String, lang: Lang, onClick: (() -> Unit)?) {
     val line = VaakTheme.colors.line
     val style = if (lang == Lang.HI) VaakTheme.type.hiBodyMedium.copy(fontSize = 16.sp) else VaakTheme.type.quote
+    val showInTranscript = stringResource(R.string.a11y_show_in_transcript)
+    val quoted = "“${text.trim().trimEnd(',')}”"
     Text(
-        "“${text.trim().trimEnd(',')}”",
+        if (lang == Lang.HI) mixedScript(quoted) else AnnotatedString(quoted),
         style = style,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
-            .padding(top = 12.dp, bottom = 10.dp)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .padding(top = 4.dp, bottom = 2.dp)
+            .then(if (onClick != null) Modifier.clickable(onClickLabel = showInTranscript, role = Role.Button, onClick = onClick) else Modifier)
+            // The tap area includes the spacing around the quote, so it is at least 48 dp tall.
+            .heightIn(min = 48.dp)
+            .padding(vertical = 8.dp)
             .drawBehind { drawRect(line, size = Size(2.dp.toPx(), size.height)) }
             .padding(start = 12.dp),
     )
@@ -386,7 +498,10 @@ fun GlowCard(g: GlowUi, lang: Lang, onQuoteTap: () -> Unit) {
 fun GrowCard(g: GrowUi, lang: Lang, onQuoteTap: () -> Unit, tagOverride: String? = null) {
     StripeCard(MaterialTheme.colorScheme.primary) {
         if (tagOverride != null) {
-            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.primary) {
+            Surface(
+                shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clearAndSetSemantics { heading(); text = AnnotatedString(tagOverride) },
+            ) {
                 Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Rounded.NorthEast, null, Modifier.size(16.dp))
                     Spacer(Modifier.width(6.dp))
@@ -406,15 +521,37 @@ fun GrowCard(g: GrowUi, lang: Lang, onQuoteTap: () -> Unit, tagOverride: String?
         } else {
             MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = 0.72.sp)
         }
+        val stack = LocalDensity.current.fontScale > 1.5f
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row {
-                Text(stringResource(if (lang == Lang.HI) R.string.why_hi else R.string.why).let { if (lang == Lang.HI) it else it.uppercase() }, style = labelStyle, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(44.dp).padding(top = 3.dp))
+            WhyHowRow(stringResource(if (lang == Lang.HI) R.string.why_hi else R.string.why), lang, labelStyle, stack) {
                 Text(g.why, style = feedbackStyle(lang), color = MaterialTheme.colorScheme.onSurface)
             }
-            Row {
-                Text(stringResource(if (lang == Lang.HI) R.string.how_hi else R.string.how).let { if (lang == Lang.HI) it else it.uppercase() }, style = labelStyle, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(44.dp).padding(top = 3.dp))
+            WhyHowRow(stringResource(if (lang == Lang.HI) R.string.how_hi else R.string.how), lang, labelStyle, stack) {
                 Text(tryText(g.how), style = feedbackStyle(lang), color = MaterialTheme.colorScheme.onSurface)
             }
+        }
+    }
+}
+
+/** One Why/How line read as one TalkBack stop; the label stacks above the text past 1.5× font scale. */
+@Composable
+private fun WhyHowRow(label: String, lang: Lang, labelStyle: TextStyle, stack: Boolean, body: @Composable () -> Unit) {
+    val shown = if (lang == Lang.HI) mixedScript(label) else AnnotatedString(label.uppercase())
+    val labelText = @Composable {
+        Text(
+            shown, style = labelStyle, color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = if (stack) Modifier else Modifier.widthIn(min = 44.dp).padding(top = 3.dp, end = 4.dp),
+        )
+    }
+    if (stack) {
+        Column(Modifier.semantics(mergeDescendants = true) {}) {
+            labelText()
+            body()
+        }
+    } else {
+        Row(Modifier.semantics(mergeDescendants = true) {}) {
+            labelText()
+            body()
         }
     }
 }
@@ -477,9 +614,15 @@ fun BetterRow(
     }
     val unplaced = b.words.filter { b.rewrite.indexOf(it.word, ignoreCase = true) < 0 }
     val deva = lang == Lang.HI
+    val wasSpoken = mixedScript(stringResource(R.string.a11y_you_said, b.quote.trim().trimEnd(',')))
+    val nowSpoken = mixedScript(stringResource(R.string.a11y_try_instead, b.rewrite))
+    val wordActions = b.words.map { w ->
+        val label = stringResource(if (collected(w)) R.string.added_word_cd else R.string.add_word_cd, w.word)
+        CustomAccessibilityAction(label) { onWord(w); true }
+    }
     VaakCard(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp), shape = TileShape) {
         Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp)) {
-            Row {
+            Row(Modifier.clearAndSetSemantics { text = wasSpoken }) {
                 Icon(Icons.Rounded.FormatQuote, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp).padding(top = 2.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(
@@ -492,11 +635,16 @@ fun BetterRow(
                 now,
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.5.sp, fontWeight = FontWeight.SemiBold, lineHeight = if (deva) 31.sp else 29.sp, fontFamily = if (deva) NotoDeva else MaterialTheme.typography.bodyLarge.fontFamily),
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top = 6.dp),
+                // Upgraded words are custom actions here, so the TalkBack actions menu adds them one by one.
+                modifier = Modifier.padding(top = 6.dp).clearAndSetSemantics { text = nowSpoken; customActions = wordActions },
             )
             for (w in unplaced) {
                 val added = collected(w)
-                TextButton(onClick = { onWord(w) }) { Text(w.word + if (added) " ✓" else " +") }
+                val cd = stringResource(if (added) R.string.added_word_cd else R.string.add_word_cd, w.word)
+                TextButton(
+                    onClick = { onWord(w) },
+                    modifier = Modifier.semantics { contentDescription = cd; toggleableState = ToggleableState(added) },
+                ) { Text(w.word + if (added) " ✓" else " +") }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 val color = if (saved) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary
@@ -551,7 +699,7 @@ private fun RateButton(value: Int, selected: Int?, icon: ImageVector, filled: Im
 @Composable
 fun ReportLink(onClick: () -> Unit) {
     Row(
-        Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(onClick = onClick).padding(horizontal = 4.dp),
+        Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button, onClick = onClick).padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(Icons.Rounded.Flag, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
@@ -577,7 +725,7 @@ fun ReportSheet(onDismiss: () -> Unit, onSend: (ReportReason, Boolean, String) -
     var consent by rememberSaveable { mutableStateOf(false) }
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
-            Text(stringResource(R.string.report_sheet_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.report_sheet_title), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
             Text(stringResource(R.string.report_lead), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp, bottom = 12.dp))
             val reasonCd = stringResource(R.string.report_reason_cd)
             Column(Modifier.selectableGroup().semantics { contentDescription = reasonCd }) {
@@ -619,7 +767,7 @@ fun ReportSheet(onDismiss: () -> Unit, onSend: (ReportReason, Boolean, String) -
             Button(
                 onClick = { reason?.let { onSend(it, consent, note) } },
                 enabled = reason != null,
-                modifier = Modifier.fillMaxWidth().height(54.dp).padding(top = 6.dp),
+                modifier = Modifier.padding(top = 6.dp).fillMaxWidth().heightIn(min = 54.dp),
             ) { Text(stringResource(R.string.send_report)) }
             TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancel)) }
         }
@@ -641,7 +789,7 @@ fun MetricInfoSheet(kind: MetricKind, onDismiss: () -> Unit) {
     )
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
-            Text(metricLabel(kind), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            Text(metricLabel(kind), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
             Text(text, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 8.dp))
             Text(stringResource(R.string.info_compare), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 8.dp))
             TextButton(onClick = onDismiss, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }

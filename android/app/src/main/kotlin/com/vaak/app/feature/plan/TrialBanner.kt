@@ -6,6 +6,8 @@ import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,6 +54,7 @@ data class TrialBannerUi(val expiry: LocalDate, val today: LocalDate, val price:
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TrialBanner(banner: TrialBannerUi, onKeep: () -> Unit, onManage: () -> Unit, modifier: Modifier = Modifier) {
     val date = shortDate(banner.expiry)
@@ -75,7 +78,7 @@ fun TrialBanner(banner: TrialBannerUi, onKeep: () -> Unit, onManage: () -> Unit,
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp), color = MaterialTheme.colorScheme.onSurface)
             Text(body, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(end = 8.dp))
-            Row {
+            FlowRow {
                 TextButton(onClick = onKeep) { Text(stringResource(R.string.trial_keep)) }
                 val manage = stringResource(R.string.trial_manage_a11y)
                 TextButton(onClick = onManage, modifier = Modifier.semantics { contentDescription = manage }) {

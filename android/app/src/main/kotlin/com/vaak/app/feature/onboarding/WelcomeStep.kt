@@ -39,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -56,11 +58,14 @@ import com.vaak.ui.theme.VaakTheme
 fun WelcomeBody(yearText: String, yearValid: Boolean, onYearChange: (String) -> Unit, onContinue: () -> Unit) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(VaakSpace.m)) {
+            // The logo tile is decoration (the brand name is read next to it); its letter scales to 130% at most.
             Box(
-                Modifier.size(48.dp).clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.primary),
+                Modifier.size(48.dp).clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.primary).clearAndSetSemantics {},
                 contentAlignment = Alignment.Center,
             ) {
-                Text("V", style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp), color = MaterialTheme.colorScheme.onPrimary)
+                CappedFontScale {
+                    Text("V", style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp), color = MaterialTheme.colorScheme.onPrimary)
+                }
                 Box(Modifier.align(Alignment.TopEnd).offset(x = (-9).dp, y = 9.dp).size(8.dp).clip(CircleShape).background(VaakTheme.colors.accent))
             }
             Column {
@@ -88,11 +93,13 @@ fun WelcomeBody(yearText: String, yearValid: Boolean, onYearChange: (String) -> 
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 10.dp).semantics { heading() },
                 )
+                val ageLabel = stringResource(R.string.age_label)
+                // The visible label is read as the field's name, not as a separate stop.
                 Text(
-                    stringResource(R.string.age_label),
+                    ageLabel,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 2.dp, bottom = 6.dp),
+                    modifier = Modifier.padding(start = 2.dp, bottom = 6.dp).clearAndSetSemantics {},
                 )
                 OutlinedTextField(
                     value = yearText,
@@ -104,7 +111,7 @@ fun WelcomeBody(yearText: String, yearValid: Boolean, onYearChange: (String) -> 
                     shape = RoundedCornerShape(14.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { if (yearValid) onContinue() }),
-                    modifier = Modifier.fillMaxWidth().testTag(TAG_YEAR),
+                    modifier = Modifier.fillMaxWidth().semantics { contentDescription = ageLabel }.testTag(TAG_YEAR),
                 )
                 Row(Modifier.padding(top = 6.dp, start = 2.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Icon(Icons.Outlined.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(17.dp))
@@ -165,7 +172,12 @@ fun BlockedCta(onClose: () -> Unit) {
     if (why) {
         ModalBottomSheet(onDismissRequest = { why = false }) {
             Column(Modifier.padding(start = VaakSpace.gutter, end = VaakSpace.gutter, bottom = VaakSpace.xxl)) {
-                Text(stringResource(R.string.blocked_why), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    stringResource(R.string.blocked_why),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.semantics { heading() },
+                )
                 Text(
                     stringResource(R.string.blocked_why_body),
                     style = MaterialTheme.typography.bodySmall,

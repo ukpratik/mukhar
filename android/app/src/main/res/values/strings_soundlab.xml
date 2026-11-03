@@ -57,7 +57,6 @@
     <string name="soundlab_recorded_voice_hi">Recorded voice, hi-IN</string>
     <string name="soundlab_take_meta">%1$s · just now</string>
     <string name="soundlab_record">Record</string>
-    <string name="soundlab_stop">Stop</string>
     <string name="soundlab_record_again">Record again</string>
     <string name="soundlab_recording">Recording · %1$s</string>
     <string name="soundlab_retry">Didn\'t catch that. Try once more, a little closer to the mic.</string>

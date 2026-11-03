@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vaak.data.audio.Recorder
 import com.vaak.data.audio.RecorderState
+import com.vaak.data.prefs.SettingsStore
 import com.vaak.data.tts.Speaker
 import com.vaak.domain.model.Lang
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +57,8 @@ sealed interface SoundLabAction {
 
 /**
  * S22 Sound Lab lite (US-070). Runs [SoundLabMachine] and its side effects: clip playback, the user's take with the
- * app's [Recorder] (≤ 3 s, kept in the cache, never uploaded or scored, deleted when the pair is left).
+ * app's [Recorder] (≤ 3 s, kept in the cache, never uploaded or scored, deleted when the pair is left). Finished pair
+ * ids (only the ids: no audio, no score) are kept in the `settings` DataStore for the "Practised" chip.
  */
 @HiltViewModel
 class SoundLabViewModel @Inject constructor(
@@ -64,11 +66,11 @@ class SoundLabViewModel @Inject constructor(
     private val player: ClipPlayer,
     private val recorder: Recorder,
     private val files: SoundLabFiles,
-    private val practised: PractisedPairs,
+    private val settings: SettingsStore,
     speaker: Speaker,
 ) : ViewModel() {
     private val machine = SoundLabMachine()
-    private val _state = MutableStateFlow(SoundLabUiState(lab = SoundLabState(practised = practised.ids.value)))
+    private val _state = MutableStateFlow(SoundLabUiState())
     val state: StateFlow<SoundLabUiState> = _state.asStateFlow()
     private var recording: Job? = null
     private var sequence: Job? = null
@@ -78,6 +80,9 @@ class SoundLabViewModel @Inject constructor(
         files.clear() // takes left by a process death
         viewModelScope.launch { player.playing.collect { k -> _state.update { it.copy(playing = k) } } }
         viewModelScope.launch { speaker.voices.collect { v -> _state.update { it.copy(voices = v) } } }
+        viewModelScope.launch {
+            settings.soundLabPractised.collect { ids -> _state.update { it.copy(lab = it.lab.copy(practised = it.lab.practised + ids)) } }
+        }
         viewModelScope.launch {
             runCatching { source.load() }
                 .onSuccess { loaded ->
@@ -104,10 +109,11 @@ class SoundLabViewModel @Inject constructor(
 
     private fun onLab(e: LabEvent) {
         val leaving = e == LabEvent.Back || e == LabEvent.Done
+        val finished = if (e == LabEvent.Done) session()?.pair?.id else null
         if (leaving || e == LabEvent.NextClip || e == LabEvent.TestMyEar || e == LabEvent.RecordAgain) stopAudio()
         if (leaving || e == LabEvent.RecordAgain) cancelRecording()
         dispatch(e)
-        if (e == LabEvent.Done) practised.ids.value = _state.value.lab.practised
+        if (finished != null) viewModelScope.launch { settings.markSoundLabPractised(finished) }
     }
 
     /** Applies [e] and deletes a take file the new state no longer holds. */

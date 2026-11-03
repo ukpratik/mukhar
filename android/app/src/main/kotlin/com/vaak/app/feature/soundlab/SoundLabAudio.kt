@@ -131,12 +131,6 @@ class SoundLabFiles(val dir: File) {
     }
 }
 
-/** Pairs finished in this app session ("Practised" chip). In memory only: Sound Lab keeps no history or score. */
-@Singleton
-class PractisedPairs @Inject constructor() {
-    val ids = MutableStateFlow<Set<String>>(emptySet())
-}
-
 /** M6: Sound Lab lite wiring. */
 @Module
 @InstallIn(ViewModelComponent::class)

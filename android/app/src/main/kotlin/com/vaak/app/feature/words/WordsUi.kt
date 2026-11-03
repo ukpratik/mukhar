@@ -7,6 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -130,6 +132,7 @@ fun hearDescription(text: String, lang: Lang): String =
     stringResource(if (lang == Lang.HI) R.string.word_hear_hi_cd else R.string.word_hear_en_cd, text)
 
 /** S14 state 4: shown once per language when no voice is installed. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VoiceTip(lang: Lang, onOpenSettings: () -> Unit, onNotNow: () -> Unit, modifier: Modifier = Modifier) {
     val name = stringResource(if (lang == Lang.HI) R.string.lang_hi else R.string.lang_en)
@@ -144,7 +147,8 @@ fun VoiceTip(lang: Lang, onOpenSettings: () -> Unit, onNotNow: () -> Unit, modif
         Column {
             Text(stringResource(R.string.voice_tip_title, name), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
             Text(stringResource(R.string.voice_tip_body, name), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
-            Row {
+            // The two buttons wrap onto two lines at large text instead of clipping.
+            FlowRow {
                 TextButton(onClick = onOpenSettings) { Text(stringResource(R.string.voice_tip_open)) }
                 TextButton(onClick = onNotNow) { Text(stringResource(R.string.voice_tip_not_now), color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
