@@ -33,19 +33,19 @@ describe("subscriptionsv2 mapping", () => {
 
 describe("Play client HTTP mapping", () => {
   const auth = { accessToken: async () => "tok" };
-  const client = (status: number, body: unknown = {}) => googlePlayClient("com.vaak.app", auth, async () => Response.json(body, { status }));
+  const client = (status: number, body: unknown = {}) => googlePlayClient("io.github.ukpratik.mukhar", auth, async () => Response.json(body, { status }));
 
   it("calls subscriptionsv2 with a bearer token", async () => {
     let url = "";
     let authz = "";
-    const c = googlePlayClient("com.vaak.app", auth, async (input, init) => {
+    const c = googlePlayClient("io.github.ukpratik.mukhar", auth, async (input, init) => {
       const r = new Request(input as RequestInfo, init);
       url = r.url;
       authz = r.headers.get("authorization") ?? "";
       return Response.json(trial);
     });
     expect(await c.getSubscription("tok/en")).toEqual(trial);
-    expect(url).toBe("https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.vaak.app/purchases/subscriptionsv2/tokens/tok%2Fen");
+    expect(url).toBe("https://androidpublisher.googleapis.com/androidpublisher/v3/applications/io.github.ukpratik.mukhar/purchases/subscriptionsv2/tokens/tok%2Fen");
     expect(authz).toBe("Bearer tok");
   });
 

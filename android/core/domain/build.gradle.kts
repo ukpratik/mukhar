@@ -1,6 +1,6 @@
 // Pure Kotlin JVM: stdlib + java.time only (LLD §1). No Android, no I/O.
 plugins {
-    id("vaak.jvm.library")
+    id("mukhar.jvm.library")
 }
 
 dependencies {
@@ -12,5 +12,5 @@ val testVectors = rootProject.layout.projectDirectory.dir("../shared/test-vector
 
 tasks.test {
     inputs.dir(testVectors).withPropertyName("testVectors").withPathSensitivity(PathSensitivity.RELATIVE)
-    systemProperty("vaak.testVectors", testVectors.asFile.absolutePath)
+    systemProperty("mukhar.testVectors", testVectors.asFile.absolutePath)
 }

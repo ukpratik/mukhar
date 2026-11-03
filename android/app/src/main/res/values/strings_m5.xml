@@ -96,7 +96,7 @@
     <string name="quota_fine">Premium: unlimited talks up to 3 min. No charge for 7 days; we remind you a day before.</string>
 
     <!-- S18 Paywall and Plan -->
-    <string name="paywall_bar_title">Vaak Premium</string>
+    <string name="paywall_bar_title">Mukhar Premium</string>
     <string name="paywall_title">Talk as much as you like</string>
     <string name="paywall_lead">Free stays free. Premium removes the daily limit.</string>
     <string name="paywall_incl_talks">Unlimited coached talks, up to 3 min each (fair use: 20 a day)</string>
@@ -120,7 +120,7 @@
     <string name="paywall_tl_charge_sub_year">Only if you don\'t cancel. Renews yearly.</string>
     <string name="paywall_tl_charge_sub_month">Only if you don\'t cancel. Renews monthly.</string>
     <string name="paywall_cancel_title">How to cancel</string>
-    <string name="paywall_cancel_body">Me → Plan → Manage, or Play Store → Payments &amp; subscriptions → Vaak → Cancel. Cancel in the trial and you pay nothing.</string>
+    <string name="paywall_cancel_body">Me → Plan → Manage, or Play Store → Payments &amp; subscriptions → Mukhar → Cancel. Cancel in the trial and you pay nothing.</string>
     <string name="paywall_cta_note_no_trial">You\'ve had a free trial before, so this starts today. Cancel any time in Google Play.</string>
     <string name="paywall_cta_buy_year">Subscribe for %1$s a year</string>
     <string name="paywall_cta_buy_month">Subscribe for %1$s a month</string>
@@ -195,11 +195,11 @@
     <string name="settings_privacy">Privacy policy</string>
     <string name="settings_privacy_sub">Plain-language version first</string>
     <string name="settings_delete">Delete all my data</string>
-    <string name="settings_version">Vaak %1$s · Made in India</string>
+    <string name="settings_version">Mukhar %1$s · Made in India</string>
     <string name="settings_done">Done</string>
     <string name="settings_cancel">Cancel</string>
     <string name="delete_title">Delete all your data?</string>
-    <string name="delete_lead">This resets Vaak to a fresh install. It can\'t be undone.</string>
+    <string name="delete_lead">This resets Mukhar to a fresh install. It can\'t be undone.</string>
     <string name="delete_on_phone">On this phone, right away</string>
     <string name="delete_on_servers">On our servers, within 30 days</string>
     <string name="delete_server_rows">Usage counts, plan record, feedback reports and analytics ID</string>

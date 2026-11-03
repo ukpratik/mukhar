@@ -15,7 +15,7 @@ import { reportRoute } from "./routes/report.ts";
 import { sessionRoute } from "./routes/session.ts";
 import { transcribeRoute } from "./routes/transcribe.ts";
 
-/** Vaak Worker API v1 (LLD §3). `makeDeps` is injectable so tests run every route with fakes and a real D1. */
+/** Mukhar Worker API v1 (LLD §3). `makeDeps` is injectable so tests run every route with fakes and a real D1. */
 export function createApp(makeDeps: (env: Env) => Deps = defaultDeps) {
   const app = newApp();
 

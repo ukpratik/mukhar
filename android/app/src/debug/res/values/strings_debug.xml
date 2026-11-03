@@ -17,6 +17,6 @@
     <string name="debug_storage_block">Below 10 MB (block)</string>
     <string name="debug_premium">Premium plan (3:00 cap)</string>
     <string name="debug_stutter">Stutter-friendly mode</string>
-    <string name="debug_clock_label">Vaak debug clock</string>
+    <string name="debug_clock_label">Mukhar debug clock</string>
     <string name="debug_open_clock">Debug clock</string>
 </resources>

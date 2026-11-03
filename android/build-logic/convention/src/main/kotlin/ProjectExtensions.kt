@@ -12,11 +12,11 @@ internal fun VersionCatalog.version(alias: String): String =
 
 internal fun VersionCatalog.lib(alias: String) = findLibrary(alias).get()
 
-/** Root package for every module: `:core:data` → `com.vaak.data` (LLD §1). */
-internal fun Project.vaakNamespace(): String = "com.vaak." + path.substringAfterLast(':')
+/** Root package for every module: `:core:data` → `io.github.ukpratik.mukhar.data` (LLD §1). */
+internal fun Project.mukharNamespace(): String = "io.github.ukpratik.mukhar." + path.substringAfterLast(':')
 
 /** LLD §8: Android Lint is the static-analysis gate. Version nags are off (upgrades are deliberate). */
-internal fun Lint.vaakDefaults() {
+internal fun Lint.mukharDefaults() {
     warningsAsErrors = true
     abortOnError = true
     disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion", "OldTargetApi")

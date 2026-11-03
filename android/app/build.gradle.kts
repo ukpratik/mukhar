@@ -1,32 +1,32 @@
 plugins {
-    id("vaak.android.application")
-    id("vaak.android.compose")
-    id("vaak.hilt")
+    id("mukhar.android.application")
+    id("mukhar.android.compose")
+    id("mukhar.hilt")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.baselineprofile)
 }
 
 android {
-    namespace = "com.vaak.app"
+    namespace = "io.github.ukpratik.mukhar.app"
 
     defaultConfig {
-        applicationId = "com.vaak.app"
+        applicationId = "io.github.ukpratik.mukhar"
         versionCode = 1
         versionName = "1.0.0"
     }
 
     // Upload key for Google Play (Play App Signing re-signs for users), same pattern as Folio. Credentials live in
-    // ~/.gradle/gradle.properties (VAAK_RELEASE_*), the keystore in ~/.android-keys/, never in the repo
+    // ~/.gradle/gradle.properties (MUKHAR_RELEASE_*), the keystore in ~/.android-keys/, never in the repo
     // (LLD §7, launch-checklist "Signing setup"). Without them the release build is signed with the debug key so it
     // still builds and installs locally (D-036); such an APK must never be uploaded (Play rejects debug-signed APKs).
-    val releaseStore = providers.gradleProperty("VAAK_RELEASE_STORE_FILE").orNull
+    val releaseStore = providers.gradleProperty("MUKHAR_RELEASE_STORE_FILE").orNull
     signingConfigs {
         if (releaseStore != null) {
             create("upload") {
                 storeFile = file(releaseStore)
-                storePassword = providers.gradleProperty("VAAK_RELEASE_STORE_PASSWORD").get()
-                keyAlias = providers.gradleProperty("VAAK_RELEASE_KEY_ALIAS").get()
-                keyPassword = providers.gradleProperty("VAAK_RELEASE_KEY_PASSWORD").get()
+                storePassword = providers.gradleProperty("MUKHAR_RELEASE_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("MUKHAR_RELEASE_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("MUKHAR_RELEASE_KEY_PASSWORD").get()
             }
         }
     }
@@ -37,7 +37,7 @@ android {
         }
         release {
             // R8 full mode (AGP default). The mapping file is kept at build/outputs/mapping/release/mapping.txt and
-            // archived with each build in ~/Desktop/PersonalProjects/builds/vaak/<version>/ (NFR-005 crash triage).
+            // archived with each build in ~/Desktop/PersonalProjects/builds/mukhar/<version>/ (NFR-005 crash triage).
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.vaak.baselineprofile"
+    namespace = "io.github.ukpratik.mukhar.baselineprofile"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

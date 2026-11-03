@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "vaak"
+rootProject.name = "mukhar"
 
 include(":app")
 include(":core:domain")

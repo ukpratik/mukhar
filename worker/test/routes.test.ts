@@ -78,7 +78,7 @@ describe("POST /v1/session", () => {
     expect(r.status).toBe(200);
     const b = await json(r);
     expect(b.expires_at).toBe(T0 + 24 * 3600_000);
-    const me = await call(f, "/v1/me", { headers: { Authorization: `Bearer fb:${UID}`, "X-Vaak-Session": b.session_token } });
+    const me = await call(f, "/v1/me", { headers: { Authorization: `Bearer fb:${UID}`, "X-Mukhar-Session": b.session_token } });
     expect(me.status).toBe(200);
   });
 
@@ -129,9 +129,9 @@ describe("auth failures on protected routes", () => {
     const auth = { Authorization: `Bearer fb:${UID}` };
     expect((await json(await call(f, "/v1/me", { headers: auth }))).error.code).toBe("SESSION_EXPIRED");
     const old = await sessionToken(UID, T0 - 25 * 3600_000);
-    expect((await json(await call(f, "/v1/me", { headers: { ...auth, "X-Vaak-Session": old } }))).error.code).toBe("SESSION_EXPIRED");
+    expect((await json(await call(f, "/v1/me", { headers: { ...auth, "X-Mukhar-Session": old } }))).error.code).toBe("SESSION_EXPIRED");
     const other = await sessionToken("other-uid");
-    expect((await call(f, "/v1/me", { headers: { ...auth, "X-Vaak-Session": other } })).status).toBe(401);
+    expect((await call(f, "/v1/me", { headers: { ...auth, "X-Mukhar-Session": other } })).status).toBe(401);
   });
 
   it("426 UPDATE_REQUIRED below min_app_version", async () => {

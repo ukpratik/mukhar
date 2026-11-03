@@ -1,0 +1,330 @@
+package io.github.ukpratik.mukhar.app.feature.onboarding
+
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.style.StyleSpan
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
+import io.github.ukpratik.mukhar.app.R
+import io.github.ukpratik.mukhar.ui.theme.MukharCard
+import io.github.ukpratik.mukhar.ui.theme.MukharSpace
+import io.github.ukpratik.mukhar.ui.theme.MukharTheme
+
+/** 56 dp (minimum) top row: back (or a 48 dp gap) + the 6-segment progress + "n of 6" (S01 to S06 chrome). */
+@Composable
+fun ObTopBar(
+    step: Int?,
+    onBack: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    backLabel: String = stringResource(R.string.ob_back),
+) {
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp).padding(start = MukharSpace.xs, end = MukharSpace.l),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        if (onBack != null) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = backLabel, tint = MaterialTheme.colorScheme.onSurface)
+            }
+        } else {
+            Spacer(Modifier.width(MukharSpace.touch))
+        }
+        if (step != null) {
+            val total = OnboardingStep.TOTAL
+            val a11y = stringResource(R.string.ob_step_a11y, step, total)
+            Row(
+                modifier = Modifier.weight(1f).semantics {
+                    contentDescription = a11y
+                    progressBarRangeInfo = ProgressBarRangeInfo(step.toFloat(), 1f..total.toFloat())
+                },
+                horizontalArrangement = Arrangement.spacedBy(MukharSpace.xs),
+            ) {
+                for (i in 1..total) {
+                    val color = when {
+                        i < step -> MaterialTheme.colorScheme.primary
+                        i == step -> MukharTheme.colors.accent
+                        else -> MukharTheme.colors.track
+                    }
+                    Box(Modifier.weight(1f).height(4.dp).clip(RoundedCornerShape(4.dp)).background(color))
+                }
+            }
+            Text(
+                text = stringResource(R.string.ob_step, step, total),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
+    }
+}
+
+@Composable
+fun ObHeadline(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = modifier.padding(top = 6.dp, bottom = MukharSpace.s).semantics { heading() },
+    )
+}
+
+@Composable
+fun ObLead(text: String, modifier: Modifier = Modifier) {
+    Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = modifier)
+}
+
+@Composable
+fun Eyebrow(text: String, modifier: Modifier = Modifier, color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant) {
+    Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = color, modifier = modifier)
+}
+
+/** A question label with an optional muted note on the right ("Optional", "Pick 1 to 3"). */
+@Composable
+fun ObQuestion(text: String, modifier: Modifier = Modifier, note: String? = null) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(start = 2.dp, end = 2.dp, top = 22.dp, bottom = MukharSpace.s),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f).semantics { heading() })
+        if (note != null) {
+            Text(note, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+/** The sticky CTA bar (design §6): stacked full-width buttons. */
+@Composable
+fun CtaBar(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)
+            .padding(start = MukharSpace.gutter, end = MukharSpace.gutter, top = MukharSpace.m, bottom = MukharSpace.l),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        content = content,
+    )
+}
+
+/** 54 dp primary button; [leading] icons are saffron on indigo (`primary-icon`), the arrow trails. */
+@Composable
+fun PrimaryCta(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    leading: ImageVector? = null,
+    arrow: Boolean = false,
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.fillMaxWidth().heightIn(min = 54.dp),
+        colors = ButtonDefaults.buttonColors(
+            disabledContainerColor = MukharTheme.colors.track,
+            disabledContentColor = MukharTheme.colors.faint,
+        ),
+    ) {
+        CtaContent(text, leading, if (arrow && enabled) Icons.AutoMirrored.Rounded.ArrowForward else null, MukharTheme.colors.primaryIcon)
+    }
+}
+
+/** The saffron button: only Start talk and Record (design §6). */
+@Composable
+fun AccentCta(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, leading: ImageVector? = null) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth().heightIn(min = 54.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MukharTheme.colors.accent, contentColor = MukharTheme.colors.onAccent),
+    ) {
+        CtaContent(text, leading, null, MukharTheme.colors.onAccent)
+    }
+}
+
+@Composable
+fun OutlineCta(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, leading: ImageVector? = null) {
+    OutlinedButton(onClick = onClick, modifier = modifier.fillMaxWidth().heightIn(min = MukharSpace.touch)) {
+        CtaContent(text, leading, null, null)
+    }
+}
+
+@Composable
+fun TextCta(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    TextButton(onClick = onClick, modifier = modifier.fillMaxWidth().heightIn(min = MukharSpace.touch)) {
+        Text(text, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+private fun RowScope.CtaContent(text: String, leading: ImageVector?, trailing: ImageVector?, iconTint: androidx.compose.ui.graphics.Color?) {
+    if (leading != null) {
+        Icon(leading, contentDescription = null, tint = iconTint ?: androidx.compose.ui.graphics.Color.Unspecified, modifier = Modifier.size(22.dp))
+        Spacer(Modifier.width(MukharSpace.s))
+    }
+    Text(text, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+    if (trailing != null) {
+        Spacer(Modifier.width(MukharSpace.s))
+        Icon(trailing, contentDescription = null, tint = iconTint ?: androidx.compose.ui.graphics.Color.Unspecified, modifier = Modifier.size(22.dp))
+    }
+}
+
+/** Centred message (blocked, declined, denied): 88 dp tinted icon, serif title, one line, a list card. */
+@Composable
+fun MessageBlock(
+    icon: ImageVector,
+    title: String,
+    body: String,
+    items: List<Pair<ImageVector, String>>,
+    modifier: Modifier = Modifier,
+    footer: String? = null,
+) {
+    Column(modifier.fillMaxWidth().padding(top = 12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            Modifier.size(88.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(42.dp))
+        }
+        Text(
+            title,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 18.dp).semantics { heading() },
+        )
+        Text(
+            body,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = MukharSpace.s),
+        )
+        if (items.isNotEmpty()) {
+            MukharCard(Modifier.fillMaxWidth().padding(top = MukharSpace.xl), shape = io.github.ukpratik.mukhar.ui.theme.TileShape) {
+                Column(Modifier.padding(horizontal = MukharSpace.l, vertical = MukharSpace.s)) {
+                    items.forEach { (i, t) -> IconLine(i, t) }
+                }
+            }
+        }
+        if (footer != null) {
+            Text(
+                footer,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = MukharSpace.m),
+            )
+        }
+    }
+}
+
+@Composable
+fun IconLine(icon: ImageVector, text: String, modifier: Modifier = Modifier) {
+    Row(modifier.padding(vertical = 7.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+        Text(text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
+    }
+}
+
+/** `sunken` info note with a brand icon (design `.info-note`). */
+@Composable
+fun InfoNote(icon: ImageVector, text: AnnotatedString, modifier: Modifier = Modifier) {
+    Row(
+        modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = MukharSpace.m, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(MukharSpace.s),
+    ) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+        Text(text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+fun InfoNote(icon: ImageVector, text: String, modifier: Modifier = Modifier) = InfoNote(icon, AnnotatedString(text), modifier)
+
+/** A string resource with `<b>` kept as bold. */
+@Composable
+fun annotatedResource(@StringRes id: Int): AnnotatedString {
+    val text = androidx.compose.ui.platform.LocalResources.current.getText(id)
+    if (text !is Spanned) return AnnotatedString(text.toString())
+    return buildAnnotatedString {
+        append(text.toString())
+        text.getSpans(0, text.length, StyleSpan::class.java).forEach { span ->
+            if (span.style == Typeface.BOLD) {
+                addStyle(SpanStyle(fontWeight = FontWeight.ExtraBold), text.getSpanStart(span), text.getSpanEnd(span))
+            }
+        }
+    }
+}
+
+/** True from about 150% font scale, where side-by-side text should stack instead (design §10.5). */
+@Composable
+fun largeFont(): Boolean = LocalDensity.current.fontScale > LARGE_FONT_SCALE
+
+/**
+ * Caps the font scale for text drawn inside a fixed graphic (the streak ring, a logo tile) so it stays inside its
+ * shape. Only for short labels whose meaning is also read out elsewhere; body text always scales fully.
+ */
+@Composable
+fun CappedFontScale(max: Float = GRAPHIC_FONT_SCALE_CAP, content: @Composable () -> Unit) {
+    val density = LocalDensity.current
+    if (density.fontScale <= max) {
+        content()
+    } else {
+        CompositionLocalProvider(LocalDensity provides Density(density.density, max), content = content)
+    }
+}
+
+private const val LARGE_FONT_SCALE = 1.5f
+private const val GRAPHIC_FONT_SCALE_CAP = 1.3f
+
+/** The UI locale, read observably (lint NonObservableLocale). */
+@Composable
+fun currentLocale(): java.util.Locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]

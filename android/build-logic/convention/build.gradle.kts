@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.vaak.buildlogic"
+group = "io.github.ukpratik.mukhar.buildlogic"
 
 dependencies {
     compileOnly(libs.android.gradle.plugin)
@@ -14,23 +14,23 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "vaak.android.application"
+            id = "mukhar.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = "vaak.android.library"
+            id = "mukhar.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidCompose") {
-            id = "vaak.android.compose"
+            id = "mukhar.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
         register("hilt") {
-            id = "vaak.hilt"
+            id = "mukhar.hilt"
             implementationClass = "HiltConventionPlugin"
         }
         register("jvmLibrary") {
-            id = "vaak.jvm.library"
+            id = "mukhar.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
     }

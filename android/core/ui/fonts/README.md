@@ -17,9 +17,9 @@ the subsets keep their names). `subset_fonts.py` rebuilds the two M6 files (font
 
 **Mixed scripts.** Android's fallback chain for a resource font is the *system* fallback, and per-font custom fallback
 (`Typeface.CustomFallbackBuilder`) needs API 29. So:
-- Hindi content styles (`VaakTheme.type.hi*`) use Noto Sans Devanagari, which also has Latin glyphs: Hinglish shares
+- Hindi content styles (`MukharTheme.type.hi*`) use Noto Sans Devanagari, which also has Latin glyphs: Hinglish shares
   one font and one baseline (design-system §2).
-- English UI text that contains Hindi uses `mixedScript(text)` (`com.vaak.ui.text`), which puts Devanagari runs in
+- English UI text that contains Hindi uses `mixedScript(text)` (`io.github.ukpratik.mukhar.ui.text`), which puts Devanagari runs in
   Noto Sans Devanagari with `localeList = hi` (TalkBack switches voice) and keeps nukta and ZWJ/ZWNJ clusters whole.
 - Anything else still renders: a Devanagari glyph missing from Manrope falls back to the system's Noto Devanagari.
 

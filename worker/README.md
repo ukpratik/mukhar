@@ -1,6 +1,6 @@
-# Vaak Worker (API v1)
+# Mukhar Worker (API v1)
 
-Cloudflare Worker (TypeScript + Hono) behind the Vaak Android app: Firebase + Play Integrity auth, quotas, the spend cap,
+Cloudflare Worker (TypeScript + Hono) behind the Mukhar Android app: Firebase + Play Integrity auth, quotas, the spend cap,
 STT relay (Deepgram / Sarvam / ElevenLabs behind one `transcribe()`), grounded feedback from `claude-haiku-5-5`,
 Play subscription verification, consented reports and data deletion. Design: `product/05-architecture/LLD.md` (§2.2, §3,
 §4.3, §4.4, §4.7, §10), HLD, ADR-002 to ADR-006.
@@ -41,8 +41,8 @@ npm run dev                # wrangler dev --env dev on http://localhost:8787/v1/
 ## Deploy (nothing has been deployed or created yet)
 ```sh
 npx wrangler login
-npx wrangler d1 create vaak-dev      # paste the database_id into [env.dev] in wrangler.toml
-npx wrangler d1 create vaak-prod     # paste into [env.production]; also set FIREBASE_PROJECT_ID there
+npx wrangler d1 create mukhar-dev      # paste the database_id into [env.dev] in wrangler.toml
+npx wrangler d1 create mukhar-prod     # paste into [env.production]; also set FIREBASE_PROJECT_ID there
 npm run db:migrate:dev               # wrangler d1 migrations apply DB --remote --env dev
 for s in ANTHROPIC_API_KEY DEEPGRAM_API_KEY SARVAM_API_KEY ELEVENLABS_API_KEY GOOGLE_SA_JSON SESSION_HMAC_KEY DEVICE_SALT ALERT_WEBHOOK_URL; do
   npx wrangler secret put $s --env dev

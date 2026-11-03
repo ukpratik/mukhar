@@ -6,7 +6,7 @@ import { issueSessionToken, saltDeviceHash, SESSION_TTL_MS, verifySessionToken }
 import { googleAuth } from "../src/play/googleAuth.ts";
 import { PKG, T0, validVerdict } from "./helpers.ts";
 
-const PROJECT = "vaak-test";
+const PROJECT = "mukhar-test";
 
 async function firebaseSetup() {
   const { publicKey, privateKey } = await generateKeyPair("RS256", { extractable: true });
@@ -65,7 +65,7 @@ describe("session token", () => {
     const { token } = await issueSessionToken(key, "u1", "dh1", T0);
     await expect(verifySessionToken("x".repeat(40), token, T0)).rejects.toMatchObject({ expired: false });
     const [h, , s] = token.split(".");
-    const forged = `${h}.${btoa(JSON.stringify({ sub: "u2", dh: "dh1", iss: "vaak-worker", exp: 9e9 })).replace(/=+$/, "")}.${s}`;
+    const forged = `${h}.${btoa(JSON.stringify({ sub: "u2", dh: "dh1", iss: "mukhar-worker", exp: 9e9 })).replace(/=+$/, "")}.${s}`;
     await expect(verifySessionToken(key, forged, T0)).rejects.toThrow();
   });
 
@@ -115,7 +115,7 @@ describe("Play Integrity verdict checks", () => {
 describe("Google service-account OAuth", () => {
   it("signs an RS256 assertion, exchanges it and caches the token per scope", async () => {
     const { privateKey } = await generateKeyPair("RS256", { extractable: true });
-    const sa = JSON.stringify({ client_email: "svc@vaak.iam.gserviceaccount.com", private_key: await exportPKCS8(privateKey) });
+    const sa = JSON.stringify({ client_email: "svc@mukhar.iam.gserviceaccount.com", private_key: await exportPKCS8(privateKey) });
     const bodies: string[] = [];
     const f: typeof fetch = async (input, init) => {
       const r = new Request(input as RequestInfo, init);
@@ -129,7 +129,7 @@ describe("Google service-account OAuth", () => {
     const params = new URLSearchParams(bodies[0]);
     expect(params.get("grant_type")).toBe("urn:ietf:params:oauth:grant-type:jwt-bearer");
     const payload = JSON.parse(atob(params.get("assertion")!.split(".")[1]!.replace(/-/g, "+").replace(/_/g, "/")));
-    expect(payload).toMatchObject({ iss: "svc@vaak.iam.gserviceaccount.com", aud: "https://oauth2.googleapis.com/token", scope: "scope-a" });
+    expect(payload).toMatchObject({ iss: "svc@mukhar.iam.gserviceaccount.com", aud: "https://oauth2.googleapis.com/token", scope: "scope-a" });
   });
 
   it("fails clearly without a service account", async () => {

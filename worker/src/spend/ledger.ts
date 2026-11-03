@@ -102,7 +102,7 @@ export async function recordSpend(
       .run();
     if ((claimed.meta.changes ?? 0) > 0) {
       const label = pct >= 1 ? "reached 100% — new analyses now return BUSY" : "passed 80%";
-      await sendAlert(`Vaak spend ${label} of the $${capUsd}/day cap (quota day ${day}).`).catch(() => undefined);
+      await sendAlert(`Mukhar spend ${label} of the $${capUsd}/day cap (quota day ${day}).`).catch(() => undefined);
     }
   }
 }

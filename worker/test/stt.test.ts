@@ -22,12 +22,12 @@ function recordingFetch(handler: (req: Request) => Response | Promise<Response>)
 
 describe("Deepgram adapter", () => {
   it("asks for Nova-3 verbatim with fillers, punctuation and keyterms", () => {
-    const u = new URL(deepgramUrl({ lang: "en", keyterms: ["meticulous", "Vaak"], mimeType: "audio/aac" }));
+    const u = new URL(deepgramUrl({ lang: "en", keyterms: ["meticulous", "Mukhar"], mimeType: "audio/aac" }));
     expect(u.searchParams.get("model")).toBe("nova-3");
     expect(u.searchParams.get("filler_words")).toBe("true");
     expect(u.searchParams.get("smart_format")).toBe("false");
     expect(u.searchParams.get("language")).toBe("en");
-    expect(u.searchParams.getAll("keyterm")).toEqual(["meticulous", "Vaak"]);
+    expect(u.searchParams.getAll("keyterm")).toEqual(["meticulous", "Mukhar"]);
     expect(new URL(deepgramUrl({ lang: "hi", keyterms: [], mimeType: "audio/aac" })).searchParams.get("language")).toBe("multi");
     expect(new URL(deepgramUrl({ lang: "en", keyterms: [], mimeType: "audio/aac", variant: "en-IN" })).searchParams.get("language")).toBe("en-IN");
   });

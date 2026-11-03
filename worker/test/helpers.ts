@@ -10,7 +10,7 @@ import deepgramFixture from "./fixtures/deepgram-en.json";
 
 export const T0 = Date.parse("2026-11-02T05:00:00Z"); // quota day 2026-11-02, resets 21:30Z
 export const DEVICE = "QW5kcm9pZElkSGFzaEJhc2U2NA==";
-export const PKG = "com.vaak.app";
+export const PKG = "io.github.ukpratik.mukhar";
 
 type FetchHandler = (req: Request) => Response | Promise<Response>;
 
@@ -114,7 +114,7 @@ export async function sessionToken(uid: string, nowMs = T0, device = DEVICE): Pr
 }
 
 export async function authHeaders(uid: string, extra: Record<string, string> = {}, device = DEVICE): Promise<Record<string, string>> {
-  return { Authorization: `Bearer fb:${uid}`, "X-Vaak-Session": await sessionToken(uid, T0, device), "X-App-Version": "12", ...extra };
+  return { Authorization: `Bearer fb:${uid}`, "X-Mukhar-Session": await sessionToken(uid, T0, device), "X-App-Version": "12", ...extra };
 }
 
 export async function validVerdict(uid: string, device: string, utcMinute: number, nowMs: number): Promise<IntegrityVerdict> {

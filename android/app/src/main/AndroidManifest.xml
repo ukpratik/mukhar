@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".VaakApp"
+        android:name=".MukharApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/full_backup_content"
@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Vaak">
+        android:theme="@style/Theme.Mukhar">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,7 +38,7 @@
                 android:resource="@xml/share_paths" />
         </provider>
 
-        <!-- WorkManager is initialised on demand with the Hilt worker factory (VaakApp is a Configuration.Provider). -->
+        <!-- WorkManager is initialised on demand with the Hilt worker factory (MukharApp is a Configuration.Provider). -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

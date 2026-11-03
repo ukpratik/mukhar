@@ -29,9 +29,9 @@ export const requireFirebase: MiddlewareHandler<AppEnv> = async (c, next) => {
   await next();
 };
 
-/** X-Vaak-Session bound to the same uid (401 SESSION_EXPIRED → the client refreshes once via /session). */
+/** X-Mukhar-Session bound to the same uid (401 SESSION_EXPIRED → the client refreshes once via /session). */
 export const requireSession: MiddlewareHandler<AppEnv> = async (c, next) => {
-  const token = c.req.header("X-Vaak-Session");
+  const token = c.req.header("X-Mukhar-Session");
   if (!token) throw new ApiError("SESSION_EXPIRED", "Session token missing");
   try {
     const claims = await verifySessionToken(c.env.SESSION_HMAC_KEY, token, c.get("deps").now());

@@ -9,8 +9,8 @@
     <string name="ob_optional">Optional</string>
 
     <!-- S01 Welcome + age gate -->
-    <string name="welcome_brand">Vaak</string>
-    <string name="welcome_brand_hi">वाक् · बोलने का अभ्यास</string>
+    <string name="welcome_brand">Mukhar</string>
+    <string name="welcome_brand_hi">मुखर · बोलने का अभ्यास</string>
     <string name="welcome_title">Speak a little better, every day.</string>
     <string name="welcome_lead">Short daily talks and kind, specific feedback. In English, Hindi or both.</string>
     <string name="welcome_perk_talk">2 minutes of talking a day</string>
@@ -19,15 +19,15 @@
     <string name="age_question">First, which year were you born?</string>
     <string name="age_label">Year of birth</string>
     <string name="age_placeholder">e.g. 1998</string>
-    <string name="age_help">Vaak is for adults. We keep only \"18+\", never the year.</string>
+    <string name="age_help">Mukhar is for adults. We keep only \"18+\", never the year.</string>
     <string name="welcome_terms">By continuing, you agree to our Terms and Privacy policy.</string>
-    <string name="blocked_title">Vaak is for 18+ for now</string>
+    <string name="blocked_title">Mukhar is for 18+ for now</string>
     <string name="blocked_body">We\'re working on a version made for teens. Wanting to speak better is a great start, so keep at it.</string>
     <string name="blocked_nothing_saved">We haven\'t saved anything you entered.</string>
     <string name="blocked_turn_18">When you turn 18, we\'d love to hear you speak.</string>
-    <string name="blocked_close">Close Vaak</string>
+    <string name="blocked_close">Close Mukhar</string>
     <string name="blocked_why">Why 18+?</string>
-    <string name="blocked_why_body">Privacy law protects people under 18, and an app like Vaak needs a parent\'s consent to coach them. We\'re building a teen version that asks for it properly.</string>
+    <string name="blocked_why_body">Privacy law protects people under 18, and an app like Mukhar needs a parent\'s consent to coach them. We\'re building a teen version that asks for it properly.</string>
     <string name="blocked_why_ok">Got it</string>
 
     <!-- S02 Languages and goals -->
@@ -60,7 +60,7 @@
     <string name="warmup_text_hi">हर सुबह चाय की खुशबू के साथ गली जाग जाती है। दुकानें खुलती हैं, बसें आती हैं, और शहर धीरे-धीरे बात करने लगता है। यह शांत पल बहुत प्यारा होता है। यह याद दिलाता है कि धीरे शुरू करें और साफ़ बोलें।</string>
     <string name="warmup_read_in_hindi">Read in Hindi</string>
     <string name="warmup_read_in_english">Read in English</string>
-    <string name="warmup_mic_title">Vaak needs your microphone</string>
+    <string name="warmup_mic_title">Mukhar needs your microphone</string>
     <string name="warmup_mic_body">So it can hear you. Nothing is recorded until you tap Start, and this warm-up never leaves your phone.</string>
     <string name="warmup_allow_mic">Allow microphone</string>
     <string name="warmup_not_now">Not now</string>
@@ -94,7 +94,7 @@
     <string name="warmup_day_one">Day 1 counted. Nice start.</string>
     <string name="warmup_day_n">Counted as day %1$d.</string>
     <string name="warmup_on_phone">Worked out on your phone. Nothing was sent anywhere.</string>
-    <string name="mic_denied_title">Vaak listens to coach you</string>
+    <string name="mic_denied_title">Mukhar listens to coach you</string>
     <string name="mic_denied_body">Without the mic we can\'t hear your talks. Here\'s what it unlocks:</string>
     <string name="mic_denied_pace">Your pace, pauses and filler words</string>
     <string name="mic_denied_feedback">One thing you did well, one to try</string>
@@ -106,7 +106,7 @@
     <!-- S04 What leaves your phone -->
     <string name="disclosure_eyebrow">Before your first real talk</string>
     <string name="disclosure_title">What leaves your phone</string>
-    <string name="disclosure_lead">To coach you, Vaak uses two online services. Here\'s exactly what they get.</string>
+    <string name="disclosure_lead">To coach you, Mukhar uses two online services. Here\'s exactly what they get.</string>
     <string name="disclosure_audio_title">Your audio goes to a speech service</string>
     <string name="disclosure_audio_body">It\'s sent only to turn your talk into text. We don\'t store it on our servers, and we switch off the speech service\'s own storage wherever it lets us.</string>
     <string name="disclosure_audio_what">Talk audio</string>
@@ -177,7 +177,7 @@
     <string name="reminder_at">at</string>
     <string name="reminder_time_a11y">Reminder time %1$s. Change</string>
     <string name="reminder_preview_a11y">Notification preview: %1$s</string>
-    <string name="reminder_preview_header">Vaak · %1$s</string>
+    <string name="reminder_preview_header">Mukhar · %1$s</string>
     <string name="reminder_days_q">How many days a week?</string>
     <string name="goal_easy">Easy</string>
     <string name="goal_steady">Steady</string>
@@ -191,7 +191,7 @@
     <string name="reminder_plan">Your plan</string>
     <string name="reminder_plan_when">%1$s, around %2$s</string>
     <string name="reminder_plan_day1">Day 1 already done</string>
-    <string name="reminder_tip">Tip: keep Vaak on your home screen, next to the app you open after your routine.</string>
+    <string name="reminder_tip">Tip: keep Mukhar on your home screen, next to the app you open after your routine.</string>
     <string name="reminder_go_today">Go to Today</string>
     <string name="reminder_open_notif_settings">Open notification settings</string>
     <string name="oem_title">One more step so reminders arrive</string>
@@ -199,12 +199,12 @@
     <string name="oem_lead_oppo">Oppo phones can stop apps from sending reminders to save battery. Two switches fix it:</string>
     <string name="oem_lead_realme">Realme phones can stop apps from sending reminders to save battery. Two switches fix it:</string>
     <string name="oem_lead_vivo">Vivo phones can stop apps from sending reminders to save battery. Two switches fix it:</string>
-    <string name="oem_xiaomi_step1"><b>Autostart</b>: turn on for Vaak</string>
-    <string name="oem_xiaomi_step2"><b>Battery saver</b>: set Vaak to \"No restrictions\"</string>
-    <string name="oem_oppo_step1"><b>Allow auto launch</b> for Vaak</string>
-    <string name="oem_oppo_step2"><b>Allow background activity</b> for Vaak</string>
-    <string name="oem_vivo_step1"><b>Autostart</b>: turn on for Vaak</string>
-    <string name="oem_vivo_step2"><b>Background power</b>: allow Vaak to run in the background</string>
+    <string name="oem_xiaomi_step1"><b>Autostart</b>: turn on for Mukhar</string>
+    <string name="oem_xiaomi_step2"><b>Battery saver</b>: set Mukhar to \"No restrictions\"</string>
+    <string name="oem_oppo_step1"><b>Allow auto launch</b> for Mukhar</string>
+    <string name="oem_oppo_step2"><b>Allow background activity</b> for Mukhar</string>
+    <string name="oem_vivo_step1"><b>Autostart</b>: turn on for Mukhar</string>
+    <string name="oem_vivo_step2"><b>Background power</b>: allow Mukhar to run in the background</string>
     <string name="oem_open">Open Autostart settings</string>
     <string name="oem_not_now">Not now</string>
 </resources>

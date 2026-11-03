@@ -2,7 +2,7 @@ import { jwtVerify, SignJWT, errors as joseErrors } from "jose";
 
 /** Session token (ADR-006): HS256 JWT, 24 h, bound to uid + salted device hash. Issued by POST /session. */
 export const SESSION_TTL_MS = 24 * 3600_000;
-const ISSUER = "vaak-worker";
+const ISSUER = "mukhar-worker";
 
 export interface SessionClaims { uid: string; dh: string; exp: number }
 

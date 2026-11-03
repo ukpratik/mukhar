@@ -1,4 +1,4 @@
--- Vaak D1 schema v1 (LLD §2.2). Migrations are additive only.
+-- Mukhar D1 schema v1 (LLD §2.2). Migrations are additive only.
 CREATE TABLE quota_usage (uid TEXT, quota_day TEXT, talks INT DEFAULT 0, checks INT DEFAULT 0, PRIMARY KEY (uid, quota_day));
 CREATE TABLE quota_device (device_hash TEXT, quota_day TEXT, talks INT DEFAULT 0, checks INT DEFAULT 0, PRIMARY KEY (device_hash, quota_day));
 CREATE TABLE sessions (id TEXT PRIMARY KEY, uid TEXT NOT NULL, client_session_id TEXT NOT NULL, kind TEXT NOT NULL, parent_id TEXT,

@@ -1,4 +1,4 @@
-# Folio catalog baseline (ADR-001, LLD §1). Only what Vaak uses today; add entries per milestone and note them in build-plan.md.
+# Folio catalog baseline (ADR-001, LLD §1). Only what Mukhar uses today; add entries per milestone and note them in build-plan.md.
 [versions]
 agp = "9.4.1"
 kotlin = "2.4.20"

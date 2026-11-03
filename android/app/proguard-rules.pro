@@ -1,4 +1,4 @@
-# Vaak release shrinking (R8 full mode, M6 part B, D-036).
+# Mukhar release shrinking (R8 full mode, M6 part B, D-036).
 #
 # Most libraries ship their own consumer rules, merged automatically:
 #   kotlinx.serialization (generated serializers, companion `serializer()`), Room 2.8 (generated *_Impl),
@@ -10,24 +10,24 @@
 
 # Retrofit reads generic return types and parameter annotations at runtime.
 -keepattributes Signature, InnerClasses, EnclosingMethod, *Annotation*, RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
--keep,allowobfuscation interface com.vaak.data.net.VaakApi
+-keep,allowobfuscation interface io.github.ukpratik.mukhar.data.net.MukharApi
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 # Our @Serializable wire and content models (net/ApiModels, prompts.json, words_*.json, pairs.json, routes):
 # keep each class's serializer lookup so a renamed or stripped companion never breaks JSON at runtime.
--keepclassmembers @kotlinx.serialization.Serializable class com.vaak.** {
+-keepclassmembers @kotlinx.serialization.Serializable class io.github.ukpratik.mukhar.** {
     *** Companion;
     *** INSTANCE;
     kotlinx.serialization.KSerializer serializer(...);
 }
--if @kotlinx.serialization.Serializable class com.vaak.**
+-if @kotlinx.serialization.Serializable class io.github.ukpratik.mukhar.**
 -keepclassmembers class <1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
 # Room entities are read through generated code only; enum columns go through TypeConverters (name-based), so
 # keep enum constant names in our model packages.
--keepclassmembers enum com.vaak.** {
+-keepclassmembers enum io.github.ukpratik.mukhar.** {
     <fields>;
     public static **[] values();
     public static ** valueOf(java.lang.String);

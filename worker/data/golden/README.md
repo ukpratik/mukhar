@@ -7,7 +7,7 @@ and some grammar slips. **Audio is never committed**: `data/golden/audio/` and `
 ## 1. Consent (before recording anyone)
 Each speaker must be 18+ and agree, in writing (a message is fine), to this:
 > "I agree that my voice recordings and their transcripts are used only to test speech-recognition providers for the
-> Vaak app. They will be sent to Deepgram, Sarvam and ElevenLabs for transcription, kept on the developer's computer
+> Mukhar app. They will be sent to Deepgram, Sarvam and ElevenLabs for transcription, kept on the developer's computer
 > (not in any repository or cloud folder), never published, and deleted when the benchmark is finished or when I ask."
 
 Keep a private list (outside this repo) of speaker code → name → consent date. Use only the speaker code (`S01`) here.

@@ -1,8 +1,8 @@
 // Android data layer (LLD §1): Room, audio (recorder, VAD feed, AAC/ADTS), net (Worker API v1), repositories,
 // WorkManager (analysis queue) and bundled content. Debug-only fakes live in src/debug (build-plan "Debug hooks").
 plugins {
-    id("vaak.android.library")
-    id("vaak.hilt")
+    id("mukhar.android.library")
+    id("mukhar.hilt")
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -13,10 +13,10 @@ android {
         // LLD §7: the API base URL comes from BuildConfig per build type. The Worker isn't deployed yet (Node and
         // keys are pending, build-plan P1/P2), so both point at a placeholder that never resolves.
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"https://api.vaak.invalid/v1/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://api.mukhar.invalid/v1/\"")
         }
         release {
-            buildConfigField("String", "API_BASE_URL", "\"https://api.vaak.invalid/v1/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://api.mukhar.invalid/v1/\"")
         }
     }
 

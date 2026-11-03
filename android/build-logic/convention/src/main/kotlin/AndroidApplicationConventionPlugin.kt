@@ -18,7 +18,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 targetCompatibility = JavaVersion.VERSION_17
             }
             lint {
-                vaakDefaults()
+                mukharDefaults()
                 checkDependencies = true
             }
         }

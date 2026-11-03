@@ -1,9 +1,9 @@
 {
-  "name": "vaak-worker",
+  "name": "mukhar-worker",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Vaak API: Cloudflare Worker (Hono) for auth, quota, STT relay, grounded LLM feedback and Play entitlements",
+  "description": "Mukhar API: Cloudflare Worker (Hono) for auth, quota, STT relay, grounded LLM feedback and Play entitlements",
   "engines": { "node": ">=22.18" },
   "scripts": {
     "dev": "wrangler dev --env dev",

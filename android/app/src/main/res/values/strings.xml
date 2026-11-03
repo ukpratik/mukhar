@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Vaak</string>
+    <string name="app_name">Mukhar</string>
     <string name="tab_today">Today</string>
     <string name="tab_practice">Practice</string>
     <string name="tab_words">Words</string>
@@ -115,17 +115,17 @@
     <string name="keep_talking">Keep talking</string>
     <string name="keep_it">Keep it</string>
     <string name="mic_unavailable">The microphone is busy. Close other apps that use it and try again.</string>
-    <string name="perm_title">Vaak needs the microphone to hear your talk</string>
+    <string name="perm_title">Mukhar needs the microphone to hear your talk</string>
     <string name="perm_body">Your audio stays private and is deleted after analysis.</string>
     <string name="perm_allow">Allow microphone</string>
-    <string name="perm_denied_body">Microphone access is off for Vaak. Turn it on in Settings to record a talk.</string>
+    <string name="perm_denied_body">Microphone access is off for Mukhar. Turn it on in Settings to record a talk.</string>
     <string name="rec_title">We kept your talk</string>
-    <string name="rec_body">Vaak closed while you were talking. The first %1$s is saved on this phone.</string>
+    <string name="rec_body">Mukhar closed while you were talking. The first %1$s is saved on this phone.</string>
     <string name="rec_card">%1$s recorded · %2$s</string>
     <string name="rec_get">Get feedback on this part</string>
     <string name="rec_again">Record it again instead</string>
     <string name="rec_baseline_title">We kept your starting point</string>
-    <string name="rec_baseline_body">Vaak closed while you were recording your starting point. The first %1$s is saved on this phone.</string>
+    <string name="rec_baseline_body">Mukhar closed while you were recording your starting point. The first %1$s is saved on this phone.</string>
     <string name="rec_baseline_get">Use this as my starting point</string>
     <string name="rec_close_cd">Close, keep the talk for later</string>
 

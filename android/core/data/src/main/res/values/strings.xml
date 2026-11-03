@@ -4,5 +4,5 @@
     <string name="notify_results_title">Your report is ready</string>
     <string name="notify_results_body">Your coach\'s notes on your talk are in.</string>
     <string name="notify_paused_title">Your talk is paused</string>
-    <string name="notify_paused_body">Your talk so far is safe. Open Vaak to carry on.</string>
+    <string name="notify_paused_body">Your talk so far is safe. Open Mukhar to carry on.</string>
 </resources>

@@ -9,7 +9,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         pluginManager.apply("com.android.library")
         extensions.configure<LibraryExtension> {
-            namespace = vaakNamespace()
+            namespace = mukharNamespace()
             compileSdk = libs.version("compileSdk").toInt()
             defaultConfig {
                 minSdk = libs.version("minSdk").toInt()
@@ -18,7 +18,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 sourceCompatibility = JavaVersion.VERSION_17
                 targetCompatibility = JavaVersion.VERSION_17
             }
-            lint { vaakDefaults() }
+            lint { mukharDefaults() }
         }
         dependencies {
             add("testImplementation", libs.lib("junit"))
