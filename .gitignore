@@ -8,3 +8,6 @@ local.properties
 *.jks
 .DS_Store
 .claude/
+
+# Product docs live in their own private repo (ukpratik/mukhar-product)
+/product/
