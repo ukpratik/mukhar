@@ -6,7 +6,16 @@ import io.github.ukpratik.mukhar.data.repo.TalkDetails
 import io.github.ukpratik.mukhar.data.repo.TalkKind
 import io.github.ukpratik.mukhar.data.repo.TalkStatus
 import io.github.ukpratik.mukhar.domain.audio.EnergyVad
+import io.github.ukpratik.mukhar.data.net.ENGINE_UNAVAILABLE_CODE
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisNote
+import io.github.ukpratik.mukhar.domain.coach.RuleCoach
+import io.github.ukpratik.mukhar.domain.feedback.Alternative
 import io.github.ukpratik.mukhar.domain.feedback.FeedbackFallback
+import io.github.ukpratik.mukhar.domain.feedback.hasSpan
+import io.github.ukpratik.mukhar.domain.metrics.EngineFamily
+import io.github.ukpratik.mukhar.domain.metrics.EngineReliability
+import io.github.ukpratik.mukhar.domain.metrics.MetricReliability
+import io.github.ukpratik.mukhar.domain.metrics.Reliability
 import io.github.ukpratik.mukhar.domain.feedback.Safety
 import io.github.ukpratik.mukhar.domain.feedback.UpgradedWord
 import io.github.ukpratik.mukhar.domain.metrics.MetricAverages
@@ -22,7 +31,7 @@ import java.time.ZoneId
 import kotlin.math.abs
 
 /** Which S10/S11 state to draw. Analysing → Results is one screen (design-system §8). */
-enum class ReportPhase { LISTENING, QUEUED, BUSY, STT_FAILED, TOO_LITTLE, METRICS_READY, FEEDBACK_FAILED, READY, HELPLINE, GONE }
+enum class ReportPhase { LISTENING, QUEUED, BUSY, STT_FAILED, TOO_LITTLE, NEEDS_ENGINE, METRICS_READY, FEEDBACK_FAILED, READY, HELPLINE, GONE }
 
 /** The credit pill: [day] null means the neutral "30 s counts for your streak" variant (10 to 30 s of speech). */
 data class CreditUi(val day: Int?, val goalMet: Boolean)
@@ -57,6 +66,8 @@ data class MetricTileUi(
     /** Word variety under 100 words: "Speak longer to unlock". */
     val locked: Boolean = false,
     val wide: Boolean = false,
+    /** ADR-008: the engine can't measure this one exactly (offline recognition): shown as "≈ value" with a tip. */
+    val approx: Boolean = false,
 )
 
 data class TokenUi(
@@ -82,6 +93,9 @@ data class GlowUi(val quote: String?, val note: String)
 data class GrowUi(val quote: String?, val why: String, val how: String)
 
 data class BetterUi(val index: Int, val quote: String, val rewrite: String, val words: List<UpgradedWord>)
+
+/** The offline coach's "Try instead" row: an overused word and its curated alternatives (ADR-008). */
+data class WordUpgradeUi(val word: String, val count: Int, val alternatives: List<Alternative>)
 
 data class ReportUiState(
     val sessionId: String = "",
@@ -110,6 +124,12 @@ data class ReportUiState(
     val speechMs: Long = 0,
     val manualRetryFailed: Boolean = false,
     val retrying: Boolean = false,
+    /** Transcribed on the phone: "Offline analysis · approx." chip (ADR-008). */
+    val offline: Boolean = false,
+    /** The offline coach wrote the notes: no rewrites or grammar, so the "add your own AI key" nudge shows. */
+    val ruleNotes: Boolean = false,
+    val notes: List<AnalysisNote> = emptyList(),
+    val upgrades: List<WordUpgradeUi> = emptyList(),
 )
 
 /** Pure mapping from Room rows to the screen state, unit-testable without Compose. */
@@ -135,13 +155,14 @@ object ReportMapper {
         val words = d.words.orEmpty()
 
         val showFallback = phase == ReportPhase.READY || (phase == ReportPhase.FEEDBACK_FAILED && manualRetryFailed)
-        val glow = feedback?.glow?.let { GlowUi(it.quote, it.note) }
+        val glow = feedback?.glow?.let { GlowUi(it.quote.takeIf { _ -> it.hasSpan }, it.note) }
             ?: if (showFallback && metrics != null) GlowUi(null, FeedbackFallback.glow(metrics, averages, s.durationMs.toLong(), lang).note) else null
-        val grow = feedback?.grow?.let { GrowUi(it.quote, it.why, it.how) }
+        val grow = feedback?.grow?.let { GrowUi(it.quote.takeIf { _ -> it.hasSpan }, it.why, it.how) }
             ?: if (showFallback && metrics != null) FeedbackFallback.grow(metrics, lang).let { GrowUi(null, it.why, it.how) } else null
 
-        val glowRange = feedback?.glow?.let { it.start..it.end }
-        val growRange = feedback?.grow?.let { it.start..it.end }
+        val glowRange = feedback?.glow?.takeIf { it.hasSpan }?.let { it.start..it.end }
+        val growRange = feedback?.grow?.takeIf { it.hasSpan }?.let { it.start..it.end }
+        val reliability = EngineReliability.of(d.transcriptProvider, lang)
 
         return ReportUiState(
             sessionId = s.id,
@@ -151,7 +172,7 @@ object ReportMapper {
             credit = credit(d.credit, s.speechMs.toLong()),
             stutterFriendly = stutterFriendly,
             noisy = s.snrDb > 0 && s.snrDb < EnergyVad.NOISY_SNR_DB,
-            tiles = metrics?.let { tiles(it, averages, lang, stutterFriendly) }.orEmpty(),
+            tiles = metrics?.let { tiles(it, averages, lang, stutterFriendly, reliability) }.orEmpty(),
             transcript = metrics?.let { transcript(words, it, glowRange, growRange, stutterFriendly) },
             summary = feedback?.summary?.takeIf { it.isNotBlank() },
             fillersDown = metrics != null && averages != null && metrics.fillersPerMin < averages.fillersPerMin,
@@ -166,12 +187,20 @@ object ReportMapper {
             promptText = promptText,
             speechMs = s.speechMs.toLong(),
             manualRetryFailed = manualRetryFailed,
+            offline = d.words != null && EngineReliability.family(d.transcriptProvider) == EngineFamily.ON_DEVICE,
+            ruleNotes = d.feedback?.model == RuleCoach.MODEL,
+            notes = feedback?.notes.orEmpty(),
+            upgrades = feedback?.wordUpgrades.orEmpty().map { WordUpgradeUi(it.word, it.count, it.alternatives) },
         )
     }
 
     fun phase(status: String, errorCode: String?, hasTranscript: Boolean, safety: Safety): ReportPhase = when (status) {
         TalkStatus.QUEUED -> if (errorCode == "BUSY") ReportPhase.BUSY else ReportPhase.QUEUED
-        TalkStatus.FAILED -> if (errorCode == "TOO_LITTLE_SPEECH") ReportPhase.TOO_LITTLE else ReportPhase.STT_FAILED
+        TalkStatus.FAILED -> when (errorCode) {
+            "TOO_LITTLE_SPEECH" -> ReportPhase.TOO_LITTLE
+            ENGINE_UNAVAILABLE_CODE -> ReportPhase.NEEDS_ENGINE
+            else -> ReportPhase.STT_FAILED
+        }
         TalkStatus.TRANSCRIBED -> ReportPhase.METRICS_READY
         TalkStatus.FEEDBACK_FAILED -> ReportPhase.FEEDBACK_FAILED
         TalkStatus.FEEDBACK_READY -> if (safety == Safety.SELF_HARM) ReportPhase.HELPLINE else ReportPhase.READY
@@ -189,7 +218,23 @@ object ReportMapper {
         else -> null
     }
 
-    fun tiles(m: Metrics, avg: MetricAverages?, lang: Lang, stutter: Boolean): List<MetricTileUi> {
+    fun tiles(m: Metrics, avg: MetricAverages?, lang: Lang, stutter: Boolean, reliability: MetricReliability = MetricReliability()): List<MetricTileUi> =
+        rawTiles(m, avg, lang, stutter).mapNotNull { t ->
+            val r = when (t.kind) {
+                MetricKind.PACE -> reliability.pace
+                MetricKind.FILLERS -> reliability.fillers
+                MetricKind.PAUSES -> reliability.pauses
+                MetricKind.REPEATS -> reliability.repetition
+                MetricKind.VARIETY -> reliability.variety
+            }
+            when {
+                r == Reliability.HIDDEN -> null
+                r == Reliability.APPROX && !t.off && !t.locked -> t.copy(approx = true)
+                else -> t
+            }
+        }
+
+    private fun rawTiles(m: Metrics, avg: MetricAverages?, lang: Lang, stutter: Boolean): List<MetricTileUi> {
         val (low, high) = if (lang == Lang.HI) 100.0 to 150.0 else 110.0 to 160.0
         val pace = MetricTileUi(
             kind = MetricKind.PACE,

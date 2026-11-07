@@ -74,6 +74,9 @@ data class PlanRoute(val source: String = SOURCE_ME) {
 
 @Serializable data object QuotaRoute
 
+/** 2A (ADR-008): Settings → Analysis → Your keys. */
+@Serializable data object KeysRoute
+
 @Serializable data object ShareRoute
 
 /** The 4 bottom tabs (US-030): selected icon filled, unselected outlined (design-system §7). */

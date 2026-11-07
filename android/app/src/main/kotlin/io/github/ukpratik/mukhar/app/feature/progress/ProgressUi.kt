@@ -71,6 +71,8 @@ data class ProgressUiState(
     val insight: InsightUi? = null,
     val compare: CompareUi? = null,
     val plan: PlanRowUi = PlanRowUi(SubscriptionStatus.FREE, null),
+    /** D-039: the plan card is hidden while Premium is switched off. */
+    val showPlan: Boolean = io.github.ukpratik.mukhar.app.feature.plan.PremiumGate.PAYWALL_ENABLED,
     val showBaselineCta: Boolean = false,
     val canShare: Boolean = false,
 )

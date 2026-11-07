@@ -178,6 +178,7 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
                         runCatching { uriHandler.openUri(Links.PRIVACY_POLICY) }
                     }
                     OnboardingStep.DECLINED -> DeclinedBody()
+                    OnboardingStep.LISTENING -> ListeningBody(state.listenMode, viewModel::onListenMode)
                     OnboardingStep.BASELINE -> BaselineBody(state)
                     OnboardingStep.REMINDER -> ReminderBody(state, viewModel::onRoutine, viewModel::onCustomPhrase, viewModel::onTime, viewModel::onWeeklyGoal)
                     OnboardingStep.REMINDER_DENIED -> ReminderDeniedBody(state)
@@ -202,6 +203,7 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
                 )
                 OnboardingStep.DISCLOSURE -> DisclosureCta(viewModel::onAgree, viewModel::onNotNow)
                 OnboardingStep.DECLINED -> DeclinedCta(viewModel::onDeclinedContinue, viewModel::onAgree)
+                OnboardingStep.LISTENING -> ListeningCta(viewModel::onListenContinue)
                 OnboardingStep.BASELINE -> BaselineCta(
                     state,
                     onRecord = viewModel::onRecordBaseline,
@@ -240,6 +242,7 @@ private fun stepTitle(step: OnboardingStep, state: OnboardingUiState): String = 
     OnboardingStep.MIC_DENIED -> stringResource(R.string.mic_denied_title)
     OnboardingStep.DISCLOSURE -> stringResource(R.string.disclosure_title)
     OnboardingStep.DECLINED -> stringResource(R.string.declined_title)
+    OnboardingStep.LISTENING -> stringResource(R.string.listen_title)
     OnboardingStep.BASELINE -> stringResource(R.string.baseline_title)
     OnboardingStep.REMINDER -> stringResource(R.string.reminder_title)
     OnboardingStep.REMINDER_DENIED, OnboardingStep.DONE -> state.firstName.trim().let {

@@ -98,6 +98,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import io.github.ukpratik.mukhar.app.R
 import io.github.ukpratik.mukhar.app.feature.talk.common.clock
 import io.github.ukpratik.mukhar.domain.feedback.UpgradedWord
@@ -202,7 +203,7 @@ private fun metricSpoken(t: MetricTileUi, label: String): String {
         null -> null
         else -> stringResource(R.string.a11y_unit_per_min)
     }
-    val value = listOfNotNull(t.value, unit).joinToString(" ")
+    val value = listOfNotNull(if (t.approx) stringResource(R.string.a11y_about) else null, t.value, unit).joinToString(" ")
     val delta = t.delta?.let { deltaContent(it).second }
     val better = if (t.good && t.delta != null && t.delta !is MetricDelta.Band && t.delta != MetricDelta.HindiProvisional) {
         stringResource(R.string.a11y_metric_better)
@@ -218,7 +219,8 @@ private fun MetricBody(t: MetricTileUi) {
                 Text(stringResource(R.string.variety_locked), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Row(verticalAlignment = Alignment.Bottom) {
-                    Text(t.value.orEmpty(), style = MukharTheme.type.metric, color = MaterialTheme.colorScheme.onSurface)
+                    // ADR-008: approximate with this engine → "≈ 3.2"; the ⓘ sheet says why.
+                    Text((if (t.approx) "≈\u2009" else "") + t.value.orEmpty(), style = MukharTheme.type.metric, color = MaterialTheme.colorScheme.onSurface)
                     t.unit?.let {
                         Text(
                             stringResource(if (it == MetricUnit.WPM) R.string.unit_wpm else R.string.unit_per_min),
@@ -777,7 +779,12 @@ fun ReportSheet(onDismiss: () -> Unit, onSend: (ReportReason, Boolean, String) -
 /** The metric ⓘ explainer: one line plus the own-average rule (US-013). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MetricInfoSheet(kind: MetricKind, onDismiss: () -> Unit) {
+fun MetricInfoSheet(kind: MetricKind, onDismiss: () -> Unit) = MetricInfoSheet(kind, approx = false, onDismiss = onDismiss)
+
+/** [approx]: the value was measured from an offline transcript, so the sheet says why it's "≈" (ADR-008). */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MetricInfoSheet(kind: MetricKind, approx: Boolean, onDismiss: () -> Unit) {
     val text = stringResource(
         when (kind) {
             MetricKind.PACE -> R.string.info_pace
@@ -791,6 +798,14 @@ fun MetricInfoSheet(kind: MetricKind, onDismiss: () -> Unit) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
             Text(metricLabel(kind), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { heading() })
             Text(text, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 8.dp))
+            if (approx) {
+                Text(
+                    stringResource(if (kind == MetricKind.FILLERS) R.string.approx_fillers else R.string.approx_generic),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(top = 8.dp).testTag(TAG_APPROX_NOTE),
+                )
+            }
             Text(stringResource(R.string.info_compare), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 8.dp))
             TextButton(onClick = onDismiss, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }
         }
@@ -810,3 +825,5 @@ fun DashedCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
         contentAlignment = Alignment.Center,
     ) { content() }
 }
+
+const val TAG_APPROX_NOTE = "metric_approx_note"

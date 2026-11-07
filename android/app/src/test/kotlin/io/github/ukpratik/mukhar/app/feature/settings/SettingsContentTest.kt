@@ -10,6 +10,7 @@ import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -48,7 +49,11 @@ class SettingsContentTest {
         compose.onNodeWithText("New words a day").performScrollTo()
         compose.onNodeWithText("Stutter-friendly mode").performScrollTo()
         compose.onNodeWithTag(TAG_SWITCH_ANALYTICS).performScrollTo().assertIsOff()
-        compose.onNodeWithText("Free plan").performScrollTo()
+        // D-039: no Plan row; Analysis and the "coming soon" card instead.
+        compose.onNodeWithText("Free plan").assertDoesNotExist()
+        compose.onNodeWithTag(TAG_MODE_DEVICE).performScrollTo().assertIsSelected()
+        compose.onNodeWithTag(TAG_MODE_CLOUD).performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithTag(TAG_CLOUD_SOON).performScrollTo()
         compose.onNodeWithText("Privacy policy").performScrollTo()
     }
 

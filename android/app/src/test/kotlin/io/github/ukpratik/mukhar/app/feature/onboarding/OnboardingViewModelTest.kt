@@ -90,7 +90,13 @@ class OnboardingViewModelTest {
         await(OnboardingStep.DISCLOSURE)
         assertThat(state.analyticsOptIn).isFalse()
         h.vm.onAgree()
+        await(OnboardingStep.LISTENING)
+        assertThat(state.listenMode).isEqualTo(io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.ON_DEVICE)
+        h.vm.onListenMode(io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.CLOUD) // coming soon: ignored
+        assertThat(state.listenMode).isEqualTo(io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.ON_DEVICE)
+        h.vm.onListenContinue()
         await(OnboardingStep.BASELINE)
+        assertThat(settings().analysisMode).isEqualTo(io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.ON_DEVICE)
         assertThat(settings().disclosureConsentAt).isNotNull()
         assertThat(settings().analyticsConsent).isFalse() // Agree doesn't enable analytics (D-026)
 

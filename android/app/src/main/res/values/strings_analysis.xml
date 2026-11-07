@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 2A (ADR-008, D-037, D-039): analysis modes, offline models, own keys, results badges, onboarding listening choice. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Settings → Analysis -->
+    <string name="settings_group_analysis">Analysis</string>
+    <string name="analysis_mode_heading">How Mukhar listens</string>
+    <string name="mode_on_device">On this phone</string>
+    <string name="mode_on_device_sub">Free · recommended. Nothing leaves your phone.</string>
+    <string name="mode_own_keys">Use my own keys</string>
+    <string name="mode_own_keys_sub">Advanced. Your Deepgram, Sarvam or Anthropic account, called straight from your phone.</string>
+    <string name="mode_cloud">Mukhar Cloud</string>
+    <string name="mode_cloud_sub">Coming soon</string>
+    <string name="models_heading">Offline speech models</string>
+    <string name="model_row">%1$s · %2$d MB</string>
+    <string name="model_installed">Installed</string>
+    <string name="model_not_installed">Not installed · Download (coming in the next update)</string>
+    <string name="model_downloading">Downloading…</string>
+    <string name="model_failed">Download failed. Try again.</string>
+    <string name="model_download">Download</string>
+    <string name="model_download_soon_cd">Download %1$s, coming in the next update</string>
+    <string name="keys_row">Your keys</string>
+    <string name="keys_row_none">No keys added</string>
+    <string name="spend_line">This month on your keys: %1$s, ≈ ₹%2$d</string>
+    <string name="spend_note">Estimate, prices as of %1$s. Your provider\'s dashboard is the final bill.</string>
+    <string name="soft_cap">Pause my keys after ₹%1$d a month</string>
+    <string name="soft_cap_sub">After that, talks are analysed on this phone until next month.</string>
+    <string name="cloud_soon_title">Mukhar Cloud · coming soon</string>
+    <string name="cloud_soon_body">Our own accurate analysis, with no keys needed. We\'ll let you know when it\'s ready.</string>
+    <string name="cloud_soon_chip">Coming soon</string>
+
+    <!-- Your keys -->
+    <string name="keys_title">Your keys</string>
+    <string name="keys_lead">Your phone sends the recording and transcript straight to these companies, under your account. Mukhar never sees your keys or your audio. You pay them directly, about ₹1.6 for a 3-minute talk.</string>
+    <string name="keys_stt_heading">Speech-to-text</string>
+    <string name="keys_llm_heading">Coaching</string>
+    <string name="provider_deepgram">Deepgram</string>
+    <string name="provider_sarvam">Sarvam (Hindi)</string>
+    <string name="provider_anthropic">Anthropic (Claude)</string>
+    <string name="key_masked">••••%1$s</string>
+    <string name="key_field_label">Paste your %1$s key</string>
+    <string name="key_save_test">Save and test</string>
+    <string name="key_test">Test key</string>
+    <string name="key_replace">Replace</string>
+    <string name="key_remove">Remove</string>
+    <string name="key_cancel">Cancel</string>
+    <string name="key_checking">Checking…</string>
+    <string name="key_works">Key works</string>
+    <string name="key_works_limited">Key works (it can\'t list projects, which is fine)</string>
+    <string name="key_invalid">Key not accepted (401). Check you copied all of it.</string>
+    <!-- A model id, not a range: keep the hyphens. -->
+    <string name="key_model" tools:ignore="TypographyDashes">This key can\'t use claude-haiku-5-5</string>
+    <string name="key_offline">No internet. We\'ll check next time.</string>
+    <string name="key_error">Couldn\'t check the key right now. Try again later.</string>
+    <string name="key_checked_on">Checked %1$s</string>
+    <string name="key_not_checked">Not checked yet</string>
+    <string name="key_footnote">Stored encrypted on this phone only. Not backed up. Anyone with full control of this phone (for example, rooted) could read it.</string>
+
+    <!-- Results -->
+    <string name="offline_chip">Offline analysis · approx.</string>
+    <string name="offline_chip_explain">This talk was turned into text on your phone. Pace is accurate. Offline recognition can miss some \"um\"s and mishear names or mixed Hindi-English, so numbers marked ≈ are estimates.</string>
+    <string name="a11y_about">about</string>
+    <string name="approx_fillers">≈ Offline recognition misses some fillers, so the real number may be higher.</string>
+    <string name="approx_generic">≈ Measured from an offline transcript, so treat this as an estimate.</string>
+    <string name="grammar_nudge">Want rewrites and grammar fixes? Add your own AI key or wait for Mukhar Cloud.</string>
+    <string name="grammar_nudge_cta">Add your own AI key</string>
+    <string name="try_instead_title">Try instead</string>
+    <string name="try_instead_chip">%1$s · %2$s</string>
+    <string name="try_instead_example">e.g. %1$s</string>
+    <string name="needs_engine_title">Your talk is saved</string>
+    <string name="needs_engine_body">Install the offline speech model or add your own key to analyse this talk.</string>
+    <string name="needs_engine_model">Offline speech model</string>
+    <string name="needs_engine_key">Add your own key</string>
+    <string name="needs_engine_note">Once you do, Mukhar analyses this talk from the saved recording.</string>
+    <string name="note_stt_key_rejected">Your speech-to-text key wasn\'t accepted, so this talk was turned into text on your phone. Check it in Settings → Your keys.</string>
+    <string name="note_stt_fallback">Your speech-to-text provider couldn\'t be reached, so this talk was turned into text on your phone.</string>
+    <string name="note_llm_key_rejected">Your Anthropic key wasn\'t accepted, so these are offline notes. Check it in Settings → Your keys.</string>
+    <string name="note_llm_fallback">Claude couldn\'t write notes this time, so these are offline notes.</string>
+    <string name="note_llm_ungrounded">Some of Claude\'s notes didn\'t match your transcript, so offline notes filled the gap.</string>
+    <string name="note_offline_transcript">These notes are based on an offline transcript, which can mishear some words.</string>
+    <string name="note_soft_cap">You reached your monthly limit for your keys, so this talk was analysed on your phone.</string>
+
+    <!-- Onboarding: How should Mukhar listen? -->
+    <string name="listen_title">How should Mukhar listen?</string>
+    <string name="listen_lead">You can change this any time in Settings → Analysis.</string>
+    <string name="listen_device_title">On this phone (free, recommended)</string>
+    <string name="listen_device_body">Mukhar turns your talk into text on your phone. Nothing leaves your device. It needs a one-time download of about 40 MB per language (Wi-Fi recommended). Offline transcripts are less accurate: Mukhar may miss some \"um\"s and mishear names or mixed Hindi-English, so filler counts are estimates and there are no grammar fixes. Pace and pauses are accurate.</string>
+    <string name="listen_device_download">Download English (36 MB) · Download Hindi (42 MB): coming in the next update. Your talks are saved until then.</string>
+    <string name="listen_keys_title">Use my own AI keys (advanced)</string>
+    <string name="listen_keys_body">Paste your own Deepgram or Sarvam key (speech-to-text) and Anthropic key (coaching) in Settings → Your keys. Your phone sends the recording and transcript straight to those companies under your account. Mukhar never sees your keys or your audio. You pay them directly, about ₹1.6 for a 3-minute talk.</string>
+</resources>

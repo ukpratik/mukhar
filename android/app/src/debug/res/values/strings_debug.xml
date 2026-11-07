@@ -2,7 +2,7 @@
 <resources>
     <string name="debug_menu">Debug menu</string>
     <string name="debug_pipeline">Analysis pipeline</string>
-    <string name="debug_use_fake">Fake pipeline (canned, no network)</string>
+    <string name="debug_use_fake">Force the fake pipeline (demo: canned, no network). Off = the real analysis-mode router</string>
     <string name="debug_failure">Fake failure mode</string>
     <string name="debug_mode_none">None</string>
     <string name="debug_mode_stt">Transcription fails</string>

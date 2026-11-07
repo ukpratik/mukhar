@@ -2,8 +2,13 @@ package io.github.ukpratik.mukhar.app.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.ukpratik.mukhar.app.feature.plan.PremiumGate
 import io.github.ukpratik.mukhar.app.feature.progress.PlanRowUi
+import io.github.ukpratik.mukhar.data.byok.ByokKeyRepository
+import io.github.ukpratik.mukhar.data.local.ModelManager
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.data.db.ProgressDao
+import io.github.ukpratik.mukhar.data.prefs.ByokUsage
 import io.github.ukpratik.mukhar.data.prefs.GoalTrack
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.prefs.Routine
@@ -28,6 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalTime
+import java.time.YearMonth
 import javax.inject.Inject
 
 enum class DeleteStage { NONE, CONFIRM, DELETING, DONE }
@@ -41,6 +47,9 @@ data class SettingsUiState(
     val deleteUnderstood: Boolean = false,
     val talkCount: Int = 0,
     val wordCount: Int = 0,
+    val analysis: AnalysisUi = AnalysisUi(),
+    /** D-039: the Plan row is hidden while Premium is switched off. */
+    val showPlan: Boolean = PremiumGate.PAYWALL_ENABLED,
 )
 
 private data class Transient(val delete: DeleteStage = DeleteStage.NONE, val understood: Boolean = false, val talks: Int = 0, val words: Int = 0)
@@ -56,18 +65,30 @@ class SettingsViewModel @Inject constructor(
     private val wiper: DataWiper,
     entitlements: EntitlementRepository,
     private val clock: Clock,
+    private val models: ModelManager,
+    keys: ByokKeyRepository,
 ) : ViewModel() {
     private val transient = MutableStateFlow(Transient())
 
     /** The last reminder, so switching it off and on again restores the user's time and phrase. */
     private var lastReminder: ReminderSettings? = null
 
+    private val analysis = combine(store.settings, models.models, keys.keys, store.byokUsage) { s, m, k, u ->
+        val month = YearMonth.from(clock.now().atZone(clock.zone())).toString()
+        AnalysisUi(
+            mode = s.analysisMode, models = m, canDownload = models.canDownload, keys = k,
+            usage = if (u.month == month) u else ByokUsage(month),
+            softCapOn = s.softCapOn, softCapInr = s.softCapInr,
+        )
+    }
+
     val state: StateFlow<SettingsUiState> = combine(
         store.settings,
         habits.observe().map { it.week.goal },
         entitlements.snapshot,
         transient,
-    ) { s, goal, e, t ->
+        analysis,
+    ) { s, goal, e, t, a ->
         if (s.reminder != null) lastReminder = s.reminder
         SettingsUiState(
             loading = false,
@@ -81,6 +102,7 @@ class SettingsViewModel @Inject constructor(
             deleteUnderstood = t.understood,
             talkCount = t.talks,
             wordCount = t.words,
+            analysis = a,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), SettingsUiState())
 
@@ -126,6 +148,17 @@ class SettingsViewModel @Inject constructor(
         store.setKeepBaselineAudio(on)
         if (!on) progressDao.keptBaselines().forEach { talks.setAudioKept(it.id, false) }
     }
+
+    /** ADR-008: switching mode re-runs talks that were waiting for an engine. Mukhar Cloud can't be picked in R1. */
+    fun onAnalysisMode(mode: AnalysisMode) = save {
+        if (mode == AnalysisMode.CLOUD && !AnalysisMode.CLOUD_ENABLED) return@save
+        store.setAnalysisMode(mode)
+        talks.retryWaitingForEngine()
+    }
+
+    fun onDownloadModel(lang: Lang) = save { if (models.canDownload) models.download(lang) }
+
+    fun onSoftCap(on: Boolean) = save { store.setSoftCap(on, state.value.analysis.softCapInr) }
 
     fun onDeleteOpen() {
         viewModelScope.launch {

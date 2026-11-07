@@ -99,6 +99,7 @@ import io.github.ukpratik.mukhar.app.feature.talk.common.langLabel
 import io.github.ukpratik.mukhar.data.prefs.GoalTrack
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.work.ReminderCopy
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.ui.theme.MukharCard
 import io.github.ukpratik.mukhar.ui.theme.MukharSpace
@@ -125,6 +126,10 @@ data class SettingsActions(
     val onDeleteConfirm: () -> Unit = {},
     val onDeleteCancel: () -> Unit = {},
     val onStartFresh: () -> Unit = {},
+    val onAnalysisMode: (AnalysisMode) -> Unit = {},
+    val onDownloadModel: (Lang) -> Unit = {},
+    val onSoftCap: (Boolean) -> Unit = {},
+    val onKeys: () -> Unit = {},
 )
 
 @Composable
@@ -133,6 +138,7 @@ fun SettingsScreen(
     onPlan: () -> Unit,
     onDisclosure: () -> Unit,
     onStartFresh: () -> Unit,
+    onKeys: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -160,6 +166,10 @@ fun SettingsScreen(
             onDeleteConfirm = viewModel::onDeleteConfirm,
             onDeleteCancel = viewModel::onDeleteCancel,
             onStartFresh = onStartFresh,
+            onAnalysisMode = viewModel::onAnalysisMode,
+            onDownloadModel = viewModel::onDownloadModel,
+            onSoftCap = viewModel::onSoftCap,
+            onKeys = onKeys,
         ),
     )
 }
@@ -187,6 +197,8 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 Divider()
                 SegRow(Icons.Outlined.EventAvailable, stringResource(R.string.settings_weekly_goal), stringResource(R.string.settings_weekly_goal_sub), listOf(3, 5, 7), state.weeklyGoal, { pluralStringResource(R.plurals.settings_days, it, it) }, actions.onWeeklyGoal)
             }
+            Group(R.string.settings_group_analysis) { AnalysisGroupContent(state.analysis, actions) }
+            CloudSoonCard(Modifier.padding(top = 10.dp))
             Group(R.string.settings_group_reminders) {
                 val reminder = s.reminder
                 SwitchRow(Icons.Outlined.Notifications, stringResource(R.string.settings_reminder), stringResource(R.string.settings_reminder_sub), reminder != null, actions.onReminderOn, TAG_SWITCH_REMINDER)
@@ -203,9 +215,11 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 Divider()
                 SwitchRow(Icons.Outlined.Abc, stringResource(R.string.settings_translit), stringResource(R.string.settings_translit_sub), s.transliteration, actions.onTransliteration, TAG_SWITCH_TRANSLIT)
             }
-            Group(R.string.settings_group_plan) {
-                val (title, sub) = planText(state.plan)
-                LinkRow(Icons.Outlined.WorkspacePremium, title, sub, value = planValue(state.plan), onClick = actions.onPlan, tag = TAG_PLAN)
+            if (state.showPlan) {
+                Group(R.string.settings_group_plan) {
+                    val (title, sub) = planText(state.plan)
+                    LinkRow(Icons.Outlined.WorkspacePremium, title, sub, value = planValue(state.plan), onClick = actions.onPlan, tag = TAG_PLAN)
+                }
             }
             Group(R.string.settings_group_privacy) {
                 SwitchRow(Icons.Outlined.GraphicEq, stringResource(R.string.settings_keep_baseline), stringResource(R.string.settings_keep_baseline_sub), s.keepBaselineAudio, actions.onKeepBaselineAudio, TAG_SWITCH_BASELINE)

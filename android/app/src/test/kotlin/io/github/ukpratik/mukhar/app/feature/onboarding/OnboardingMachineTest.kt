@@ -29,7 +29,7 @@ class OnboardingMachineTest {
 
     @Test
     fun happyPathAgreeRecordsBaselineThenReminder() {
-        val s = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.WarmupDone, E.Agree, E.BaselineDone, E.ReminderSet(true))
+        val s = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.WarmupDone, E.Agree, E.ListeningChosen, E.BaselineDone, E.ReminderSet(true))
         assertThat(s.step).isEqualTo(S.DONE)
         assertThat(s.consented).isTrue()
     }
@@ -39,8 +39,9 @@ class OnboardingMachineTest {
         val declined = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.WarmupDone, E.NotNow)
         assertThat(declined.step).isEqualTo(S.DECLINED)
         assertThat(run(E.DeclinedContinue, from = declined).step).isEqualTo(S.REMINDER)
-        // "I've changed my mind, agree" goes to the baseline.
-        assertThat(run(E.Agree, from = declined).step).isEqualTo(S.BASELINE)
+        // "I've changed my mind, agree" goes to the listening choice (ADR-008), then the baseline.
+        assertThat(run(E.Agree, from = declined).step).isEqualTo(S.LISTENING)
+        assertThat(run(E.Agree, E.ListeningChosen, from = declined).step).isEqualTo(S.BASELINE)
     }
 
     @Test
@@ -81,5 +82,16 @@ class OnboardingMachineTest {
     @Test
     fun progressHasSixSteps() {
         assertThat(S.entries.map { it.progress }.distinct().sorted()).containsExactly(1, 2, 3, 4, 5, 6).inOrder()
+    }
+
+    @Test
+    fun theListeningChoiceSitsBetweenPrivacyAndTheBaseline() {
+        val agreed = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.WarmupDone, E.Agree)
+        assertThat(agreed.step).isEqualTo(S.LISTENING)
+        assertThat(agreed.step.progress).isEqualTo(S.DISCLOSURE.progress)
+        assertThat(run(E.Back, from = agreed).step).isEqualTo(S.DISCLOSURE)
+        assertThat(run(E.Back, from = OnboardingState(S.BASELINE, consented = true)).step).isEqualTo(S.LISTENING)
+        // Only the choice moves it on.
+        assertThat(run(E.BaselineDone, from = agreed).step).isEqualTo(S.LISTENING)
     }
 }

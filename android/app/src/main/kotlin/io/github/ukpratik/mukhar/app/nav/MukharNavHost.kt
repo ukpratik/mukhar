@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import io.github.ukpratik.mukhar.app.feature.plan.PlanScreen
 import io.github.ukpratik.mukhar.app.feature.progress.ProgressScreen
 import io.github.ukpratik.mukhar.app.feature.quota.QuotaScreen
+import io.github.ukpratik.mukhar.app.feature.settings.KeysScreen
 import io.github.ukpratik.mukhar.app.feature.settings.SettingsScreen
 import io.github.ukpratik.mukhar.app.feature.share.ShareScreen
 import io.github.ukpratik.mukhar.app.feature.soundlab.SoundLabRoute // M6
@@ -137,8 +138,10 @@ fun MukharNavHost(
                     onPlan = { navController.navigate(PlanRoute(PlanRoute.SOURCE_SETTINGS)) },
                     onDisclosure = { navController.navigate(DisclosureRoute) },
                     onStartFresh = onDataDeleted,
+                    onKeys = { navController.navigate(KeysRoute) },
                 )
             }
+            composable<KeysRoute> { KeysScreen(onBack = { navController.popBackStack() }) }
             composable<PlanRoute> { PlanScreen(onClose = { if (!navController.popBackStack()) navController.navigate(TodayRoute) }) }
             composable<ShareRoute> { ShareScreen(onClose = { navController.popBackStack() }) }
             composable<QuotaRoute> {
@@ -172,6 +175,8 @@ fun MukharNavHost(
                         },
                         onSettings = { navController.navigate(MeRoute) { popUpTo(navController.graph.findStartDestination().id) } },
                         onQuota = { navController.navigate(QuotaRoute) { popUpTo<ReportRoute> { inclusive = true } } },
+                        onAnalysisSettings = { navController.navigate(SettingsRoute) },
+                        onKeys = { navController.navigate(KeysRoute) },
                     ),
                 )
             }
@@ -229,5 +234,5 @@ fun NavGraphBuilder.meDestination(navController: NavHostController) {
 /** Full-screen talk routes (S09 to S12): no bottom bar, and they handle their own window insets. */
 private val FULL_SCREEN_TALK = listOf(
     RecordRoute::class, ReportRoute::class, SayAgainRoute::class, RecoveredRoute::class,
-    SettingsRoute::class, PlanRoute::class, QuotaRoute::class, ShareRoute::class,
+    SettingsRoute::class, PlanRoute::class, QuotaRoute::class, ShareRoute::class, KeysRoute::class,
 )

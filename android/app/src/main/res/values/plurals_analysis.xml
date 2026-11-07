@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="overused_line">
+        <item quantity="one">You said \"%1$s\" %2$d time</item>
+        <item quantity="other">You said \"%1$s\" %2$d times</item>
+    </plurals>
+    <plurals name="spend_talks">
+        <item quantity="one">%d talk</item>
+        <item quantity="other">%d talks</item>
+    </plurals>
+</resources>

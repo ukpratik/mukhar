@@ -61,7 +61,7 @@ class FontScaleSettingsTest {
     @Test
     fun mainListHasNoClippedText() {
         show(base)
-        listOf("New words a day", "Weekly goal", "Stutter-friendly mode", "Free plan", "Privacy policy").forEach {
+        listOf("New words a day", "Weekly goal", "Stutter-friendly mode", "On this phone", "Mukhar Cloud · coming soon", "Privacy policy").forEach {
             compose.onNodeWithText(it).performScrollTo().assertIsDisplayed()
         }
         // Above 150 % the segmented choices are a radio list, so "7 days" never truncates.

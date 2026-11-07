@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 11 and below. Same rules as data_extraction_rules.xml. -->
+<!-- Android 11 and below. Same rules as data_extraction_rules.xml (byok.pb and mukhar_byok_keyset excluded by omission). -->
 <full-backup-content>
     <include domain="database" path="mukhar.db" />
     <include domain="database" path="mukhar.db-wal" />

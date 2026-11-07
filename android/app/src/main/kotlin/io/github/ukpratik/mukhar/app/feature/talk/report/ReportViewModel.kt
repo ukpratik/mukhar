@@ -38,6 +38,9 @@ import javax.inject.Inject
 sealed interface ReportEvent {
     data object RetryFeedback : ReportEvent
     data object RetryTranscript : ReportEvent
+
+    /** ADR-008: a talk waiting for an engine is analysed again from its saved audio (through the queue). */
+    data object Reanalyse : ReportEvent
     data object Discard : ReportEvent
     data class Rate(val value: Int) : ReportEvent
     data class ToggleWord(val word: UpgradedWord, val example: String) : ReportEvent
@@ -107,6 +110,7 @@ class ReportViewModel @Inject constructor(
                     retrying.value = false
                 }
                 ReportEvent.RetryTranscript -> talks.analyze(id)
+                ReportEvent.Reanalyse -> talks.analyzeRecovered(id)
                 ReportEvent.Discard -> talks.discard(id)
                 is ReportEvent.Rate -> {
                     talks.rate(id, e.value)

@@ -42,4 +42,16 @@ class BackupRulesTest {
         assertThat(manifest).contains("android:dataExtractionRules=\"@xml/data_extraction_rules\"")
         assertThat(manifest).contains("android:fullBackupContent=\"@xml/full_backup_content\"")
     }
+
+    /** ADR-008: own API keys (byok.pb) and their Tink keyset never leave the phone, in any backup or transfer. */
+    @Test
+    fun ownKeysAndTheirKeysetAreNeverBackedUp() {
+        val all = includes("data_extraction_rules.xml", "cloud-backup") + includes("data_extraction_rules.xml", "device-transfer") +
+            includes("full_backup_content.xml")
+        assertThat(all.none { "byok" in it }).isTrue()
+        assertThat(all.none { it.startsWith("sharedpref") || it == "file:datastore" || it == "file:." || it == "root:." }).isTrue()
+        val rules = File("src/main/res/xml/data_extraction_rules.xml").readText()
+        assertThat(rules).contains("byok.pb")
+        assertThat(rules).contains("mukhar_byok_keyset")
+    }
 }

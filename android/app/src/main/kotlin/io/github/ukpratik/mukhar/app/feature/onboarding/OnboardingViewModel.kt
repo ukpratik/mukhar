@@ -10,6 +10,7 @@ import io.github.ukpratik.mukhar.data.baseline.BaselineRecorder
 import io.github.ukpratik.mukhar.data.baseline.BaselineResult
 import io.github.ukpratik.mukhar.data.prefs.AgeGate
 import io.github.ukpratik.mukhar.data.prefs.GoalTrack
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.prefs.Routine
 import io.github.ukpratik.mukhar.data.prefs.SettingsStore
@@ -86,6 +87,8 @@ data class OnboardingUiState(
     val warmupCredited: Boolean = false,
     /** S04 or S05 opened on its own from Today (not inside onboarding): leaving the step closes the screen. */
     val standalone: Boolean = false,
+    /** ADR-008 listening choice; on the phone by default. */
+    val listenMode: AnalysisMode = AnalysisMode.DEFAULT,
 ) {
     val step: OnboardingStep get() = flow.step
     val birthYear: Int? get() = yearText.toIntOrNull()
@@ -319,6 +322,20 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun onDeclinedContinue() = move(OnboardingEvent.DeclinedContinue)
+
+    // How should Mukhar listen? (ADR-008)
+
+    fun onListenMode(mode: AnalysisMode) {
+        if (mode == AnalysisMode.CLOUD && !AnalysisMode.CLOUD_ENABLED) return
+        _state.update { it.copy(listenMode = mode) }
+    }
+
+    fun onListenContinue() {
+        viewModelScope.launch {
+            settings.setAnalysisMode(_state.value.listenMode)
+            move(OnboardingEvent.ListeningChosen)
+        }
+    }
 
     // S05
 

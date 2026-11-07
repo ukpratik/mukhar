@@ -8,6 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.ukpratik.mukhar.app.feature.plan.PremiumGate
 import io.github.ukpratik.mukhar.app.feature.plan.TrialBannerUi
 import io.github.ukpratik.mukhar.data.db.WordDao
 import io.github.ukpratik.mukhar.data.repo.EntitlementRepository
@@ -101,7 +102,8 @@ class TodayViewModel @Inject constructor(
 
     /** Re-checked each minute so the banner appears when trial day 6 starts while Today is open. */
     private val trialBanner = combine(entitlements.snapshot, settings.trialBannerDismissedDay, ticks) { e, dismissed, _ ->
-        TrialBannerUi.from(e, clock.now(), clock.zone(), dismissed)
+        // D-039: no trial banner while Premium is switched off.
+        if (PremiumGate.PAYWALL_ENABLED) TrialBannerUi.from(e, clock.now(), clock.zone(), dismissed) else null
     }
 
     private val extrasAndBanner = combine(extras, trialBanner) { x, b -> x to b }

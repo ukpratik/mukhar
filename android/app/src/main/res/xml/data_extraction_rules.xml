@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- LLD §2.1 backup rules: only Room and settings are included, so everything else (recordings/, the session token
-     DataStore, Firebase auth prefs) is excluded by omission. Lint rejects explicit excludes outside included paths. -->
+     DataStore, Firebase auth prefs) is excluded by omission. Lint rejects explicit excludes outside included paths.
+     ADR-008: the user's own API keys (files/datastore/byok.pb) and their Tink keyset (shared_prefs/mukhar_byok_keyset.xml,
+     wrapped by an Android Keystore key that never migrates) are excluded from cloud backup AND device transfer by
+     omission too; BackupRulesTest fails if either is ever included. -->
 <data-extraction-rules>
     <cloud-backup>
         <include domain="database" path="mukhar.db" />

@@ -150,7 +150,7 @@ fun ProgressContent(state: ProgressUiState, actions: ProgressActions, modifier: 
         }
         if (state.showBaselineCta) BaselineRow(actions.onBaseline)
         state.compare?.let { Compare(it, state.canShare, actions.onShare, player) }
-        PlanRow(state.plan, actions.onPlan)
+        if (state.showPlan) PlanRow(state.plan, actions.onPlan)
     }
 }
 

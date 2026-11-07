@@ -12,6 +12,9 @@ enum class OnboardingStep(val progress: Int, val canGoBack: Boolean) {
     MIC_DENIED(3, canGoBack = true),
     DISCLOSURE(4, canGoBack = true),
     DECLINED(4, canGoBack = true),
+
+    /** 2A (ADR-008): "How should Mukhar listen?" right after agreeing to S04 (same progress segment as Privacy). */
+    LISTENING(4, canGoBack = true),
     BASELINE(5, canGoBack = true),
     REMINDER(6, canGoBack = true),
     REMINDER_DENIED(6, canGoBack = false),
@@ -32,6 +35,7 @@ sealed interface OnboardingEvent {
     data object Agree : OnboardingEvent
     data object NotNow : OnboardingEvent
     data object DeclinedContinue : OnboardingEvent
+    data object ListeningChosen : OnboardingEvent
     data object BaselineDone : OnboardingEvent
     data class ReminderSet(val notificationsAllowed: Boolean) : OnboardingEvent
     data object NoReminder : OnboardingEvent
@@ -58,7 +62,8 @@ object AgeCheck {
 
 /**
  * Pure transitions (unit-tested). Rules from the design notes: under 18 is a final stop; no mic skips S04 and S05
- * (no audio will leave the phone); "Not now" on S04 skips S05 (the baseline needs analysis).
+ * (no audio will leave the phone); "Not now" on S04 skips S05 (the baseline needs analysis). Agreeing on S04 leads to
+ * the listening choice (ADR-008), then S05.
  */
 object OnboardingMachine {
     fun reduce(state: OnboardingState, event: OnboardingEvent): OnboardingState = when (event) {
@@ -78,7 +83,7 @@ object OnboardingMachine {
             copy(step = OnboardingStep.REMINDER, micSkipped = true)
         }
         OnboardingEvent.Agree -> if (state.step == OnboardingStep.DISCLOSURE || state.step == OnboardingStep.DECLINED) {
-            state.copy(step = OnboardingStep.BASELINE, consented = true)
+            state.copy(step = OnboardingStep.LISTENING, consented = true)
         } else {
             state
         }
@@ -86,6 +91,7 @@ object OnboardingMachine {
             copy(step = OnboardingStep.DECLINED, consented = false)
         }
         OnboardingEvent.DeclinedContinue -> state.onlyFrom(OnboardingStep.DECLINED) { copy(step = OnboardingStep.REMINDER) }
+        OnboardingEvent.ListeningChosen -> state.onlyFrom(OnboardingStep.LISTENING) { copy(step = OnboardingStep.BASELINE) }
         OnboardingEvent.BaselineDone -> state.onlyFrom(OnboardingStep.BASELINE) { copy(step = OnboardingStep.REMINDER) }
         is OnboardingEvent.ReminderSet -> state.onlyFrom(OnboardingStep.REMINDER) {
             copy(step = if (event.notificationsAllowed) OnboardingStep.DONE else OnboardingStep.REMINDER_DENIED)
@@ -100,7 +106,8 @@ object OnboardingMachine {
         OnboardingStep.WARMUP, OnboardingStep.MIC_DENIED -> OnboardingStep.LANGUAGES
         OnboardingStep.DISCLOSURE -> OnboardingStep.WARMUP
         OnboardingStep.DECLINED -> OnboardingStep.DISCLOSURE
-        OnboardingStep.BASELINE -> OnboardingStep.DISCLOSURE
+        OnboardingStep.LISTENING -> OnboardingStep.DISCLOSURE
+        OnboardingStep.BASELINE -> OnboardingStep.LISTENING
         OnboardingStep.REMINDER -> when {
             state.micSkipped -> OnboardingStep.MIC_DENIED
             state.consented == false -> OnboardingStep.DECLINED

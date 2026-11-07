@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -87,6 +88,13 @@ class OnboardingUiTest {
         compose.onNodeWithTag(TAG_AGREE).performClick()
         io.github.ukpratik.mukhar.app.testing.waitFor { settings().disclosureConsentAt != null }
         assertThat(settings().analyticsConsent).isFalse()
+        // ADR-008: "How should Mukhar listen?" comes next, on this phone by default.
+        waitForText("How should Mukhar listen?")
+        compose.onNodeWithTag(TAG_LISTEN_DEVICE).assertIsSelected()
+        compose.onNodeWithTag(io.github.ukpratik.mukhar.app.feature.settings.TAG_CLOUD_SOON).performScrollTo().assertExists()
+        compose.onNodeWithTag(TAG_LISTEN_KEYS).performScrollTo().performClick().assertIsSelected()
+        compose.onNodeWithTag(TAG_LISTEN_CONTINUE).performClick()
+        io.github.ukpratik.mukhar.app.testing.waitFor { settings().analysisMode == io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.OWN_KEYS }
         waitForText("Record your starting point")
     }
 

@@ -123,6 +123,9 @@ data class ReportActions(
     val onSettings: () -> Unit,
     /** S17 after the server's QUOTA_EXHAUSTED (the talk stays saved and is analysed after the reset). */
     val onQuota: () -> Unit = {},
+    /** ADR-008: Settings → Analysis (offline speech models) and "Your keys". */
+    val onAnalysisSettings: () -> Unit = {},
+    val onKeys: () -> Unit = {},
 )
 
 @Composable
@@ -229,6 +232,13 @@ fun ReportContent(
                 ReportPhase.QUEUED, ReportPhase.BUSY -> Waiting(state, actions.onBack) { confirmDiscard = true }
                 ReportPhase.STT_FAILED -> SttFailed(state, onRetry = { onEvent(ReportEvent.RetryTranscript) }, onLater = actions.onBack)
                 ReportPhase.TOO_LITTLE -> TooLittle(state, onRetry = { actions.onRecordAgain(state) }, onBack = actions.onBack)
+                ReportPhase.NEEDS_ENGINE -> NeedsEngine(
+                    state,
+                    onModels = actions.onAnalysisSettings,
+                    onKeys = actions.onKeys,
+                    onRetry = { onEvent(ReportEvent.Reanalyse) },
+                    onLater = actions.onBack,
+                )
                 ReportPhase.HELPLINE -> Helpline(state) { info = it }
                 ReportPhase.METRICS_READY, ReportPhase.FEEDBACK_FAILED, ReportPhase.READY -> Report(state, onEvent, actions, onInfo = { info = it }) { reportOpen = true }
                 ReportPhase.GONE -> Unit
@@ -242,7 +252,7 @@ fun ReportContent(
             onEvent(ReportEvent.SendReport(reason, consent, note))
         }
     }
-    info?.let { MetricInfoSheet(it) { info = null } }
+    info?.let { k -> MetricInfoSheet(k, approx = state.tiles.any { it.kind == k && it.approx }) { info = null } }
     if (confirmDiscard) {
         ModalBottomSheet(onDismissRequest = { confirmDiscard = false }) {
             Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 30.dp)) {
@@ -266,13 +276,15 @@ private fun PhaseAnnouncer(state: ReportUiState) {
         ReportPhase.BUSY -> stringResource(R.string.busy_title)
         ReportPhase.STT_FAILED -> stringResource(R.string.stt_title)
         ReportPhase.TOO_LITTLE -> stringResource(R.string.low_title)
+        ReportPhase.NEEDS_ENGINE -> stringResource(R.string.needs_engine_title)
         ReportPhase.HELPLINE -> stringResource(R.string.help_title)
         ReportPhase.METRICS_READY -> stringResource(R.string.a11y_report_metrics_ready)
         ReportPhase.READY -> stringResource(R.string.a11y_report_ready)
         ReportPhase.FEEDBACK_FAILED -> stringResource(R.string.a11y_report_notes_missing)
         ReportPhase.GONE -> ""
     }
-    val urgent = state.phase == ReportPhase.STT_FAILED || state.phase == ReportPhase.TOO_LITTLE || state.phase == ReportPhase.FEEDBACK_FAILED
+    val urgent = state.phase == ReportPhase.STT_FAILED || state.phase == ReportPhase.TOO_LITTLE || state.phase == ReportPhase.FEEDBACK_FAILED ||
+        state.phase == ReportPhase.NEEDS_ENGINE
     Spacer(
         Modifier.fillMaxWidth().height(1.dp).testTag(TAG_REPORT_ANNOUNCER).semantics {
             liveRegion = if (urgent) LiveRegionMode.Assertive else LiveRegionMode.Polite
@@ -483,6 +495,8 @@ private fun ColumnScope.Report(
         state.summary != null -> Summary(state.summary, lang)
     }
     state.credit?.let { CreditPill(it) }
+    if (state.offline) OfflineChip(Modifier.padding(top = 4.dp))
+    AnalysisNotes(state.notes, Modifier.padding(top = 8.dp))
     if (state.stutterFriendly) StutterNote(actions.onSettings)
     if (state.noisy) {
         MukharBanner(Icons.Rounded.GraphicEq, stringResource(R.string.noise_title), stringResource(R.string.noise_body_results), BannerTone.WARN, Modifier.padding(top = 12.dp), assertive = true)
@@ -562,6 +576,13 @@ private fun ColumnScope.Report(
             )
         }
     }
+    WordUpgrades(
+        state.upgrades, lang,
+        collected = { w -> io.github.ukpratik.mukhar.data.repo.TalkRepository.wordId(lang, w) in state.collectedWordIds },
+        onWord = { w, example -> onEvent(ReportEvent.ToggleWord(w, example)) },
+        modifier = Modifier.padding(top = 6.dp),
+    )
+    if (phase == ReportPhase.READY && state.ruleNotes) GrammarNudge(actions.onKeys)
     if (phase == ReportPhase.READY) {
         if (state.showRating) RatingRow(state.rating) { onEvent(ReportEvent.Rate(it)) }
         ReportLink(onReport)
