@@ -1,0 +1,6 @@
+First release.
+
+- Talk practice with transcript, pace, fillers, pauses and coaching (using your own Deepgram/Sarvam and Anthropic keys)
+- Word Gym and spaced revision in English and Hindi
+- Streaks, reminders, progress and Sound Lab
+- No ads, no trackers, no account

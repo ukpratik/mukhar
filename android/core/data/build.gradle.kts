@@ -9,6 +9,13 @@ plugins {
 android {
     buildFeatures.buildConfig = true
 
+    // D-044: "fdroid" has no Google Play Billing (F-Droid allows only free software); "play" keeps it for Google Play.
+    flavorDimensions += "store"
+    productFlavors {
+        create("fdroid") { dimension = "store" }
+        create("play") { dimension = "store" }
+    }
+
     buildTypes {
         // LLD §7: the API base URL comes from BuildConfig per build type. The Worker isn't deployed yet (Node and
         // keys are pending, build-plan P1/P2), so both point at a placeholder that never resolves.
@@ -44,7 +51,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.okhttp)
-    implementation(libs.billing.ktx)
+    "playImplementation"(libs.billing.ktx)
     implementation(libs.tink.android)
 
     testImplementation(libs.robolectric)

@@ -7,7 +7,7 @@ import io.github.ukpratik.mukhar.data.audio.StatFsStorageInfo
 import io.github.ukpratik.mukhar.data.audio.StorageInfo
 import io.github.ukpratik.mukhar.data.billing.AccountServer
 import io.github.ukpratik.mukhar.data.billing.BillingRepository
-import io.github.ukpratik.mukhar.data.billing.PlayBillingRepository
+import io.github.ukpratik.mukhar.data.billing.StoreBillingRepository
 import io.github.ukpratik.mukhar.data.billing.RemoteAccountServer
 import io.github.ukpratik.mukhar.data.repo.EntitlementRepository
 import io.github.ukpratik.mukhar.data.repo.Entitlements
@@ -37,7 +37,7 @@ object VariantModule {
 
     @Provides
     @Singleton
-    fun billing(play: PlayBillingRepository): BillingRepository = play
+    fun billing(play: StoreBillingRepository): BillingRepository = play
 
     @Provides
     @Singleton

@@ -81,8 +81,8 @@ class OnboardingUiTest {
         h.resumeAt(OnboardingStep.DISCLOSURE)
         show()
         waitForText("What leaves your phone")
-        compose.onNodeWithText("Your audio goes to a speech service").assertExists()
-        compose.onNodeWithText("Nothing is stored on our server").assertExists()
+        compose.onNodeWithText("Offline analysis: nothing leaves").assertExists()
+        compose.onNodeWithText("Nothing is stored by Mukhar").assertExists()
         compose.onNodeWithTag(TAG_ANALYTICS).performScrollTo().assertIsOff()
 
         compose.onNodeWithTag(TAG_AGREE).performClick()
@@ -118,7 +118,7 @@ class OnboardingUiTest {
         assertThat(opened).isEqualTo(1)
         // The analytics switch reads its body too (consent copy is never hidden).
         compose.onNodeWithTag(TAG_ANALYTICS).assertContentDescriptionEquals(
-            "Share usage and crash reports (optional). Optional. Helps us fix bugs. No audio or transcripts.",
+            "Share usage and crash reports (optional). This version doesn't collect or send any usage or crash data. The switch is kept for a future opt-in.",
         )
     }
 

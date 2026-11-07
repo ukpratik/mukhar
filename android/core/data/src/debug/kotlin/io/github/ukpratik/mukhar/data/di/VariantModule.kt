@@ -6,7 +6,7 @@ import io.github.ukpratik.mukhar.data.audio.StatFsStorageInfo
 import io.github.ukpratik.mukhar.data.audio.StorageInfo
 import io.github.ukpratik.mukhar.data.billing.AccountServer
 import io.github.ukpratik.mukhar.data.billing.BillingRepository
-import io.github.ukpratik.mukhar.data.billing.PlayBillingRepository
+import io.github.ukpratik.mukhar.data.billing.StoreBillingRepository
 import io.github.ukpratik.mukhar.data.billing.RemoteAccountServer
 import io.github.ukpratik.mukhar.data.debug.DebugAnalysisPipeline
 import io.github.ukpratik.mukhar.data.debug.DebugAnalyticsSink
@@ -59,7 +59,7 @@ object VariantModule {
 
     @Provides
     @Singleton
-    fun billing(controls: DebugControls, fake: FakePlayStore, play: Provider<PlayBillingRepository>): BillingRepository =
+    fun billing(controls: DebugControls, fake: FakePlayStore, play: Provider<StoreBillingRepository>): BillingRepository =
         if (controls.state.value.fakeBilling) FakeBillingRepository(fake) else play.get()
 
     @Provides

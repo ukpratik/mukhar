@@ -1,0 +1,36 @@
+<p>You can get by in English or Hindi, but you want to sound clear and confident: in meetings, interviews, on camera or on stage. Mukhar (मुखर, "articulate") is a speaking coach for exactly that.</p>
+
+<p><b>Talk practice</b></p>
+<ul>
+<li>Pick a prompt and speak for 1 to 3 minutes.</li>
+<li>See your transcript, pace, filler words and pauses.</li>
+<li>Get one thing you did well and one thing to work on, then say it again and compare.</li>
+</ul>
+
+<p><b>Built for Indian speakers</b></p>
+<ul>
+<li>Indian English is the baseline. Mukhar never judges your accent.</li>
+<li>Practise in Hindi too. Everyday English words in Hindi ("मेरा office") are fine.</li>
+</ul>
+
+<p><b>Words and revision</b></p>
+<ul>
+<li>Word Gym: words for interviews, work, public speaking, content creation or everyday talk. Learn a word, then use it in your own sentence.</li>
+<li>Spaced revision (FSRS) brings words back before you forget them, with a 2-minute quick revision.</li>
+</ul>
+
+<p><b>A calm habit</b></p>
+<ul>
+<li>Daily streak with freezes and a repair day. Reminders back off if you're busy. No leaderboards, no guilt.</li>
+<li>Progress: your first talk next to your latest.</li>
+<li>Sound Lab: tricky sound pairs like v / w and ड़ / र.</li>
+<li>Dark mode and a stutter-friendly mode.</li>
+</ul>
+
+<p><b>How talks are analysed in this version</b></p>
+<p>Talk analysis uses your own API keys: paste a Deepgram or Sarvam key (speech-to-text) and, optionally, an Anthropic key (coaching). Your phone sends the recording straight to those services under your account; Mukhar has no server and never sees your keys or audio. Without keys, talks are recorded and saved, and you can analyse them later. A fully offline speech engine is coming in the next release.</p>
+
+<p><b>Privacy</b></p>
+<p>Your talks, words and progress stay on your phone. No ads, no trackers, no account. Keys are stored encrypted on the device and are never backed up. Mukhar is for ages 18 and up.</p>
+
+<p>Free and open source (GPL-3.0): https://github.com/ukpratik/mukhar</p>

@@ -15,6 +15,13 @@ android {
         versionName = "1.0.0"
     }
 
+    // D-044: one app ID for both. "fdroid" is the F-Droid build (no Play Billing); "play" is for Google Play later.
+    flavorDimensions += "store"
+    productFlavors {
+        create("fdroid") { dimension = "store" }
+        create("play") { dimension = "store" }
+    }
+
     // Upload key for Google Play (Play App Signing re-signs for users), same pattern as Folio. Credentials live in
     // ~/.gradle/gradle.properties (MUKHAR_RELEASE_*), the keystore in ~/.android-keys/, never in the repo
     // (LLD §7, launch-checklist "Signing setup"). Without them the release build is signed with the debug key so it
@@ -41,7 +48,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
+            // D-044: without the upload key the release APK stays unsigned (F-Droid builds from source and signs it
+            // itself). Pass -Pmukhar.debugSignRelease=true to sign a local test build with the debug key instead.
+            signingConfig = signingConfigs.findByName("upload")
+                ?: if (providers.gradleProperty("mukhar.debugSignRelease").orNull == "true") signingConfigs.getByName("debug") else null
         }
     }
 

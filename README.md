@@ -24,8 +24,8 @@
 
 | Mode | Status | Notes |
 |---|---|---|
-| **On this phone** | In progress | Free and offline. Speech-to-text runs on the phone with a one-time model download of about 40 MB per language, and feedback comes from built-in rules. Pace and pauses are accurate; filler counts are estimates. |
-| **Your own keys** | In progress | Paste your own Deepgram or Sarvam key (speech-to-text) and Anthropic key (coaching). The phone calls those services directly, so Mukhar never sees your keys or your audio. |
+| **On this phone** | Next release (1.1) | Free and offline. Speech-to-text runs on the phone with a one-time model download of about 40 MB per language, and feedback comes from built-in rules. Pace and pauses are accurate; filler counts are estimates. |
+| **Your own keys** | **Available in 1.0** | Paste your own Deepgram or Sarvam key (speech-to-text) and Anthropic key (coaching). The phone calls those services directly, so Mukhar never sees your keys or your audio. |
 | **Mukhar Cloud** | Coming soon | The server in `worker/` is complete but switched off. |
 
 ## Repository layout
@@ -42,8 +42,8 @@ Requirements: JDK 21+ and the Android SDK (compileSdk 37). The app runs on Andro
 
 ```bash
 cd android
-./gradlew test             # unit tests
-./gradlew assembleDebug    # debug APK: app/build/outputs/apk/debug/
+./gradlew test                  # unit tests
+./gradlew assembleFdroidDebug    # debug APK: app/build/outputs/apk/fdroid/debug/
 ```
 
 Release builds are signed with a key that is never kept in this repo. Set these in `~/.gradle/gradle.properties`:
@@ -64,6 +64,8 @@ npm test
 ```
 
 ## Privacy
+
+Full policy: [PRIVACY.md](PRIVACY.md).
 
 - Your practice history stays on your phone.
 - In "On this phone" mode, nothing leaves the device.
