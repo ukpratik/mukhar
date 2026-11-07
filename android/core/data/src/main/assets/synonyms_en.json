@@ -1,0 +1,6896 @@
+{
+  "version": 1,
+  "lang": "en",
+  "entries": [
+    {
+      "headword": "good",
+      "alternatives": [
+        {
+          "word": "excellent",
+          "meaning": "of very high quality",
+          "register": "formal",
+          "example": "The team did an excellent job on the launch."
+        },
+        {
+          "word": "solid",
+          "meaning": "reliable and well done",
+          "register": "casual",
+          "example": "That was a solid presentation."
+        },
+        {
+          "word": "outstanding",
+          "meaning": "clearly better than the rest",
+          "register": "power",
+          "example": "Her results this quarter were outstanding."
+        }
+      ]
+    },
+    {
+      "headword": "bad",
+      "alternatives": [
+        {
+          "word": "poor",
+          "meaning": "below the expected standard",
+          "register": "formal",
+          "example": "The audio quality of the video was poor."
+        },
+        {
+          "word": "rough",
+          "meaning": "difficult or unpleasant",
+          "register": "casual",
+          "example": "It was a rough day at the office."
+        },
+        {
+          "word": "dreadful",
+          "meaning": "extremely bad",
+          "register": "power",
+          "example": "The traffic on the highway was dreadful this morning."
+        }
+      ]
+    },
+    {
+      "headword": "nice",
+      "alternatives": [
+        {
+          "word": "pleasant",
+          "meaning": "enjoyable and agreeable",
+          "register": "formal",
+          "example": "We had a pleasant dinner with my in-laws."
+        },
+        {
+          "word": "lovely",
+          "meaning": "very nice and charming",
+          "register": "casual",
+          "example": "What a lovely garden your grandmother has!"
+        },
+        {
+          "word": "delightful",
+          "meaning": "giving great pleasure",
+          "register": "power",
+          "example": "The hosts made it a delightful evening for everyone."
+        }
+      ]
+    },
+    {
+      "headword": "great",
+      "alternatives": [
+        {
+          "word": "remarkable",
+          "meaning": "worth noticing; unusual in a good way",
+          "register": "formal",
+          "example": "The intern made remarkable progress in two months."
+        },
+        {
+          "word": "fantastic",
+          "meaning": "extremely good",
+          "register": "casual",
+          "example": "The street food in Indore was fantastic."
+        },
+        {
+          "word": "exceptional",
+          "meaning": "far above the usual standard",
+          "register": "power",
+          "example": "Your client handling skills are exceptional."
+        }
+      ]
+    },
+    {
+      "headword": "big",
+      "alternatives": [
+        {
+          "word": "large",
+          "meaning": "of considerable size",
+          "register": "formal",
+          "example": "The company has a large office in Pune."
+        },
+        {
+          "word": "huge",
+          "meaning": "very big",
+          "register": "casual",
+          "example": "There was a huge crowd outside the stadium."
+        },
+        {
+          "word": "massive",
+          "meaning": "extremely large or important",
+          "register": "power",
+          "example": "Winning this client is a massive step for us."
+        }
+      ]
+    },
+    {
+      "headword": "small",
+      "alternatives": [
+        {
+          "word": "minor",
+          "meaning": "not very large or important",
+          "register": "formal",
+          "example": "We made a few minor changes to the design."
+        },
+        {
+          "word": "tiny",
+          "meaning": "very small",
+          "register": "casual",
+          "example": "Their flat has a tiny balcony."
+        },
+        {
+          "word": "compact",
+          "meaning": "small and neatly arranged",
+          "register": "formal",
+          "example": "This compact laptop fits easily in my bag."
+        }
+      ]
+    },
+    {
+      "headword": "happy",
+      "alternatives": [
+        {
+          "word": "pleased",
+          "meaning": "satisfied and glad",
+          "register": "formal",
+          "example": "We are pleased to welcome you to the team."
+        },
+        {
+          "word": "cheerful",
+          "meaning": "visibly happy and positive",
+          "register": "casual",
+          "example": "My grandfather is always cheerful in the morning."
+        },
+        {
+          "word": "thrilled",
+          "meaning": "extremely happy and excited",
+          "register": "power",
+          "example": "I was thrilled to get the internship offer."
+        }
+      ]
+    },
+    {
+      "headword": "sad",
+      "alternatives": [
+        {
+          "word": "unhappy",
+          "meaning": "not satisfied or cheerful",
+          "register": "formal",
+          "example": "The client was unhappy with the delay."
+        },
+        {
+          "word": "down",
+          "meaning": "feeling low",
+          "register": "casual",
+          "example": "He has been a bit down since the match."
+        },
+        {
+          "word": "heartbroken",
+          "meaning": "deeply hurt and sad",
+          "register": "power",
+          "example": "She was heartbroken when her dog passed away."
+        }
+      ]
+    },
+    {
+      "headword": "important",
+      "alternatives": [
+        {
+          "word": "significant",
+          "meaning": "large enough to matter",
+          "register": "formal",
+          "example": "This is a significant change to our policy."
+        },
+        {
+          "word": "key",
+          "meaning": "central to success",
+          "register": "casual",
+          "example": "Communication is the key skill for this role."
+        },
+        {
+          "word": "crucial",
+          "meaning": "extremely important; deciding",
+          "register": "power",
+          "example": "The next two overs are crucial for India."
+        }
+      ]
+    },
+    {
+      "headword": "interesting",
+      "alternatives": [
+        {
+          "word": "engaging",
+          "meaning": "holding attention well",
+          "register": "formal",
+          "example": "Her talk on climate change was very engaging."
+        },
+        {
+          "word": "fascinating",
+          "meaning": "extremely interesting",
+          "register": "power",
+          "example": "The museum had a fascinating section on old coins."
+        },
+        {
+          "word": "intriguing",
+          "meaning": "arousing curiosity",
+          "register": "formal",
+          "example": "The trailer leaves you with an intriguing question."
+        }
+      ]
+    },
+    {
+      "headword": "hard",
+      "alternatives": [
+        {
+          "word": "difficult",
+          "meaning": "needing effort or skill",
+          "register": "formal",
+          "example": "The interview had some difficult questions."
+        },
+        {
+          "word": "tough",
+          "meaning": "hard to do or deal with",
+          "register": "casual",
+          "example": "Balancing college and a job is tough."
+        },
+        {
+          "word": "demanding",
+          "meaning": "needing a lot of effort and time",
+          "register": "power",
+          "example": "Training for a marathon is demanding but rewarding."
+        }
+      ]
+    },
+    {
+      "headword": "easy",
+      "alternatives": [
+        {
+          "word": "simple",
+          "meaning": "not complicated",
+          "register": "casual",
+          "example": "The recipe is simple, even for beginners."
+        },
+        {
+          "word": "straightforward",
+          "meaning": "easy to understand or do",
+          "register": "formal",
+          "example": "The application process is straightforward."
+        },
+        {
+          "word": "effortless",
+          "meaning": "done with no visible strain",
+          "register": "power",
+          "example": "Kohli makes batting look effortless."
+        }
+      ]
+    },
+    {
+      "headword": "beautiful",
+      "alternatives": [
+        {
+          "word": "stunning",
+          "meaning": "extremely beautiful",
+          "register": "power",
+          "example": "The view from the hill station was stunning."
+        },
+        {
+          "word": "gorgeous",
+          "meaning": "very attractive",
+          "register": "casual",
+          "example": "You look gorgeous in that saree."
+        },
+        {
+          "word": "elegant",
+          "meaning": "graceful and stylish",
+          "register": "formal",
+          "example": "The hall was decorated in an elegant way."
+        }
+      ]
+    },
+    {
+      "headword": "pretty",
+      "alternatives": [
+        {
+          "word": "attractive",
+          "meaning": "pleasing to look at",
+          "register": "formal",
+          "example": "The new packaging is more attractive."
+        },
+        {
+          "word": "cute",
+          "meaning": "charming and sweet",
+          "register": "casual",
+          "example": "Your nephew is so cute."
+        },
+        {
+          "word": "charming",
+          "meaning": "delightfully attractive",
+          "register": "power",
+          "example": "It is a charming little café near the beach."
+        }
+      ]
+    },
+    {
+      "headword": "ugly",
+      "alternatives": [
+        {
+          "word": "unattractive",
+          "meaning": "not pleasing to look at",
+          "register": "formal",
+          "example": "The grey walls made the room look unattractive."
+        },
+        {
+          "word": "unsightly",
+          "meaning": "unpleasant to look at",
+          "register": "formal",
+          "example": "There were unsightly wires hanging outside the building."
+        },
+        {
+          "word": "hideous",
+          "meaning": "extremely ugly",
+          "register": "power",
+          "example": "That old sofa was hideous, so we gave it away."
+        }
+      ]
+    },
+    {
+      "headword": "angry",
+      "alternatives": [
+        {
+          "word": "annoyed",
+          "meaning": "slightly angry",
+          "register": "casual",
+          "example": "I was annoyed that the train was late again."
+        },
+        {
+          "word": "upset",
+          "meaning": "unhappy and hurt",
+          "register": "casual",
+          "example": "Mum was upset that I forgot to call."
+        },
+        {
+          "word": "furious",
+          "meaning": "extremely angry",
+          "register": "power",
+          "example": "The coach was furious after the dropped catches."
+        }
+      ]
+    },
+    {
+      "headword": "scared",
+      "alternatives": [
+        {
+          "word": "afraid",
+          "meaning": "feeling fear",
+          "register": "formal",
+          "example": "Many people are afraid of public speaking."
+        },
+        {
+          "word": "nervous",
+          "meaning": "worried and uneasy",
+          "register": "casual",
+          "example": "I always get nervous before an interview."
+        },
+        {
+          "word": "terrified",
+          "meaning": "extremely frightened",
+          "register": "power",
+          "example": "She was terrified during the turbulent flight."
+        }
+      ]
+    },
+    {
+      "headword": "tired",
+      "alternatives": [
+        {
+          "word": "exhausted",
+          "meaning": "completely drained of energy",
+          "register": "power",
+          "example": "After the night shift, I was exhausted."
+        },
+        {
+          "word": "worn out",
+          "meaning": "very tired after effort",
+          "register": "casual",
+          "example": "The kids were worn out after the trip."
+        },
+        {
+          "word": "fatigued",
+          "meaning": "tired from long effort",
+          "register": "formal",
+          "example": "Drivers become fatigued on long highway journeys."
+        }
+      ]
+    },
+    {
+      "headword": "smart",
+      "alternatives": [
+        {
+          "word": "intelligent",
+          "meaning": "able to learn and understand well",
+          "register": "formal",
+          "example": "She is an intelligent and hard-working student."
+        },
+        {
+          "word": "sharp",
+          "meaning": "quick to notice and understand",
+          "register": "casual",
+          "example": "He is very sharp with numbers."
+        },
+        {
+          "word": "brilliant",
+          "meaning": "exceptionally clever",
+          "register": "power",
+          "example": "That was a brilliant solution to the problem."
+        }
+      ]
+    },
+    {
+      "headword": "stupid",
+      "alternatives": [
+        {
+          "word": "foolish",
+          "meaning": "lacking good sense",
+          "register": "formal",
+          "example": "It would be foolish to skip the safety check."
+        },
+        {
+          "word": "silly",
+          "meaning": "not sensible; a bit ridiculous",
+          "register": "casual",
+          "example": "Sorry, that was a silly mistake on my part."
+        },
+        {
+          "word": "senseless",
+          "meaning": "without any good reason",
+          "register": "power",
+          "example": "Rushing the launch now would be senseless."
+        }
+      ]
+    },
+    {
+      "headword": "funny",
+      "alternatives": [
+        {
+          "word": "amusing",
+          "meaning": "causing light laughter",
+          "register": "formal",
+          "example": "His speech had some amusing stories."
+        },
+        {
+          "word": "hilarious",
+          "meaning": "extremely funny",
+          "register": "power",
+          "example": "The comedy show last night was hilarious."
+        },
+        {
+          "word": "witty",
+          "meaning": "clever and humorous",
+          "register": "casual",
+          "example": "She gave a witty reply to the anchor."
+        }
+      ]
+    },
+    {
+      "headword": "boring",
+      "alternatives": [
+        {
+          "word": "dull",
+          "meaning": "lacking interest",
+          "register": "casual",
+          "example": "The lecture was long and dull."
+        },
+        {
+          "word": "tedious",
+          "meaning": "too long and repetitive",
+          "register": "formal",
+          "example": "Data entry can be tedious work."
+        },
+        {
+          "word": "monotonous",
+          "meaning": "the same all the time; flat",
+          "register": "power",
+          "example": "Speaking in a monotonous voice loses the audience."
+        }
+      ]
+    },
+    {
+      "headword": "cool",
+      "alternatives": [
+        {
+          "word": "impressive",
+          "meaning": "making people admire it",
+          "register": "formal",
+          "example": "Your portfolio is really impressive."
+        },
+        {
+          "word": "neat",
+          "meaning": "nice and clever",
+          "register": "casual",
+          "example": "That is a neat trick for saving time."
+        },
+        {
+          "word": "stylish",
+          "meaning": "fashionable and attractive",
+          "register": "casual",
+          "example": "He wore a stylish jacket to the party."
+        }
+      ]
+    },
+    {
+      "headword": "awesome",
+      "alternatives": [
+        {
+          "word": "superb",
+          "meaning": "of the highest quality",
+          "register": "formal",
+          "example": "The chef served a superb biryani."
+        },
+        {
+          "word": "fantastic",
+          "meaning": "extremely good",
+          "register": "casual",
+          "example": "The concert was fantastic."
+        },
+        {
+          "word": "phenomenal",
+          "meaning": "unbelievably good",
+          "register": "power",
+          "example": "Bumrah's spell today was phenomenal."
+        }
+      ]
+    },
+    {
+      "headword": "amazing",
+      "alternatives": [
+        {
+          "word": "astonishing",
+          "meaning": "very surprising and impressive",
+          "register": "power",
+          "example": "The growth of the channel has been astonishing."
+        },
+        {
+          "word": "incredible",
+          "meaning": "hard to believe; wonderful",
+          "register": "casual",
+          "example": "The sunrise at Kanyakumari was incredible."
+        },
+        {
+          "word": "extraordinary",
+          "meaning": "very unusual and remarkable",
+          "register": "formal",
+          "example": "She showed extraordinary courage."
+        }
+      ]
+    },
+    {
+      "headword": "okay",
+      "alternatives": [
+        {
+          "word": "acceptable",
+          "meaning": "good enough",
+          "register": "formal",
+          "example": "The first draft is acceptable but needs polish."
+        },
+        {
+          "word": "decent",
+          "meaning": "reasonably good",
+          "register": "casual",
+          "example": "The hotel was decent for the price."
+        },
+        {
+          "word": "satisfactory",
+          "meaning": "meeting the requirements",
+          "register": "formal",
+          "example": "His performance review was satisfactory."
+        }
+      ]
+    },
+    {
+      "headword": "fine",
+      "alternatives": [
+        {
+          "word": "all right",
+          "meaning": "acceptable; not a problem",
+          "register": "casual",
+          "example": "Don't worry, everything is all right now."
+        },
+        {
+          "word": "adequate",
+          "meaning": "enough for the need",
+          "register": "formal",
+          "example": "The room has adequate space for four people."
+        }
+      ]
+    },
+    {
+      "headword": "fast",
+      "alternatives": [
+        {
+          "word": "quick",
+          "meaning": "moving or done in a short time",
+          "register": "casual",
+          "example": "Can we have a quick call before lunch?"
+        },
+        {
+          "word": "rapid",
+          "meaning": "happening very fast",
+          "register": "formal",
+          "example": "The city has seen rapid growth in recent years."
+        },
+        {
+          "word": "lightning-fast",
+          "meaning": "extremely fast",
+          "register": "power",
+          "example": "The keeper's lightning-fast stumping won the match."
+        }
+      ]
+    },
+    {
+      "headword": "slow",
+      "alternatives": [
+        {
+          "word": "gradual",
+          "meaning": "happening slowly over time",
+          "register": "formal",
+          "example": "We saw a gradual improvement in sales."
+        },
+        {
+          "word": "sluggish",
+          "meaning": "slow and lacking energy",
+          "register": "casual",
+          "example": "The internet is sluggish today."
+        },
+        {
+          "word": "painstaking",
+          "meaning": "slow because of great care",
+          "register": "power",
+          "example": "The restoration of the old temple wall was painstaking work."
+        }
+      ]
+    },
+    {
+      "headword": "new",
+      "alternatives": [
+        {
+          "word": "fresh",
+          "meaning": "recently made or different",
+          "register": "casual",
+          "example": "We need a fresh approach to marketing."
+        },
+        {
+          "word": "recent",
+          "meaning": "happened not long ago",
+          "register": "formal",
+          "example": "According to a recent survey, most students use mobile phones to study."
+        },
+        {
+          "word": "innovative",
+          "meaning": "new and creative",
+          "register": "power",
+          "example": "The startup has an innovative way to deliver groceries."
+        }
+      ]
+    },
+    {
+      "headword": "old",
+      "alternatives": [
+        {
+          "word": "elderly",
+          "meaning": "politely, old in age",
+          "register": "formal",
+          "example": "We should help the elderly neighbours with groceries."
+        },
+        {
+          "word": "outdated",
+          "meaning": "no longer current",
+          "register": "casual",
+          "example": "This software version is outdated."
+        },
+        {
+          "word": "ancient",
+          "meaning": "very old, from long ago",
+          "register": "power",
+          "example": "We visited an ancient fort in Rajasthan."
+        }
+      ]
+    },
+    {
+      "headword": "cheap",
+      "alternatives": [
+        {
+          "word": "affordable",
+          "meaning": "reasonably priced",
+          "register": "formal",
+          "example": "The college canteen offers affordable meals."
+        },
+        {
+          "word": "inexpensive",
+          "meaning": "not costing much",
+          "register": "formal",
+          "example": "This is an inexpensive way to travel across the city."
+        },
+        {
+          "word": "a steal",
+          "meaning": "a surprisingly good price",
+          "register": "power",
+          "example": "At that price, the phone is a steal."
+        }
+      ]
+    },
+    {
+      "headword": "expensive",
+      "alternatives": [
+        {
+          "word": "costly",
+          "meaning": "costing a lot",
+          "register": "formal",
+          "example": "Delays can be costly for small businesses."
+        },
+        {
+          "word": "pricey",
+          "meaning": "a bit expensive",
+          "register": "casual",
+          "example": "That café is nice but pricey."
+        },
+        {
+          "word": "exorbitant",
+          "meaning": "unreasonably high in price",
+          "register": "power",
+          "example": "The hotel charged an exorbitant fee for parking."
+        }
+      ]
+    },
+    {
+      "headword": "rich",
+      "alternatives": [
+        {
+          "word": "wealthy",
+          "meaning": "having a lot of money",
+          "register": "formal",
+          "example": "He comes from a wealthy business family."
+        },
+        {
+          "word": "well-off",
+          "meaning": "comfortably rich",
+          "register": "casual",
+          "example": "They are fairly well-off but live simply."
+        },
+        {
+          "word": "affluent",
+          "meaning": "rich and comfortable",
+          "register": "formal",
+          "example": "It is an affluent neighbourhood in south Delhi."
+        }
+      ]
+    },
+    {
+      "headword": "poor",
+      "alternatives": [
+        {
+          "word": "underprivileged",
+          "meaning": "lacking money and opportunities",
+          "register": "formal",
+          "example": "The NGO teaches underprivileged children."
+        },
+        {
+          "word": "needy",
+          "meaning": "lacking basic things",
+          "register": "casual",
+          "example": "We donated clothes to needy families."
+        },
+        {
+          "word": "impoverished",
+          "meaning": "extremely poor",
+          "register": "power",
+          "example": "The scheme supports impoverished villages."
+        }
+      ]
+    },
+    {
+      "headword": "clean",
+      "alternatives": [
+        {
+          "word": "spotless",
+          "meaning": "completely clean",
+          "register": "power",
+          "example": "Her kitchen is always spotless."
+        },
+        {
+          "word": "tidy",
+          "meaning": "neat and in order",
+          "register": "casual",
+          "example": "Please keep your desk tidy."
+        },
+        {
+          "word": "hygienic",
+          "meaning": "clean and safe for health",
+          "register": "formal",
+          "example": "The food stall looked hygienic."
+        }
+      ]
+    },
+    {
+      "headword": "dirty",
+      "alternatives": [
+        {
+          "word": "messy",
+          "meaning": "untidy",
+          "register": "casual",
+          "example": "My room gets messy during exams."
+        },
+        {
+          "word": "filthy",
+          "meaning": "extremely dirty",
+          "register": "power",
+          "example": "The bus station toilets were filthy."
+        },
+        {
+          "word": "unhygienic",
+          "meaning": "not clean enough to be safe",
+          "register": "formal",
+          "example": "Eating from unhygienic stalls can make you ill."
+        }
+      ]
+    },
+    {
+      "headword": "strong",
+      "alternatives": [
+        {
+          "word": "powerful",
+          "meaning": "having great strength or effect",
+          "register": "power",
+          "example": "She gave a powerful speech at the convocation."
+        },
+        {
+          "word": "sturdy",
+          "meaning": "solid and well built",
+          "register": "casual",
+          "example": "We bought a sturdy table for the kitchen."
+        },
+        {
+          "word": "robust",
+          "meaning": "strong and hard to break",
+          "register": "formal",
+          "example": "We need a robust system for handling payments."
+        }
+      ]
+    },
+    {
+      "headword": "weak",
+      "alternatives": [
+        {
+          "word": "fragile",
+          "meaning": "easily broken or damaged",
+          "register": "formal",
+          "example": "Pack the glasses carefully; they are fragile."
+        },
+        {
+          "word": "feeble",
+          "meaning": "very weak and ineffective",
+          "register": "power",
+          "example": "That was a feeble excuse for missing the deadline."
+        },
+        {
+          "word": "shaky",
+          "meaning": "not steady or firm",
+          "register": "casual",
+          "example": "Our plan is still a bit shaky."
+        }
+      ]
+    },
+    {
+      "headword": "busy",
+      "alternatives": [
+        {
+          "word": "occupied",
+          "meaning": "engaged in something",
+          "register": "formal",
+          "example": "The manager is occupied with a client right now."
+        },
+        {
+          "word": "swamped",
+          "meaning": "having too much to do",
+          "register": "casual",
+          "example": "I am swamped with assignments this week."
+        },
+        {
+          "word": "hectic",
+          "meaning": "full of frantic activity",
+          "register": "power",
+          "example": "It was a hectic week before the launch."
+        }
+      ]
+    },
+    {
+      "headword": "lazy",
+      "alternatives": [
+        {
+          "word": "idle",
+          "meaning": "not working or active",
+          "register": "formal",
+          "example": "The machines were idle during the holiday."
+        },
+        {
+          "word": "laid-back",
+          "meaning": "relaxed and easygoing",
+          "register": "casual",
+          "example": "My brother is quite laid-back about exams."
+        },
+        {
+          "word": "sluggish",
+          "meaning": "slow and lacking energy",
+          "register": "casual",
+          "example": "I feel sluggish after a heavy lunch."
+        }
+      ]
+    },
+    {
+      "headword": "quiet",
+      "alternatives": [
+        {
+          "word": "silent",
+          "meaning": "making no sound",
+          "register": "formal",
+          "example": "The hall went silent when she began to speak."
+        },
+        {
+          "word": "calm",
+          "meaning": "peaceful and still",
+          "register": "casual",
+          "example": "The village is calm in the evenings."
+        },
+        {
+          "word": "hushed",
+          "meaning": "very quiet, almost a whisper",
+          "register": "power",
+          "example": "The crowd watched in hushed silence as the ball went up."
+        }
+      ]
+    },
+    {
+      "headword": "loud",
+      "alternatives": [
+        {
+          "word": "noisy",
+          "meaning": "making a lot of noise",
+          "register": "casual",
+          "example": "The canteen gets noisy at lunch."
+        },
+        {
+          "word": "deafening",
+          "meaning": "extremely loud",
+          "register": "power",
+          "example": "The cheer when he hit the six was deafening."
+        },
+        {
+          "word": "booming",
+          "meaning": "deep and loud",
+          "register": "power",
+          "example": "He has a booming voice that fills the room."
+        }
+      ]
+    },
+    {
+      "headword": "sure",
+      "alternatives": [
+        {
+          "word": "certain",
+          "meaning": "completely sure",
+          "register": "formal",
+          "example": "I am certain we can finish by Friday."
+        },
+        {
+          "word": "confident",
+          "meaning": "sure of yourself or the outcome",
+          "register": "power",
+          "example": "I am confident this plan will work."
+        },
+        {
+          "word": "positive",
+          "meaning": "quite sure",
+          "register": "casual",
+          "example": "Are you positive you locked the door?"
+        }
+      ]
+    },
+    {
+      "headword": "clear",
+      "alternatives": [
+        {
+          "word": "obvious",
+          "meaning": "easy to see or understand",
+          "register": "casual",
+          "example": "The answer was obvious once she explained it."
+        },
+        {
+          "word": "evident",
+          "meaning": "plainly seen or understood",
+          "register": "formal",
+          "example": "It is evident that the team worked hard."
+        },
+        {
+          "word": "crystal clear",
+          "meaning": "completely clear",
+          "register": "power",
+          "example": "Let me make one thing crystal clear: safety comes first."
+        }
+      ]
+    },
+    {
+      "headword": "different",
+      "alternatives": [
+        {
+          "word": "distinct",
+          "meaning": "clearly separate",
+          "register": "formal",
+          "example": "The two products serve distinct needs."
+        },
+        {
+          "word": "unique",
+          "meaning": "unlike anything else",
+          "register": "power",
+          "example": "Every student has a unique learning style."
+        },
+        {
+          "word": "varied",
+          "meaning": "of many kinds",
+          "register": "casual",
+          "example": "The menu is varied and changes every week."
+        }
+      ]
+    },
+    {
+      "headword": "same",
+      "alternatives": [
+        {
+          "word": "identical",
+          "meaning": "exactly alike",
+          "register": "formal",
+          "example": "The twins wore identical shirts."
+        },
+        {
+          "word": "similar",
+          "meaning": "almost the same",
+          "register": "casual",
+          "example": "We have similar taste in music."
+        },
+        {
+          "word": "equivalent",
+          "meaning": "equal in value or meaning",
+          "register": "formal",
+          "example": "The diploma is equivalent to a degree for this job."
+        }
+      ]
+    },
+    {
+      "headword": "simple",
+      "alternatives": [
+        {
+          "word": "basic",
+          "meaning": "at the most essential level",
+          "register": "casual",
+          "example": "You only need basic Excel skills for this."
+        },
+        {
+          "word": "uncomplicated",
+          "meaning": "not complex",
+          "register": "formal",
+          "example": "It is an uncomplicated process that takes ten minutes."
+        },
+        {
+          "word": "elegant",
+          "meaning": "simple in a clever, pleasing way",
+          "register": "power",
+          "example": "That is an elegant solution to the scheduling problem."
+        }
+      ]
+    },
+    {
+      "headword": "complicated",
+      "alternatives": [
+        {
+          "word": "complex",
+          "meaning": "made of many connected parts",
+          "register": "formal",
+          "example": "Tax rules can be complex for freelancers."
+        },
+        {
+          "word": "tricky",
+          "meaning": "difficult to deal with",
+          "register": "casual",
+          "example": "Getting the timing right is tricky."
+        },
+        {
+          "word": "intricate",
+          "meaning": "very detailed and complex",
+          "register": "power",
+          "example": "The bride's mehendi had an intricate design."
+        }
+      ]
+    },
+    {
+      "headword": "huge",
+      "alternatives": [
+        {
+          "word": "enormous",
+          "meaning": "very large",
+          "register": "formal",
+          "example": "The project needs an enormous amount of data."
+        },
+        {
+          "word": "gigantic",
+          "meaning": "extremely big",
+          "register": "casual",
+          "example": "They ordered a gigantic pizza for the party."
+        },
+        {
+          "word": "colossal",
+          "meaning": "extremely large in size or degree",
+          "register": "power",
+          "example": "Losing that data would be a colossal mistake."
+        }
+      ]
+    },
+    {
+      "headword": "tiny",
+      "alternatives": [
+        {
+          "word": "minute",
+          "meaning": "extremely small",
+          "register": "formal",
+          "example": "There was a minute difference between the two samples."
+        },
+        {
+          "word": "little",
+          "meaning": "small in size",
+          "register": "casual",
+          "example": "We stayed in a little homestay near the lake."
+        },
+        {
+          "word": "microscopic",
+          "meaning": "so small it is hard to see",
+          "register": "power",
+          "example": "The chances of that happening are microscopic."
+        }
+      ]
+    },
+    {
+      "headword": "little",
+      "alternatives": [
+        {
+          "word": "slight",
+          "meaning": "small in degree",
+          "register": "formal",
+          "example": "There has been a slight delay in the shipment."
+        },
+        {
+          "word": "small",
+          "meaning": "not large",
+          "register": "casual",
+          "example": "Could I get a small portion, please?"
+        }
+      ]
+    },
+    {
+      "headword": "long",
+      "alternatives": [
+        {
+          "word": "lengthy",
+          "meaning": "long and often too long",
+          "register": "formal",
+          "example": "The contract was lengthy and full of legal terms."
+        },
+        {
+          "word": "extended",
+          "meaning": "made longer than usual",
+          "register": "formal",
+          "example": "We took an extended break over Diwali."
+        },
+        {
+          "word": "endless",
+          "meaning": "seeming never to end",
+          "register": "power",
+          "example": "The queue at the passport office felt endless."
+        }
+      ]
+    },
+    {
+      "headword": "short",
+      "alternatives": [
+        {
+          "word": "brief",
+          "meaning": "lasting a short time",
+          "register": "formal",
+          "example": "Let me give you a brief update."
+        },
+        {
+          "word": "quick",
+          "meaning": "done in a short time",
+          "register": "casual",
+          "example": "Let's have a quick chat after class."
+        },
+        {
+          "word": "concise",
+          "meaning": "short and to the point",
+          "register": "power",
+          "example": "Keep your answers concise in an interview."
+        }
+      ]
+    },
+    {
+      "headword": "wrong",
+      "alternatives": [
+        {
+          "word": "incorrect",
+          "meaning": "not right or true",
+          "register": "formal",
+          "example": "The address on the form was incorrect."
+        },
+        {
+          "word": "mistaken",
+          "meaning": "having a wrong idea",
+          "register": "formal",
+          "example": "I was mistaken about the meeting time."
+        },
+        {
+          "word": "off",
+          "meaning": "not quite right",
+          "register": "casual",
+          "example": "The numbers in this report look a bit off."
+        }
+      ]
+    },
+    {
+      "headword": "right",
+      "alternatives": [
+        {
+          "word": "correct",
+          "meaning": "true or accurate",
+          "register": "formal",
+          "example": "Your answer is correct."
+        },
+        {
+          "word": "spot on",
+          "meaning": "exactly right",
+          "register": "casual",
+          "example": "Your guess was spot on."
+        },
+        {
+          "word": "accurate",
+          "meaning": "exact and without errors",
+          "register": "formal",
+          "example": "We need accurate figures for the audit."
+        }
+      ]
+    },
+    {
+      "headword": "weird",
+      "alternatives": [
+        {
+          "word": "strange",
+          "meaning": "unusual or surprising",
+          "register": "casual",
+          "example": "There was a strange noise from the engine."
+        },
+        {
+          "word": "odd",
+          "meaning": "a little unusual",
+          "register": "casual",
+          "example": "It is odd that nobody replied to the email."
+        },
+        {
+          "word": "bizarre",
+          "meaning": "very strange",
+          "register": "power",
+          "example": "The plot twist in the film was bizarre."
+        }
+      ]
+    },
+    {
+      "headword": "normal",
+      "alternatives": [
+        {
+          "word": "usual",
+          "meaning": "happening most of the time",
+          "register": "casual",
+          "example": "Let's meet at the usual place."
+        },
+        {
+          "word": "standard",
+          "meaning": "the accepted or typical form",
+          "register": "formal",
+          "example": "This is the standard format for a resume."
+        },
+        {
+          "word": "typical",
+          "meaning": "showing the usual qualities",
+          "register": "formal",
+          "example": "A typical day starts with a team meeting."
+        }
+      ]
+    },
+    {
+      "headword": "special",
+      "alternatives": [
+        {
+          "word": "unique",
+          "meaning": "one of a kind",
+          "register": "formal",
+          "example": "Every region of India has its unique cuisine."
+        },
+        {
+          "word": "exceptional",
+          "meaning": "unusually good",
+          "register": "power",
+          "example": "This was an exceptional season for the team."
+        },
+        {
+          "word": "particular",
+          "meaning": "specific; individual",
+          "register": "formal",
+          "example": "Is there any particular reason for the delay?"
+        }
+      ]
+    },
+    {
+      "headword": "main",
+      "alternatives": [
+        {
+          "word": "primary",
+          "meaning": "first in importance",
+          "register": "formal",
+          "example": "Our primary goal is customer satisfaction."
+        },
+        {
+          "word": "major",
+          "meaning": "large and important",
+          "register": "casual",
+          "example": "Traffic is a major issue in Bengaluru."
+        },
+        {
+          "word": "central",
+          "meaning": "at the heart of something",
+          "register": "power",
+          "example": "Trust is central to any relationship."
+        }
+      ]
+    },
+    {
+      "headword": "perfect",
+      "alternatives": [
+        {
+          "word": "flawless",
+          "meaning": "without any mistake",
+          "register": "power",
+          "example": "Her presentation was flawless."
+        },
+        {
+          "word": "ideal",
+          "meaning": "the best possible",
+          "register": "formal",
+          "example": "This is the ideal time to start investing."
+        },
+        {
+          "word": "spot-on",
+          "meaning": "exactly right",
+          "register": "casual",
+          "example": "Your timing was spot-on."
+        }
+      ]
+    },
+    {
+      "headword": "terrible",
+      "alternatives": [
+        {
+          "word": "awful",
+          "meaning": "very bad",
+          "register": "casual",
+          "example": "The food at the station was awful."
+        },
+        {
+          "word": "appalling",
+          "meaning": "shockingly bad",
+          "register": "power",
+          "example": "The condition of the road was appalling."
+        },
+        {
+          "word": "dismal",
+          "meaning": "depressingly poor",
+          "register": "formal",
+          "example": "The team had a dismal start to the season."
+        }
+      ]
+    },
+    {
+      "headword": "wonderful",
+      "alternatives": [
+        {
+          "word": "marvellous",
+          "meaning": "causing great wonder; excellent",
+          "register": "formal",
+          "example": "They gave us a marvellous welcome."
+        },
+        {
+          "word": "lovely",
+          "meaning": "very pleasant",
+          "register": "casual",
+          "example": "We had a lovely time at the wedding."
+        },
+        {
+          "word": "magnificent",
+          "meaning": "impressively beautiful or grand",
+          "register": "power",
+          "example": "The Taj Mahal looks magnificent at sunrise."
+        }
+      ]
+    },
+    {
+      "headword": "excited",
+      "alternatives": [
+        {
+          "word": "eager",
+          "meaning": "keen and wanting to do something",
+          "register": "formal",
+          "example": "The freshers were eager to join the clubs."
+        },
+        {
+          "word": "pumped",
+          "meaning": "full of excitement and energy",
+          "register": "casual",
+          "example": "The whole team is pumped for the final."
+        },
+        {
+          "word": "thrilled",
+          "meaning": "extremely pleased and excited",
+          "register": "power",
+          "example": "I am thrilled to share this news with you."
+        }
+      ]
+    },
+    {
+      "headword": "worried",
+      "alternatives": [
+        {
+          "word": "concerned",
+          "meaning": "anxious about something",
+          "register": "formal",
+          "example": "Parents are concerned about screen time."
+        },
+        {
+          "word": "anxious",
+          "meaning": "nervous and uneasy",
+          "register": "casual",
+          "example": "I feel anxious before results day."
+        },
+        {
+          "word": "alarmed",
+          "meaning": "suddenly very worried",
+          "register": "power",
+          "example": "We were alarmed by the sudden drop in sales."
+        }
+      ]
+    },
+    {
+      "headword": "nervous",
+      "alternatives": [
+        {
+          "word": "anxious",
+          "meaning": "uneasy about what may happen",
+          "register": "formal",
+          "example": "She was anxious before her first live stream."
+        },
+        {
+          "word": "jittery",
+          "meaning": "shaky and nervous",
+          "register": "casual",
+          "example": "I felt jittery before the viva."
+        },
+        {
+          "word": "on edge",
+          "meaning": "tense and restless",
+          "register": "power",
+          "example": "Everyone was on edge during the super over."
+        }
+      ]
+    },
+    {
+      "headword": "confused",
+      "alternatives": [
+        {
+          "word": "puzzled",
+          "meaning": "unable to understand something",
+          "register": "casual",
+          "example": "He looked puzzled by the question."
+        },
+        {
+          "word": "unclear",
+          "meaning": "not sure; not understanding",
+          "register": "formal",
+          "example": "I am unclear about the next step."
+        },
+        {
+          "word": "baffled",
+          "meaning": "totally confused",
+          "register": "power",
+          "example": "The doctors were baffled by the symptoms."
+        }
+      ]
+    },
+    {
+      "headword": "surprised",
+      "alternatives": [
+        {
+          "word": "amazed",
+          "meaning": "very surprised in a good way",
+          "register": "casual",
+          "example": "I was amazed by how fast she learned."
+        },
+        {
+          "word": "astonished",
+          "meaning": "extremely surprised",
+          "register": "power",
+          "example": "We were astonished at the size of the crowd."
+        },
+        {
+          "word": "taken aback",
+          "meaning": "surprised and a little shocked",
+          "register": "formal",
+          "example": "I was taken aback by his rude reply."
+        }
+      ]
+    },
+    {
+      "headword": "glad",
+      "alternatives": [
+        {
+          "word": "pleased",
+          "meaning": "happy about something",
+          "register": "formal",
+          "example": "I am pleased to hear you are feeling better."
+        },
+        {
+          "word": "relieved",
+          "meaning": "happy that a worry is over",
+          "register": "casual",
+          "example": "We were relieved when the flight landed."
+        },
+        {
+          "word": "delighted",
+          "meaning": "very pleased",
+          "register": "power",
+          "example": "I would be delighted to speak at your event."
+        }
+      ]
+    },
+    {
+      "headword": "kind",
+      "alternatives": [
+        {
+          "word": "generous",
+          "meaning": "ready to give more than expected",
+          "register": "power",
+          "example": "Our neighbour was generous with her time."
+        },
+        {
+          "word": "thoughtful",
+          "meaning": "considerate of others",
+          "register": "casual",
+          "example": "It was thoughtful of you to bring lunch."
+        },
+        {
+          "word": "compassionate",
+          "meaning": "showing care for others' suffering",
+          "register": "formal",
+          "example": "The nurse was compassionate with every patient."
+        }
+      ]
+    },
+    {
+      "headword": "rude",
+      "alternatives": [
+        {
+          "word": "impolite",
+          "meaning": "not polite",
+          "register": "formal",
+          "example": "It is impolite to interrupt someone."
+        },
+        {
+          "word": "disrespectful",
+          "meaning": "showing no respect",
+          "register": "power",
+          "example": "Speaking that way to elders is disrespectful."
+        },
+        {
+          "word": "cheeky",
+          "meaning": "rude in a bold, playful way",
+          "register": "casual",
+          "example": "He gave a cheeky reply to the teacher."
+        }
+      ]
+    },
+    {
+      "headword": "honest",
+      "alternatives": [
+        {
+          "word": "truthful",
+          "meaning": "telling the truth",
+          "register": "formal",
+          "example": "Be truthful in your interview answers."
+        },
+        {
+          "word": "straightforward",
+          "meaning": "frank and direct",
+          "register": "casual",
+          "example": "She is straightforward about what she wants."
+        },
+        {
+          "word": "candid",
+          "meaning": "openly frank",
+          "register": "power",
+          "example": "Thank you for your candid feedback."
+        }
+      ]
+    },
+    {
+      "headword": "brave",
+      "alternatives": [
+        {
+          "word": "courageous",
+          "meaning": "showing courage",
+          "register": "formal",
+          "example": "It was a courageous decision to start her own firm."
+        },
+        {
+          "word": "bold",
+          "meaning": "willing to take risks",
+          "register": "casual",
+          "example": "That was a bold move by the captain."
+        },
+        {
+          "word": "fearless",
+          "meaning": "without any fear",
+          "register": "power",
+          "example": "The young batter played a fearless innings."
+        }
+      ]
+    },
+    {
+      "headword": "calm",
+      "alternatives": [
+        {
+          "word": "composed",
+          "meaning": "in control of feelings",
+          "register": "formal",
+          "example": "She stayed composed during the tough questions."
+        },
+        {
+          "word": "relaxed",
+          "meaning": "free from tension",
+          "register": "casual",
+          "example": "I feel relaxed after a walk in the park."
+        },
+        {
+          "word": "unflappable",
+          "meaning": "never losing calm",
+          "register": "power",
+          "example": "A good keeper needs an unflappable temperament."
+        }
+      ]
+    },
+    {
+      "headword": "careful",
+      "alternatives": [
+        {
+          "word": "cautious",
+          "meaning": "avoiding risk",
+          "register": "formal",
+          "example": "Be cautious when sharing personal data online."
+        },
+        {
+          "word": "meticulous",
+          "meaning": "extremely careful about details",
+          "register": "power",
+          "example": "He is meticulous about checking the accounts."
+        },
+        {
+          "word": "attentive",
+          "meaning": "paying close attention",
+          "register": "casual",
+          "example": "The staff were very attentive to our needs."
+        }
+      ]
+    },
+    {
+      "headword": "crazy",
+      "alternatives": [
+        {
+          "word": "wild",
+          "meaning": "uncontrolled and exciting",
+          "register": "casual",
+          "example": "The last over was absolutely wild."
+        },
+        {
+          "word": "absurd",
+          "meaning": "completely unreasonable",
+          "register": "formal",
+          "example": "It is absurd to expect a reply within a minute."
+        },
+        {
+          "word": "insane",
+          "meaning": "extreme and unbelievable",
+          "register": "power",
+          "example": "The traffic during the festival was insane."
+        }
+      ]
+    },
+    {
+      "headword": "dangerous",
+      "alternatives": [
+        {
+          "word": "risky",
+          "meaning": "involving possible harm or loss",
+          "register": "casual",
+          "example": "Driving at night in the ghats is risky."
+        },
+        {
+          "word": "hazardous",
+          "meaning": "dangerous, especially to health",
+          "register": "formal",
+          "example": "Burning plastic is hazardous to health."
+        },
+        {
+          "word": "perilous",
+          "meaning": "full of serious danger",
+          "register": "power",
+          "example": "Crossing the river in the monsoon was perilous."
+        }
+      ]
+    },
+    {
+      "headword": "famous",
+      "alternatives": [
+        {
+          "word": "well-known",
+          "meaning": "known by many people",
+          "register": "casual",
+          "example": "He is a well-known chef in Mumbai."
+        },
+        {
+          "word": "renowned",
+          "meaning": "famous for something good",
+          "register": "formal",
+          "example": "She is a renowned classical dancer."
+        },
+        {
+          "word": "celebrated",
+          "meaning": "widely praised and famous",
+          "register": "power",
+          "example": "The celebrated author spoke at our college fest."
+        }
+      ]
+    },
+    {
+      "headword": "popular",
+      "alternatives": [
+        {
+          "word": "in demand",
+          "meaning": "wanted by many people",
+          "register": "casual",
+          "example": "Data analysts are in demand right now."
+        },
+        {
+          "word": "widely liked",
+          "meaning": "liked by many people",
+          "register": "formal",
+          "example": "The new canteen menu is widely liked."
+        },
+        {
+          "word": "trending",
+          "meaning": "currently very popular online",
+          "register": "casual",
+          "example": "Her cooking reel is trending this week."
+        }
+      ]
+    },
+    {
+      "headword": "useful",
+      "alternatives": [
+        {
+          "word": "helpful",
+          "meaning": "giving help",
+          "register": "casual",
+          "example": "Your notes were really helpful for the exam."
+        },
+        {
+          "word": "valuable",
+          "meaning": "of great worth or use",
+          "register": "power",
+          "example": "Thank you for the valuable feedback."
+        },
+        {
+          "word": "practical",
+          "meaning": "useful in real situations",
+          "register": "formal",
+          "example": "The workshop gave us practical tips for interviews."
+        }
+      ]
+    },
+    {
+      "headword": "useless",
+      "alternatives": [
+        {
+          "word": "pointless",
+          "meaning": "having no purpose",
+          "register": "casual",
+          "example": "It is pointless to argue about it now."
+        },
+        {
+          "word": "ineffective",
+          "meaning": "not producing the desired result",
+          "register": "formal",
+          "example": "The old method was ineffective."
+        },
+        {
+          "word": "worthless",
+          "meaning": "having no value at all",
+          "register": "power",
+          "example": "Without proof, the claim is worthless."
+        }
+      ]
+    },
+    {
+      "headword": "helpful",
+      "alternatives": [
+        {
+          "word": "supportive",
+          "meaning": "giving encouragement and help",
+          "register": "casual",
+          "example": "My parents were supportive of my career change."
+        },
+        {
+          "word": "beneficial",
+          "meaning": "having a good effect",
+          "register": "formal",
+          "example": "Regular exercise is beneficial for your health."
+        },
+        {
+          "word": "invaluable",
+          "meaning": "extremely useful",
+          "register": "power",
+          "example": "Her guidance was invaluable during my first job."
+        }
+      ]
+    },
+    {
+      "headword": "serious",
+      "alternatives": [
+        {
+          "word": "grave",
+          "meaning": "very serious and worrying",
+          "register": "formal",
+          "example": "This is a grave error in the report."
+        },
+        {
+          "word": "severe",
+          "meaning": "very great or intense",
+          "register": "power",
+          "example": "The region faced a severe water shortage."
+        },
+        {
+          "word": "major",
+          "meaning": "large and important",
+          "register": "casual",
+          "example": "We have a major issue with the server."
+        }
+      ]
+    },
+    {
+      "headword": "real",
+      "alternatives": [
+        {
+          "word": "genuine",
+          "meaning": "truly what it seems",
+          "register": "formal",
+          "example": "Is this a genuine leather bag?"
+        },
+        {
+          "word": "actual",
+          "meaning": "existing in fact",
+          "register": "casual",
+          "example": "The actual cost was higher than we planned."
+        },
+        {
+          "word": "authentic",
+          "meaning": "real and original",
+          "register": "power",
+          "example": "We had authentic Kerala food at her home."
+        }
+      ]
+    },
+    {
+      "headword": "fake",
+      "alternatives": [
+        {
+          "word": "false",
+          "meaning": "not true",
+          "register": "formal",
+          "example": "The news turned out to be false."
+        },
+        {
+          "word": "counterfeit",
+          "meaning": "copied to deceive",
+          "register": "formal",
+          "example": "Police seized counterfeit currency notes."
+        },
+        {
+          "word": "phoney",
+          "meaning": "not genuine; pretending",
+          "register": "casual",
+          "example": "His excuse sounded phoney to me."
+        }
+      ]
+    },
+    {
+      "headword": "quick",
+      "alternatives": [
+        {
+          "word": "swift",
+          "meaning": "happening quickly",
+          "register": "formal",
+          "example": "Thank you for the swift response."
+        },
+        {
+          "word": "speedy",
+          "meaning": "fast",
+          "register": "casual",
+          "example": "Wishing you a speedy recovery."
+        },
+        {
+          "word": "prompt",
+          "meaning": "done without delay",
+          "register": "formal",
+          "example": "We appreciate your prompt payment."
+        }
+      ]
+    },
+    {
+      "headword": "sudden",
+      "alternatives": [
+        {
+          "word": "unexpected",
+          "meaning": "not expected",
+          "register": "formal",
+          "example": "There was an unexpected change in the schedule."
+        },
+        {
+          "word": "abrupt",
+          "meaning": "sudden and often unpleasant",
+          "register": "formal",
+          "example": "The meeting came to an abrupt end."
+        },
+        {
+          "word": "out of the blue",
+          "meaning": "completely unexpectedly",
+          "register": "casual",
+          "example": "She called me out of the blue after five years."
+        }
+      ]
+    },
+    {
+      "headword": "enough",
+      "alternatives": [
+        {
+          "word": "sufficient",
+          "meaning": "as much as needed",
+          "register": "formal",
+          "example": "We have sufficient time to prepare."
+        },
+        {
+          "word": "ample",
+          "meaning": "more than enough",
+          "register": "power",
+          "example": "There is ample parking near the venue."
+        },
+        {
+          "word": "plenty",
+          "meaning": "a large or enough amount",
+          "register": "casual",
+          "example": "Don't worry, we have plenty of food."
+        }
+      ]
+    },
+    {
+      "headword": "many",
+      "alternatives": [
+        {
+          "word": "numerous",
+          "meaning": "great in number",
+          "register": "formal",
+          "example": "We received numerous applications for the role."
+        },
+        {
+          "word": "countless",
+          "meaning": "too many to count",
+          "register": "power",
+          "example": "She has helped countless students prepare for exams."
+        },
+        {
+          "word": "loads of",
+          "meaning": "a large number of",
+          "register": "casual",
+          "example": "There were loads of people at the mela."
+        }
+      ]
+    },
+    {
+      "headword": "true",
+      "alternatives": [
+        {
+          "word": "accurate",
+          "meaning": "correct in all details",
+          "register": "formal",
+          "example": "The report gives an accurate picture of sales."
+        },
+        {
+          "word": "correct",
+          "meaning": "right; free from error",
+          "register": "casual",
+          "example": "That is correct, the shop opens at ten."
+        },
+        {
+          "word": "valid",
+          "meaning": "based on sound reasoning",
+          "register": "formal",
+          "example": "You raise a valid point."
+        }
+      ]
+    },
+    {
+      "headword": "hot",
+      "alternatives": [
+        {
+          "word": "scorching",
+          "meaning": "extremely hot",
+          "register": "power",
+          "example": "It was a scorching afternoon in Nagpur."
+        },
+        {
+          "word": "boiling",
+          "meaning": "very hot",
+          "register": "casual",
+          "example": "It is boiling outside today."
+        },
+        {
+          "word": "sweltering",
+          "meaning": "uncomfortably hot and humid",
+          "register": "formal",
+          "example": "Chennai can be sweltering in May."
+        }
+      ]
+    },
+    {
+      "headword": "cold",
+      "alternatives": [
+        {
+          "word": "chilly",
+          "meaning": "unpleasantly cold",
+          "register": "casual",
+          "example": "It gets chilly in Shimla at night."
+        },
+        {
+          "word": "freezing",
+          "meaning": "extremely cold",
+          "register": "power",
+          "example": "The water in the stream was freezing."
+        },
+        {
+          "word": "cool",
+          "meaning": "pleasantly cold",
+          "register": "casual",
+          "example": "The evenings in Ooty are cool and pleasant."
+        }
+      ]
+    },
+    {
+      "headword": "bright",
+      "alternatives": [
+        {
+          "word": "brilliant",
+          "meaning": "shining strongly",
+          "register": "power",
+          "example": "The sky was a brilliant blue after the rain."
+        },
+        {
+          "word": "vivid",
+          "meaning": "intensely bright and clear",
+          "register": "formal",
+          "example": "The rangoli had vivid colours."
+        },
+        {
+          "word": "sunny",
+          "meaning": "full of sunshine",
+          "register": "casual",
+          "example": "It is a sunny day, perfect for cricket."
+        }
+      ]
+    },
+    {
+      "headword": "dark",
+      "alternatives": [
+        {
+          "word": "dim",
+          "meaning": "not bright",
+          "register": "casual",
+          "example": "The room was too dim to read."
+        },
+        {
+          "word": "gloomy",
+          "meaning": "dark and sad-looking",
+          "register": "formal",
+          "example": "The weather was gloomy all week."
+        },
+        {
+          "word": "pitch-black",
+          "meaning": "completely dark",
+          "register": "power",
+          "example": "The village road was pitch-black at night."
+        }
+      ]
+    },
+    {
+      "headword": "very",
+      "alternatives": [
+        {
+          "word": "extremely",
+          "meaning": "to a very great degree",
+          "register": "formal",
+          "example": "The interview panel was extremely friendly."
+        },
+        {
+          "word": "really",
+          "meaning": "truly; very",
+          "register": "casual",
+          "example": "The biryani was really tasty."
+        },
+        {
+          "word": "incredibly",
+          "meaning": "to an unbelievable degree",
+          "register": "power",
+          "example": "She is incredibly talented at public speaking."
+        }
+      ]
+    },
+    {
+      "headword": "really",
+      "alternatives": [
+        {
+          "word": "truly",
+          "meaning": "genuinely; sincerely",
+          "register": "formal",
+          "example": "I am truly grateful for your support."
+        },
+        {
+          "word": "genuinely",
+          "meaning": "honestly and sincerely",
+          "register": "casual",
+          "example": "I genuinely enjoyed working with you."
+        },
+        {
+          "word": "deeply",
+          "meaning": "very much, in feelings",
+          "register": "power",
+          "example": "We are deeply sorry for the inconvenience."
+        }
+      ]
+    },
+    {
+      "headword": "basically",
+      "alternatives": [
+        {
+          "word": "essentially",
+          "meaning": "at its core",
+          "register": "formal",
+          "example": "What we essentially need is more time and two more people."
+        },
+        {
+          "word": "in short",
+          "meaning": "to sum up briefly",
+          "register": "casual",
+          "example": "The trip was, in short, a big success."
+        },
+        {
+          "word": "fundamentally",
+          "meaning": "at the most basic level",
+          "register": "power",
+          "example": "This is fundamentally a problem of trust."
+        }
+      ]
+    },
+    {
+      "headword": "actually",
+      "alternatives": [
+        {
+          "word": "in fact",
+          "meaning": "used to add a true detail",
+          "register": "formal",
+          "example": "Sales did not fall; in fact, they went up by twenty per cent."
+        },
+        {
+          "word": "to be honest",
+          "meaning": "speaking frankly",
+          "register": "casual",
+          "example": "I have to be honest, I prefer working from the office."
+        },
+        {
+          "word": "indeed",
+          "meaning": "truly; used to confirm",
+          "register": "formal",
+          "example": "It was indeed a tough decision."
+        }
+      ]
+    },
+    {
+      "headword": "literally",
+      "alternatives": [
+        {
+          "word": "exactly",
+          "meaning": "precisely",
+          "register": "casual",
+          "example": "That is exactly what I meant."
+        },
+        {
+          "word": "truly",
+          "meaning": "really; genuinely",
+          "register": "formal",
+          "example": "It was truly the best trip of my life."
+        },
+        {
+          "word": "word for word",
+          "meaning": "in the exact words",
+          "register": "formal",
+          "example": "She repeated the instructions word for word."
+        }
+      ]
+    },
+    {
+      "headword": "totally",
+      "alternatives": [
+        {
+          "word": "completely",
+          "meaning": "fully; in every way",
+          "register": "formal",
+          "example": "I completely agree with your point."
+        },
+        {
+          "word": "entirely",
+          "meaning": "wholly",
+          "register": "formal",
+          "example": "The decision is entirely yours."
+        },
+        {
+          "word": "absolutely",
+          "meaning": "without any doubt",
+          "register": "power",
+          "example": "You are absolutely right."
+        }
+      ]
+    },
+    {
+      "headword": "so",
+      "alternatives": [
+        {
+          "word": "extremely",
+          "meaning": "to a great degree",
+          "register": "formal",
+          "example": "The weather was extremely pleasant."
+        },
+        {
+          "word": "such",
+          "meaning": "used for emphasis before a noun",
+          "register": "casual",
+          "example": "It was such a fun evening."
+        },
+        {
+          "word": "remarkably",
+          "meaning": "in a way worth noticing",
+          "register": "power",
+          "example": "The team stayed remarkably calm."
+        }
+      ]
+    },
+    {
+      "headword": "just",
+      "alternatives": [
+        {
+          "word": "only",
+          "meaning": "no more than",
+          "register": "casual",
+          "example": "It will take only five minutes."
+        },
+        {
+          "word": "simply",
+          "meaning": "merely; plainly",
+          "register": "formal",
+          "example": "I simply want to understand the process."
+        },
+        {
+          "word": "merely",
+          "meaning": "nothing more than",
+          "register": "formal",
+          "example": "This is merely a first draft."
+        }
+      ]
+    },
+    {
+      "headword": "quite",
+      "alternatives": [
+        {
+          "word": "fairly",
+          "meaning": "to a moderate degree",
+          "register": "formal",
+          "example": "The exam was fairly easy."
+        },
+        {
+          "word": "rather",
+          "meaning": "to some degree",
+          "register": "formal",
+          "example": "It is rather cold this morning."
+        },
+        {
+          "word": "pretty",
+          "meaning": "fairly",
+          "register": "casual",
+          "example": "The match was pretty exciting."
+        }
+      ]
+    },
+    {
+      "headword": "definitely",
+      "alternatives": [
+        {
+          "word": "certainly",
+          "meaning": "without doubt",
+          "register": "formal",
+          "example": "I will certainly look into it."
+        },
+        {
+          "word": "for sure",
+          "meaning": "definitely",
+          "register": "casual",
+          "example": "I will be there for sure."
+        },
+        {
+          "word": "undoubtedly",
+          "meaning": "beyond any doubt",
+          "register": "power",
+          "example": "She is undoubtedly the best candidate."
+        }
+      ]
+    },
+    {
+      "headword": "probably",
+      "alternatives": [
+        {
+          "word": "likely",
+          "meaning": "probable",
+          "register": "formal",
+          "example": "It is likely to rain this evening."
+        },
+        {
+          "word": "most likely",
+          "meaning": "very probably",
+          "register": "casual",
+          "example": "He will most likely join us later."
+        },
+        {
+          "word": "in all likelihood",
+          "meaning": "very probably",
+          "register": "power",
+          "example": "We will, in all likelihood, win the deal."
+        }
+      ]
+    },
+    {
+      "headword": "maybe",
+      "alternatives": [
+        {
+          "word": "perhaps",
+          "meaning": "possibly",
+          "register": "formal",
+          "example": "We could perhaps meet next week."
+        },
+        {
+          "word": "possibly",
+          "meaning": "in a way that might happen",
+          "register": "formal",
+          "example": "We could possibly finish by Monday."
+        },
+        {
+          "word": "might",
+          "meaning": "could possibly",
+          "register": "casual",
+          "example": "We might go to Goa in December."
+        }
+      ]
+    },
+    {
+      "headword": "honestly",
+      "alternatives": [
+        {
+          "word": "frankly",
+          "meaning": "openly and directly",
+          "register": "formal",
+          "example": "Quite frankly, the plan needs more work."
+        },
+        {
+          "word": "to be fair",
+          "meaning": "being reasonable about it",
+          "register": "casual",
+          "example": "Just to be fair, they had very little time."
+        },
+        {
+          "word": "sincerely",
+          "meaning": "genuinely",
+          "register": "formal",
+          "example": "I sincerely appreciate your help."
+        }
+      ]
+    },
+    {
+      "headword": "obviously",
+      "alternatives": [
+        {
+          "word": "clearly",
+          "meaning": "in a way easy to see",
+          "register": "formal",
+          "example": "We clearly need a bigger venue."
+        },
+        {
+          "word": "of course",
+          "meaning": "naturally; as expected",
+          "register": "casual",
+          "example": "You are, of course, welcome to join us."
+        },
+        {
+          "word": "evidently",
+          "meaning": "plainly; as can be seen",
+          "register": "formal",
+          "example": "The new process is evidently working."
+        }
+      ]
+    },
+    {
+      "headword": "usually",
+      "alternatives": [
+        {
+          "word": "generally",
+          "meaning": "in most cases",
+          "register": "formal",
+          "example": "We generally reply within a day."
+        },
+        {
+          "word": "normally",
+          "meaning": "in the usual way",
+          "register": "casual",
+          "example": "I normally take the metro to work."
+        },
+        {
+          "word": "typically",
+          "meaning": "in a typical way",
+          "register": "formal",
+          "example": "The monsoon typically reaches Kerala in June."
+        }
+      ]
+    },
+    {
+      "headword": "always",
+      "alternatives": [
+        {
+          "word": "constantly",
+          "meaning": "all the time",
+          "register": "formal",
+          "example": "The team is constantly improving the app."
+        },
+        {
+          "word": "every time",
+          "meaning": "on each occasion",
+          "register": "casual",
+          "example": "She makes tea every time I visit."
+        },
+        {
+          "word": "consistently",
+          "meaning": "reliably over time",
+          "register": "power",
+          "example": "He has consistently scored runs this season."
+        }
+      ]
+    },
+    {
+      "headword": "never",
+      "alternatives": [
+        {
+          "word": "not once",
+          "meaning": "not even a single time",
+          "register": "power",
+          "example": "She has not once missed a practice session."
+        },
+        {
+          "word": "at no time",
+          "meaning": "never",
+          "register": "formal",
+          "example": "Your data was at no time shared with anyone."
+        },
+        {
+          "word": "not ever",
+          "meaning": "never",
+          "register": "casual",
+          "example": "I will not ever forget your help."
+        }
+      ]
+    },
+    {
+      "headword": "often",
+      "alternatives": [
+        {
+          "word": "frequently",
+          "meaning": "many times",
+          "register": "formal",
+          "example": "Customers frequently ask about delivery times."
+        },
+        {
+          "word": "regularly",
+          "meaning": "at regular times",
+          "register": "casual",
+          "example": "I regularly practise speaking in English."
+        },
+        {
+          "word": "time and again",
+          "meaning": "repeatedly",
+          "register": "power",
+          "example": "She has proved her talent time and again."
+        }
+      ]
+    },
+    {
+      "headword": "sometimes",
+      "alternatives": [
+        {
+          "word": "occasionally",
+          "meaning": "now and then",
+          "register": "formal",
+          "example": "We occasionally work on Saturdays."
+        },
+        {
+          "word": "at times",
+          "meaning": "on some occasions",
+          "register": "casual",
+          "example": "The commute can be tiring at times."
+        },
+        {
+          "word": "now and then",
+          "meaning": "from time to time",
+          "register": "casual",
+          "example": "I call my old teacher now and then."
+        }
+      ]
+    },
+    {
+      "headword": "quickly",
+      "alternatives": [
+        {
+          "word": "promptly",
+          "meaning": "without delay",
+          "register": "formal",
+          "example": "Please reply promptly."
+        },
+        {
+          "word": "fast",
+          "meaning": "at high speed",
+          "register": "casual",
+          "example": "He finished the test fast."
+        },
+        {
+          "word": "swiftly",
+          "meaning": "quickly and smoothly",
+          "register": "power",
+          "example": "The team acted swiftly to fix the issue."
+        }
+      ]
+    },
+    {
+      "headword": "slowly",
+      "alternatives": [
+        {
+          "word": "gradually",
+          "meaning": "little by little",
+          "register": "formal",
+          "example": "My confidence grew gradually."
+        },
+        {
+          "word": "steadily",
+          "meaning": "at an even pace",
+          "register": "casual",
+          "example": "Sales are rising steadily."
+        },
+        {
+          "word": "leisurely",
+          "meaning": "in a relaxed, unhurried way",
+          "register": "casual",
+          "example": "We had a leisurely walk on Marine Drive."
+        }
+      ]
+    },
+    {
+      "headword": "suddenly",
+      "alternatives": [
+        {
+          "word": "abruptly",
+          "meaning": "without warning",
+          "register": "formal",
+          "example": "The call ended abruptly."
+        },
+        {
+          "word": "all of a sudden",
+          "meaning": "very suddenly",
+          "register": "casual",
+          "example": "The lights went out all of a sudden."
+        },
+        {
+          "word": "unexpectedly",
+          "meaning": "in a way not expected",
+          "register": "formal",
+          "example": "Prices rose unexpectedly last month."
+        }
+      ]
+    },
+    {
+      "headword": "finally",
+      "alternatives": [
+        {
+          "word": "eventually",
+          "meaning": "in the end, after time",
+          "register": "formal",
+          "example": "We eventually found the right flat."
+        },
+        {
+          "word": "at last",
+          "meaning": "after a long wait",
+          "register": "casual",
+          "example": "The results are out at last."
+        },
+        {
+          "word": "ultimately",
+          "meaning": "in the end; most importantly",
+          "register": "power",
+          "example": "It is ultimately the customer who decides."
+        }
+      ]
+    },
+    {
+      "headword": "also",
+      "alternatives": [
+        {
+          "word": "additionally",
+          "meaning": "as an extra point",
+          "register": "formal",
+          "example": "We additionally offer free delivery on all orders."
+        },
+        {
+          "word": "too",
+          "meaning": "as well",
+          "register": "casual",
+          "example": "I would like some chai too."
+        },
+        {
+          "word": "moreover",
+          "meaning": "besides; in addition",
+          "register": "formal",
+          "example": "The plan is simple and, moreover, it saves money."
+        }
+      ]
+    },
+    {
+      "headword": "but",
+      "alternatives": [
+        {
+          "word": "however",
+          "meaning": "used to introduce a contrast",
+          "register": "formal",
+          "example": "The idea is good; however, it is expensive."
+        },
+        {
+          "word": "yet",
+          "meaning": "but at the same time",
+          "register": "casual",
+          "example": "The flat is small yet comfortable."
+        },
+        {
+          "word": "on the other hand",
+          "meaning": "introducing an opposite view",
+          "register": "formal",
+          "example": "The bigger flat, on the other hand, is far from work."
+        }
+      ]
+    },
+    {
+      "headword": "because",
+      "alternatives": [
+        {
+          "word": "since",
+          "meaning": "for the reason that",
+          "register": "casual",
+          "example": "We stayed in since it was raining."
+        },
+        {
+          "word": "as",
+          "meaning": "because",
+          "register": "formal",
+          "example": "The meeting started late as the trains were delayed."
+        },
+        {
+          "word": "due to",
+          "meaning": "caused by",
+          "register": "formal",
+          "example": "The match was delayed due to rain."
+        }
+      ]
+    },
+    {
+      "headword": "anyway",
+      "alternatives": [
+        {
+          "word": "in any case",
+          "meaning": "whatever happens",
+          "register": "formal",
+          "example": "We will meet on Monday in any case."
+        },
+        {
+          "word": "anyhow",
+          "meaning": "regardless",
+          "register": "casual",
+          "example": "Let's get started anyhow."
+        },
+        {
+          "word": "regardless",
+          "meaning": "despite everything",
+          "register": "formal",
+          "example": "The event will go ahead regardless of the rain."
+        }
+      ]
+    },
+    {
+      "headword": "seriously",
+      "alternatives": [
+        {
+          "word": "genuinely",
+          "meaning": "truly; honestly",
+          "register": "casual",
+          "example": "I genuinely mean it."
+        },
+        {
+          "word": "sincerely",
+          "meaning": "in a true and honest way",
+          "register": "formal",
+          "example": "I sincerely hope you get the job."
+        },
+        {
+          "word": "in all seriousness",
+          "meaning": "speaking earnestly",
+          "register": "formal",
+          "example": "But in all seriousness, we must cut costs."
+        }
+      ]
+    },
+    {
+      "headword": "extremely",
+      "alternatives": [
+        {
+          "word": "exceptionally",
+          "meaning": "to an unusual degree",
+          "register": "power",
+          "example": "The food was exceptionally good."
+        },
+        {
+          "word": "highly",
+          "meaning": "to a high degree",
+          "register": "formal",
+          "example": "She is a highly skilled designer."
+        },
+        {
+          "word": "super",
+          "meaning": "very",
+          "register": "casual",
+          "example": "The new phone is super fast."
+        }
+      ]
+    },
+    {
+      "headword": "completely",
+      "alternatives": [
+        {
+          "word": "fully",
+          "meaning": "totally",
+          "register": "casual",
+          "example": "I am fully prepared for the exam."
+        },
+        {
+          "word": "thoroughly",
+          "meaning": "in a complete and careful way",
+          "register": "formal",
+          "example": "Please read the contract thoroughly."
+        },
+        {
+          "word": "wholly",
+          "meaning": "entirely",
+          "register": "formal",
+          "example": "I am wholly committed to this project."
+        }
+      ]
+    },
+    {
+      "headword": "a lot",
+      "alternatives": [
+        {
+          "word": "greatly",
+          "meaning": "very much",
+          "register": "formal",
+          "example": "Your help is greatly appreciated."
+        },
+        {
+          "word": "loads",
+          "meaning": "very much; a great deal",
+          "register": "casual",
+          "example": "Thanks loads for the lift."
+        },
+        {
+          "word": "considerably",
+          "meaning": "by a large amount",
+          "register": "formal",
+          "example": "Prices have risen considerably."
+        }
+      ]
+    },
+    {
+      "headword": "lots of",
+      "alternatives": [
+        {
+          "word": "plenty of",
+          "meaning": "a lot of",
+          "register": "casual",
+          "example": "There are plenty of options for vegetarians."
+        },
+        {
+          "word": "a great deal of",
+          "meaning": "a large amount of",
+          "register": "formal",
+          "example": "The project needs a great deal of effort."
+        },
+        {
+          "word": "an abundance of",
+          "meaning": "a very large amount of",
+          "register": "power",
+          "example": "The region has an abundance of fresh fruit."
+        }
+      ]
+    },
+    {
+      "headword": "kind of",
+      "alternatives": [
+        {
+          "word": "somewhat",
+          "meaning": "to some degree",
+          "register": "formal",
+          "example": "The plan is somewhat risky."
+        },
+        {
+          "word": "fairly",
+          "meaning": "moderately",
+          "register": "casual",
+          "example": "I am fairly sure about it."
+        },
+        {
+          "word": "slightly",
+          "meaning": "a little",
+          "register": "formal",
+          "example": "The train was slightly late."
+        }
+      ]
+    },
+    {
+      "headword": "a bit",
+      "alternatives": [
+        {
+          "word": "slightly",
+          "meaning": "a little",
+          "register": "formal",
+          "example": "I am slightly worried about the deadline."
+        },
+        {
+          "word": "a little",
+          "meaning": "to a small degree",
+          "register": "casual",
+          "example": "Can you speak a little louder?"
+        },
+        {
+          "word": "marginally",
+          "meaning": "by a small amount",
+          "register": "formal",
+          "example": "Profits rose marginally this year."
+        }
+      ]
+    },
+    {
+      "headword": "I think",
+      "alternatives": [
+        {
+          "word": "I believe",
+          "meaning": "I hold the opinion",
+          "register": "formal",
+          "example": "I believe we can win this deal."
+        },
+        {
+          "word": "in my view",
+          "meaning": "according to my opinion",
+          "register": "formal",
+          "example": "We should, in my view, hire two more people."
+        },
+        {
+          "word": "I'm convinced",
+          "meaning": "I am fully sure",
+          "register": "power",
+          "example": "I'm convinced this is the right move."
+        }
+      ]
+    },
+    {
+      "headword": "of course",
+      "alternatives": [
+        {
+          "word": "certainly",
+          "meaning": "surely; yes",
+          "register": "formal",
+          "example": "I can certainly send the file today."
+        },
+        {
+          "word": "naturally",
+          "meaning": "as expected",
+          "register": "casual",
+          "example": "My mother naturally cooked too much food for the guests."
+        },
+        {
+          "word": "absolutely",
+          "meaning": "definitely yes",
+          "register": "power",
+          "example": "You can absolutely count on me."
+        }
+      ]
+    },
+    {
+      "headword": "almost",
+      "alternatives": [
+        {
+          "word": "nearly",
+          "meaning": "very close to",
+          "register": "casual",
+          "example": "I have nearly finished the report."
+        },
+        {
+          "word": "virtually",
+          "meaning": "almost entirely",
+          "register": "formal",
+          "example": "The tickets are virtually sold out."
+        },
+        {
+          "word": "practically",
+          "meaning": "almost",
+          "register": "casual",
+          "example": "We were practically neighbours in college."
+        }
+      ]
+    },
+    {
+      "headword": "mostly",
+      "alternatives": [
+        {
+          "word": "mainly",
+          "meaning": "chiefly",
+          "register": "casual",
+          "example": "Our customers are mainly students."
+        },
+        {
+          "word": "largely",
+          "meaning": "to a great extent",
+          "register": "formal",
+          "example": "The success was largely due to teamwork."
+        },
+        {
+          "word": "predominantly",
+          "meaning": "mostly; for the most part",
+          "register": "formal",
+          "example": "The audience was predominantly young."
+        }
+      ]
+    },
+    {
+      "headword": "thing",
+      "alternatives": [
+        {
+          "word": "item",
+          "meaning": "a single object or point",
+          "register": "formal",
+          "example": "The first item on the agenda is the budget."
+        },
+        {
+          "word": "aspect",
+          "meaning": "a particular part or feature",
+          "register": "formal",
+          "example": "Pricing is one aspect we must review."
+        },
+        {
+          "word": "factor",
+          "meaning": "something that affects a result",
+          "register": "power",
+          "example": "Location is a key factor in choosing a flat."
+        }
+      ]
+    },
+    {
+      "headword": "stuff",
+      "alternatives": [
+        {
+          "word": "belongings",
+          "meaning": "things a person owns",
+          "register": "formal",
+          "example": "Please keep your belongings with you."
+        },
+        {
+          "word": "material",
+          "meaning": "information or content",
+          "register": "formal",
+          "example": "I have enough material for three videos."
+        },
+        {
+          "word": "gear",
+          "meaning": "equipment for an activity",
+          "register": "casual",
+          "example": "Pack your trekking gear the night before."
+        }
+      ]
+    },
+    {
+      "headword": "problem",
+      "alternatives": [
+        {
+          "word": "issue",
+          "meaning": "a matter to resolve",
+          "register": "formal",
+          "example": "We need to fix this issue before the release."
+        },
+        {
+          "word": "challenge",
+          "meaning": "a difficult task to overcome",
+          "register": "power",
+          "example": "Hiring good people is our biggest challenge."
+        },
+        {
+          "word": "hitch",
+          "meaning": "a small, temporary problem",
+          "register": "casual",
+          "example": "The event went off without a hitch."
+        }
+      ]
+    },
+    {
+      "headword": "issue",
+      "alternatives": [
+        {
+          "word": "concern",
+          "meaning": "a worrying matter",
+          "register": "formal",
+          "example": "Safety is our main concern."
+        },
+        {
+          "word": "glitch",
+          "meaning": "a small technical fault",
+          "register": "casual",
+          "example": "There was a glitch in the payment app."
+        },
+        {
+          "word": "obstacle",
+          "meaning": "something blocking progress",
+          "register": "power",
+          "example": "Funding is the main obstacle for us."
+        }
+      ]
+    },
+    {
+      "headword": "idea",
+      "alternatives": [
+        {
+          "word": "concept",
+          "meaning": "an abstract idea or plan",
+          "register": "formal",
+          "example": "The concept behind the app is simple."
+        },
+        {
+          "word": "suggestion",
+          "meaning": "an idea offered for others",
+          "register": "casual",
+          "example": "Do you have any suggestion for the name?"
+        },
+        {
+          "word": "vision",
+          "meaning": "a clear picture of the future",
+          "register": "power",
+          "example": "She has a strong vision for the company."
+        }
+      ]
+    },
+    {
+      "headword": "way",
+      "alternatives": [
+        {
+          "word": "method",
+          "meaning": "a planned way of doing something",
+          "register": "formal",
+          "example": "This method saves a lot of time."
+        },
+        {
+          "word": "approach",
+          "meaning": "a way of dealing with something",
+          "register": "formal",
+          "example": "We need a new approach to hiring."
+        },
+        {
+          "word": "trick",
+          "meaning": "a clever way of doing something",
+          "register": "casual",
+          "example": "The trick is to add salt at the end."
+        }
+      ]
+    },
+    {
+      "headword": "part",
+      "alternatives": [
+        {
+          "word": "section",
+          "meaning": "a distinct part",
+          "register": "formal",
+          "example": "Read the first section of the report."
+        },
+        {
+          "word": "portion",
+          "meaning": "a share or part",
+          "register": "formal",
+          "example": "A portion of the profits goes to charity."
+        },
+        {
+          "word": "piece",
+          "meaning": "a bit or part",
+          "register": "casual",
+          "example": "I only read a piece of the article."
+        }
+      ]
+    },
+    {
+      "headword": "place",
+      "alternatives": [
+        {
+          "word": "location",
+          "meaning": "a particular place",
+          "register": "formal",
+          "example": "The office is in a great location."
+        },
+        {
+          "word": "spot",
+          "meaning": "a particular place",
+          "register": "casual",
+          "example": "This is the best spot for photos."
+        },
+        {
+          "word": "venue",
+          "meaning": "a place for an event",
+          "register": "formal",
+          "example": "The venue for the wedding is a big lawn."
+        }
+      ]
+    },
+    {
+      "headword": "job",
+      "alternatives": [
+        {
+          "word": "role",
+          "meaning": "a position in an organisation",
+          "register": "formal",
+          "example": "I applied for a marketing role."
+        },
+        {
+          "word": "position",
+          "meaning": "a job in a company",
+          "register": "formal",
+          "example": "The position requires two years of experience."
+        },
+        {
+          "word": "gig",
+          "meaning": "a short-term or freelance job",
+          "register": "casual",
+          "example": "She got a weekend gig as a photographer."
+        }
+      ]
+    },
+    {
+      "headword": "people",
+      "alternatives": [
+        {
+          "word": "individuals",
+          "meaning": "single persons",
+          "register": "formal",
+          "example": "Several individuals have applied for the post."
+        },
+        {
+          "word": "folks",
+          "meaning": "people, informally",
+          "register": "casual",
+          "example": "Hello folks, welcome to my channel."
+        },
+        {
+          "word": "audience",
+          "meaning": "the people watching or listening",
+          "register": "formal",
+          "example": "Know your audience before you speak."
+        }
+      ]
+    },
+    {
+      "headword": "person",
+      "alternatives": [
+        {
+          "word": "individual",
+          "meaning": "a single human being",
+          "register": "formal",
+          "example": "Each individual has a role to play."
+        },
+        {
+          "word": "someone",
+          "meaning": "a person not named",
+          "register": "casual",
+          "example": "Please ask someone at the front desk for help."
+        }
+      ]
+    },
+    {
+      "headword": "guy",
+      "alternatives": [
+        {
+          "word": "man",
+          "meaning": "an adult male",
+          "register": "casual",
+          "example": "The man at the counter was very helpful."
+        },
+        {
+          "word": "gentleman",
+          "meaning": "a polite term for a man",
+          "register": "formal",
+          "example": "The gentleman in the blue shirt asked a question."
+        },
+        {
+          "word": "fellow",
+          "meaning": "a man or boy, informally",
+          "register": "casual",
+          "example": "He is a nice fellow from my hostel."
+        }
+      ]
+    },
+    {
+      "headword": "kid",
+      "alternatives": [
+        {
+          "word": "child",
+          "meaning": "a young human",
+          "register": "formal",
+          "example": "Every child deserves a good school."
+        },
+        {
+          "word": "youngster",
+          "meaning": "a young person",
+          "register": "casual",
+          "example": "The youngster scored a fifty on debut."
+        }
+      ]
+    },
+    {
+      "headword": "friend",
+      "alternatives": [
+        {
+          "word": "companion",
+          "meaning": "someone you spend time with",
+          "register": "formal",
+          "example": "My dog is my best companion."
+        },
+        {
+          "word": "buddy",
+          "meaning": "a close friend",
+          "register": "casual",
+          "example": "He has been my buddy since school."
+        },
+        {
+          "word": "ally",
+          "meaning": "someone who supports you",
+          "register": "power",
+          "example": "Find an ally in the team who believes in your idea."
+        }
+      ]
+    },
+    {
+      "headword": "money",
+      "alternatives": [
+        {
+          "word": "funds",
+          "meaning": "money for a purpose",
+          "register": "formal",
+          "example": "We are raising funds for the project."
+        },
+        {
+          "word": "cash",
+          "meaning": "money in notes and coins",
+          "register": "casual",
+          "example": "Do you have cash for the auto?"
+        },
+        {
+          "word": "capital",
+          "meaning": "money used to start or grow a business",
+          "register": "formal",
+          "example": "She needs capital to open a second shop."
+        }
+      ]
+    },
+    {
+      "headword": "help",
+      "alternatives": [
+        {
+          "word": "assist",
+          "meaning": "to help someone",
+          "register": "formal",
+          "example": "Can I assist you with the form?"
+        },
+        {
+          "word": "support",
+          "meaning": "to give help or encouragement",
+          "register": "casual",
+          "example": "My seniors supported me in my first year."
+        },
+        {
+          "word": "empower",
+          "meaning": "to give someone the power to act",
+          "register": "power",
+          "example": "Good managers empower their teams."
+        }
+      ]
+    },
+    {
+      "headword": "change",
+      "alternatives": [
+        {
+          "word": "modify",
+          "meaning": "to make small changes",
+          "register": "formal",
+          "example": "We had to modify the design after feedback."
+        },
+        {
+          "word": "adjust",
+          "meaning": "to change slightly",
+          "register": "casual",
+          "example": "Please adjust the volume."
+        },
+        {
+          "word": "transform",
+          "meaning": "to change completely",
+          "register": "power",
+          "example": "This course can transform your career."
+        }
+      ]
+    },
+    {
+      "headword": "chance",
+      "alternatives": [
+        {
+          "word": "opportunity",
+          "meaning": "a favourable time to do something",
+          "register": "formal",
+          "example": "This is a great opportunity to learn."
+        },
+        {
+          "word": "shot",
+          "meaning": "an attempt",
+          "register": "casual",
+          "example": "Give it a shot; you might like it."
+        },
+        {
+          "word": "possibility",
+          "meaning": "something that may happen",
+          "register": "formal",
+          "example": "There is a possibility of rain tomorrow."
+        }
+      ]
+    },
+    {
+      "headword": "result",
+      "alternatives": [
+        {
+          "word": "outcome",
+          "meaning": "the final result",
+          "register": "formal",
+          "example": "We are happy with the outcome of the talks."
+        },
+        {
+          "word": "impact",
+          "meaning": "a strong effect",
+          "register": "power",
+          "example": "Your work had a real impact on sales."
+        },
+        {
+          "word": "effect",
+          "meaning": "a change caused by something",
+          "register": "casual",
+          "example": "The new rule had little effect."
+        }
+      ]
+    },
+    {
+      "headword": "reason",
+      "alternatives": [
+        {
+          "word": "cause",
+          "meaning": "what makes something happen",
+          "register": "formal",
+          "example": "What was the cause of the delay?"
+        },
+        {
+          "word": "motive",
+          "meaning": "a reason for doing something",
+          "register": "formal",
+          "example": "What was his motive for leaving?"
+        },
+        {
+          "word": "grounds",
+          "meaning": "a reason that justifies something",
+          "register": "formal",
+          "example": "On what grounds was the claim rejected?"
+        }
+      ]
+    },
+    {
+      "headword": "point",
+      "alternatives": [
+        {
+          "word": "argument",
+          "meaning": "a reason given to support a view",
+          "register": "formal",
+          "example": "She made a strong argument for remote work."
+        },
+        {
+          "word": "takeaway",
+          "meaning": "a key point to remember",
+          "register": "casual",
+          "example": "The main takeaway is to plan early."
+        },
+        {
+          "word": "crux",
+          "meaning": "the most important point",
+          "register": "power",
+          "example": "The crux of the problem is poor communication."
+        }
+      ]
+    },
+    {
+      "headword": "plan",
+      "alternatives": [
+        {
+          "word": "strategy",
+          "meaning": "a plan to achieve a goal",
+          "register": "formal",
+          "example": "We need a clear strategy for the next quarter."
+        },
+        {
+          "word": "roadmap",
+          "meaning": "a step-by-step plan",
+          "register": "power",
+          "example": "Here is the roadmap for the product launch."
+        },
+        {
+          "word": "scheme",
+          "meaning": "an organised plan",
+          "register": "formal",
+          "example": "The new scheme helps first-time buyers."
+        }
+      ]
+    },
+    {
+      "headword": "goal",
+      "alternatives": [
+        {
+          "word": "objective",
+          "meaning": "a specific aim",
+          "register": "formal",
+          "example": "Our objective is to cut costs by ten per cent."
+        },
+        {
+          "word": "target",
+          "meaning": "a level to reach",
+          "register": "casual",
+          "example": "We hit our sales target this month."
+        },
+        {
+          "word": "mission",
+          "meaning": "a purpose you are driven by",
+          "register": "power",
+          "example": "My mission is to make learning fun."
+        }
+      ]
+    },
+    {
+      "headword": "mistake",
+      "alternatives": [
+        {
+          "word": "error",
+          "meaning": "a wrong action or judgement",
+          "register": "formal",
+          "example": "There is an error in the invoice."
+        },
+        {
+          "word": "slip-up",
+          "meaning": "a small mistake",
+          "register": "casual",
+          "example": "Sorry, that was a slip-up on my part."
+        },
+        {
+          "word": "blunder",
+          "meaning": "a big, careless mistake",
+          "register": "power",
+          "example": "Dropping that catch was a costly blunder."
+        }
+      ]
+    },
+    {
+      "headword": "benefit",
+      "alternatives": [
+        {
+          "word": "advantage",
+          "meaning": "a helpful factor",
+          "register": "formal",
+          "example": "Knowing two languages is a big advantage."
+        },
+        {
+          "word": "perk",
+          "meaning": "an extra benefit of a job",
+          "register": "casual",
+          "example": "Free lunch is a nice perk of this job."
+        },
+        {
+          "word": "edge",
+          "meaning": "a winning advantage",
+          "register": "power",
+          "example": "Practice gives you an edge in interviews."
+        }
+      ]
+    },
+    {
+      "headword": "situation",
+      "alternatives": [
+        {
+          "word": "circumstance",
+          "meaning": "a condition affecting events",
+          "register": "formal",
+          "example": "Under no circumstance should you share your OTP."
+        },
+        {
+          "word": "scenario",
+          "meaning": "a possible situation",
+          "register": "formal",
+          "example": "In the worst scenario, we delay by a week."
+        },
+        {
+          "word": "position",
+          "meaning": "a situation one is in",
+          "register": "casual",
+          "example": "I am in a tough position right now."
+        }
+      ]
+    },
+    {
+      "headword": "experience",
+      "alternatives": [
+        {
+          "word": "expertise",
+          "meaning": "expert skill or knowledge",
+          "register": "formal",
+          "example": "She has expertise in digital marketing."
+        },
+        {
+          "word": "exposure",
+          "meaning": "contact with something new",
+          "register": "casual",
+          "example": "The internship gave me exposure to real clients."
+        },
+        {
+          "word": "background",
+          "meaning": "past training and work",
+          "register": "formal",
+          "example": "He has a background in finance."
+        }
+      ]
+    },
+    {
+      "headword": "success",
+      "alternatives": [
+        {
+          "word": "achievement",
+          "meaning": "something done with effort",
+          "register": "formal",
+          "example": "Clearing the exam was a big achievement."
+        },
+        {
+          "word": "win",
+          "meaning": "a victory or success",
+          "register": "casual",
+          "example": "Getting this client is a big win for us."
+        },
+        {
+          "word": "triumph",
+          "meaning": "a great victory",
+          "register": "power",
+          "example": "The series victory was a triumph for the young team."
+        }
+      ]
+    },
+    {
+      "headword": "failure",
+      "alternatives": [
+        {
+          "word": "setback",
+          "meaning": "a problem that delays progress",
+          "register": "formal",
+          "example": "The injury was a setback for the bowler."
+        },
+        {
+          "word": "flop",
+          "meaning": "something that fails completely",
+          "register": "casual",
+          "example": "The film was a flop at the box office."
+        },
+        {
+          "word": "fiasco",
+          "meaning": "a complete, embarrassing failure",
+          "register": "power",
+          "example": "The badly planned event turned into a fiasco."
+        }
+      ]
+    },
+    {
+      "headword": "opinion",
+      "alternatives": [
+        {
+          "word": "view",
+          "meaning": "a personal opinion",
+          "register": "formal",
+          "example": "What is your view on this proposal?"
+        },
+        {
+          "word": "take",
+          "meaning": "a personal view",
+          "register": "casual",
+          "example": "What's your take on the new rule?"
+        },
+        {
+          "word": "perspective",
+          "meaning": "a particular way of seeing",
+          "register": "power",
+          "example": "Travel gives you a fresh perspective."
+        }
+      ]
+    },
+    {
+      "headword": "talk",
+      "alternatives": [
+        {
+          "word": "discussion",
+          "meaning": "a conversation about a topic",
+          "register": "formal",
+          "example": "We had a long discussion about the budget."
+        },
+        {
+          "word": "chat",
+          "meaning": "an informal conversation",
+          "register": "casual",
+          "example": "Let's have a chat over coffee."
+        },
+        {
+          "word": "dialogue",
+          "meaning": "an exchange of views",
+          "register": "formal",
+          "example": "Open dialogue builds trust in a team."
+        }
+      ]
+    },
+    {
+      "headword": "story",
+      "alternatives": [
+        {
+          "word": "account",
+          "meaning": "a report of events",
+          "register": "formal",
+          "example": "He gave a detailed account of the accident."
+        },
+        {
+          "word": "tale",
+          "meaning": "a story, often told for fun",
+          "register": "casual",
+          "example": "Grandpa told us a tale about his village."
+        },
+        {
+          "word": "narrative",
+          "meaning": "a story with a clear message",
+          "register": "power",
+          "example": "Build a strong narrative around your product."
+        }
+      ]
+    },
+    {
+      "headword": "trip",
+      "alternatives": [
+        {
+          "word": "journey",
+          "meaning": "travelling from one place to another",
+          "register": "formal",
+          "example": "The journey from Delhi to Manali took twelve hours."
+        },
+        {
+          "word": "getaway",
+          "meaning": "a short holiday",
+          "register": "casual",
+          "example": "We planned a weekend getaway to Lonavala."
+        },
+        {
+          "word": "expedition",
+          "meaning": "a journey with a purpose",
+          "register": "power",
+          "example": "They went on an expedition to the Himalayas."
+        }
+      ]
+    },
+    {
+      "headword": "amount",
+      "alternatives": [
+        {
+          "word": "quantity",
+          "meaning": "how much there is",
+          "register": "formal",
+          "example": "Add a small quantity of salt."
+        },
+        {
+          "word": "sum",
+          "meaning": "an amount of money",
+          "register": "formal",
+          "example": "He paid a large sum for the course."
+        },
+        {
+          "word": "volume",
+          "meaning": "the total amount",
+          "register": "formal",
+          "example": "The volume of orders doubles during Diwali."
+        }
+      ]
+    },
+    {
+      "headword": "type",
+      "alternatives": [
+        {
+          "word": "kind",
+          "meaning": "a group with similar features",
+          "register": "casual",
+          "example": "What kind of music do you like?"
+        },
+        {
+          "word": "category",
+          "meaning": "a class or group",
+          "register": "formal",
+          "example": "This phone falls in the budget category."
+        },
+        {
+          "word": "variety",
+          "meaning": "a different type of something",
+          "register": "formal",
+          "example": "This variety of mango comes from Ratnagiri."
+        }
+      ]
+    },
+    {
+      "headword": "fact",
+      "alternatives": [
+        {
+          "word": "detail",
+          "meaning": "a single piece of information",
+          "register": "casual",
+          "example": "Share every detail of the order with me."
+        },
+        {
+          "word": "reality",
+          "meaning": "the true situation",
+          "register": "formal",
+          "example": "The reality is that we need more staff."
+        },
+        {
+          "word": "truth",
+          "meaning": "what is actually the case",
+          "register": "power",
+          "example": "The truth is, we can do better."
+        }
+      ]
+    },
+    {
+      "headword": "question",
+      "alternatives": [
+        {
+          "word": "query",
+          "meaning": "a question asking for information",
+          "register": "formal",
+          "example": "Please email your query to the help desk."
+        },
+        {
+          "word": "doubt",
+          "meaning": "a question about something unclear",
+          "register": "casual",
+          "example": "Any doubt about the assignment? Ask me."
+        },
+        {
+          "word": "inquiry",
+          "meaning": "a formal question or request",
+          "register": "formal",
+          "example": "We received an inquiry about bulk orders."
+        }
+      ]
+    },
+    {
+      "headword": "answer",
+      "alternatives": [
+        {
+          "word": "response",
+          "meaning": "a reply",
+          "register": "formal",
+          "example": "We are waiting for a response from the client."
+        },
+        {
+          "word": "reply",
+          "meaning": "an answer in words",
+          "register": "casual",
+          "example": "I got a quick reply from HR."
+        },
+        {
+          "word": "solution",
+          "meaning": "an answer to a problem",
+          "register": "power",
+          "example": "We finally found a solution to the delay."
+        }
+      ]
+    },
+    {
+      "headword": "team",
+      "alternatives": [
+        {
+          "word": "group",
+          "meaning": "people working together",
+          "register": "casual",
+          "example": "Our group presented the project together."
+        },
+        {
+          "word": "squad",
+          "meaning": "a team, especially in sport",
+          "register": "casual",
+          "example": "The squad for the series was announced today."
+        },
+        {
+          "word": "crew",
+          "meaning": "a group working together",
+          "register": "casual",
+          "example": "The film crew arrived early."
+        }
+      ]
+    },
+    {
+      "headword": "boss",
+      "alternatives": [
+        {
+          "word": "manager",
+          "meaning": "a person who manages others",
+          "register": "formal",
+          "example": "My manager approved my leave."
+        },
+        {
+          "word": "supervisor",
+          "meaning": "a person who oversees work",
+          "register": "formal",
+          "example": "Report the issue to your supervisor."
+        },
+        {
+          "word": "head",
+          "meaning": "the leader of a group",
+          "register": "casual",
+          "example": "She is the head of the design team."
+        }
+      ]
+    },
+    {
+      "headword": "meeting",
+      "alternatives": [
+        {
+          "word": "session",
+          "meaning": "a period for a set activity",
+          "register": "formal",
+          "example": "We have a training session at three."
+        },
+        {
+          "word": "call",
+          "meaning": "a phone or video meeting",
+          "register": "casual",
+          "example": "I have a client call at noon."
+        },
+        {
+          "word": "huddle",
+          "meaning": "a short, quick team meeting",
+          "register": "casual",
+          "example": "Let's do a quick huddle before the event."
+        }
+      ]
+    },
+    {
+      "headword": "work",
+      "alternatives": [
+        {
+          "word": "task",
+          "meaning": "a piece of work",
+          "register": "formal",
+          "example": "Finish this task before lunch."
+        },
+        {
+          "word": "effort",
+          "meaning": "hard work towards a goal",
+          "register": "power",
+          "example": "Your effort really shows in this project."
+        },
+        {
+          "word": "labour",
+          "meaning": "physical or hard work",
+          "register": "formal",
+          "example": "The festival was a labour of love for the whole society."
+        }
+      ]
+    },
+    {
+      "headword": "food",
+      "alternatives": [
+        {
+          "word": "meal",
+          "meaning": "food eaten at one time",
+          "register": "casual",
+          "example": "We had a simple meal at the dhaba."
+        },
+        {
+          "word": "cuisine",
+          "meaning": "a style of cooking",
+          "register": "formal",
+          "example": "I love Bengali cuisine."
+        },
+        {
+          "word": "dish",
+          "meaning": "a particular prepared food",
+          "register": "casual",
+          "example": "Paneer tikka is my favourite dish."
+        }
+      ]
+    },
+    {
+      "headword": "house",
+      "alternatives": [
+        {
+          "word": "home",
+          "meaning": "the place where one lives",
+          "register": "casual",
+          "example": "Come to my home for dinner on Sunday."
+        },
+        {
+          "word": "residence",
+          "meaning": "a place where someone lives",
+          "register": "formal",
+          "example": "The minister's residence is nearby."
+        },
+        {
+          "word": "flat",
+          "meaning": "an apartment",
+          "register": "casual",
+          "example": "We rented a two-bedroom flat in Thane."
+        }
+      ]
+    },
+    {
+      "headword": "area",
+      "alternatives": [
+        {
+          "word": "region",
+          "meaning": "a large area of a country",
+          "register": "formal",
+          "example": "This region is famous for tea."
+        },
+        {
+          "word": "neighbourhood",
+          "meaning": "the area around one's home",
+          "register": "casual",
+          "example": "Our neighbourhood has a lovely park."
+        },
+        {
+          "word": "zone",
+          "meaning": "an area with a special use",
+          "register": "formal",
+          "example": "This is a no-parking zone."
+        }
+      ]
+    },
+    {
+      "headword": "time",
+      "alternatives": [
+        {
+          "word": "moment",
+          "meaning": "a very short time",
+          "register": "casual",
+          "example": "Give me a moment to check."
+        },
+        {
+          "word": "period",
+          "meaning": "a length of time",
+          "register": "formal",
+          "example": "The offer is valid for a limited period."
+        },
+        {
+          "word": "phase",
+          "meaning": "a stage in a process",
+          "register": "formal",
+          "example": "We are in the testing phase now."
+        }
+      ]
+    },
+    {
+      "headword": "feeling",
+      "alternatives": [
+        {
+          "word": "emotion",
+          "meaning": "a strong feeling",
+          "register": "formal",
+          "example": "Her speech was full of emotion."
+        },
+        {
+          "word": "sense",
+          "meaning": "an awareness of something",
+          "register": "casual",
+          "example": "I have a sense that the plan will work."
+        },
+        {
+          "word": "instinct",
+          "meaning": "a natural feeling or gut sense",
+          "register": "power",
+          "example": "Trust your instinct in tough moments."
+        }
+      ]
+    },
+    {
+      "headword": "skill",
+      "alternatives": [
+        {
+          "word": "ability",
+          "meaning": "power to do something",
+          "register": "formal",
+          "example": "She has the ability to explain things simply."
+        },
+        {
+          "word": "talent",
+          "meaning": "natural ability",
+          "register": "casual",
+          "example": "He has a real talent for cooking."
+        },
+        {
+          "word": "knack",
+          "meaning": "a special skill",
+          "register": "casual",
+          "example": "She has a knack for making people laugh."
+        }
+      ]
+    },
+    {
+      "headword": "get",
+      "alternatives": [
+        {
+          "word": "receive",
+          "meaning": "to be given something",
+          "register": "formal",
+          "example": "You will receive the offer letter by email."
+        },
+        {
+          "word": "obtain",
+          "meaning": "to get through effort",
+          "register": "formal",
+          "example": "You must obtain permission before filming here."
+        },
+        {
+          "word": "grab",
+          "meaning": "to get quickly",
+          "register": "casual",
+          "example": "Let's grab a coffee after the meeting."
+        }
+      ]
+    },
+    {
+      "headword": "make",
+      "alternatives": [
+        {
+          "word": "create",
+          "meaning": "to bring into being",
+          "register": "formal",
+          "example": "She creates short videos about street food."
+        },
+        {
+          "word": "prepare",
+          "meaning": "to get ready; to cook",
+          "register": "casual",
+          "example": "Mum prepared poha for breakfast."
+        },
+        {
+          "word": "craft",
+          "meaning": "to make with skill and care",
+          "register": "power",
+          "example": "He crafted a speech that moved everyone."
+        }
+      ]
+    },
+    {
+      "headword": "do",
+      "alternatives": [
+        {
+          "word": "complete",
+          "meaning": "to finish a task",
+          "register": "formal",
+          "example": "Please complete the form before Friday."
+        },
+        {
+          "word": "carry out",
+          "meaning": "to perform a task",
+          "register": "formal",
+          "example": "The team will carry out a survey next week."
+        },
+        {
+          "word": "handle",
+          "meaning": "to take care of",
+          "register": "casual",
+          "example": "I will handle the bookings for the trip."
+        }
+      ]
+    },
+    {
+      "headword": "say",
+      "alternatives": [
+        {
+          "word": "mention",
+          "meaning": "to refer to briefly",
+          "register": "casual",
+          "example": "Did she mention the new deadline?"
+        },
+        {
+          "word": "state",
+          "meaning": "to say clearly and formally",
+          "register": "formal",
+          "example": "Please state your name for the record."
+        },
+        {
+          "word": "declare",
+          "meaning": "to announce firmly",
+          "register": "power",
+          "example": "The captain declared the innings at lunch."
+        }
+      ]
+    },
+    {
+      "headword": "tell",
+      "alternatives": [
+        {
+          "word": "inform",
+          "meaning": "to give information officially",
+          "register": "formal",
+          "example": "Please inform HR about your leave."
+        },
+        {
+          "word": "update",
+          "meaning": "to give someone the latest news",
+          "register": "casual",
+          "example": "I will update you once I reach home."
+        },
+        {
+          "word": "assure",
+          "meaning": "to tell confidently to remove doubt",
+          "register": "power",
+          "example": "I assure you the work will be done on time."
+        }
+      ]
+    },
+    {
+      "headword": "think",
+      "alternatives": [
+        {
+          "word": "believe",
+          "meaning": "to hold an opinion",
+          "register": "formal",
+          "example": "I believe this is the right decision."
+        },
+        {
+          "word": "reckon",
+          "meaning": "to think or suppose",
+          "register": "casual",
+          "example": "I reckon we will finish by six."
+        },
+        {
+          "word": "consider",
+          "meaning": "to think carefully about",
+          "register": "formal",
+          "example": "Please consider my request for a transfer."
+        }
+      ]
+    },
+    {
+      "headword": "like",
+      "alternatives": [
+        {
+          "word": "enjoy",
+          "meaning": "to take pleasure in",
+          "register": "casual",
+          "example": "I enjoy cooking on weekends."
+        },
+        {
+          "word": "appreciate",
+          "meaning": "to value something",
+          "register": "formal",
+          "example": "I appreciate your honest feedback."
+        },
+        {
+          "word": "admire",
+          "meaning": "to respect and look up to",
+          "register": "power",
+          "example": "I admire her calm under pressure."
+        }
+      ]
+    },
+    {
+      "headword": "want",
+      "alternatives": [
+        {
+          "word": "wish",
+          "meaning": "to want something politely",
+          "register": "formal",
+          "example": "I wish to apply for the senior role."
+        },
+        {
+          "word": "would like",
+          "meaning": "polite way to want",
+          "register": "casual",
+          "example": "I would like a cup of tea, please."
+        },
+        {
+          "word": "aspire",
+          "meaning": "to aim high for something",
+          "register": "power",
+          "example": "She aspires to lead a global team one day."
+        }
+      ]
+    },
+    {
+      "headword": "need",
+      "alternatives": [
+        {
+          "word": "require",
+          "meaning": "to need officially",
+          "register": "formal",
+          "example": "The job requires good Excel skills."
+        },
+        {
+          "word": "must have",
+          "meaning": "to need without doubt",
+          "register": "casual",
+          "example": "We must have the files by tonight."
+        },
+        {
+          "word": "depend on",
+          "meaning": "to rely on",
+          "register": "formal",
+          "example": "Small shops depend on festival sales."
+        }
+      ]
+    },
+    {
+      "headword": "go",
+      "alternatives": [
+        {
+          "word": "travel",
+          "meaning": "to make a journey",
+          "register": "casual",
+          "example": "We travel to Kerala every summer."
+        },
+        {
+          "word": "head",
+          "meaning": "to move towards",
+          "register": "casual",
+          "example": "Let's head to the station now."
+        },
+        {
+          "word": "proceed",
+          "meaning": "to move forward",
+          "register": "formal",
+          "example": "Please proceed to gate number five."
+        }
+      ]
+    },
+    {
+      "headword": "see",
+      "alternatives": [
+        {
+          "word": "notice",
+          "meaning": "to become aware of",
+          "register": "casual",
+          "example": "Did you notice the change in the logo?"
+        },
+        {
+          "word": "observe",
+          "meaning": "to watch carefully",
+          "register": "formal",
+          "example": "We observed how users interact with the app."
+        },
+        {
+          "word": "witness",
+          "meaning": "to see an event happen",
+          "register": "power",
+          "example": "We witnessed a historic win at Eden Gardens."
+        }
+      ]
+    },
+    {
+      "headword": "look",
+      "alternatives": [
+        {
+          "word": "glance",
+          "meaning": "to look quickly",
+          "register": "casual",
+          "example": "She glanced at her phone during the meeting."
+        },
+        {
+          "word": "examine",
+          "meaning": "to look at closely",
+          "register": "formal",
+          "example": "The doctor examined the X-ray carefully."
+        },
+        {
+          "word": "gaze",
+          "meaning": "to look steadily for a long time",
+          "register": "power",
+          "example": "We gazed at the stars from the rooftop."
+        }
+      ]
+    },
+    {
+      "headword": "know",
+      "alternatives": [
+        {
+          "word": "understand",
+          "meaning": "to grasp the meaning",
+          "register": "casual",
+          "example": "I understand how the process works."
+        },
+        {
+          "word": "be aware",
+          "meaning": "to know about something",
+          "register": "formal",
+          "example": "Please be aware that the office closes early today."
+        },
+        {
+          "word": "recognise",
+          "meaning": "to identify or accept",
+          "register": "formal",
+          "example": "I recognised him from the alumni meet."
+        }
+      ]
+    },
+    {
+      "headword": "use",
+      "alternatives": [
+        {
+          "word": "apply",
+          "meaning": "to put into practice",
+          "register": "formal",
+          "example": "Try to apply these tips in your next interview."
+        },
+        {
+          "word": "utilise",
+          "meaning": "to make practical use of",
+          "register": "formal",
+          "example": "We should utilise the free cloud credits."
+        },
+        {
+          "word": "leverage",
+          "meaning": "to use to maximum advantage",
+          "register": "power",
+          "example": "You should leverage your network when job hunting."
+        }
+      ]
+    },
+    {
+      "headword": "try",
+      "alternatives": [
+        {
+          "word": "attempt",
+          "meaning": "to make an effort",
+          "register": "formal",
+          "example": "She will attempt the exam again in June."
+        },
+        {
+          "word": "give it a go",
+          "meaning": "to try something",
+          "register": "casual",
+          "example": "I have never surfed, but I will give it a go."
+        },
+        {
+          "word": "strive",
+          "meaning": "to try very hard",
+          "register": "power",
+          "example": "We strive to reply within an hour."
+        }
+      ]
+    },
+    {
+      "headword": "give",
+      "alternatives": [
+        {
+          "word": "provide",
+          "meaning": "to supply something needed",
+          "register": "formal",
+          "example": "The hotel provides free breakfast."
+        },
+        {
+          "word": "offer",
+          "meaning": "to present for acceptance",
+          "register": "casual",
+          "example": "Can I offer you some water?"
+        },
+        {
+          "word": "contribute",
+          "meaning": "to give towards a shared goal",
+          "register": "power",
+          "example": "Everyone contributed ideas for the fest."
+        }
+      ]
+    },
+    {
+      "headword": "take",
+      "alternatives": [
+        {
+          "word": "accept",
+          "meaning": "to agree to receive",
+          "register": "formal",
+          "example": "I am happy to accept the offer."
+        },
+        {
+          "word": "pick up",
+          "meaning": "to collect",
+          "register": "casual",
+          "example": "I will pick up the parcel on my way home."
+        },
+        {
+          "word": "seize",
+          "meaning": "to take eagerly and firmly",
+          "register": "power",
+          "example": "Try to seize every opportunity to speak on stage."
+        }
+      ]
+    },
+    {
+      "headword": "put",
+      "alternatives": [
+        {
+          "word": "place",
+          "meaning": "to set down carefully",
+          "register": "formal",
+          "example": "Please place your bags on the rack."
+        },
+        {
+          "word": "keep",
+          "meaning": "to leave something somewhere",
+          "register": "casual",
+          "example": "Just keep the keys on the table."
+        },
+        {
+          "word": "position",
+          "meaning": "to put in a particular place",
+          "register": "formal",
+          "example": "Always position the camera at eye level."
+        }
+      ]
+    },
+    {
+      "headword": "show",
+      "alternatives": [
+        {
+          "word": "demonstrate",
+          "meaning": "to show clearly with proof",
+          "register": "formal",
+          "example": "Let me demonstrate how the app works."
+        },
+        {
+          "word": "display",
+          "meaning": "to put on view",
+          "register": "formal",
+          "example": "The shop displays new sarees in the window."
+        },
+        {
+          "word": "showcase",
+          "meaning": "to show at its best",
+          "register": "power",
+          "example": "This project will showcase your skills."
+        }
+      ]
+    },
+    {
+      "headword": "start",
+      "alternatives": [
+        {
+          "word": "begin",
+          "meaning": "to start",
+          "register": "formal",
+          "example": "The ceremony will begin at ten."
+        },
+        {
+          "word": "kick off",
+          "meaning": "to start an event",
+          "register": "casual",
+          "example": "Let's kick off the meeting with updates."
+        },
+        {
+          "word": "launch",
+          "meaning": "to start something new and big",
+          "register": "power",
+          "example": "We will launch the app next month."
+        }
+      ]
+    },
+    {
+      "headword": "stop",
+      "alternatives": [
+        {
+          "word": "quit",
+          "meaning": "to stop doing something",
+          "register": "casual",
+          "example": "He quit smoking last year."
+        },
+        {
+          "word": "halt",
+          "meaning": "to bring to a stop",
+          "register": "formal",
+          "example": "Work was halted because of heavy rain."
+        },
+        {
+          "word": "cease",
+          "meaning": "to come to an end",
+          "register": "formal",
+          "example": "The factory will cease production in May."
+        }
+      ]
+    },
+    {
+      "headword": "keep",
+      "alternatives": [
+        {
+          "word": "maintain",
+          "meaning": "to keep in good condition",
+          "register": "formal",
+          "example": "We maintain the garden ourselves."
+        },
+        {
+          "word": "hold on to",
+          "meaning": "to keep and not let go",
+          "register": "casual",
+          "example": "Please hold on to the receipt in case of returns."
+        },
+        {
+          "word": "preserve",
+          "meaning": "to protect and keep safe",
+          "register": "power",
+          "example": "We must preserve our old family recipes."
+        }
+      ]
+    },
+    {
+      "headword": "find",
+      "alternatives": [
+        {
+          "word": "discover",
+          "meaning": "to find for the first time",
+          "register": "formal",
+          "example": "We discovered a lovely café in the old town."
+        },
+        {
+          "word": "come across",
+          "meaning": "to find by chance",
+          "register": "casual",
+          "example": "I happened to come across your profile online."
+        },
+        {
+          "word": "uncover",
+          "meaning": "to find something hidden",
+          "register": "power",
+          "example": "The audit uncovered several billing errors."
+        }
+      ]
+    },
+    {
+      "headword": "ask",
+      "alternatives": [
+        {
+          "word": "enquire",
+          "meaning": "to ask for information",
+          "register": "formal",
+          "example": "I am writing to enquire about the course fees."
+        },
+        {
+          "word": "check with",
+          "meaning": "to ask someone to confirm",
+          "register": "casual",
+          "example": "Let me check with my manager."
+        },
+        {
+          "word": "request",
+          "meaning": "to ask politely or formally",
+          "register": "formal",
+          "example": "We request you to arrive by nine."
+        }
+      ]
+    },
+    {
+      "headword": "speak",
+      "alternatives": [
+        {
+          "word": "communicate",
+          "meaning": "to share information or ideas",
+          "register": "formal",
+          "example": "Leaders communicate clearly and often."
+        },
+        {
+          "word": "chat",
+          "meaning": "to talk informally",
+          "register": "casual",
+          "example": "We chatted for hours on the train."
+        },
+        {
+          "word": "address",
+          "meaning": "to speak formally to a group",
+          "register": "power",
+          "example": "The principal will address the students."
+        }
+      ]
+    },
+    {
+      "headword": "buy",
+      "alternatives": [
+        {
+          "word": "purchase",
+          "meaning": "to buy",
+          "register": "formal",
+          "example": "You can purchase tickets online."
+        },
+        {
+          "word": "pick up",
+          "meaning": "to buy casually",
+          "register": "casual",
+          "example": "I will pick up some vegetables on the way home."
+        },
+        {
+          "word": "invest in",
+          "meaning": "to spend on for future benefit",
+          "register": "power",
+          "example": "It is wise to invest in a good chair if you work from home."
+        }
+      ]
+    },
+    {
+      "headword": "fix",
+      "alternatives": [
+        {
+          "word": "repair",
+          "meaning": "to mend something broken",
+          "register": "formal",
+          "example": "The technician repaired the AC in an hour."
+        },
+        {
+          "word": "sort out",
+          "meaning": "to deal with a problem",
+          "register": "casual",
+          "example": "Don't worry, I will sort out the tickets."
+        },
+        {
+          "word": "resolve",
+          "meaning": "to settle a problem fully",
+          "register": "power",
+          "example": "The support team resolved my complaint quickly."
+        }
+      ]
+    },
+    {
+      "headword": "build",
+      "alternatives": [
+        {
+          "word": "construct",
+          "meaning": "to build a structure",
+          "register": "formal",
+          "example": "They are constructing a new metro line."
+        },
+        {
+          "word": "develop",
+          "meaning": "to create and grow",
+          "register": "formal",
+          "example": "We developed the app in six months."
+        },
+        {
+          "word": "set up",
+          "meaning": "to establish",
+          "register": "casual",
+          "example": "She set up a small bakery from home."
+        }
+      ]
+    },
+    {
+      "headword": "create",
+      "alternatives": [
+        {
+          "word": "produce",
+          "meaning": "to make or bring out",
+          "register": "formal",
+          "example": "The studio produces two shows a week."
+        },
+        {
+          "word": "design",
+          "meaning": "to plan and make",
+          "register": "casual",
+          "example": "He designed the poster for the fest."
+        },
+        {
+          "word": "pioneer",
+          "meaning": "to be the first to create",
+          "register": "power",
+          "example": "She pioneered online cooking classes in her town."
+        }
+      ]
+    },
+    {
+      "headword": "choose",
+      "alternatives": [
+        {
+          "word": "select",
+          "meaning": "to choose carefully",
+          "register": "formal",
+          "example": "Please select the best photo for your profile."
+        },
+        {
+          "word": "pick",
+          "meaning": "to choose",
+          "register": "casual",
+          "example": "You can pick any one topic for your speech."
+        },
+        {
+          "word": "opt for",
+          "meaning": "to choose one option",
+          "register": "formal",
+          "example": "Many students opt for engineering."
+        }
+      ]
+    },
+    {
+      "headword": "decide",
+      "alternatives": [
+        {
+          "word": "determine",
+          "meaning": "to settle or decide firmly",
+          "register": "formal",
+          "example": "The results will determine the next step."
+        },
+        {
+          "word": "make up my mind",
+          "meaning": "to finally decide",
+          "register": "casual",
+          "example": "I can't make up my mind between the two jobs."
+        },
+        {
+          "word": "resolve",
+          "meaning": "to decide firmly",
+          "register": "power",
+          "example": "She resolved to practise speaking every day."
+        }
+      ]
+    },
+    {
+      "headword": "explain",
+      "alternatives": [
+        {
+          "word": "clarify",
+          "meaning": "to make clearer",
+          "register": "formal",
+          "example": "Could you clarify the second point?"
+        },
+        {
+          "word": "walk through",
+          "meaning": "to explain step by step",
+          "register": "casual",
+          "example": "Let me walk through the slides with you."
+        },
+        {
+          "word": "break down",
+          "meaning": "to explain by splitting into parts",
+          "register": "power",
+          "example": "She can break down complex topics for beginners."
+        }
+      ]
+    },
+    {
+      "headword": "understand",
+      "alternatives": [
+        {
+          "word": "grasp",
+          "meaning": "to understand fully",
+          "register": "power",
+          "example": "He quickly grasped the basics of coding."
+        },
+        {
+          "word": "get",
+          "meaning": "to understand",
+          "register": "casual",
+          "example": "I get what you are saying."
+        },
+        {
+          "word": "comprehend",
+          "meaning": "to understand fully",
+          "register": "formal",
+          "example": "It is hard to comprehend the scale of the flood."
+        }
+      ]
+    },
+    {
+      "headword": "learn",
+      "alternatives": [
+        {
+          "word": "master",
+          "meaning": "to learn completely",
+          "register": "power",
+          "example": "It takes years to master the tabla."
+        },
+        {
+          "word": "pick up",
+          "meaning": "to learn informally",
+          "register": "casual",
+          "example": "Living in Chennai helped me pick up some Tamil."
+        },
+        {
+          "word": "acquire",
+          "meaning": "to gain knowledge or skill",
+          "register": "formal",
+          "example": "Interns acquire useful skills on the job."
+        }
+      ]
+    },
+    {
+      "headword": "improve",
+      "alternatives": [
+        {
+          "word": "enhance",
+          "meaning": "to make better in quality",
+          "register": "formal",
+          "example": "Good lighting can enhance your videos."
+        },
+        {
+          "word": "upgrade",
+          "meaning": "to make better or newer",
+          "register": "casual",
+          "example": "I upgraded my laptop last month."
+        },
+        {
+          "word": "elevate",
+          "meaning": "to raise to a higher level",
+          "register": "power",
+          "example": "A strong opening can elevate your whole talk."
+        }
+      ]
+    },
+    {
+      "headword": "win",
+      "alternatives": [
+        {
+          "word": "triumph",
+          "meaning": "to win a great victory",
+          "register": "power",
+          "example": "India triumphed in the final over."
+        },
+        {
+          "word": "succeed",
+          "meaning": "to achieve a goal",
+          "register": "formal",
+          "example": "She succeeded in getting a scholarship."
+        },
+        {
+          "word": "come out on top",
+          "meaning": "to win in the end",
+          "register": "casual",
+          "example": "Our team managed to come out on top in the quiz."
+        }
+      ]
+    },
+    {
+      "headword": "lose",
+      "alternatives": [
+        {
+          "word": "misplace",
+          "meaning": "to put somewhere and forget",
+          "register": "formal",
+          "example": "I misplaced my ID card again."
+        },
+        {
+          "word": "get beaten",
+          "meaning": "to lose to an opponent",
+          "register": "casual",
+          "example": "We do not want to get beaten at home again."
+        },
+        {
+          "word": "miss out",
+          "meaning": "to lose a chance",
+          "register": "casual",
+          "example": "Book early so you don't miss out."
+        }
+      ]
+    },
+    {
+      "headword": "love",
+      "alternatives": [
+        {
+          "word": "adore",
+          "meaning": "to love deeply",
+          "register": "power",
+          "example": "My niece adores her grandparents."
+        },
+        {
+          "word": "cherish",
+          "meaning": "to hold dear",
+          "register": "formal",
+          "example": "I cherish the memories of my school days."
+        },
+        {
+          "word": "be crazy about",
+          "meaning": "to love very much",
+          "register": "casual",
+          "example": "My nephews seem to be crazy about cricket."
+        }
+      ]
+    },
+    {
+      "headword": "hate",
+      "alternatives": [
+        {
+          "word": "dislike",
+          "meaning": "to not like",
+          "register": "formal",
+          "example": "I dislike long meetings without an agenda."
+        },
+        {
+          "word": "can't stand",
+          "meaning": "to strongly dislike",
+          "register": "casual",
+          "example": "I can't stand loud music at night."
+        },
+        {
+          "word": "detest",
+          "meaning": "to hate intensely",
+          "register": "power",
+          "example": "She detests wasting food."
+        }
+      ]
+    },
+    {
+      "headword": "feel",
+      "alternatives": [
+        {
+          "word": "sense",
+          "meaning": "to become aware of",
+          "register": "formal",
+          "example": "I could sense the tension in the room."
+        },
+        {
+          "word": "experience",
+          "meaning": "to go through a feeling or event",
+          "register": "formal",
+          "example": "Many students experience stress before exams."
+        }
+      ]
+    },
+    {
+      "headword": "hope",
+      "alternatives": [
+        {
+          "word": "wish",
+          "meaning": "to want something to happen",
+          "register": "casual",
+          "example": "I wish you the best for the interview."
+        },
+        {
+          "word": "expect",
+          "meaning": "to think something will happen",
+          "register": "formal",
+          "example": "We expect the results next week."
+        },
+        {
+          "word": "look forward to",
+          "meaning": "to wait for with pleasure",
+          "register": "casual",
+          "example": "I look forward to meeting you."
+        }
+      ]
+    },
+    {
+      "headword": "seem",
+      "alternatives": [
+        {
+          "word": "appear",
+          "meaning": "to give the impression of",
+          "register": "formal",
+          "example": "The new manager appears friendly."
+        },
+        {
+          "word": "look like",
+          "meaning": "to seem to be",
+          "register": "casual",
+          "example": "It does look like rain this evening."
+        },
+        {
+          "word": "come across as",
+          "meaning": "to seem to others",
+          "register": "casual",
+          "example": "He can come across as confident even when he is nervous."
+        }
+      ]
+    },
+    {
+      "headword": "happen",
+      "alternatives": [
+        {
+          "word": "occur",
+          "meaning": "to take place",
+          "register": "formal",
+          "example": "The accident occurred near the toll plaza."
+        },
+        {
+          "word": "take place",
+          "meaning": "to happen as planned",
+          "register": "formal",
+          "example": "The fest will take place in February."
+        },
+        {
+          "word": "unfold",
+          "meaning": "to develop over time",
+          "register": "power",
+          "example": "We watched the drama unfold in the final over."
+        }
+      ]
+    },
+    {
+      "headword": "check",
+      "alternatives": [
+        {
+          "word": "verify",
+          "meaning": "to confirm something is true",
+          "register": "formal",
+          "example": "Please verify your email address."
+        },
+        {
+          "word": "review",
+          "meaning": "to look over carefully",
+          "register": "formal",
+          "example": "Let me review the draft before we send it."
+        },
+        {
+          "word": "double-check",
+          "meaning": "to check again",
+          "register": "casual",
+          "example": "Always double-check the address before you book."
+        }
+      ]
+    },
+    {
+      "headword": "send",
+      "alternatives": [
+        {
+          "word": "forward",
+          "meaning": "to send on to someone else",
+          "register": "casual",
+          "example": "I will forward the email to you."
+        },
+        {
+          "word": "dispatch",
+          "meaning": "to send off goods or messages",
+          "register": "formal",
+          "example": "We dispatch orders within a day."
+        },
+        {
+          "word": "submit",
+          "meaning": "to hand in formally",
+          "register": "formal",
+          "example": "Please submit your assignment by Monday."
+        }
+      ]
+    },
+    {
+      "headword": "bring",
+      "alternatives": [
+        {
+          "word": "fetch",
+          "meaning": "to go and bring back",
+          "register": "casual",
+          "example": "Can you fetch my charger from the room?"
+        },
+        {
+          "word": "deliver",
+          "meaning": "to take to a person or place",
+          "register": "formal",
+          "example": "The courier will deliver the parcel today."
+        }
+      ]
+    },
+    {
+      "headword": "leave",
+      "alternatives": [
+        {
+          "word": "depart",
+          "meaning": "to go away, especially on a journey",
+          "register": "formal",
+          "example": "The train departs at six."
+        },
+        {
+          "word": "head out",
+          "meaning": "to leave a place",
+          "register": "casual",
+          "example": "We should head out before the traffic."
+        },
+        {
+          "word": "resign",
+          "meaning": "to formally leave a job",
+          "register": "formal",
+          "example": "She resigned to start her own business."
+        }
+      ]
+    },
+    {
+      "headword": "meet",
+      "alternatives": [
+        {
+          "word": "catch up",
+          "meaning": "to meet and talk after a while",
+          "register": "casual",
+          "example": "Let's catch up over lunch this week."
+        },
+        {
+          "word": "encounter",
+          "meaning": "to meet unexpectedly",
+          "register": "formal",
+          "example": "We encountered a few problems during testing."
+        },
+        {
+          "word": "connect",
+          "meaning": "to meet or get in touch",
+          "register": "casual",
+          "example": "Let's connect after the conference."
+        }
+      ]
+    },
+    {
+      "headword": "worry",
+      "alternatives": [
+        {
+          "word": "fret",
+          "meaning": "to worry constantly",
+          "register": "casual",
+          "example": "Don't fret about small mistakes."
+        },
+        {
+          "word": "be concerned",
+          "meaning": "to feel worried",
+          "register": "formal",
+          "example": "Parents tend to be concerned about screen time."
+        },
+        {
+          "word": "agonise",
+          "meaning": "to worry intensely",
+          "register": "power",
+          "example": "He agonised over the decision for weeks."
+        }
+      ]
+    },
+    {
+      "headword": "agree",
+      "alternatives": [
+        {
+          "word": "accept",
+          "meaning": "to say yes to an idea",
+          "register": "formal",
+          "example": "The board accepted the proposal."
+        },
+        {
+          "word": "go along with",
+          "meaning": "to agree to follow",
+          "register": "casual",
+          "example": "I will go along with the plan."
+        },
+        {
+          "word": "endorse",
+          "meaning": "to publicly support",
+          "register": "power",
+          "example": "Several experts endorsed the new method."
+        }
+      ]
+    },
+    {
+      "headword": "increase",
+      "alternatives": [
+        {
+          "word": "raise",
+          "meaning": "to make higher",
+          "register": "casual",
+          "example": "The landlord raised the rent this year."
+        },
+        {
+          "word": "boost",
+          "meaning": "to increase strongly",
+          "register": "power",
+          "example": "Good thumbnails can boost your views."
+        },
+        {
+          "word": "expand",
+          "meaning": "to make larger",
+          "register": "formal",
+          "example": "The company plans to expand into new cities."
+        }
+      ]
+    },
+    {
+      "headword": "reduce",
+      "alternatives": [
+        {
+          "word": "lower",
+          "meaning": "to make less",
+          "register": "casual",
+          "example": "We lowered the price for students."
+        },
+        {
+          "word": "cut down",
+          "meaning": "to reduce an amount",
+          "register": "casual",
+          "example": "I am trying to cut down on sugar."
+        },
+        {
+          "word": "minimise",
+          "meaning": "to reduce to the smallest amount",
+          "register": "formal",
+          "example": "We must minimise errors in the data."
+        }
+      ]
+    },
+    {
+      "headword": "grow",
+      "alternatives": [
+        {
+          "word": "develop",
+          "meaning": "to grow or advance",
+          "register": "formal",
+          "example": "The startup developed quickly in two years."
+        },
+        {
+          "word": "expand",
+          "meaning": "to become larger",
+          "register": "formal",
+          "example": "Our team expanded to twenty people."
+        },
+        {
+          "word": "flourish",
+          "meaning": "to grow well and succeed",
+          "register": "power",
+          "example": "Her small business has flourished."
+        }
+      ]
+    },
+    {
+      "headword": "solve",
+      "alternatives": [
+        {
+          "word": "resolve",
+          "meaning": "to find an answer to",
+          "register": "formal",
+          "example": "The bank resolved the issue within a day."
+        },
+        {
+          "word": "figure out",
+          "meaning": "to find a solution",
+          "register": "casual",
+          "example": "We will figure out a way to fund it."
+        },
+        {
+          "word": "crack",
+          "meaning": "to solve something difficult",
+          "register": "power",
+          "example": "She finally cracked the tough puzzle."
+        }
+      ]
+    },
+    {
+      "headword": "manage",
+      "alternatives": [
+        {
+          "word": "handle",
+          "meaning": "to deal with",
+          "register": "casual",
+          "example": "She handles the clients very well."
+        },
+        {
+          "word": "oversee",
+          "meaning": "to supervise",
+          "register": "formal",
+          "example": "He oversees three projects at once."
+        },
+        {
+          "word": "coordinate",
+          "meaning": "to organise people or tasks",
+          "register": "formal",
+          "example": "Can you coordinate the trip for the team?"
+        }
+      ]
+    },
+    {
+      "headword": "handle",
+      "alternatives": [
+        {
+          "word": "deal with",
+          "meaning": "to take action on",
+          "register": "casual",
+          "example": "I will deal with the complaint today."
+        },
+        {
+          "word": "tackle",
+          "meaning": "to deal with firmly",
+          "register": "power",
+          "example": "Let's tackle the hardest task first."
+        },
+        {
+          "word": "cope with",
+          "meaning": "to manage something difficult",
+          "register": "casual",
+          "example": "She learned to cope with the pressure very well."
+        }
+      ]
+    },
+    {
+      "headword": "prepare",
+      "alternatives": [
+        {
+          "word": "get ready",
+          "meaning": "to prepare",
+          "register": "casual",
+          "example": "Please get ready, we leave in ten minutes."
+        },
+        {
+          "word": "plan",
+          "meaning": "to decide in advance",
+          "register": "casual",
+          "example": "We planned the menu for the party."
+        },
+        {
+          "word": "gear up",
+          "meaning": "to prepare for something big",
+          "register": "power",
+          "example": "The team has started to gear up for the World Cup."
+        }
+      ]
+    },
+    {
+      "headword": "focus",
+      "alternatives": [
+        {
+          "word": "concentrate",
+          "meaning": "to give full attention",
+          "register": "formal",
+          "example": "I can't concentrate with this noise."
+        },
+        {
+          "word": "zero in",
+          "meaning": "to focus closely",
+          "register": "power",
+          "example": "Try to zero in on two or three key points in your talk."
+        },
+        {
+          "word": "pay attention",
+          "meaning": "to notice and listen",
+          "register": "casual",
+          "example": "Please pay attention to the safety instructions."
+        }
+      ]
+    },
+    {
+      "headword": "remember",
+      "alternatives": [
+        {
+          "word": "recall",
+          "meaning": "to bring back to mind",
+          "register": "formal",
+          "example": "I can't recall his name."
+        },
+        {
+          "word": "recollect",
+          "meaning": "to remember with effort",
+          "register": "formal",
+          "example": "She could not recollect where she kept the file."
+        },
+        {
+          "word": "keep in mind",
+          "meaning": "to remember while deciding",
+          "register": "casual",
+          "example": "Please keep in mind that the shop closes at eight."
+        }
+      ]
+    },
+    {
+      "headword": "finish",
+      "alternatives": [
+        {
+          "word": "complete",
+          "meaning": "to bring to an end",
+          "register": "formal",
+          "example": "We completed the project ahead of time."
+        },
+        {
+          "word": "wrap up",
+          "meaning": "to finish",
+          "register": "casual",
+          "example": "Let's wrap up the meeting in five minutes."
+        },
+        {
+          "word": "conclude",
+          "meaning": "to bring to a formal end",
+          "register": "formal",
+          "example": "The event concluded with a vote of thanks."
+        }
+      ]
+    },
+    {
+      "headword": "enjoy",
+      "alternatives": [
+        {
+          "word": "relish",
+          "meaning": "to enjoy greatly",
+          "register": "power",
+          "example": "She relishes a good challenge."
+        },
+        {
+          "word": "love",
+          "meaning": "to like very much",
+          "register": "casual",
+          "example": "I love long drives in the rain."
+        },
+        {
+          "word": "savour",
+          "meaning": "to enjoy slowly",
+          "register": "formal",
+          "example": "Do savour every bite of this halwa."
+        }
+      ]
+    },
+    {
+      "headword": "complain",
+      "alternatives": [
+        {
+          "word": "grumble",
+          "meaning": "to complain in a low voice",
+          "register": "casual",
+          "example": "He grumbled about the long queue."
+        },
+        {
+          "word": "object",
+          "meaning": "to express disapproval",
+          "register": "formal",
+          "example": "Several residents objected to the new rule."
+        },
+        {
+          "word": "protest",
+          "meaning": "to strongly object",
+          "register": "power",
+          "example": "Students protested the sudden fee hike."
+        }
+      ]
+    },
+    {
+      "headword": "laugh",
+      "alternatives": [
+        {
+          "word": "giggle",
+          "meaning": "to laugh lightly",
+          "register": "casual",
+          "example": "The kids giggled at the cartoon."
+        },
+        {
+          "word": "chuckle",
+          "meaning": "to laugh quietly",
+          "register": "casual",
+          "example": "He chuckled at his own joke."
+        },
+        {
+          "word": "burst out laughing",
+          "meaning": "to suddenly laugh loudly",
+          "register": "power",
+          "example": "We all burst out laughing at his story."
+        }
+      ]
+    },
+    {
+      "headword": "eat",
+      "alternatives": [
+        {
+          "word": "have",
+          "meaning": "to eat or drink",
+          "register": "casual",
+          "example": "Let's have dinner at the dhaba."
+        },
+        {
+          "word": "consume",
+          "meaning": "to eat or drink",
+          "register": "formal",
+          "example": "Please consume the product within a week of opening."
+        },
+        {
+          "word": "devour",
+          "meaning": "to eat hungrily",
+          "register": "power",
+          "example": "The kids devoured the pakoras in minutes."
+        }
+      ]
+    },
+    {
+      "headword": "walk",
+      "alternatives": [
+        {
+          "word": "stroll",
+          "meaning": "to walk in a relaxed way",
+          "register": "casual",
+          "example": "We strolled along the beach after dinner."
+        },
+        {
+          "word": "march",
+          "meaning": "to walk with firm, regular steps",
+          "register": "power",
+          "example": "The cadets marched past the stage."
+        }
+      ]
+    },
+    {
+      "headword": "break",
+      "alternatives": [
+        {
+          "word": "damage",
+          "meaning": "to harm something",
+          "register": "formal",
+          "example": "The parcel was damaged in transit."
+        },
+        {
+          "word": "crack",
+          "meaning": "to break without falling apart",
+          "register": "casual",
+          "example": "I cracked my phone screen."
+        },
+        {
+          "word": "shatter",
+          "meaning": "to break into many pieces",
+          "register": "power",
+          "example": "The glass shattered on the floor."
+        }
+      ]
+    },
+    {
+      "headword": "awful",
+      "alternatives": [
+        {
+          "word": "dreadful",
+          "meaning": "extremely bad or unpleasant",
+          "register": "formal",
+          "example": "The service at the hotel was dreadful."
+        },
+        {
+          "word": "terrible",
+          "meaning": "very bad",
+          "register": "casual",
+          "example": "I had a terrible headache after the flight."
+        },
+        {
+          "word": "atrocious",
+          "meaning": "shockingly bad",
+          "register": "power",
+          "example": "His handwriting is atrocious."
+        }
+      ]
+    },
+    {
+      "headword": "horrible",
+      "alternatives": [
+        {
+          "word": "unpleasant",
+          "meaning": "not enjoyable",
+          "register": "formal",
+          "example": "The smell from the drain was unpleasant."
+        },
+        {
+          "word": "nasty",
+          "meaning": "very unpleasant",
+          "register": "casual",
+          "example": "I caught a nasty cold during the trip."
+        },
+        {
+          "word": "ghastly",
+          "meaning": "shockingly bad",
+          "register": "power",
+          "example": "The accident scene was ghastly."
+        }
+      ]
+    },
+    {
+      "headword": "fantastic",
+      "alternatives": [
+        {
+          "word": "terrific",
+          "meaning": "extremely good",
+          "register": "casual",
+          "example": "You did a terrific job on the event."
+        },
+        {
+          "word": "superb",
+          "meaning": "excellent",
+          "register": "formal",
+          "example": "The dancers gave a superb performance."
+        },
+        {
+          "word": "sensational",
+          "meaning": "extremely impressive",
+          "register": "power",
+          "example": "The young spinner had a sensational debut."
+        }
+      ]
+    },
+    {
+      "headword": "upset",
+      "alternatives": [
+        {
+          "word": "distressed",
+          "meaning": "very worried or unhappy",
+          "register": "formal",
+          "example": "The passengers were distressed by the long delay."
+        },
+        {
+          "word": "hurt",
+          "meaning": "emotionally wounded",
+          "register": "casual",
+          "example": "I was hurt that nobody called on my birthday."
+        },
+        {
+          "word": "devastated",
+          "meaning": "shocked and very sad",
+          "register": "power",
+          "example": "The team was devastated after losing the final."
+        }
+      ]
+    },
+    {
+      "headword": "polite",
+      "alternatives": [
+        {
+          "word": "courteous",
+          "meaning": "polite and respectful",
+          "register": "formal",
+          "example": "The staff at the bank were courteous."
+        },
+        {
+          "word": "well-mannered",
+          "meaning": "having good manners",
+          "register": "casual",
+          "example": "Their children are very well-mannered."
+        },
+        {
+          "word": "gracious",
+          "meaning": "kind, warm and polite",
+          "register": "power",
+          "example": "She was gracious even in defeat."
+        }
+      ]
+    },
+    {
+      "headword": "safe",
+      "alternatives": [
+        {
+          "word": "secure",
+          "meaning": "protected from danger",
+          "register": "formal",
+          "example": "Keep your documents in a secure place."
+        },
+        {
+          "word": "protected",
+          "meaning": "kept from harm",
+          "register": "casual",
+          "example": "The data is protected by a password."
+        },
+        {
+          "word": "risk-free",
+          "meaning": "without any risk",
+          "register": "casual",
+          "example": "This is a risk-free way to try the course."
+        }
+      ]
+    },
+    {
+      "headword": "whole",
+      "alternatives": [
+        {
+          "word": "entire",
+          "meaning": "complete; all of it",
+          "register": "formal",
+          "example": "The entire team worked late on Friday."
+        },
+        {
+          "word": "complete",
+          "meaning": "having all parts",
+          "register": "formal",
+          "example": "Please submit the complete form."
+        }
+      ]
+    },
+    {
+      "headword": "high",
+      "alternatives": [
+        {
+          "word": "elevated",
+          "meaning": "raised above normal",
+          "register": "formal",
+          "example": "The patient had elevated blood pressure."
+        },
+        {
+          "word": "lofty",
+          "meaning": "very high or ambitious",
+          "register": "power",
+          "example": "She has lofty goals for her career."
+        },
+        {
+          "word": "steep",
+          "meaning": "very high in price or rise",
+          "register": "casual",
+          "example": "The fees for that course are steep."
+        }
+      ]
+    },
+    {
+      "headword": "low",
+      "alternatives": [
+        {
+          "word": "minimal",
+          "meaning": "very small in amount",
+          "register": "formal",
+          "example": "The new phone has minimal battery drain."
+        },
+        {
+          "word": "modest",
+          "meaning": "not large",
+          "register": "casual",
+          "example": "We made a modest profit this year."
+        },
+        {
+          "word": "rock-bottom",
+          "meaning": "the lowest possible",
+          "register": "power",
+          "example": "The prices during the sale were rock-bottom."
+        }
+      ]
+    },
+    {
+      "headword": "full",
+      "alternatives": [
+        {
+          "word": "packed",
+          "meaning": "very crowded",
+          "register": "casual",
+          "example": "The local train was packed this morning."
+        },
+        {
+          "word": "complete",
+          "meaning": "with nothing missing",
+          "register": "formal",
+          "example": "Here is the complete list of guests."
+        },
+        {
+          "word": "brimming",
+          "meaning": "full to the top",
+          "register": "power",
+          "example": "She was brimming with confidence before the match."
+        }
+      ]
+    },
+    {
+      "headword": "empty",
+      "alternatives": [
+        {
+          "word": "vacant",
+          "meaning": "not occupied",
+          "register": "formal",
+          "example": "There are two vacant seats in the front row."
+        },
+        {
+          "word": "deserted",
+          "meaning": "with nobody there",
+          "register": "power",
+          "example": "The streets were deserted during the curfew."
+        },
+        {
+          "word": "bare",
+          "meaning": "with nothing inside",
+          "register": "casual",
+          "example": "The fridge was bare after the party."
+        }
+      ]
+    },
+    {
+      "headword": "tasty",
+      "alternatives": [
+        {
+          "word": "delicious",
+          "meaning": "very pleasant to taste",
+          "register": "casual",
+          "example": "The paneer butter masala was delicious."
+        },
+        {
+          "word": "flavourful",
+          "meaning": "full of flavour",
+          "register": "formal",
+          "example": "This dal is simple but flavourful."
+        },
+        {
+          "word": "mouth-watering",
+          "meaning": "so tasty it makes you hungry",
+          "register": "power",
+          "example": "The aroma of biryani was mouth-watering."
+        }
+      ]
+    },
+    {
+      "headword": "lucky",
+      "alternatives": [
+        {
+          "word": "fortunate",
+          "meaning": "having good luck",
+          "register": "formal",
+          "example": "We are fortunate to have such good mentors."
+        },
+        {
+          "word": "blessed",
+          "meaning": "feeling very lucky",
+          "register": "casual",
+          "example": "I feel blessed to have such a supportive family."
+        }
+      ]
+    },
+    {
+      "headword": "proud",
+      "alternatives": [
+        {
+          "word": "honoured",
+          "meaning": "feeling respected and proud",
+          "register": "formal",
+          "example": "I am honoured to receive this award."
+        },
+        {
+          "word": "thrilled",
+          "meaning": "extremely pleased",
+          "register": "casual",
+          "example": "My parents were thrilled with my exam results."
+        }
+      ]
+    },
+    {
+      "headword": "ready",
+      "alternatives": [
+        {
+          "word": "prepared",
+          "meaning": "ready for something",
+          "register": "formal",
+          "example": "I am well prepared for the interview."
+        },
+        {
+          "word": "all set",
+          "meaning": "completely ready",
+          "register": "casual",
+          "example": "We are all set for the road trip."
+        },
+        {
+          "word": "geared up",
+          "meaning": "fully prepared and eager",
+          "register": "power",
+          "example": "The team is geared up for the big final."
+        }
+      ]
+    },
+    {
+      "headword": "sick",
+      "alternatives": [
+        {
+          "word": "ill",
+          "meaning": "not well in health",
+          "register": "formal",
+          "example": "She was ill and missed the exam."
+        },
+        {
+          "word": "unwell",
+          "meaning": "slightly sick",
+          "register": "formal",
+          "example": "I am feeling unwell, so I will work from home."
+        },
+        {
+          "word": "under the weather",
+          "meaning": "a little sick",
+          "register": "casual",
+          "example": "I am a bit under the weather today."
+        }
+      ]
+    },
+    {
+      "headword": "healthy",
+      "alternatives": [
+        {
+          "word": "fit",
+          "meaning": "in good physical shape",
+          "register": "casual",
+          "example": "He stays fit by playing badminton."
+        },
+        {
+          "word": "nutritious",
+          "meaning": "full of nutrients",
+          "register": "formal",
+          "example": "Sprouts make a nutritious breakfast."
+        }
+      ]
+    },
+    {
+      "headword": "young",
+      "alternatives": [
+        {
+          "word": "youthful",
+          "meaning": "young or looking young",
+          "register": "formal",
+          "example": "My grandmother has a youthful energy."
+        },
+        {
+          "word": "budding",
+          "meaning": "new and showing promise",
+          "register": "power",
+          "example": "He is a budding writer with two short stories published."
+        },
+        {
+          "word": "junior",
+          "meaning": "younger or lower in rank",
+          "register": "casual",
+          "example": "She is my junior from college."
+        }
+      ]
+    },
+    {
+      "headword": "strict",
+      "alternatives": [
+        {
+          "word": "firm",
+          "meaning": "not giving in easily",
+          "register": "casual",
+          "example": "My dad was firm about the curfew."
+        },
+        {
+          "word": "stringent",
+          "meaning": "very strict and precise",
+          "register": "formal",
+          "example": "The lab has stringent safety rules."
+        },
+        {
+          "word": "uncompromising",
+          "meaning": "refusing to lower standards",
+          "register": "power",
+          "example": "The coach has an uncompromising attitude to fitness."
+        }
+      ]
+    },
+    {
+      "headword": "fair",
+      "alternatives": [
+        {
+          "word": "just",
+          "meaning": "morally right and fair",
+          "register": "formal",
+          "example": "It was a just decision by the panel."
+        },
+        {
+          "word": "reasonable",
+          "meaning": "sensible and fair",
+          "register": "casual",
+          "example": "The price is reasonable for this quality."
+        },
+        {
+          "word": "impartial",
+          "meaning": "not favouring any side",
+          "register": "formal",
+          "example": "The umpire must be impartial."
+        }
+      ]
+    },
+    {
+      "headword": "sweet",
+      "alternatives": [
+        {
+          "word": "kind",
+          "meaning": "caring and gentle",
+          "register": "casual",
+          "example": "It was kind of you to help my mother."
+        },
+        {
+          "word": "adorable",
+          "meaning": "very lovable",
+          "register": "casual",
+          "example": "Your puppy is adorable."
+        },
+        {
+          "word": "endearing",
+          "meaning": "making people feel affection",
+          "register": "power",
+          "example": "Her shy smile is endearing."
+        }
+      ]
+    },
+    {
+      "headword": "smooth",
+      "alternatives": [
+        {
+          "word": "seamless",
+          "meaning": "without any breaks or problems",
+          "register": "power",
+          "example": "We want a seamless experience for every user."
+        },
+        {
+          "word": "easy",
+          "meaning": "without difficulty",
+          "register": "casual",
+          "example": "We had an easy journey back home."
+        },
+        {
+          "word": "hassle-free",
+          "meaning": "without trouble",
+          "register": "casual",
+          "example": "The visa process was hassle-free."
+        }
+      ]
+    },
+    {
+      "headword": "rough",
+      "alternatives": [
+        {
+          "word": "harsh",
+          "meaning": "severe and unpleasant",
+          "register": "formal",
+          "example": "The trekkers faced harsh weather."
+        },
+        {
+          "word": "bumpy",
+          "meaning": "uneven, with many bumps",
+          "register": "casual",
+          "example": "The road to the village was bumpy."
+        },
+        {
+          "word": "turbulent",
+          "meaning": "full of disorder or change",
+          "register": "power",
+          "example": "The company went through a turbulent year."
+        }
+      ]
+    },
+    {
+      "headword": "deep",
+      "alternatives": [
+        {
+          "word": "profound",
+          "meaning": "very great or intense",
+          "register": "power",
+          "example": "The book had a profound effect on me."
+        },
+        {
+          "word": "intense",
+          "meaning": "very strong",
+          "register": "casual",
+          "example": "There was an intense debate in class."
+        },
+        {
+          "word": "thorough",
+          "meaning": "complete and detailed",
+          "register": "formal",
+          "example": "We need a thorough study of the market."
+        }
+      ]
+    },
+    {
+      "headword": "heavy",
+      "alternatives": [
+        {
+          "word": "weighty",
+          "meaning": "heavy; also serious",
+          "register": "formal",
+          "example": "The board took a weighty decision today."
+        },
+        {
+          "word": "bulky",
+          "meaning": "large and hard to carry",
+          "register": "casual",
+          "example": "The bulky suitcase would not fit in the cab."
+        },
+        {
+          "word": "hefty",
+          "meaning": "large and heavy; big in amount",
+          "register": "power",
+          "example": "He paid a hefty fine for speeding."
+        }
+      ]
+    },
+    {
+      "headword": "late",
+      "alternatives": [
+        {
+          "word": "delayed",
+          "meaning": "happening after the planned time",
+          "register": "formal",
+          "example": "The flight was delayed by two hours."
+        },
+        {
+          "word": "behind schedule",
+          "meaning": "later than planned",
+          "register": "casual",
+          "example": "The project is behind schedule."
+        },
+        {
+          "word": "overdue",
+          "meaning": "past the due time",
+          "register": "formal",
+          "example": "The library book is overdue."
+        }
+      ]
+    },
+    {
+      "headword": "early",
+      "alternatives": [
+        {
+          "word": "ahead of time",
+          "meaning": "before the expected time",
+          "register": "casual",
+          "example": "We finished the work ahead of time."
+        },
+        {
+          "word": "premature",
+          "meaning": "happening too soon",
+          "register": "formal",
+          "example": "It is premature to celebrate before the results."
+        }
+      ]
+    },
+    {
+      "headword": "successful",
+      "alternatives": [
+        {
+          "word": "thriving",
+          "meaning": "growing and doing very well",
+          "register": "power",
+          "example": "She runs a thriving catering business."
+        },
+        {
+          "word": "prosperous",
+          "meaning": "rich and successful",
+          "register": "formal",
+          "example": "Surat is a prosperous city."
+        }
+      ]
+    },
+    {
+      "headword": "creative",
+      "alternatives": [
+        {
+          "word": "imaginative",
+          "meaning": "full of new ideas",
+          "register": "formal",
+          "example": "The kids built an imaginative model for the science fair."
+        },
+        {
+          "word": "inventive",
+          "meaning": "good at thinking of new things",
+          "register": "casual",
+          "example": "She is very inventive in the kitchen."
+        },
+        {
+          "word": "original",
+          "meaning": "new and not copied",
+          "register": "power",
+          "example": "Your content needs an original voice."
+        }
+      ]
+    },
+    {
+      "headword": "confident",
+      "alternatives": [
+        {
+          "word": "self-assured",
+          "meaning": "confident in one's abilities",
+          "register": "formal",
+          "example": "She sounded calm and self-assured in the interview."
+        },
+        {
+          "word": "sure of myself",
+          "meaning": "feeling confident",
+          "register": "casual",
+          "example": "After practice, I felt sure of myself on stage."
+        },
+        {
+          "word": "bold",
+          "meaning": "confident and willing to take risks",
+          "register": "power",
+          "example": "Make a bold opening statement in your talk."
+        }
+      ]
+    },
+    {
+      "headword": "grateful",
+      "alternatives": [
+        {
+          "word": "thankful",
+          "meaning": "feeling thanks",
+          "register": "casual",
+          "example": "I am thankful for my teachers."
+        },
+        {
+          "word": "appreciative",
+          "meaning": "showing gratitude",
+          "register": "formal",
+          "example": "The guests were appreciative of the arrangements."
+        },
+        {
+          "word": "indebted",
+          "meaning": "deeply grateful for help",
+          "register": "power",
+          "example": "I am indebted to my mentor for her guidance."
+        }
+      ]
+    },
+    {
+      "headword": "sorry",
+      "alternatives": [
+        {
+          "word": "apologetic",
+          "meaning": "expressing regret",
+          "register": "formal",
+          "example": "He was apologetic about missing the call."
+        },
+        {
+          "word": "regretful",
+          "meaning": "feeling regret",
+          "register": "formal",
+          "example": "She felt regretful about her harsh words."
+        }
+      ]
+    },
+    {
+      "headword": "life",
+      "alternatives": [
+        {
+          "word": "lifestyle",
+          "meaning": "the way someone lives",
+          "register": "casual",
+          "example": "A healthy lifestyle starts with good sleep."
+        },
+        {
+          "word": "journey",
+          "meaning": "the path of one's life or career",
+          "register": "power",
+          "example": "My journey from a small town to a big city was not easy."
+        },
+        {
+          "word": "existence",
+          "meaning": "the state of living",
+          "register": "formal",
+          "example": "Water is essential for our existence."
+        }
+      ]
+    },
+    {
+      "headword": "process",
+      "alternatives": [
+        {
+          "word": "procedure",
+          "meaning": "an official way of doing something",
+          "register": "formal",
+          "example": "Follow the standard procedure for refunds."
+        },
+        {
+          "word": "system",
+          "meaning": "an organised way of working",
+          "register": "casual",
+          "example": "We need a better system for tracking orders."
+        },
+        {
+          "word": "workflow",
+          "meaning": "the sequence of steps in work",
+          "register": "formal",
+          "example": "The new tool improved our workflow."
+        }
+      ]
+    },
+    {
+      "headword": "project",
+      "alternatives": [
+        {
+          "word": "assignment",
+          "meaning": "a task given as work",
+          "register": "formal",
+          "example": "The college assignment is due on Friday."
+        },
+        {
+          "word": "venture",
+          "meaning": "a new and risky business",
+          "register": "power",
+          "example": "Her first business venture was a food truck."
+        },
+        {
+          "word": "initiative",
+          "meaning": "a new plan or action",
+          "register": "formal",
+          "example": "The cleanliness initiative was led by students."
+        }
+      ]
+    },
+    {
+      "headword": "tip",
+      "alternatives": [
+        {
+          "word": "hint",
+          "meaning": "a small piece of advice",
+          "register": "casual",
+          "example": "Here is a hint: start with the easy questions."
+        },
+        {
+          "word": "pointer",
+          "meaning": "a useful suggestion",
+          "register": "casual",
+          "example": "Can you give me a few pointers for the interview?"
+        },
+        {
+          "word": "insight",
+          "meaning": "a deep, useful understanding",
+          "register": "power",
+          "example": "Her talk gave me real insight into investing."
+        }
+      ]
+    },
+    {
+      "headword": "advice",
+      "alternatives": [
+        {
+          "word": "guidance",
+          "meaning": "helpful direction from someone experienced",
+          "register": "formal",
+          "example": "Thank you for your guidance on my career."
+        },
+        {
+          "word": "suggestion",
+          "meaning": "an idea for what to do",
+          "register": "casual",
+          "example": "My friend gave me a good suggestion."
+        },
+        {
+          "word": "counsel",
+          "meaning": "careful, wise advice",
+          "register": "formal",
+          "example": "He sought the counsel of his seniors."
+        }
+      ]
+    },
+    {
+      "headword": "decision",
+      "alternatives": [
+        {
+          "word": "choice",
+          "meaning": "something chosen",
+          "register": "casual",
+          "example": "Moving to Pune was the right choice."
+        },
+        {
+          "word": "verdict",
+          "meaning": "a final judgement",
+          "register": "power",
+          "example": "The verdict from the judges was unanimous."
+        },
+        {
+          "word": "resolution",
+          "meaning": "a firm decision",
+          "register": "formal",
+          "example": "My resolution this year is to read more."
+        }
+      ]
+    },
+    {
+      "headword": "risk",
+      "alternatives": [
+        {
+          "word": "danger",
+          "meaning": "the chance of harm",
+          "register": "casual",
+          "example": "There is a danger of flooding near the river."
+        },
+        {
+          "word": "gamble",
+          "meaning": "a risky action with uncertain results",
+          "register": "power",
+          "example": "Quitting the job to start a company was a gamble."
+        },
+        {
+          "word": "hazard",
+          "meaning": "a source of danger",
+          "register": "formal",
+          "example": "Loose wires are a fire hazard."
+        }
+      ]
+    },
+    {
+      "headword": "growth",
+      "alternatives": [
+        {
+          "word": "expansion",
+          "meaning": "increase in size or reach",
+          "register": "formal",
+          "example": "The company is planning an expansion into new cities."
+        },
+        {
+          "word": "progress",
+          "meaning": "forward movement",
+          "register": "casual",
+          "example": "I can see real progress in your speaking."
+        },
+        {
+          "word": "surge",
+          "meaning": "a sudden large increase",
+          "register": "power",
+          "example": "There was a surge in orders during the sale."
+        }
+      ]
+    },
+    {
+      "headword": "run",
+      "alternatives": [
+        {
+          "word": "manage",
+          "meaning": "to be in charge of",
+          "register": "formal",
+          "example": "She manages a small boutique in Jaipur."
+        },
+        {
+          "word": "operate",
+          "meaning": "to run a business or machine",
+          "register": "formal",
+          "example": "The company operates in five states."
+        },
+        {
+          "word": "sprint",
+          "meaning": "to run very fast",
+          "register": "power",
+          "example": "He had to sprint to catch the bus."
+        }
+      ]
+    },
+    {
+      "headword": "play",
+      "alternatives": [
+        {
+          "word": "perform",
+          "meaning": "to act or present to an audience",
+          "register": "formal",
+          "example": "The band will perform at the college fest."
+        },
+        {
+          "word": "compete",
+          "meaning": "to try to win against others",
+          "register": "power",
+          "example": "Twelve teams will compete in the tournament."
+        }
+      ]
+    },
+    {
+      "headword": "move",
+      "alternatives": [
+        {
+          "word": "shift",
+          "meaning": "to change place",
+          "register": "casual",
+          "example": "We shifted to a bigger flat last month."
+        },
+        {
+          "word": "relocate",
+          "meaning": "to move to a new place",
+          "register": "formal",
+          "example": "The firm will relocate to Hyderabad."
+        },
+        {
+          "word": "transfer",
+          "meaning": "to move from one place to another",
+          "register": "formal",
+          "example": "You can transfer the money online."
+        }
+      ]
+    },
+    {
+      "headword": "wait",
+      "alternatives": [
+        {
+          "word": "hold on",
+          "meaning": "to wait for a short time",
+          "register": "casual",
+          "example": "Please hold on, I will check."
+        },
+        {
+          "word": "stay put",
+          "meaning": "to remain where you are",
+          "register": "casual",
+          "example": "Let's stay put until the rain stops."
+        },
+        {
+          "word": "await",
+          "meaning": "to wait for",
+          "register": "formal",
+          "example": "We await your reply."
+        }
+      ]
+    },
+    {
+      "headword": "call",
+      "alternatives": [
+        {
+          "word": "phone",
+          "meaning": "to make a phone call",
+          "register": "casual",
+          "example": "I will phone you after the meeting."
+        },
+        {
+          "word": "contact",
+          "meaning": "to get in touch with",
+          "register": "formal",
+          "example": "Please contact our support team."
+        },
+        {
+          "word": "reach out",
+          "meaning": "to get in touch to offer or ask",
+          "register": "power",
+          "example": "Feel free to reach out if you need help."
+        }
+      ]
+    },
+    {
+      "headword": "write",
+      "alternatives": [
+        {
+          "word": "draft",
+          "meaning": "to write a first version",
+          "register": "formal",
+          "example": "Let me draft the email for the client."
+        },
+        {
+          "word": "jot down",
+          "meaning": "to write quickly",
+          "register": "casual",
+          "example": "Always jot down your ideas before you forget."
+        },
+        {
+          "word": "compose",
+          "meaning": "to write carefully",
+          "register": "formal",
+          "example": "She composed a heartfelt letter to her teacher."
+        }
+      ]
+    },
+    {
+      "headword": "watch",
+      "alternatives": [
+        {
+          "word": "view",
+          "meaning": "to look at",
+          "register": "formal",
+          "example": "You can view the recording later."
+        },
+        {
+          "word": "observe",
+          "meaning": "to watch carefully",
+          "register": "formal",
+          "example": "We observed the birds near the lake."
+        },
+        {
+          "word": "binge",
+          "meaning": "to watch many episodes at once",
+          "register": "casual",
+          "example": "We binged the whole series over the weekend."
+        }
+      ]
+    },
+    {
+      "headword": "listen",
+      "alternatives": [
+        {
+          "word": "pay attention",
+          "meaning": "to listen carefully",
+          "register": "casual",
+          "example": "Please pay attention to the instructions."
+        },
+        {
+          "word": "tune in",
+          "meaning": "to start listening or watching",
+          "register": "casual",
+          "example": "Do tune in to our live stream at eight."
+        },
+        {
+          "word": "heed",
+          "meaning": "to pay careful attention to advice",
+          "register": "formal",
+          "example": "He did not heed the warning."
+        }
+      ]
+    },
+    {
+      "headword": "sell",
+      "alternatives": [
+        {
+          "word": "market",
+          "meaning": "to promote and sell",
+          "register": "formal",
+          "example": "We market our products to students."
+        },
+        {
+          "word": "pitch",
+          "meaning": "to persuade someone to buy or agree",
+          "register": "power",
+          "example": "She pitched her idea to the investors."
+        }
+      ]
+    },
+    {
+      "headword": "teach",
+      "alternatives": [
+        {
+          "word": "train",
+          "meaning": "to teach a skill",
+          "register": "casual",
+          "example": "He trains young cricketers on weekends."
+        },
+        {
+          "word": "educate",
+          "meaning": "to give knowledge",
+          "register": "formal",
+          "example": "The campaign aims to educate parents about nutrition."
+        },
+        {
+          "word": "mentor",
+          "meaning": "to guide and teach someone over time",
+          "register": "power",
+          "example": "She mentors three junior designers."
+        }
+      ]
+    },
+    {
+      "headword": "allow",
+      "alternatives": [
+        {
+          "word": "permit",
+          "meaning": "to officially allow",
+          "register": "formal",
+          "example": "Photography is not permitted inside."
+        },
+        {
+          "word": "let",
+          "meaning": "to allow",
+          "register": "casual",
+          "example": "My parents let me travel alone."
+        },
+        {
+          "word": "enable",
+          "meaning": "to make possible",
+          "register": "formal",
+          "example": "The app enables farmers to sell directly."
+        }
+      ]
+    },
+    {
+      "headword": "share",
+      "alternatives": [
+        {
+          "word": "post",
+          "meaning": "to put online",
+          "register": "casual",
+          "example": "I posted the recipe on my page."
+        },
+        {
+          "word": "distribute",
+          "meaning": "to give out to many",
+          "register": "formal",
+          "example": "We distributed sweets to the neighbours."
+        },
+        {
+          "word": "spread",
+          "meaning": "to make widely known",
+          "register": "power",
+          "example": "Help us spread the word about the event."
+        }
+      ]
+    },
+    {
+      "headword": "discuss",
+      "alternatives": [
+        {
+          "word": "talk over",
+          "meaning": "to discuss something",
+          "register": "casual",
+          "example": "Let's talk over the plan at dinner."
+        },
+        {
+          "word": "debate",
+          "meaning": "to argue different views",
+          "register": "formal",
+          "example": "The class debated the use of phones in school."
+        },
+        {
+          "word": "deliberate",
+          "meaning": "to think and discuss carefully",
+          "register": "formal",
+          "example": "The panel deliberated for an hour."
+        }
+      ]
+    },
+    {
+      "headword": "suggest",
+      "alternatives": [
+        {
+          "word": "recommend",
+          "meaning": "to advise as the best choice",
+          "register": "formal",
+          "example": "I recommend the chole bhature at this place."
+        },
+        {
+          "word": "propose",
+          "meaning": "to put forward an idea",
+          "register": "formal",
+          "example": "I propose that we meet every Monday."
+        }
+      ]
+    },
+    {
+      "headword": "celebrate",
+      "alternatives": [
+        {
+          "word": "mark",
+          "meaning": "to honour an occasion",
+          "register": "formal",
+          "example": "We marked the anniversary with a small party."
+        },
+        {
+          "word": "party",
+          "meaning": "to celebrate with others",
+          "register": "casual",
+          "example": "We will party all night if we clear the exam."
+        },
+        {
+          "word": "rejoice",
+          "meaning": "to feel or show great joy",
+          "register": "power",
+          "example": "The whole city rejoiced after the win."
+        }
+      ]
+    },
+    {
+      "headword": "practise",
+      "alternatives": [
+        {
+          "word": "rehearse",
+          "meaning": "to practise before a performance",
+          "register": "formal",
+          "example": "Always rehearse your speech in front of a mirror."
+        },
+        {
+          "word": "train",
+          "meaning": "to practise for a skill or sport",
+          "register": "casual",
+          "example": "She trains every morning at the academy."
+        },
+        {
+          "word": "drill",
+          "meaning": "to practise again and again",
+          "register": "power",
+          "example": "The coach drilled the fielders on catching."
+        }
+      ]
+    },
+    {
+      "headword": "join",
+      "alternatives": [
+        {
+          "word": "enrol",
+          "meaning": "to officially sign up",
+          "register": "formal",
+          "example": "I enrolled in an evening course."
+        },
+        {
+          "word": "sign up",
+          "meaning": "to register for something",
+          "register": "casual",
+          "example": "Please sign up for the workshop before Friday."
+        },
+        {
+          "word": "team up",
+          "meaning": "to work together",
+          "register": "casual",
+          "example": "Let's team up for the hackathon."
+        }
+      ]
+    },
+    {
+      "headword": "stay",
+      "alternatives": [
+        {
+          "word": "remain",
+          "meaning": "to continue to be somewhere",
+          "register": "formal",
+          "example": "Please remain seated until the bus stops."
+        },
+        {
+          "word": "stick around",
+          "meaning": "to stay for a while",
+          "register": "casual",
+          "example": "Can you stick around after class for a chat?"
+        },
+        {
+          "word": "reside",
+          "meaning": "to live in a place",
+          "register": "formal",
+          "example": "They reside in Kolkata."
+        }
+      ]
+    }
+  ]
+}

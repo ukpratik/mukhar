@@ -1,0 +1,3266 @@
+{
+  "version": 1,
+  "lang": "hi",
+  "entries": [
+    {
+      "headword": "बहुत",
+      "alternatives": [
+        {
+          "word": "काफ़ी",
+          "meaning": "अच्छी-ख़ासी मात्रा में",
+          "register": "casual",
+          "example": "आज का मैच काफ़ी रोमांचक था।"
+        },
+        {
+          "word": "बेहद",
+          "meaning": "हद से ज़्यादा",
+          "register": "power",
+          "example": "उसकी आवाज़ बेहद सुरीली है।"
+        },
+        {
+          "word": "अत्यंत",
+          "meaning": "बहुत ही अधिक",
+          "register": "formal",
+          "example": "यह प्रोजेक्ट हमारे लिए अत्यंत महत्वपूर्ण है।"
+        }
+      ]
+    },
+    {
+      "headword": "अच्छा",
+      "alternatives": [
+        {
+          "word": "बढ़िया",
+          "meaning": "बहुत अच्छा, उम्दा",
+          "register": "casual",
+          "example": "तुमने आज बढ़िया प्रेज़ेंटेशन दिया।"
+        },
+        {
+          "word": "शानदार",
+          "meaning": "बहुत प्रभावशाली और ज़बरदस्त",
+          "register": "power",
+          "example": "रोहित ने शानदार शतक लगाया।"
+        },
+        {
+          "word": "उत्तम",
+          "meaning": "सबसे अच्छी क़िस्म का",
+          "register": "formal",
+          "example": "यह कपड़ा उत्तम क्वालिटी का है।"
+        }
+      ]
+    },
+    {
+      "headword": "बुरा",
+      "alternatives": [
+        {
+          "word": "ख़राब",
+          "meaning": "जो अच्छा न हो, बिगड़ा हुआ",
+          "register": "casual",
+          "example": "आज मौसम बहुत ख़राब है।"
+        },
+        {
+          "word": "घटिया",
+          "meaning": "बहुत निचले दर्जे का",
+          "register": "power",
+          "example": "ऐसा घटिया बर्ताव बर्दाश्त नहीं होगा।"
+        },
+        {
+          "word": "अनुचित",
+          "meaning": "जो ठीक या उचित न हो",
+          "register": "formal",
+          "example": "बड़ों से ऐसे बात करना अनुचित है।"
+        }
+      ]
+    },
+    {
+      "headword": "बढ़िया",
+      "alternatives": [
+        {
+          "word": "उम्दा",
+          "meaning": "अच्छी क़िस्म का",
+          "register": "casual",
+          "example": "दादी के हाथ का अचार उम्दा होता है।"
+        },
+        {
+          "word": "लाजवाब",
+          "meaning": "जिसका कोई जवाब न हो",
+          "register": "power",
+          "example": "मम्मी की बनाई बिरयानी लाजवाब थी।"
+        },
+        {
+          "word": "श्रेष्ठ",
+          "meaning": "सबसे अच्छा",
+          "register": "formal",
+          "example": "यह इस साल का श्रेष्ठ प्रदर्शन था।"
+        }
+      ]
+    },
+    {
+      "headword": "बड़ा",
+      "alternatives": [
+        {
+          "word": "विशाल",
+          "meaning": "बहुत बड़े आकार का",
+          "register": "formal",
+          "example": "हमारे कॉलेज का मैदान विशाल है।"
+        },
+        {
+          "word": "भारी-भरकम",
+          "meaning": "बहुत बड़ा और वज़नदार",
+          "register": "casual",
+          "example": "वह भारी-भरकम बैग लेकर स्टेशन पहुँचा।"
+        },
+        {
+          "word": "ज़बरदस्त",
+          "meaning": "बहुत बड़ा और ताक़तवर",
+          "register": "power",
+          "example": "स्टेडियम में ज़बरदस्त भीड़ थी।"
+        }
+      ]
+    },
+    {
+      "headword": "छोटा",
+      "alternatives": [
+        {
+          "word": "नन्हा",
+          "meaning": "बहुत छोटा, प्यारा",
+          "register": "casual",
+          "example": "मेरा नन्हा भतीजा बहुत शरारती है।"
+        },
+        {
+          "word": "सूक्ष्म",
+          "meaning": "बहुत बारीक या महीन",
+          "register": "formal",
+          "example": "रिपोर्ट में एक सूक्ष्म अंतर दिखा।"
+        },
+        {
+          "word": "मामूली",
+          "meaning": "कम महत्व का",
+          "register": "casual",
+          "example": "यह तो एक मामूली बात है।"
+        }
+      ]
+    },
+    {
+      "headword": "ज़रूरी",
+      "alternatives": [
+        {
+          "word": "आवश्यक",
+          "meaning": "जिसकी ज़रूरत हो",
+          "register": "formal",
+          "example": "इस फ़ॉर्म के साथ पहचान-पत्र आवश्यक है।"
+        },
+        {
+          "word": "अहम",
+          "meaning": "महत्व वाला",
+          "register": "casual",
+          "example": "आज की मीटिंग बहुत अहम है।"
+        },
+        {
+          "word": "अनिवार्य",
+          "meaning": "जिसके बिना काम न चले",
+          "register": "power",
+          "example": "हेलमेट पहनना अनिवार्य है।"
+        }
+      ]
+    },
+    {
+      "headword": "मुश्किल",
+      "alternatives": [
+        {
+          "word": "कठिन",
+          "meaning": "आसानी से न होने वाला",
+          "register": "formal",
+          "example": "आज का पेपर कठिन था।"
+        },
+        {
+          "word": "टेढ़ा",
+          "meaning": "उलझा हुआ, आसान नहीं",
+          "register": "casual",
+          "example": "यह सवाल थोड़ा टेढ़ा है।"
+        },
+        {
+          "word": "चुनौतीपूर्ण",
+          "meaning": "हिम्मत और मेहनत माँगने वाला",
+          "register": "power",
+          "example": "नई नौकरी चुनौतीपूर्ण है, पर मज़ेदार भी।"
+        }
+      ]
+    },
+    {
+      "headword": "आसान",
+      "alternatives": [
+        {
+          "word": "सरल",
+          "meaning": "जो कठिन न हो",
+          "register": "formal",
+          "example": "यह रेसिपी बहुत सरल है।"
+        },
+        {
+          "word": "सहज",
+          "meaning": "स्वाभाविक और आसान",
+          "register": "formal",
+          "example": "वह मंच पर सहज होकर बोलती है।"
+        },
+        {
+          "word": "बाएँ हाथ का खेल",
+          "meaning": "बहुत ही आसान काम",
+          "register": "power",
+          "example": "उसके लिए यह सवाल बाएँ हाथ का खेल है।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़ुश",
+      "alternatives": [
+        {
+          "word": "प्रसन्न",
+          "meaning": "ख़ुश और संतुष्ट",
+          "register": "formal",
+          "example": "आपसे मिलकर मैं बहुत प्रसन्न हूँ।"
+        },
+        {
+          "word": "खिला-खिला",
+          "meaning": "ख़ुशी से चमकता हुआ",
+          "register": "casual",
+          "example": "आज तुम्हारा चेहरा खिला-खिला लग रहा है।"
+        },
+        {
+          "word": "गदगद",
+          "meaning": "ख़ुशी से भर उठा",
+          "register": "power",
+          "example": "बेटे की कामयाबी पर पिताजी गदगद हो गए।"
+        }
+      ]
+    },
+    {
+      "headword": "दुखी",
+      "alternatives": [
+        {
+          "word": "उदास",
+          "meaning": "मन से बुझा हुआ",
+          "register": "casual",
+          "example": "वह मैच हारकर उदास था।"
+        },
+        {
+          "word": "निराश",
+          "meaning": "उम्मीद टूटने से दुखी",
+          "register": "formal",
+          "example": "नतीजे देखकर वह निराश हो गया।"
+        },
+        {
+          "word": "टूटा हुआ",
+          "meaning": "बहुत गहरे दुख में",
+          "register": "power",
+          "example": "दोस्त के जाने से वह टूटा हुआ महसूस कर रहा था।"
+        }
+      ]
+    },
+    {
+      "headword": "सुंदर",
+      "alternatives": [
+        {
+          "word": "ख़ूबसूरत",
+          "meaning": "देखने में बहुत अच्छा",
+          "register": "casual",
+          "example": "मनाली बहुत ख़ूबसूरत जगह है।"
+        },
+        {
+          "word": "मनमोहक",
+          "meaning": "मन को मोह लेने वाला",
+          "register": "power",
+          "example": "पहाड़ों का नज़ारा मनमोहक था।"
+        },
+        {
+          "word": "आकर्षक",
+          "meaning": "अपनी ओर खींचने वाला",
+          "register": "formal",
+          "example": "नया लोगो काफ़ी आकर्षक है।"
+        }
+      ]
+    },
+    {
+      "headword": "गंदा",
+      "alternatives": [
+        {
+          "word": "मैला",
+          "meaning": "धूल-मिट्टी से भरा",
+          "register": "casual",
+          "example": "उसका कुर्ता मैला हो गया था।"
+        },
+        {
+          "word": "अस्वच्छ",
+          "meaning": "जो साफ़ न हो",
+          "register": "formal",
+          "example": "अस्वच्छ पानी से बीमारियाँ फैलती हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "साफ़",
+      "alternatives": [
+        {
+          "word": "स्वच्छ",
+          "meaning": "पूरी तरह साफ़",
+          "register": "formal",
+          "example": "हमें अपना मोहल्ला स्वच्छ रखना चाहिए।"
+        },
+        {
+          "word": "चमचमाता",
+          "meaning": "चमकता हुआ साफ़",
+          "register": "power",
+          "example": "दिवाली पर घर चमचमाता लग रहा था।"
+        },
+        {
+          "word": "सुथरा",
+          "meaning": "साफ़ और व्यवस्थित",
+          "register": "casual",
+          "example": "उसका कमरा हमेशा सुथरा रहता है।"
+        }
+      ]
+    },
+    {
+      "headword": "नया",
+      "alternatives": [
+        {
+          "word": "ताज़ा",
+          "meaning": "हाल का, नया-नया",
+          "register": "casual",
+          "example": "आज की ताज़ा ख़बर सुनी?"
+        },
+        {
+          "word": "नवीन",
+          "meaning": "बिल्कुल नया",
+          "register": "formal",
+          "example": "कंपनी ने एक नवीन तकनीक अपनाई है।"
+        },
+        {
+          "word": "अनोखा",
+          "meaning": "अलग और नया",
+          "register": "power",
+          "example": "उसका आइडिया बिल्कुल अनोखा है।"
+        }
+      ]
+    },
+    {
+      "headword": "पुराना",
+      "alternatives": [
+        {
+          "word": "प्राचीन",
+          "meaning": "बहुत पुराने समय का",
+          "register": "formal",
+          "example": "हमने एक प्राचीन किला देखा।"
+        },
+        {
+          "word": "पुरातन",
+          "meaning": "बहुत पुराने ज़माने का",
+          "register": "formal",
+          "example": "संग्रहालय में कई पुरातन सिक्के रखे हैं।"
+        },
+        {
+          "word": "घिसा-पिटा",
+          "meaning": "बार-बार इस्तेमाल होकर बेअसर",
+          "register": "casual",
+          "example": "यह घिसा-पिटा मज़ाक अब नहीं चलता।"
+        }
+      ]
+    },
+    {
+      "headword": "सस्ता",
+      "alternatives": [
+        {
+          "word": "किफ़ायती",
+          "meaning": "कम दाम में अच्छा",
+          "register": "formal",
+          "example": "यह होटल किफ़ायती और साफ़ है।"
+        },
+        {
+          "word": "कम दाम का",
+          "meaning": "जिसकी क़ीमत कम हो",
+          "register": "casual",
+          "example": "यह कम दाम का फ़ोन भी अच्छा चलता है।"
+        }
+      ]
+    },
+    {
+      "headword": "महँगा",
+      "alternatives": [
+        {
+          "word": "क़ीमती",
+          "meaning": "ऊँचे मूल्य का",
+          "register": "formal",
+          "example": "यह एक क़ीमती घड़ी है।"
+        },
+        {
+          "word": "बेशक़ीमती",
+          "meaning": "जिसकी क़ीमत आँकी न जा सके",
+          "register": "power",
+          "example": "दादी की दी हुई अँगूठी बेशक़ीमती है।"
+        }
+      ]
+    },
+    {
+      "headword": "तेज़",
+      "alternatives": [
+        {
+          "word": "फुर्तीला",
+          "meaning": "जल्दी और चुस्ती से काम करने वाला",
+          "register": "casual",
+          "example": "हमारा विकेटकीपर बहुत फुर्तीला है।"
+        },
+        {
+          "word": "तीव्र",
+          "meaning": "बहुत तेज़ गति वाला",
+          "register": "formal",
+          "example": "शहर का तीव्र विकास हो रहा है।"
+        },
+        {
+          "word": "बिजली जैसा",
+          "meaning": "बहुत ही तेज़",
+          "register": "power",
+          "example": "उसका थ्रो बिजली जैसा था।"
+        }
+      ]
+    },
+    {
+      "headword": "धीमा",
+      "alternatives": [
+        {
+          "word": "सुस्त",
+          "meaning": "ढीला और धीरे चलने वाला",
+          "register": "casual",
+          "example": "आज इंटरनेट बहुत सुस्त है।"
+        },
+        {
+          "word": "मंद",
+          "meaning": "कम गति वाला",
+          "register": "formal",
+          "example": "बाज़ार में मंद रफ़्तार से सुधार हो रहा है।"
+        }
+      ]
+    },
+    {
+      "headword": "मज़बूत",
+      "alternatives": [
+        {
+          "word": "पक्का",
+          "meaning": "टिकाऊ और ठोस",
+          "register": "casual",
+          "example": "यह पुल बहुत पक्का बना है।"
+        },
+        {
+          "word": "सशक्त",
+          "meaning": "ताक़त और क्षमता से भरा",
+          "register": "formal",
+          "example": "उसने एक सशक्त भाषण दिया।"
+        },
+        {
+          "word": "फ़ौलादी",
+          "meaning": "लोहे जैसा मज़बूत",
+          "register": "power",
+          "example": "उसके इरादे फ़ौलादी हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "कमज़ोर",
+      "alternatives": [
+        {
+          "word": "नाज़ुक",
+          "meaning": "जल्दी टूटने वाला",
+          "register": "casual",
+          "example": "यह गिलास नाज़ुक है, ध्यान से रखना।"
+        },
+        {
+          "word": "दुर्बल",
+          "meaning": "ताक़त में कम",
+          "register": "formal",
+          "example": "बीमारी के बाद वह दुर्बल हो गया।"
+        },
+        {
+          "word": "ढीला",
+          "meaning": "जिसमें दम न हो",
+          "register": "casual",
+          "example": "यह बहाना बहुत ढीला है।"
+        }
+      ]
+    },
+    {
+      "headword": "ग़ुस्सा",
+      "alternatives": [
+        {
+          "word": "नाराज़",
+          "meaning": "किसी बात से ख़फ़ा",
+          "register": "casual",
+          "example": "माँ मुझसे थोड़ी नाराज़ हैं।"
+        },
+        {
+          "word": "क्रोधित",
+          "meaning": "बहुत ग़ुस्से में",
+          "register": "formal",
+          "example": "अधिकारी देरी से क्रोधित थे।"
+        },
+        {
+          "word": "आग-बबूला",
+          "meaning": "बेहद ग़ुस्से में",
+          "register": "power",
+          "example": "कैच छूटने पर कोच आग-बबूला हो गए।"
+        }
+      ]
+    },
+    {
+      "headword": "थका हुआ",
+      "alternatives": [
+        {
+          "word": "थका-माँदा",
+          "meaning": "बहुत थका हुआ",
+          "register": "casual",
+          "example": "सफ़र के बाद वह थका-माँदा घर पहुँचा।"
+        },
+        {
+          "word": "चूर",
+          "meaning": "थकान से एकदम बेहाल",
+          "register": "power",
+          "example": "नाइट शिफ़्ट के बाद मैं थककर चूर था।"
+        }
+      ]
+    },
+    {
+      "headword": "अजीब",
+      "alternatives": [
+        {
+          "word": "विचित्र",
+          "meaning": "बहुत अलग और हैरान करने वाला",
+          "register": "formal",
+          "example": "कल रात मैंने एक विचित्र सपना देखा।"
+        },
+        {
+          "word": "अलग-सा",
+          "meaning": "थोड़ा हटकर, सामान्य से अलग",
+          "register": "casual",
+          "example": "आज उसका बर्ताव कुछ अलग-सा था।"
+        },
+        {
+          "word": "अटपटा",
+          "meaning": "अजीब-सा, बेढंगा",
+          "register": "casual",
+          "example": "उसका जवाब थोड़ा अटपटा लगा।"
+        }
+      ]
+    },
+    {
+      "headword": "आम",
+      "alternatives": [
+        {
+          "word": "साधारण",
+          "meaning": "जो ख़ास न हो",
+          "register": "formal",
+          "example": "वह एक साधारण परिवार से है।"
+        },
+        {
+          "word": "मामूली",
+          "meaning": "छोटा, साधारण",
+          "register": "casual",
+          "example": "यह मामूली सर्दी है, जल्दी ठीक हो जाएगी।"
+        },
+        {
+          "word": "रोज़मर्रा",
+          "meaning": "हर दिन का",
+          "register": "casual",
+          "example": "रोज़मर्रा की बातचीत अंग्रेज़ी में करें।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़ास",
+      "alternatives": [
+        {
+          "word": "विशेष",
+          "meaning": "बाक़ी से अलग और महत्वपूर्ण",
+          "register": "formal",
+          "example": "आज का दिन मेरे लिए विशेष है।"
+        },
+        {
+          "word": "अनमोल",
+          "meaning": "जिसका मोल न लगाया जा सके",
+          "register": "power",
+          "example": "माँ के साथ बिताया समय अनमोल है।"
+        },
+        {
+          "word": "निराला",
+          "meaning": "सबसे अलग अंदाज़ वाला",
+          "register": "casual",
+          "example": "उसका गाने का अंदाज़ निराला है।"
+        }
+      ]
+    },
+    {
+      "headword": "सही",
+      "alternatives": [
+        {
+          "word": "उचित",
+          "meaning": "ठीक और मुनासिब",
+          "register": "formal",
+          "example": "यह फ़ैसला उचित है।"
+        },
+        {
+          "word": "ठीक",
+          "meaning": "जैसा होना चाहिए",
+          "register": "casual",
+          "example": "तुम्हारा जवाब ठीक है।"
+        },
+        {
+          "word": "सटीक",
+          "meaning": "बिल्कुल सही, एकदम निशाने पर",
+          "register": "power",
+          "example": "उसका अंदाज़ा सटीक निकला।"
+        }
+      ]
+    },
+    {
+      "headword": "ग़लत",
+      "alternatives": [
+        {
+          "word": "अनुचित",
+          "meaning": "जो उचित न हो",
+          "register": "formal",
+          "example": "बिना पूछे फ़ोटो लेना अनुचित है।"
+        },
+        {
+          "word": "उल्टा",
+          "meaning": "सही का विपरीत",
+          "register": "casual",
+          "example": "तुमने तो उल्टा समझ लिया।"
+        },
+        {
+          "word": "त्रुटिपूर्ण",
+          "meaning": "जिसमें ग़लती हो",
+          "register": "formal",
+          "example": "यह रिपोर्ट त्रुटिपूर्ण है।"
+        }
+      ]
+    },
+    {
+      "headword": "पूरा",
+      "alternatives": [
+        {
+          "word": "संपूर्ण",
+          "meaning": "पूरी तरह से",
+          "register": "formal",
+          "example": "यह संपूर्ण योजना एक हफ़्ते में तैयार हुई।"
+        },
+        {
+          "word": "समूचा",
+          "meaning": "सारा का सारा",
+          "register": "casual",
+          "example": "समूचा मोहल्ला शादी में आया था।"
+        }
+      ]
+    },
+    {
+      "headword": "थोड़ा",
+      "alternatives": [
+        {
+          "word": "ज़रा",
+          "meaning": "थोड़ा सा",
+          "register": "casual",
+          "example": "ज़रा पानी देना।"
+        },
+        {
+          "word": "कुछ",
+          "meaning": "थोड़ी मात्रा में",
+          "register": "casual",
+          "example": "मुझे कुछ समय चाहिए।"
+        },
+        {
+          "word": "किंचित",
+          "meaning": "बहुत थोड़ा",
+          "register": "formal",
+          "example": "इसमें किंचित बदलाव की ज़रूरत है।"
+        }
+      ]
+    },
+    {
+      "headword": "ज़्यादा",
+      "alternatives": [
+        {
+          "word": "अधिक",
+          "meaning": "मात्रा में बढ़कर",
+          "register": "formal",
+          "example": "इस बार अधिक लोग आए।"
+        },
+        {
+          "word": "ढेर सारा",
+          "meaning": "बहुत सारा",
+          "register": "casual",
+          "example": "मम्मी ने ढेर सारा खाना बनाया।"
+        },
+        {
+          "word": "भरपूर",
+          "meaning": "पूरी मात्रा में, कमी के बिना",
+          "register": "power",
+          "example": "इस मौसम में भरपूर बारिश हुई।"
+        }
+      ]
+    },
+    {
+      "headword": "कम",
+      "alternatives": [
+        {
+          "word": "थोड़ा",
+          "meaning": "ज़्यादा नहीं",
+          "register": "casual",
+          "example": "मेरे पास थोड़ा समय है, जल्दी बताओ।"
+        },
+        {
+          "word": "अल्प",
+          "meaning": "बहुत कम मात्रा में",
+          "register": "formal",
+          "example": "अल्प समय में उसने बड़ी सफलता पाई।"
+        },
+        {
+          "word": "न्यूनतम",
+          "meaning": "सबसे कम",
+          "register": "formal",
+          "example": "इस पद के लिए न्यूनतम योग्यता स्नातक है।"
+        }
+      ]
+    },
+    {
+      "headword": "सच",
+      "alternatives": [
+        {
+          "word": "सच्चाई",
+          "meaning": "असली बात",
+          "register": "casual",
+          "example": "सच्चाई यह है कि हमें और मेहनत करनी होगी।"
+        },
+        {
+          "word": "सत्य",
+          "meaning": "जो वास्तव में हो",
+          "register": "formal",
+          "example": "सत्य हमेशा सामने आता है।"
+        },
+        {
+          "word": "हक़ीक़त",
+          "meaning": "असलियत",
+          "register": "casual",
+          "example": "हक़ीक़त यह है कि बजट कम है।"
+        }
+      ]
+    },
+    {
+      "headword": "झूठ",
+      "alternatives": [
+        {
+          "word": "असत्य",
+          "meaning": "जो सच न हो",
+          "register": "formal",
+          "example": "यह ख़बर असत्य है।"
+        },
+        {
+          "word": "फ़रेब",
+          "meaning": "धोखा, छल",
+          "register": "power",
+          "example": "उसकी मीठी बातें सिर्फ़ फ़रेब थीं।"
+        }
+      ]
+    },
+    {
+      "headword": "अमीर",
+      "alternatives": [
+        {
+          "word": "धनी",
+          "meaning": "बहुत धन वाला",
+          "register": "formal",
+          "example": "वह एक धनी व्यापारी है।"
+        },
+        {
+          "word": "पैसेवाला",
+          "meaning": "जिसके पास पैसा हो",
+          "register": "casual",
+          "example": "उसका परिवार काफ़ी पैसेवाला है।"
+        },
+        {
+          "word": "संपन्न",
+          "meaning": "सुख-सुविधाओं से भरा",
+          "register": "formal",
+          "example": "यह एक संपन्न गाँव है।"
+        }
+      ]
+    },
+    {
+      "headword": "ग़रीब",
+      "alternatives": [
+        {
+          "word": "निर्धन",
+          "meaning": "जिसके पास धन न हो",
+          "register": "formal",
+          "example": "यह संस्था निर्धन बच्चों को पढ़ाती है।"
+        },
+        {
+          "word": "ज़रूरतमंद",
+          "meaning": "जिसे मदद की ज़रूरत हो",
+          "register": "casual",
+          "example": "हमने ज़रूरतमंद परिवारों को कपड़े दिए।"
+        }
+      ]
+    },
+    {
+      "headword": "होशियार",
+      "alternatives": [
+        {
+          "word": "समझदार",
+          "meaning": "अच्छी समझ वाला",
+          "register": "casual",
+          "example": "वह बहुत समझदार लड़की है।"
+        },
+        {
+          "word": "बुद्धिमान",
+          "meaning": "तेज़ दिमाग़ वाला",
+          "register": "formal",
+          "example": "बुद्धिमान व्यक्ति सोचकर बोलता है।"
+        },
+        {
+          "word": "तेज़-तर्रार",
+          "meaning": "बहुत चुस्त और तेज़ दिमाग़",
+          "register": "power",
+          "example": "हमारी नई इंटर्न तेज़-तर्रार है।"
+        }
+      ]
+    },
+    {
+      "headword": "बेवकूफ़",
+      "alternatives": [
+        {
+          "word": "नासमझ",
+          "meaning": "जिसे समझ कम हो",
+          "register": "casual",
+          "example": "वह अभी नासमझ है, सीख जाएगा।"
+        },
+        {
+          "word": "मूर्ख",
+          "meaning": "बिना अक्ल वाला",
+          "register": "formal",
+          "example": "ऐसी ग़लती करना मूर्ख का काम है।"
+        }
+      ]
+    },
+    {
+      "headword": "मज़ेदार",
+      "alternatives": [
+        {
+          "word": "दिलचस्प",
+          "meaning": "जिसमें मन लगे",
+          "register": "casual",
+          "example": "यह किताब बहुत दिलचस्प है।"
+        },
+        {
+          "word": "रोचक",
+          "meaning": "रुचि जगाने वाला",
+          "register": "formal",
+          "example": "प्रोफ़ेसर ने एक रोचक क़िस्सा सुनाया।"
+        },
+        {
+          "word": "धमाकेदार",
+          "meaning": "ज़बरदस्त और जोशीला",
+          "register": "power",
+          "example": "कल की पार्टी धमाकेदार थी।"
+        }
+      ]
+    },
+    {
+      "headword": "बोरिंग",
+      "alternatives": [
+        {
+          "word": "उबाऊ",
+          "meaning": "जिससे मन ऊब जाए",
+          "register": "casual",
+          "example": "लेक्चर बहुत उबाऊ था।"
+        },
+        {
+          "word": "नीरस",
+          "meaning": "जिसमें रस या मज़ा न हो",
+          "register": "formal",
+          "example": "उसकी आवाज़ नीरस लगती है।"
+        },
+        {
+          "word": "फीका",
+          "meaning": "बेस्वाद, बेरंग",
+          "register": "casual",
+          "example": "शो का अंत थोड़ा फीका रहा।"
+        }
+      ]
+    },
+    {
+      "headword": "शांत",
+      "alternatives": [
+        {
+          "word": "सुकून भरा",
+          "meaning": "आराम और चैन वाला",
+          "register": "casual",
+          "example": "गाँव की शाम सुकून भरा अहसास देती है।"
+        },
+        {
+          "word": "स्थिर",
+          "meaning": "बिना हलचल के",
+          "register": "formal",
+          "example": "दबाव में भी उसका मन स्थिर रहा।"
+        },
+        {
+          "word": "ठंडे दिमाग़ वाला",
+          "meaning": "मुश्किल में भी न घबराने वाला",
+          "register": "power",
+          "example": "धोनी एक ठंडे दिमाग़ वाला कप्तान है।"
+        }
+      ]
+    },
+    {
+      "headword": "परेशान",
+      "alternatives": [
+        {
+          "word": "चिंतित",
+          "meaning": "फ़िक्र में डूबा",
+          "register": "formal",
+          "example": "माता-पिता बच्चे की सेहत को लेकर चिंतित थे।"
+        },
+        {
+          "word": "बेचैन",
+          "meaning": "मन में घबराहट",
+          "register": "casual",
+          "example": "रिज़ल्ट से पहले मैं बेचैन था।"
+        },
+        {
+          "word": "हैरान-परेशान",
+          "meaning": "बहुत ज़्यादा परेशान",
+          "register": "power",
+          "example": "बारिश में फँसकर हम हैरान-परेशान हो गए।"
+        }
+      ]
+    },
+    {
+      "headword": "व्यस्त",
+      "alternatives": [
+        {
+          "word": "मसरूफ़",
+          "meaning": "काम में लगा हुआ",
+          "register": "casual",
+          "example": "पापा आजकल दफ़्तर में मसरूफ़ हैं।"
+        },
+        {
+          "word": "फ़ुर्सत नहीं",
+          "meaning": "ख़ाली समय न होना",
+          "register": "casual",
+          "example": "इस हफ़्ते मुझे बिल्कुल फ़ुर्सत नहीं है।"
+        }
+      ]
+    },
+    {
+      "headword": "आलसी",
+      "alternatives": [
+        {
+          "word": "सुस्त",
+          "meaning": "काम में ढीला",
+          "register": "casual",
+          "example": "छुट्टियों में मैं थोड़ा सुस्त हो जाता हूँ।"
+        },
+        {
+          "word": "कामचोर",
+          "meaning": "काम से जी चुराने वाला",
+          "register": "power",
+          "example": "टीम में कोई कामचोर नहीं होना चाहिए।"
+        }
+      ]
+    },
+    {
+      "headword": "गरम",
+      "alternatives": [
+        {
+          "word": "तपता",
+          "meaning": "बहुत गरम",
+          "register": "power",
+          "example": "तपता सूरज सिर पर था, फिर भी खिलाड़ी मैदान में डटे रहे।"
+        },
+        {
+          "word": "गुनगुना",
+          "meaning": "हल्का गरम",
+          "register": "casual",
+          "example": "सुबह गुनगुना पानी पीना अच्छा है।"
+        },
+        {
+          "word": "उष्ण",
+          "meaning": "गर्म, तापमान में ऊँचा",
+          "register": "formal",
+          "example": "भारत के कई हिस्सों में उष्ण जलवायु है।"
+        }
+      ]
+    },
+    {
+      "headword": "ठंडा",
+      "alternatives": [
+        {
+          "word": "शीतल",
+          "meaning": "ठंडक देने वाला",
+          "register": "formal",
+          "example": "पहाड़ों की शीतल हवा मन को भाती है।"
+        },
+        {
+          "word": "सर्द",
+          "meaning": "ठंड से भरा",
+          "register": "casual",
+          "example": "दिल्ली की सर्द रातें मशहूर हैं।"
+        },
+        {
+          "word": "बर्फ़ीला",
+          "meaning": "बर्फ़ जैसा ठंडा",
+          "register": "power",
+          "example": "नदी का पानी बर्फ़ीला था।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़तरनाक",
+      "alternatives": [
+        {
+          "word": "जोखिम भरा",
+          "meaning": "जिसमें नुक़सान का डर हो",
+          "register": "casual",
+          "example": "रात में घाट पर गाड़ी चलाना जोखिम भरा है।"
+        },
+        {
+          "word": "घातक",
+          "meaning": "जान ले सकने वाला",
+          "register": "power",
+          "example": "तेज़ रफ़्तार घातक साबित हो सकती है।"
+        },
+        {
+          "word": "हानिकारक",
+          "meaning": "नुक़सान पहुँचाने वाला",
+          "register": "formal",
+          "example": "धूम्रपान सेहत के लिए हानिकारक है।"
+        }
+      ]
+    },
+    {
+      "headword": "मशहूर",
+      "alternatives": [
+        {
+          "word": "प्रसिद्ध",
+          "meaning": "जिसे बहुत लोग जानते हों",
+          "register": "formal",
+          "example": "वह एक प्रसिद्ध गायिका हैं।"
+        },
+        {
+          "word": "जाना-माना",
+          "meaning": "जिसे लोग पहचानते हों",
+          "register": "casual",
+          "example": "वह एक जाना-माना शेफ़ है।"
+        },
+        {
+          "word": "विख्यात",
+          "meaning": "दूर-दूर तक प्रसिद्ध",
+          "register": "power",
+          "example": "आगरा अपने ताजमहल के लिए विख्यात है।"
+        }
+      ]
+    },
+    {
+      "headword": "बेकार",
+      "alternatives": [
+        {
+          "word": "फ़िज़ूल",
+          "meaning": "बिना काम का",
+          "register": "casual",
+          "example": "फ़िज़ूल की बहस में समय मत गँवाओ।"
+        },
+        {
+          "word": "व्यर्थ",
+          "meaning": "जिसका कोई फल न हो",
+          "register": "formal",
+          "example": "अब पछताना व्यर्थ है।"
+        },
+        {
+          "word": "निकम्मा",
+          "meaning": "किसी काम न आने वाला",
+          "register": "power",
+          "example": "यह पुराना चार्जर निकम्मा हो गया है।"
+        }
+      ]
+    },
+    {
+      "headword": "असली",
+      "alternatives": [
+        {
+          "word": "वास्तविक",
+          "meaning": "जो सच में हो",
+          "register": "formal",
+          "example": "वास्तविक ख़र्च अनुमान से ज़्यादा निकला।"
+        },
+        {
+          "word": "खरा",
+          "meaning": "बिना मिलावट का, सच्चा",
+          "register": "power",
+          "example": "वह खरा इंसान है, जो कहता है वही करता है।"
+        },
+        {
+          "word": "सच्चा",
+          "meaning": "झूठ से दूर",
+          "register": "casual",
+          "example": "वह मेरा सच्चा दोस्त है।"
+        }
+      ]
+    },
+    {
+      "headword": "नक़ली",
+      "alternatives": [
+        {
+          "word": "जाली",
+          "meaning": "धोखा देने के लिए बनाया",
+          "register": "formal",
+          "example": "पुलिस ने जाली नोट पकड़े।"
+        },
+        {
+          "word": "दिखावटी",
+          "meaning": "सिर्फ़ दिखाने के लिए",
+          "register": "casual",
+          "example": "उसकी मुस्कान दिखावटी लग रही थी।"
+        }
+      ]
+    },
+    {
+      "headword": "जल्दी",
+      "alternatives": [
+        {
+          "word": "फ़ौरन",
+          "meaning": "बिना देर किए",
+          "register": "casual",
+          "example": "फ़ौरन डॉक्टर को बुलाओ।"
+        },
+        {
+          "word": "शीघ्र",
+          "meaning": "कम समय में",
+          "register": "formal",
+          "example": "कृपया शीघ्र उत्तर दें।"
+        },
+        {
+          "word": "झटपट",
+          "meaning": "बहुत जल्दी से",
+          "register": "casual",
+          "example": "माँ ने झटपट नाश्ता बना दिया।"
+        }
+      ]
+    },
+    {
+      "headword": "धीरे",
+      "alternatives": [
+        {
+          "word": "आहिस्ता",
+          "meaning": "धीमे से, आराम से",
+          "register": "casual",
+          "example": "आहिस्ता बोलो, बच्चा सो रहा है।"
+        },
+        {
+          "word": "धीरे-धीरे",
+          "meaning": "थोड़ा-थोड़ा करके",
+          "register": "casual",
+          "example": "धीरे-धीरे मेरा आत्मविश्वास बढ़ा।"
+        },
+        {
+          "word": "क्रमशः",
+          "meaning": "एक के बाद एक, चरणों में",
+          "register": "formal",
+          "example": "बिक्री में क्रमशः सुधार हो रहा है।"
+        }
+      ]
+    },
+    {
+      "headword": "प्यारा",
+      "alternatives": [
+        {
+          "word": "मनभावन",
+          "meaning": "मन को अच्छा लगने वाला",
+          "register": "formal",
+          "example": "यह गाना बड़ा मनभावन है।"
+        },
+        {
+          "word": "प्रिय",
+          "meaning": "जो बहुत अच्छा लगे",
+          "register": "formal",
+          "example": "यह मेरा प्रिय गाना है।"
+        },
+        {
+          "word": "दुलारा",
+          "meaning": "बहुत लाड़ला",
+          "register": "casual",
+          "example": "वह दादी का दुलारा पोता है।"
+        }
+      ]
+    },
+    {
+      "headword": "ईमानदार",
+      "alternatives": [
+        {
+          "word": "सच्चा",
+          "meaning": "सच बोलने वाला",
+          "register": "casual",
+          "example": "वह एक सच्चा और मेहनती इंसान है।"
+        },
+        {
+          "word": "निष्ठावान",
+          "meaning": "अपने काम के प्रति वफ़ादार",
+          "register": "formal",
+          "example": "हमें निष्ठावान कर्मचारियों की ज़रूरत है।"
+        },
+        {
+          "word": "खरा",
+          "meaning": "बिल्कुल साफ़ और सच्चा",
+          "register": "power",
+          "example": "उसका हिसाब हमेशा खरा होता है।"
+        }
+      ]
+    },
+    {
+      "headword": "बहादुर",
+      "alternatives": [
+        {
+          "word": "साहसी",
+          "meaning": "हिम्मत वाला",
+          "register": "formal",
+          "example": "वह एक साहसी पर्वतारोही है।"
+        },
+        {
+          "word": "निडर",
+          "meaning": "जिसे डर न लगे",
+          "register": "power",
+          "example": "युवा बल्लेबाज़ ने निडर पारी खेली।"
+        },
+        {
+          "word": "हिम्मती",
+          "meaning": "हिम्मत रखने वाला",
+          "register": "casual",
+          "example": "मेरी छोटी बहन बहुत हिम्मती है।"
+        }
+      ]
+    },
+    {
+      "headword": "दयालु",
+      "alternatives": [
+        {
+          "word": "कृपालु",
+          "meaning": "दूसरों पर कृपा करने वाला",
+          "register": "formal",
+          "example": "हमारे प्रिंसिपल कृपालु स्वभाव के हैं।"
+        },
+        {
+          "word": "रहमदिल",
+          "meaning": "दया से भरे दिल वाला",
+          "register": "casual",
+          "example": "वह रहमदिल इंसान हर किसी की मदद करता है।"
+        },
+        {
+          "word": "नेकदिल",
+          "meaning": "अच्छे दिल वाला",
+          "register": "casual",
+          "example": "हमारे पड़ोसी बहुत नेकदिल हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "हैरान",
+      "alternatives": [
+        {
+          "word": "चकित",
+          "meaning": "अचरज में पड़ा हुआ",
+          "register": "formal",
+          "example": "उसकी कामयाबी देखकर सब चकित थे।"
+        },
+        {
+          "word": "दंग",
+          "meaning": "बहुत ज़्यादा हैरान",
+          "register": "power",
+          "example": "भीड़ देखकर हम दंग रह गए।"
+        },
+        {
+          "word": "अचंभित",
+          "meaning": "आश्चर्य से भरा",
+          "register": "formal",
+          "example": "लोग जादूगर का खेल देखकर अचंभित थे।"
+        }
+      ]
+    },
+    {
+      "headword": "ठीक",
+      "alternatives": [
+        {
+          "word": "सही",
+          "meaning": "जैसा होना चाहिए",
+          "register": "casual",
+          "example": "तुम्हारा जवाब सही है।"
+        },
+        {
+          "word": "उचित",
+          "meaning": "मुनासिब",
+          "register": "formal",
+          "example": "आपकी माँग उचित है।"
+        },
+        {
+          "word": "दुरुस्त",
+          "meaning": "ठीक-ठाक हालत में",
+          "register": "casual",
+          "example": "गाड़ी अब बिल्कुल दुरुस्त है।"
+        }
+      ]
+    },
+    {
+      "headword": "शानदार",
+      "alternatives": [
+        {
+          "word": "भव्य",
+          "meaning": "बहुत बड़ा और सुंदर",
+          "register": "formal",
+          "example": "शादी का पंडाल भव्य था।"
+        },
+        {
+          "word": "ज़बरदस्त",
+          "meaning": "बहुत ही बढ़िया",
+          "register": "casual",
+          "example": "कल का मैच ज़बरदस्त था।"
+        },
+        {
+          "word": "कमाल का",
+          "meaning": "हैरान कर देने वाला अच्छा",
+          "register": "power",
+          "example": "उसने कमाल का भाषण दिया।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़ाली",
+      "alternatives": [
+        {
+          "word": "रिक्त",
+          "meaning": "जो भरा न हो",
+          "register": "formal",
+          "example": "कंपनी में दो पद रिक्त हैं।"
+        },
+        {
+          "word": "सूना",
+          "meaning": "जहाँ कोई न हो",
+          "register": "casual",
+          "example": "छुट्टियों में हॉस्टल सूना लगता है।"
+        }
+      ]
+    },
+    {
+      "headword": "भारी",
+      "alternatives": [
+        {
+          "word": "वज़नदार",
+          "meaning": "जिसका वज़न ज़्यादा हो",
+          "register": "casual",
+          "example": "यह सूटकेस बहुत वज़नदार है।"
+        },
+        {
+          "word": "बोझिल",
+          "meaning": "बोझ जैसा लगने वाला",
+          "register": "formal",
+          "example": "लंबी मीटिंग के बाद माहौल बोझिल हो गया।"
+        }
+      ]
+    },
+    {
+      "headword": "एकदम",
+      "alternatives": [
+        {
+          "word": "बिल्कुल",
+          "meaning": "पूरी तरह से",
+          "register": "casual",
+          "example": "तुम बिल्कुल सही कह रहे हो।"
+        },
+        {
+          "word": "पूर्णतः",
+          "meaning": "पूरी तरह",
+          "register": "formal",
+          "example": "यह काम पूर्णतः सुरक्षित है।"
+        },
+        {
+          "word": "सौ फ़ीसदी",
+          "meaning": "पूरे यक़ीन के साथ",
+          "register": "power",
+          "example": "मैं सौ फ़ीसदी तैयार हूँ।"
+        }
+      ]
+    },
+    {
+      "headword": "बिल्कुल",
+      "alternatives": [
+        {
+          "word": "पूरी तरह",
+          "meaning": "हर तरह से",
+          "register": "casual",
+          "example": "मैं तुमसे पूरी तरह सहमत हूँ।"
+        },
+        {
+          "word": "निश्चित रूप से",
+          "meaning": "बिना किसी शक के",
+          "register": "formal",
+          "example": "हम निश्चित रूप से समय पर पहुँचेंगे।"
+        },
+        {
+          "word": "हरगिज़",
+          "meaning": "किसी हाल में (ना के साथ)",
+          "register": "power",
+          "example": "मैं हार हरगिज़ नहीं मानूँगा।"
+        }
+      ]
+    },
+    {
+      "headword": "सच में",
+      "alternatives": [
+        {
+          "word": "वाक़ई",
+          "meaning": "सचमुच, असल में",
+          "register": "casual",
+          "example": "आज का खाना वाक़ई स्वादिष्ट था।"
+        },
+        {
+          "word": "वास्तव में",
+          "meaning": "असलियत में",
+          "register": "formal",
+          "example": "वास्तव में यह एक कठिन फ़ैसला था।"
+        },
+        {
+          "word": "दिल से",
+          "meaning": "पूरी सच्चाई और भावना से",
+          "register": "power",
+          "example": "मैं दिल से आपका शुक्रिया अदा करता हूँ।"
+        }
+      ]
+    },
+    {
+      "headword": "असल में",
+      "alternatives": [
+        {
+          "word": "दरअसल",
+          "meaning": "असली बात यह है कि",
+          "register": "casual",
+          "example": "दरअसल, मुझे इस बारे में पता नहीं था।"
+        },
+        {
+          "word": "वस्तुतः",
+          "meaning": "वास्तव में",
+          "register": "formal",
+          "example": "वस्तुतः यह योजना बहुत पुरानी है।"
+        },
+        {
+          "word": "सच तो यह है",
+          "meaning": "साफ़ और सीधी बात",
+          "register": "power",
+          "example": "सच तो यह है कि हमें और मेहनत करनी होगी।"
+        }
+      ]
+    },
+    {
+      "headword": "मतलब",
+      "alternatives": [
+        {
+          "word": "यानी",
+          "meaning": "दूसरे शब्दों में",
+          "register": "casual",
+          "example": "कल छुट्टी है, यानी हम घूमने जा सकते हैं।"
+        },
+        {
+          "word": "अर्थात",
+          "meaning": "इसका अर्थ है",
+          "register": "formal",
+          "example": "वह स्नातक है, अर्थात उसने कॉलेज पूरा कर लिया है।"
+        },
+        {
+          "word": "कहने का अर्थ",
+          "meaning": "जो बात कहनी है",
+          "register": "formal",
+          "example": "कहने का अर्थ है कि हमें समय पर शुरू करना चाहिए।"
+        }
+      ]
+    },
+    {
+      "headword": "शायद",
+      "alternatives": [
+        {
+          "word": "संभवतः",
+          "meaning": "हो सकता है",
+          "register": "formal",
+          "example": "संभवतः कल बारिश होगी।"
+        },
+        {
+          "word": "मुमकिन है",
+          "meaning": "हो सकता है",
+          "register": "casual",
+          "example": "मुमकिन है कि वह थोड़ा देर से आए।"
+        }
+      ]
+    },
+    {
+      "headword": "ज़रूर",
+      "alternatives": [
+        {
+          "word": "अवश्य",
+          "meaning": "पक्के तौर पर",
+          "register": "formal",
+          "example": "मैं आपकी शादी में अवश्य आऊँगा।"
+        },
+        {
+          "word": "पक्का",
+          "meaning": "बिना शक के",
+          "register": "casual",
+          "example": "मैं कल पक्का फ़ोन करूँगा।"
+        },
+        {
+          "word": "बेशक",
+          "meaning": "बिना किसी संदेह के",
+          "register": "power",
+          "example": "बेशक, यह हमारी सबसे बड़ी जीत है।"
+        }
+      ]
+    },
+    {
+      "headword": "हमेशा",
+      "alternatives": [
+        {
+          "word": "सदा",
+          "meaning": "हर समय",
+          "register": "formal",
+          "example": "सदा सच बोलो।"
+        },
+        {
+          "word": "हर बार",
+          "meaning": "हर मौक़े पर",
+          "register": "casual",
+          "example": "वह हर बार समय पर आता है।"
+        },
+        {
+          "word": "लगातार",
+          "meaning": "बिना रुके, निरंतर",
+          "register": "power",
+          "example": "वह इस सीज़न में लगातार रन बना रहा है।"
+        }
+      ]
+    },
+    {
+      "headword": "कभी-कभी",
+      "alternatives": [
+        {
+          "word": "कभी-कभार",
+          "meaning": "बहुत कम बार",
+          "register": "casual",
+          "example": "हम कभी-कभार बाहर खाना खाते हैं।"
+        },
+        {
+          "word": "यदा-कदा",
+          "meaning": "कभी-कभी",
+          "register": "formal",
+          "example": "वे यदा-कदा गाँव जाते हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "अक्सर",
+      "alternatives": [
+        {
+          "word": "प्रायः",
+          "meaning": "ज़्यादातर बार",
+          "register": "formal",
+          "example": "सर्दियों में प्रायः कोहरा रहता है।"
+        },
+        {
+          "word": "बार-बार",
+          "meaning": "कई बार",
+          "register": "casual",
+          "example": "ग्राहक बार-बार यही सवाल पूछते हैं।"
+        },
+        {
+          "word": "अधिकतर",
+          "meaning": "ज़्यादातर",
+          "register": "formal",
+          "example": "अधिकतर छात्र मेट्रो से आते हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "फिर",
+      "alternatives": [
+        {
+          "word": "उसके बाद",
+          "meaning": "इसके पश्चात",
+          "register": "casual",
+          "example": "उसके बाद हम खाना खाने गए।"
+        },
+        {
+          "word": "तत्पश्चात",
+          "meaning": "उसके बाद",
+          "register": "formal",
+          "example": "तत्पश्चात मुख्य अतिथि ने भाषण दिया।"
+        },
+        {
+          "word": "दोबारा",
+          "meaning": "एक बार और",
+          "register": "casual",
+          "example": "कृपया दोबारा कोशिश करें।"
+        }
+      ]
+    },
+    {
+      "headword": "लेकिन",
+      "alternatives": [
+        {
+          "word": "परंतु",
+          "meaning": "फिर भी, मगर",
+          "register": "formal",
+          "example": "योजना अच्छी है, परंतु महँगी है।"
+        },
+        {
+          "word": "मगर",
+          "meaning": "पर, लेकिन",
+          "register": "casual",
+          "example": "मैं आना चाहता था, मगर ट्रेन छूट गई।"
+        },
+        {
+          "word": "फिर भी",
+          "meaning": "इसके बावजूद",
+          "register": "casual",
+          "example": "बारिश हो रही थी, फिर भी मैच हुआ।"
+        }
+      ]
+    },
+    {
+      "headword": "क्योंकि",
+      "alternatives": [
+        {
+          "word": "चूँकि",
+          "meaning": "इस कारण से कि",
+          "register": "formal",
+          "example": "चूँकि बारिश हो रही थी, हम घर पर रहे।"
+        },
+        {
+          "word": "इस वजह से",
+          "meaning": "इस कारण",
+          "register": "casual",
+          "example": "ट्रैफ़िक था, इस वजह से देर हो गई।"
+        }
+      ]
+    },
+    {
+      "headword": "इसलिए",
+      "alternatives": [
+        {
+          "word": "अतः",
+          "meaning": "इस कारण",
+          "register": "formal",
+          "example": "समय कम है, अतः जल्दी करें।"
+        },
+        {
+          "word": "इसी वजह से",
+          "meaning": "इसी कारण",
+          "register": "casual",
+          "example": "बारिश हुई, इसी वजह से मैच रुका।"
+        },
+        {
+          "word": "नतीजतन",
+          "meaning": "परिणाम के रूप में",
+          "register": "formal",
+          "example": "उसने रोज़ अभ्यास किया, नतीजतन वह जीत गया।"
+        }
+      ]
+    },
+    {
+      "headword": "बस",
+      "alternatives": [
+        {
+          "word": "सिर्फ़",
+          "meaning": "केवल",
+          "register": "casual",
+          "example": "मुझे सिर्फ़ पाँच मिनट चाहिए।"
+        },
+        {
+          "word": "केवल",
+          "meaning": "मात्र",
+          "register": "formal",
+          "example": "यह ऑफ़र केवल आज के लिए है।"
+        },
+        {
+          "word": "मात्र",
+          "meaning": "इससे ज़्यादा नहीं",
+          "register": "formal",
+          "example": "टिकट मात्र सौ रुपये का है।"
+        }
+      ]
+    },
+    {
+      "headword": "भी",
+      "alternatives": [
+        {
+          "word": "साथ ही",
+          "meaning": "इसके साथ",
+          "register": "casual",
+          "example": "साथ ही, हम मुफ़्त डिलीवरी भी देते हैं।"
+        },
+        {
+          "word": "इसके अलावा",
+          "meaning": "इसके साथ-साथ",
+          "register": "casual",
+          "example": "इसके अलावा, होटल में स्विमिंग पूल है।"
+        },
+        {
+          "word": "इसके अतिरिक्त",
+          "meaning": "इसके सिवा और भी",
+          "register": "formal",
+          "example": "इसके अतिरिक्त, आपको प्रमाण-पत्र मिलेगा।"
+        }
+      ]
+    },
+    {
+      "headword": "अचानक",
+      "alternatives": [
+        {
+          "word": "एकाएक",
+          "meaning": "बिना किसी चेतावनी के",
+          "register": "formal",
+          "example": "एकाएक बिजली चली गई।"
+        },
+        {
+          "word": "यकायक",
+          "meaning": "अचानक से",
+          "register": "casual",
+          "example": "यकायक तेज़ बारिश शुरू हो गई।"
+        },
+        {
+          "word": "अनायास",
+          "meaning": "बिना कोशिश या इरादे के",
+          "register": "formal",
+          "example": "अनायास ही मेरी नज़र उस पर पड़ी।"
+        }
+      ]
+    },
+    {
+      "headword": "आख़िर में",
+      "alternatives": [
+        {
+          "word": "अंत में",
+          "meaning": "सबसे बाद में",
+          "register": "formal",
+          "example": "अंत में सबने राष्ट्रगान गाया।"
+        },
+        {
+          "word": "आख़िरकार",
+          "meaning": "लंबे इंतज़ार के बाद",
+          "register": "casual",
+          "example": "आख़िरकार रिज़ल्ट आ ही गया।"
+        },
+        {
+          "word": "अंततः",
+          "meaning": "अंत में जाकर",
+          "register": "formal",
+          "example": "अंततः हमें सही फ़्लैट मिल गया।"
+        }
+      ]
+    },
+    {
+      "headword": "काफ़ी",
+      "alternatives": [
+        {
+          "word": "पर्याप्त",
+          "meaning": "जितना चाहिए उतना",
+          "register": "formal",
+          "example": "हमारे पास पर्याप्त समय है।"
+        },
+        {
+          "word": "ख़ासा",
+          "meaning": "अच्छा-ख़ासा, ठीक-ठाक ज़्यादा",
+          "register": "casual",
+          "example": "आज ख़ासा ट्रैफ़िक था।"
+        }
+      ]
+    },
+    {
+      "headword": "तुरंत",
+      "alternatives": [
+        {
+          "word": "फ़ौरन",
+          "meaning": "बिना देर के",
+          "register": "casual",
+          "example": "फ़ौरन यहाँ आओ।"
+        },
+        {
+          "word": "तत्काल",
+          "meaning": "उसी समय",
+          "register": "formal",
+          "example": "यह आदेश तत्काल प्रभाव से लागू होगा।"
+        },
+        {
+          "word": "फटाफट",
+          "meaning": "बहुत जल्दी",
+          "register": "casual",
+          "example": "फटाफट तैयार हो जाओ, हमें देर हो रही है।"
+        }
+      ]
+    },
+    {
+      "headword": "चीज़",
+      "alternatives": [
+        {
+          "word": "वस्तु",
+          "meaning": "कोई भी सामान या चीज़",
+          "register": "formal",
+          "example": "यह वस्तु बहुत नाज़ुक है।"
+        },
+        {
+          "word": "सामान",
+          "meaning": "इस्तेमाल की चीज़ें",
+          "register": "casual",
+          "example": "अपना सामान संभालकर रखें।"
+        },
+        {
+          "word": "पहलू",
+          "meaning": "किसी बात का एक हिस्सा",
+          "register": "formal",
+          "example": "इस योजना का हर पहलू समझना ज़रूरी है।"
+        }
+      ]
+    },
+    {
+      "headword": "काम",
+      "alternatives": [
+        {
+          "word": "कार्य",
+          "meaning": "किया जाने वाला काम",
+          "register": "formal",
+          "example": "यह कार्य शुक्रवार तक पूरा करें।"
+        },
+        {
+          "word": "ज़िम्मेदारी",
+          "meaning": "सौंपा गया दायित्व",
+          "register": "power",
+          "example": "यह ज़िम्मेदारी मैं ख़ुद लूँगा।"
+        },
+        {
+          "word": "टास्क",
+          "meaning": "एक तय काम",
+          "register": "casual",
+          "example": "आज का टास्क लंच से पहले ख़त्म करना है।"
+        }
+      ]
+    },
+    {
+      "headword": "बात",
+      "alternatives": [
+        {
+          "word": "मुद्दा",
+          "meaning": "चर्चा का विषय",
+          "register": "formal",
+          "example": "आज की मीटिंग का मुख्य मुद्दा बजट है।"
+        },
+        {
+          "word": "विषय",
+          "meaning": "जिस पर बात हो",
+          "register": "formal",
+          "example": "आपके भाषण का विषय क्या है?"
+        },
+        {
+          "word": "बातचीत",
+          "meaning": "आपस में बोलना",
+          "register": "casual",
+          "example": "हमारी बातचीत बहुत अच्छी रही।"
+        }
+      ]
+    },
+    {
+      "headword": "दिक़्क़त",
+      "alternatives": [
+        {
+          "word": "परेशानी",
+          "meaning": "मुश्किल, तकलीफ़",
+          "register": "casual",
+          "example": "अगर कोई परेशानी हो तो बताना।"
+        },
+        {
+          "word": "अड़चन",
+          "meaning": "काम में रुकावट",
+          "register": "casual",
+          "example": "प्रोजेक्ट में एक छोटी-सी अड़चन आ गई है।"
+        },
+        {
+          "word": "बाधा",
+          "meaning": "रास्ते की रुकावट",
+          "register": "formal",
+          "example": "पैसों की कमी सबसे बड़ी बाधा है।"
+        }
+      ]
+    },
+    {
+      "headword": "समस्या",
+      "alternatives": [
+        {
+          "word": "चुनौती",
+          "meaning": "कठिन काम जिसे पार करना हो",
+          "register": "power",
+          "example": "अच्छे लोग ढूँढना हमारी सबसे बड़ी चुनौती है।"
+        },
+        {
+          "word": "मसला",
+          "meaning": "उलझी हुई बात",
+          "register": "casual",
+          "example": "यह मसला आज ही सुलझाना होगा।"
+        },
+        {
+          "word": "कठिनाई",
+          "meaning": "मुश्किल हालत",
+          "register": "formal",
+          "example": "छात्रों को इस साल कई तरह की कठिनाई झेलनी पड़ी।"
+        }
+      ]
+    },
+    {
+      "headword": "तरीक़ा",
+      "alternatives": [
+        {
+          "word": "ढंग",
+          "meaning": "काम करने का तरीक़ा",
+          "register": "casual",
+          "example": "उसका बात करने का ढंग अच्छा है।"
+        },
+        {
+          "word": "उपाय",
+          "meaning": "किसी समस्या का हल",
+          "register": "formal",
+          "example": "इस समस्या का एक आसान उपाय है।"
+        },
+        {
+          "word": "तरकीब",
+          "meaning": "चालाकी भरा तरीक़ा",
+          "register": "casual",
+          "example": "दाल जल्दी गलाने की एक तरकीब है।"
+        }
+      ]
+    },
+    {
+      "headword": "फ़ायदा",
+      "alternatives": [
+        {
+          "word": "लाभ",
+          "meaning": "किसी काम से मिली अच्छाई",
+          "register": "formal",
+          "example": "रोज़ योग करने के कई लाभ हैं।"
+        },
+        {
+          "word": "मुनाफ़ा",
+          "meaning": "व्यापार में कमाई",
+          "register": "casual",
+          "example": "इस दिवाली दुकान को अच्छा मुनाफ़ा हुआ।"
+        },
+        {
+          "word": "बढ़त",
+          "meaning": "दूसरों से आगे होने का फ़ायदा",
+          "register": "power",
+          "example": "अभ्यास से इंटरव्यू में बढ़त मिलती है।"
+        }
+      ]
+    },
+    {
+      "headword": "नुक़सान",
+      "alternatives": [
+        {
+          "word": "हानि",
+          "meaning": "किसी चीज़ का घटना या बिगड़ना",
+          "register": "formal",
+          "example": "बाढ़ से फ़सलों को भारी हानि हुई।"
+        },
+        {
+          "word": "घाटा",
+          "meaning": "व्यापार में कमी",
+          "register": "casual",
+          "example": "पिछले साल कंपनी को घाटा हुआ।"
+        },
+        {
+          "word": "क्षति",
+          "meaning": "टूट-फूट या नुक़सान",
+          "register": "formal",
+          "example": "आग से इमारत को क्षति पहुँची।"
+        }
+      ]
+    },
+    {
+      "headword": "मौक़ा",
+      "alternatives": [
+        {
+          "word": "अवसर",
+          "meaning": "सही समय, संभावना",
+          "register": "formal",
+          "example": "यह सीखने का बेहतरीन अवसर है।"
+        },
+        {
+          "word": "चांस",
+          "meaning": "मौक़ा",
+          "register": "casual",
+          "example": "एक चांस और दो, मैं कर दिखाऊँगा।"
+        },
+        {
+          "word": "सुनहरा अवसर",
+          "meaning": "बहुत बढ़िया मौक़ा",
+          "register": "power",
+          "example": "यह इंटर्नशिप तुम्हारे लिए सुनहरा अवसर है।"
+        }
+      ]
+    },
+    {
+      "headword": "नतीजा",
+      "alternatives": [
+        {
+          "word": "परिणाम",
+          "meaning": "किसी काम का फल",
+          "register": "formal",
+          "example": "परीक्षा का परिणाम कल आएगा।"
+        },
+        {
+          "word": "अंजाम",
+          "meaning": "आख़िरी नतीजा",
+          "register": "casual",
+          "example": "लापरवाही का अंजाम बुरा होता है।"
+        },
+        {
+          "word": "असर",
+          "meaning": "प्रभाव",
+          "register": "casual",
+          "example": "तुम्हारी मेहनत का असर दिख रहा है।"
+        }
+      ]
+    },
+    {
+      "headword": "वजह",
+      "alternatives": [
+        {
+          "word": "कारण",
+          "meaning": "किसी बात के होने की वजह",
+          "register": "formal",
+          "example": "देरी का कारण क्या था?"
+        },
+        {
+          "word": "आधार",
+          "meaning": "जिस पर कोई बात टिकी हो",
+          "register": "formal",
+          "example": "किस आधार पर यह फ़ैसला लिया गया?"
+        }
+      ]
+    },
+    {
+      "headword": "ग़लती",
+      "alternatives": [
+        {
+          "word": "भूल",
+          "meaning": "अनजाने में हुई ग़लती",
+          "register": "casual",
+          "example": "माफ़ कीजिए, मुझसे भूल हो गई।"
+        },
+        {
+          "word": "त्रुटि",
+          "meaning": "काम में ग़लती",
+          "register": "formal",
+          "example": "बिल में एक त्रुटि है।"
+        },
+        {
+          "word": "चूक",
+          "meaning": "ध्यान हटने से हुई ग़लती",
+          "register": "power",
+          "example": "वह कैच छोड़ना एक बड़ी चूक थी।"
+        }
+      ]
+    },
+    {
+      "headword": "सवाल",
+      "alternatives": [
+        {
+          "word": "प्रश्न",
+          "meaning": "पूछी जाने वाली बात",
+          "register": "formal",
+          "example": "इंटरव्यू में कई कठिन प्रश्न पूछे गए।"
+        },
+        {
+          "word": "शंका",
+          "meaning": "किसी बात पर शक",
+          "register": "casual",
+          "example": "कोई शंका हो तो क्लास के बाद पूछ लेना।"
+        }
+      ]
+    },
+    {
+      "headword": "जवाब",
+      "alternatives": [
+        {
+          "word": "उत्तर",
+          "meaning": "प्रश्न का जवाब",
+          "register": "formal",
+          "example": "सही उत्तर पर गोला लगाइए।"
+        },
+        {
+          "word": "हल",
+          "meaning": "समस्या का समाधान",
+          "register": "power",
+          "example": "आख़िरकार हमें इस मुश्किल का हल मिल गया।"
+        },
+        {
+          "word": "प्रतिक्रिया",
+          "meaning": "किसी बात पर दी गई राय",
+          "register": "formal",
+          "example": "ग्राहकों की प्रतिक्रिया अच्छी रही।"
+        }
+      ]
+    },
+    {
+      "headword": "मदद",
+      "alternatives": [
+        {
+          "word": "सहायता",
+          "meaning": "किसी को दिया गया सहारा",
+          "register": "formal",
+          "example": "आपकी सहायता के लिए धन्यवाद।"
+        },
+        {
+          "word": "सहयोग",
+          "meaning": "मिलकर काम करना",
+          "register": "formal",
+          "example": "सबके सहयोग से कार्यक्रम सफल रहा।"
+        },
+        {
+          "word": "साथ",
+          "meaning": "सहारा, साथ देना",
+          "register": "casual",
+          "example": "मुश्किल वक़्त में दोस्तों ने मेरा साथ दिया।"
+        }
+      ]
+    },
+    {
+      "headword": "लोग",
+      "alternatives": [
+        {
+          "word": "जनता",
+          "meaning": "आम लोग",
+          "register": "formal",
+          "example": "जनता को सही जानकारी मिलनी चाहिए।"
+        },
+        {
+          "word": "दर्शक",
+          "meaning": "देखने वाले लोग",
+          "register": "casual",
+          "example": "मेरे चैनल के दर्शक बहुत प्यारे हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "आदमी",
+      "alternatives": [
+        {
+          "word": "व्यक्ति",
+          "meaning": "कोई इंसान",
+          "register": "formal",
+          "example": "हर व्यक्ति की अपनी पसंद होती है।"
+        },
+        {
+          "word": "इंसान",
+          "meaning": "मनुष्य",
+          "register": "casual",
+          "example": "वह बहुत अच्छा इंसान है।"
+        },
+        {
+          "word": "सज्जन",
+          "meaning": "भला और शिष्ट आदमी",
+          "register": "formal",
+          "example": "नीली शर्ट वाले सज्जन ने एक सवाल पूछा।"
+        }
+      ]
+    },
+    {
+      "headword": "दोस्त",
+      "alternatives": [
+        {
+          "word": "मित्र",
+          "meaning": "साथी, सखा",
+          "register": "formal",
+          "example": "वह मेरा बचपन का मित्र है।"
+        },
+        {
+          "word": "यार",
+          "meaning": "पक्का दोस्त",
+          "register": "casual",
+          "example": "वह मेरा यार है, हर मुश्किल में साथ देता है।"
+        },
+        {
+          "word": "हमदम",
+          "meaning": "हर हाल में साथ देने वाला",
+          "register": "power",
+          "example": "सच्चा दोस्त ज़िंदगी का हमदम होता है।"
+        }
+      ]
+    },
+    {
+      "headword": "पैसा",
+      "alternatives": [
+        {
+          "word": "धन",
+          "meaning": "रुपया-पैसा, संपत्ति",
+          "register": "formal",
+          "example": "मेहनत से कमाया धन टिकता है।"
+        },
+        {
+          "word": "पूँजी",
+          "meaning": "व्यापार में लगाया धन",
+          "register": "formal",
+          "example": "दुकान खोलने के लिए पूँजी चाहिए।"
+        },
+        {
+          "word": "रक़म",
+          "meaning": "पैसों की मात्रा",
+          "register": "casual",
+          "example": "उसने अच्छी-ख़ासी रक़म बचा ली है।"
+        }
+      ]
+    },
+    {
+      "headword": "घर",
+      "alternatives": [
+        {
+          "word": "मकान",
+          "meaning": "रहने की इमारत",
+          "register": "casual",
+          "example": "हमने नया मकान किराये पर लिया है।"
+        },
+        {
+          "word": "निवास",
+          "meaning": "रहने का स्थान",
+          "register": "formal",
+          "example": "यह मंत्री जी का निवास है।"
+        },
+        {
+          "word": "आशियाना",
+          "meaning": "प्यार से बसाया अपना घर",
+          "register": "power",
+          "example": "मेहनत से उसने अपना आशियाना बनाया।"
+        }
+      ]
+    },
+    {
+      "headword": "जगह",
+      "alternatives": [
+        {
+          "word": "स्थान",
+          "meaning": "कोई जगह",
+          "register": "formal",
+          "example": "यह फ़ोटो खींचने का सबसे अच्छा स्थान है।"
+        },
+        {
+          "word": "ठिकाना",
+          "meaning": "रहने या मिलने की जगह",
+          "register": "casual",
+          "example": "कल शाम हमारा ठिकाना वही चाय की टपरी होगी।"
+        }
+      ]
+    },
+    {
+      "headword": "समय",
+      "alternatives": [
+        {
+          "word": "वक़्त",
+          "meaning": "समय",
+          "register": "casual",
+          "example": "मेरे पास अभी वक़्त नहीं है।"
+        },
+        {
+          "word": "अवधि",
+          "meaning": "समय की लंबाई",
+          "register": "formal",
+          "example": "यह ऑफ़र सीमित अवधि के लिए है।"
+        },
+        {
+          "word": "दौर",
+          "meaning": "जीवन या इतिहास का एक हिस्सा",
+          "register": "formal",
+          "example": "कॉलेज का दौर सबसे यादगार था।"
+        }
+      ]
+    },
+    {
+      "headword": "नौकरी",
+      "alternatives": [
+        {
+          "word": "रोज़गार",
+          "meaning": "काम-धंधा",
+          "register": "formal",
+          "example": "सरकार नए रोज़गार पैदा करना चाहती है।"
+        },
+        {
+          "word": "पद",
+          "meaning": "किसी संस्था में ओहदा",
+          "register": "formal",
+          "example": "मैंने मैनेजर के पद के लिए आवेदन किया।"
+        },
+        {
+          "word": "जॉब",
+          "meaning": "नौकरी",
+          "register": "casual",
+          "example": "उसे बेंगलुरु में नई जॉब मिली है।"
+        }
+      ]
+    },
+    {
+      "headword": "कोशिश",
+      "alternatives": [
+        {
+          "word": "प्रयास",
+          "meaning": "किसी काम के लिए की गई मेहनत",
+          "register": "formal",
+          "example": "हमारा प्रयास है कि हर ग्राहक ख़ुश रहे।"
+        },
+        {
+          "word": "जद्दोजहद",
+          "meaning": "बहुत संघर्ष भरी कोशिश",
+          "register": "power",
+          "example": "टिकट पाने के लिए काफ़ी जद्दोजहद करनी पड़ी।"
+        }
+      ]
+    },
+    {
+      "headword": "मेहनत",
+      "alternatives": [
+        {
+          "word": "परिश्रम",
+          "meaning": "कड़ी मेहनत",
+          "register": "formal",
+          "example": "परिश्रम का फल मीठा होता है।"
+        },
+        {
+          "word": "लगन",
+          "meaning": "पूरे मन से काम में जुटना",
+          "register": "power",
+          "example": "उसकी लगन देखकर सब हैरान थे।"
+        },
+        {
+          "word": "जी-तोड़ मेहनत",
+          "meaning": "पूरी ताक़त लगाकर मेहनत",
+          "register": "power",
+          "example": "फ़ाइनल के लिए टीम ने जी-तोड़ मेहनत की।"
+        }
+      ]
+    },
+    {
+      "headword": "बदलाव",
+      "alternatives": [
+        {
+          "word": "परिवर्तन",
+          "meaning": "बदल जाना",
+          "register": "formal",
+          "example": "कंपनी की नीति में परिवर्तन हुआ है।"
+        },
+        {
+          "word": "सुधार",
+          "meaning": "बेहतरी की ओर बदलाव",
+          "register": "casual",
+          "example": "उसकी अंग्रेज़ी में काफ़ी सुधार हुआ है।"
+        },
+        {
+          "word": "कायापलट",
+          "meaning": "पूरी तरह बदल जाना",
+          "register": "power",
+          "example": "नए कोच ने टीम का कायापलट कर दिया।"
+        }
+      ]
+    },
+    {
+      "headword": "राय",
+      "alternatives": [
+        {
+          "word": "विचार",
+          "meaning": "किसी बात पर सोच",
+          "register": "formal",
+          "example": "इस प्रस्ताव पर आपके क्या विचार हैं?"
+        },
+        {
+          "word": "सुझाव",
+          "meaning": "सलाह के रूप में राय",
+          "register": "casual",
+          "example": "आपके सुझाव के लिए शुक्रिया।"
+        },
+        {
+          "word": "नज़रिया",
+          "meaning": "देखने और सोचने का ढंग",
+          "register": "power",
+          "example": "सफ़र से नया नज़रिया मिलता है।"
+        }
+      ]
+    },
+    {
+      "headword": "हिस्सा",
+      "alternatives": [
+        {
+          "word": "भाग",
+          "meaning": "किसी चीज़ का अंश",
+          "register": "formal",
+          "example": "रिपोर्ट का पहला भाग पढ़ो।"
+        },
+        {
+          "word": "अंश",
+          "meaning": "छोटा हिस्सा",
+          "register": "formal",
+          "example": "कमाई का एक अंश दान में जाता है।"
+        },
+        {
+          "word": "टुकड़ा",
+          "meaning": "किसी चीज़ का छोटा भाग",
+          "register": "casual",
+          "example": "मुझे केक का एक टुकड़ा देना।"
+        }
+      ]
+    },
+    {
+      "headword": "मक़सद",
+      "alternatives": [
+        {
+          "word": "उद्देश्य",
+          "meaning": "किसी काम का लक्ष्य",
+          "register": "formal",
+          "example": "इस कार्यक्रम का उद्देश्य जागरूकता फैलाना है।"
+        },
+        {
+          "word": "लक्ष्य",
+          "meaning": "पाने के लिए तय चीज़",
+          "register": "power",
+          "example": "हमने इस महीने का लक्ष्य पूरा कर लिया।"
+        },
+        {
+          "word": "इरादा",
+          "meaning": "मन में ठानी बात",
+          "register": "casual",
+          "example": "मेरा इरादा अगले साल अपना काम शुरू करने का है।"
+        }
+      ]
+    },
+    {
+      "headword": "डर",
+      "alternatives": [
+        {
+          "word": "भय",
+          "meaning": "डर, घबराहट",
+          "register": "formal",
+          "example": "मन से भय निकालो और मंच पर जाओ।"
+        },
+        {
+          "word": "घबराहट",
+          "meaning": "बेचैनी भरा डर",
+          "register": "casual",
+          "example": "इंटरव्यू से पहले घबराहट होना आम है।"
+        },
+        {
+          "word": "ख़ौफ़",
+          "meaning": "बहुत गहरा डर",
+          "register": "power",
+          "example": "उस रात तूफ़ान का ख़ौफ़ सबके चेहरे पर था।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़ुशी",
+      "alternatives": [
+        {
+          "word": "आनंद",
+          "meaning": "मन की प्रसन्नता",
+          "register": "formal",
+          "example": "पहाड़ों में घूमकर बड़ा आनंद आया।"
+        },
+        {
+          "word": "मज़ा",
+          "meaning": "मौज, आनंद",
+          "register": "casual",
+          "example": "कल की पार्टी में बहुत मज़ा आया।"
+        },
+        {
+          "word": "उल्लास",
+          "meaning": "उमंग भरी ख़ुशी",
+          "register": "power",
+          "example": "जीत के बाद पूरे शहर में उल्लास था।"
+        }
+      ]
+    },
+    {
+      "headword": "दुख",
+      "alternatives": [
+        {
+          "word": "पीड़ा",
+          "meaning": "मन या तन का कष्ट",
+          "register": "formal",
+          "example": "उसकी आवाज़ में गहरी पीड़ा थी।"
+        },
+        {
+          "word": "ग़म",
+          "meaning": "दुख, उदासी",
+          "register": "casual",
+          "example": "दादाजी के जाने का ग़म अब भी है।"
+        },
+        {
+          "word": "सदमा",
+          "meaning": "अचानक लगा गहरा दुख",
+          "register": "power",
+          "example": "हार से पूरी टीम को सदमा लगा।"
+        }
+      ]
+    },
+    {
+      "headword": "खाना",
+      "alternatives": [
+        {
+          "word": "भोजन",
+          "meaning": "खाने की चीज़ें",
+          "register": "formal",
+          "example": "यहाँ सादा और पौष्टिक भोजन मिलता है।"
+        },
+        {
+          "word": "व्यंजन",
+          "meaning": "पकाई गई ख़ास डिश",
+          "register": "formal",
+          "example": "पनीर टिक्का मेरा पसंदीदा व्यंजन है।"
+        }
+      ]
+    },
+    {
+      "headword": "सफ़र",
+      "alternatives": [
+        {
+          "word": "यात्रा",
+          "meaning": "एक जगह से दूसरी जगह जाना",
+          "register": "formal",
+          "example": "दिल्ली से मनाली की यात्रा बारह घंटे की थी।"
+        },
+        {
+          "word": "ट्रिप",
+          "meaning": "घूमने जाना",
+          "register": "casual",
+          "example": "हमने गोवा की ट्रिप प्लान की है।"
+        }
+      ]
+    },
+    {
+      "headword": "हालत",
+      "alternatives": [
+        {
+          "word": "स्थिति",
+          "meaning": "किसी चीज़ की दशा",
+          "register": "formal",
+          "example": "सड़क की स्थिति बहुत ख़राब है।"
+        },
+        {
+          "word": "दशा",
+          "meaning": "हाल, अवस्था",
+          "register": "formal",
+          "example": "बारिश के बाद खेतों की दशा सुधरी।"
+        },
+        {
+          "word": "हाल",
+          "meaning": "हालचाल, स्थिति",
+          "register": "casual",
+          "example": "आजकल तुम्हारे क्या हाल हैं?"
+        }
+      ]
+    },
+    {
+      "headword": "झगड़ा",
+      "alternatives": [
+        {
+          "word": "बहस",
+          "meaning": "तेज़ बातचीत, तकरार",
+          "register": "casual",
+          "example": "दोनों भाइयों में छोटी-सी बहस हुई।"
+        },
+        {
+          "word": "विवाद",
+          "meaning": "किसी बात पर असहमति",
+          "register": "formal",
+          "example": "ज़मीन का विवाद अदालत में है।"
+        },
+        {
+          "word": "तकरार",
+          "meaning": "आपसी कहा-सुनी",
+          "register": "casual",
+          "example": "मामूली बात पर तकरार हो गई।"
+        }
+      ]
+    },
+    {
+      "headword": "करना",
+      "alternatives": [
+        {
+          "word": "निभाना",
+          "meaning": "ज़िम्मेदारी पूरी करना",
+          "register": "power",
+          "example": "हमें अपना वादा निभाना चाहिए।"
+        },
+        {
+          "word": "पूरा करना",
+          "meaning": "काम ख़त्म करना",
+          "register": "casual",
+          "example": "आज यह काम पूरा करना है।"
+        },
+        {
+          "word": "संपन्न करना",
+          "meaning": "विधिवत पूरा करना",
+          "register": "formal",
+          "example": "हमें यह कार्यक्रम शांति से संपन्न करना है।"
+        }
+      ]
+    },
+    {
+      "headword": "बोलना",
+      "alternatives": [
+        {
+          "word": "कहना",
+          "meaning": "अपनी बात रखना",
+          "register": "casual",
+          "example": "मुझे तुमसे कुछ कहना है।"
+        },
+        {
+          "word": "व्यक्त करना",
+          "meaning": "विचार या भावना ज़ाहिर करना",
+          "register": "formal",
+          "example": "अपनी भावनाएँ व्यक्त करना सीखो।"
+        }
+      ]
+    },
+    {
+      "headword": "देखना",
+      "alternatives": [
+        {
+          "word": "निहारना",
+          "meaning": "प्यार से देर तक देखना",
+          "register": "power",
+          "example": "पहाड़ों को निहारना मुझे अच्छा लगता है।"
+        },
+        {
+          "word": "ग़ौर करना",
+          "meaning": "ध्यान से देखना",
+          "register": "casual",
+          "example": "इस बात पर ग़ौर करना ज़रूरी है।"
+        },
+        {
+          "word": "अवलोकन करना",
+          "meaning": "ध्यान से जाँचकर देखना",
+          "register": "formal",
+          "example": "टीम को ग्राहकों के व्यवहार का अवलोकन करना होगा।"
+        }
+      ]
+    },
+    {
+      "headword": "सोचना",
+      "alternatives": [
+        {
+          "word": "विचार करना",
+          "meaning": "गहराई से सोचना",
+          "register": "formal",
+          "example": "इस प्रस्ताव पर विचार करना होगा।"
+        },
+        {
+          "word": "ग़ौर करना",
+          "meaning": "ध्यान देकर सोचना",
+          "register": "casual",
+          "example": "मेरी बात पर ग़ौर करना।"
+        },
+        {
+          "word": "मनन करना",
+          "meaning": "मन में गहराई से सोचना",
+          "register": "formal",
+          "example": "हर सबक़ पर मनन करना चाहिए।"
+        }
+      ]
+    },
+    {
+      "headword": "जाना",
+      "alternatives": [
+        {
+          "word": "निकलना",
+          "meaning": "किसी जगह से रवाना होना",
+          "register": "casual",
+          "example": "हमें सुबह छह बजे निकलना है।"
+        },
+        {
+          "word": "रवाना होना",
+          "meaning": "सफ़र पर चल पड़ना",
+          "register": "formal",
+          "example": "टीम को कल मुंबई के लिए रवाना होना है।"
+        }
+      ]
+    },
+    {
+      "headword": "देना",
+      "alternatives": [
+        {
+          "word": "प्रदान करना",
+          "meaning": "औपचारिक रूप से देना",
+          "register": "formal",
+          "example": "इस संस्था का काम ज़रूरतमंद छात्रों को मदद प्रदान करना है।"
+        },
+        {
+          "word": "सौंपना",
+          "meaning": "किसी के हवाले करना",
+          "register": "casual",
+          "example": "यह काम किसी भरोसेमंद व्यक्ति को सौंपना चाहिए।"
+        }
+      ]
+    },
+    {
+      "headword": "लेना",
+      "alternatives": [
+        {
+          "word": "प्राप्त करना",
+          "meaning": "हासिल करना",
+          "register": "formal",
+          "example": "डिग्री प्राप्त करना उसका सपना था।"
+        },
+        {
+          "word": "हासिल करना",
+          "meaning": "मेहनत से पाना",
+          "register": "power",
+          "example": "हमें यह लक्ष्य हासिल करना है।"
+        }
+      ]
+    },
+    {
+      "headword": "मिलना",
+      "alternatives": [
+        {
+          "word": "भेंट करना",
+          "meaning": "किसी से मुलाक़ात करना",
+          "register": "formal",
+          "example": "कल प्रिंसिपल से भेंट करना ज़रूरी है।"
+        },
+        {
+          "word": "मुलाक़ात करना",
+          "meaning": "किसी से मिलना",
+          "register": "casual",
+          "example": "मैं तुमसे जल्दी मुलाक़ात करना चाहता हूँ।"
+        }
+      ]
+    },
+    {
+      "headword": "बनाना",
+      "alternatives": [
+        {
+          "word": "तैयार करना",
+          "meaning": "बनाकर पूरा करना",
+          "register": "casual",
+          "example": "शाम तक पार्टी का खाना तैयार करना है।"
+        },
+        {
+          "word": "रचना",
+          "meaning": "कलात्मक ढंग से बनाना",
+          "register": "formal",
+          "example": "नई कहानी रचना आसान नहीं है।"
+        },
+        {
+          "word": "गढ़ना",
+          "meaning": "मेहनत से रूप देना",
+          "register": "power",
+          "example": "अच्छा शिक्षक बच्चों का भविष्य गढ़ना जानता है।"
+        }
+      ]
+    },
+    {
+      "headword": "समझना",
+      "alternatives": [
+        {
+          "word": "बूझना",
+          "meaning": "समझ लेना, पहचान लेना",
+          "register": "casual",
+          "example": "पहेली बूझना उसे बहुत पसंद है।"
+        },
+        {
+          "word": "भाँपना",
+          "meaning": "बिना कहे समझ जाना",
+          "register": "power",
+          "example": "अच्छा वक्ता श्रोताओं का मूड भाँपना जानता है।"
+        }
+      ]
+    },
+    {
+      "headword": "सीखना",
+      "alternatives": [
+        {
+          "word": "महारत हासिल करना",
+          "meaning": "किसी काम में पूरी तरह माहिर होना",
+          "register": "power",
+          "example": "तबले में महारत हासिल करना सालों का काम है।"
+        },
+        {
+          "word": "सीख लेना",
+          "meaning": "अनुभव से कुछ जान लेना",
+          "register": "casual",
+          "example": "ग़लती से सीख लेना ज़रूरी है।"
+        }
+      ]
+    },
+    {
+      "headword": "बताना",
+      "alternatives": [
+        {
+          "word": "सूचित करना",
+          "meaning": "जानकारी देना",
+          "register": "formal",
+          "example": "कृपया एचआर को अपनी छुट्टी के बारे में सूचित करना न भूलें।"
+        },
+        {
+          "word": "समझाना",
+          "meaning": "साफ़ करके बताना",
+          "register": "casual",
+          "example": "मुझे यह सवाल समझाना ज़रा।"
+        }
+      ]
+    },
+    {
+      "headword": "पूछना",
+      "alternatives": [
+        {
+          "word": "जानकारी लेना",
+          "meaning": "किसी बात के बारे में पूछना",
+          "register": "casual",
+          "example": "दाख़िले से पहले फ़ीस की जानकारी लेना ज़रूरी है।"
+        },
+        {
+          "word": "पूछताछ करना",
+          "meaning": "विस्तार से पूछना",
+          "register": "formal",
+          "example": "टिकट के बारे में काउंटर पर पूछताछ करना बेहतर है।"
+        }
+      ]
+    },
+    {
+      "headword": "शुरू करना",
+      "alternatives": [
+        {
+          "word": "आरंभ करना",
+          "meaning": "किसी काम की शुरुआत करना",
+          "register": "formal",
+          "example": "हम दस बजे कार्यक्रम आरंभ करना चाहते हैं।"
+        },
+        {
+          "word": "शुभारंभ करना",
+          "meaning": "ख़ास मौक़े पर शुरुआत करना",
+          "register": "power",
+          "example": "मुख्य अतिथि को समारोह का शुभारंभ करना है।"
+        },
+        {
+          "word": "शुरुआत करना",
+          "meaning": "किसी काम को शुरू करना",
+          "register": "casual",
+          "example": "नए साल में अच्छी आदतों की शुरुआत करना ज़रूरी है।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़त्म करना",
+      "alternatives": [
+        {
+          "word": "पूरा करना",
+          "meaning": "काम को अंत तक ले जाना",
+          "register": "casual",
+          "example": "यह असाइनमेंट आज पूरा करना है।"
+        },
+        {
+          "word": "समाप्त करना",
+          "meaning": "अंत करना",
+          "register": "formal",
+          "example": "हमें बैठक पाँच बजे तक समाप्त करना है।"
+        },
+        {
+          "word": "निपटाना",
+          "meaning": "जल्दी से काम पूरा करना",
+          "register": "casual",
+          "example": "लंच से पहले सारा काम निपटाना है।"
+        }
+      ]
+    },
+    {
+      "headword": "बदलना",
+      "alternatives": [
+        {
+          "word": "सुधारना",
+          "meaning": "बेहतर बनाना",
+          "register": "casual",
+          "example": "हमें अपना तरीक़ा सुधारना होगा।"
+        },
+        {
+          "word": "संशोधित करना",
+          "meaning": "सुधार करके बदलना",
+          "register": "formal",
+          "example": "रिपोर्ट को संशोधित करना पड़ेगा।"
+        }
+      ]
+    },
+    {
+      "headword": "जीतना",
+      "alternatives": [
+        {
+          "word": "फ़तह करना",
+          "meaning": "जीत हासिल करना",
+          "register": "power",
+          "example": "पर्वतारोहियों का सपना एवरेस्ट फ़तह करना है।"
+        },
+        {
+          "word": "बाज़ी मारना",
+          "meaning": "मुक़ाबले में आगे निकलना",
+          "register": "casual",
+          "example": "इस बार क्विज़ में बाज़ी मारना हमारा लक्ष्य है।"
+        }
+      ]
+    },
+    {
+      "headword": "हँसना",
+      "alternatives": [
+        {
+          "word": "मुस्कुराना",
+          "meaning": "होंठों से हल्का हँसना",
+          "register": "casual",
+          "example": "तस्वीर खिंचाते वक़्त मुस्कुराना मत भूलना।"
+        },
+        {
+          "word": "ठहाका लगाना",
+          "meaning": "ज़ोर से हँसना",
+          "register": "power",
+          "example": "दोस्तों के साथ ठहाका लगाना सेहत के लिए अच्छा है।"
+        }
+      ]
+    },
+    {
+      "headword": "बचाना",
+      "alternatives": [
+        {
+          "word": "सुरक्षित रखना",
+          "meaning": "हिफ़ाज़त से रखना",
+          "register": "formal",
+          "example": "अपना पासवर्ड सुरक्षित रखना ज़रूरी है।"
+        },
+        {
+          "word": "जोड़ना",
+          "meaning": "पैसा इकट्ठा करना",
+          "register": "casual",
+          "example": "हर महीने थोड़ा पैसा जोड़ना अच्छी आदत है।"
+        }
+      ]
+    },
+    {
+      "headword": "भूलना",
+      "alternatives": [
+        {
+          "word": "दिमाग़ से निकल जाना",
+          "meaning": "याद न रहना",
+          "register": "casual",
+          "example": "भागदौड़ में ज़रूरी बातें दिमाग़ से निकल जाना आम है।"
+        },
+        {
+          "word": "विस्मृत होना",
+          "meaning": "स्मृति से निकल जाना",
+          "register": "formal",
+          "example": "पुरानी बातें धीरे-धीरे विस्मृत होना स्वाभाविक है।"
+        }
+      ]
+    },
+    {
+      "headword": "दिखाना",
+      "alternatives": [
+        {
+          "word": "प्रदर्शित करना",
+          "meaning": "सबके सामने रखना",
+          "register": "formal",
+          "example": "प्रदर्शनी में अपना काम प्रदर्शित करना है।"
+        },
+        {
+          "word": "पेश करना",
+          "meaning": "सामने रखना",
+          "register": "casual",
+          "example": "कल मुझे अपना प्रोजेक्ट पेश करना है।"
+        }
+      ]
+    },
+    {
+      "headword": "चुनना",
+      "alternatives": [
+        {
+          "word": "चयन करना",
+          "meaning": "सोच-समझकर चुनना",
+          "register": "formal",
+          "example": "हमें सही उम्मीदवार का चयन करना है।"
+        },
+        {
+          "word": "छाँटना",
+          "meaning": "अलग करके चुनना",
+          "register": "casual",
+          "example": "माँ को बाज़ार से अच्छे आम छाँटना आता है।"
+        }
+      ]
+    },
+    {
+      "headword": "बढ़ाना",
+      "alternatives": [
+        {
+          "word": "इज़ाफ़ा करना",
+          "meaning": "बढ़ोतरी करना",
+          "register": "casual",
+          "example": "कंपनी ने वेतन में इज़ाफ़ा करना तय किया है।"
+        },
+        {
+          "word": "विस्तार करना",
+          "meaning": "फैलाना, बड़ा करना",
+          "register": "formal",
+          "example": "हम नए शहरों में अपना विस्तार करना चाहते हैं।"
+        }
+      ]
+    },
+    {
+      "headword": "सँभालना",
+      "alternatives": [
+        {
+          "word": "देखरेख करना",
+          "meaning": "ध्यान रखना",
+          "register": "casual",
+          "example": "छुट्टियों में दादी की देखरेख करना मेरी ज़िम्मेदारी है।"
+        },
+        {
+          "word": "प्रबंधन करना",
+          "meaning": "व्यवस्था और देखरेख करना",
+          "register": "formal",
+          "example": "उसे पूरी टीम का प्रबंधन करना है।"
+        }
+      ]
+    },
+    {
+      "headword": "ख़रीदना",
+      "alternatives": [
+        {
+          "word": "मोल लेना",
+          "meaning": "पैसे देकर लेना",
+          "register": "casual",
+          "example": "मेले से खिलौना मोल लेना बच्चों को बहुत भाता है।"
+        },
+        {
+          "word": "क्रय करना",
+          "meaning": "ख़रीदारी करना",
+          "register": "formal",
+          "example": "कंपनी नई मशीनें क्रय करना चाहती है।"
+        }
+      ]
+    },
+    {
+      "headword": "रोना",
+      "alternatives": [
+        {
+          "word": "आँसू बहाना",
+          "meaning": "आँखों से आँसू निकलना",
+          "register": "casual",
+          "example": "हार पर आँसू बहाना ठीक है, पर फिर उठना ज़रूरी है।"
+        },
+        {
+          "word": "फूट-फूटकर रोना",
+          "meaning": "बहुत ज़ोर से रोना",
+          "register": "power",
+          "example": "विदाई पर दुल्हन का फूट-फूटकर रोना सबको भावुक कर गया।"
+        }
+      ]
+    },
+    {
+      "headword": "सपना",
+      "alternatives": [
+        {
+          "word": "ख़्वाब",
+          "meaning": "मन की चाह, सपना",
+          "register": "casual",
+          "example": "उसका ख़्वाब है कि वह अपनी बेकरी खोले।"
+        },
+        {
+          "word": "आकांक्षा",
+          "meaning": "ऊँची इच्छा",
+          "register": "formal",
+          "example": "हर छात्र की अपनी आकांक्षा होती है।"
+        },
+        {
+          "word": "जुनून",
+          "meaning": "किसी लक्ष्य के लिए गहरी लगन",
+          "register": "power",
+          "example": "क्रिकेट उसका जुनून है।"
+        }
+      ]
+    },
+    {
+      "headword": "इज़्ज़त",
+      "alternatives": [
+        {
+          "word": "सम्मान",
+          "meaning": "आदर, मान",
+          "register": "formal",
+          "example": "हमें बड़ों का सम्मान करना चाहिए।"
+        },
+        {
+          "word": "आदर",
+          "meaning": "सम्मान का भाव",
+          "register": "formal",
+          "example": "शिक्षकों के प्रति आदर रखो।"
+        },
+        {
+          "word": "मान-सम्मान",
+          "meaning": "समाज में इज़्ज़त",
+          "register": "casual",
+          "example": "मेहनत से उसने गाँव में मान-सम्मान कमाया।"
+        }
+      ]
+    },
+    {
+      "headword": "तरक़्क़ी",
+      "alternatives": [
+        {
+          "word": "प्रगति",
+          "meaning": "आगे बढ़ना",
+          "register": "formal",
+          "example": "देश तेज़ी से प्रगति कर रहा है।"
+        },
+        {
+          "word": "उन्नति",
+          "meaning": "ऊपर की ओर बढ़ना",
+          "register": "formal",
+          "example": "शिक्षा से समाज की उन्नति होती है।"
+        },
+        {
+          "word": "कामयाबी",
+          "meaning": "सफलता",
+          "register": "casual",
+          "example": "मेहनत से ही कामयाबी मिलती है।"
+        }
+      ]
+    },
+    {
+      "headword": "कमी",
+      "alternatives": [
+        {
+          "word": "अभाव",
+          "meaning": "किसी चीज़ का न होना",
+          "register": "formal",
+          "example": "गाँव में पानी का अभाव है।"
+        },
+        {
+          "word": "किल्लत",
+          "meaning": "ज़रूरी चीज़ की कमी",
+          "register": "casual",
+          "example": "गर्मियों में पानी की किल्लत हो जाती है।"
+        },
+        {
+          "word": "कमज़ोरी",
+          "meaning": "किसी इंसान की कमी या दोष",
+          "register": "casual",
+          "example": "समय पर न उठना मेरी कमज़ोरी है।"
+        }
+      ]
+    },
+    {
+      "headword": "हुनर",
+      "alternatives": [
+        {
+          "word": "कौशल",
+          "meaning": "किसी काम में निपुणता",
+          "register": "formal",
+          "example": "इस नौकरी के लिए बातचीत का कौशल ज़रूरी है।"
+        },
+        {
+          "word": "कला",
+          "meaning": "ख़ास कारीगरी या हुनर",
+          "register": "casual",
+          "example": "मिट्टी के बर्तन बनाना एक कला है।"
+        },
+        {
+          "word": "महारत",
+          "meaning": "किसी काम में पूरी पकड़",
+          "register": "power",
+          "example": "उसे बिरयानी बनाने में महारत है।"
+        }
+      ]
+    },
+    {
+      "headword": "सोच",
+      "alternatives": [
+        {
+          "word": "नज़रिया",
+          "meaning": "सोचने का ढंग",
+          "register": "casual",
+          "example": "उसका नज़रिया हमेशा सकारात्मक रहता है।"
+        },
+        {
+          "word": "विचारधारा",
+          "meaning": "सोच का तरीक़ा",
+          "register": "formal",
+          "example": "हर पीढ़ी की विचारधारा अलग होती है।"
+        },
+        {
+          "word": "दृष्टिकोण",
+          "meaning": "किसी बात को देखने का ढंग",
+          "register": "formal",
+          "example": "इस समस्या पर एक नया दृष्टिकोण चाहिए।"
+        }
+      ]
+    },
+    {
+      "headword": "ज़्यादातर",
+      "alternatives": [
+        {
+          "word": "अधिकांश",
+          "meaning": "बड़ा हिस्सा",
+          "register": "formal",
+          "example": "अधिकांश छात्र हॉस्टल में रहते हैं।"
+        },
+        {
+          "word": "आम तौर पर",
+          "meaning": "अक्सर, सामान्यतः",
+          "register": "casual",
+          "example": "छुट्टी के दिन मैं आम तौर पर घर पर रहता हूँ।"
+        }
+      ]
+    },
+    {
+      "headword": "स्वादिष्ट",
+      "alternatives": [
+        {
+          "word": "लज़ीज़",
+          "meaning": "बहुत स्वाद वाला",
+          "register": "casual",
+          "example": "दादी के हाथ का हलवा लज़ीज़ होता है।"
+        },
+        {
+          "word": "ज़ायकेदार",
+          "meaning": "भरपूर स्वाद वाला",
+          "register": "power",
+          "example": "यह ज़ायकेदार चाट पूरे शहर में मशहूर है।"
+        },
+        {
+          "word": "चटपटा",
+          "meaning": "तीखा और मज़ेदार स्वाद",
+          "register": "casual",
+          "example": "बारिश में चटपटा समोसा खाने का मज़ा ही अलग है।"
+        }
+      ]
+    },
+    {
+      "headword": "सुरक्षित",
+      "alternatives": [
+        {
+          "word": "महफ़ूज़",
+          "meaning": "ख़तरे से बचा हुआ",
+          "register": "casual",
+          "example": "बच्चे घर पर महफ़ूज़ हैं।"
+        },
+        {
+          "word": "संरक्षित",
+          "meaning": "हिफ़ाज़त में रखा हुआ",
+          "register": "formal",
+          "example": "यह एक संरक्षित वन क्षेत्र है।"
+        }
+      ]
+    }
+  ]
+}
