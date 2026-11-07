@@ -57,6 +57,12 @@ android {
 
     buildFeatures.buildConfig = true
 
+    // F-Droid: don't embed the Google-encrypted dependency metadata block in the APK/AAB (its scanner flags it).
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     // Robolectric Compose tests need merged resources.
     testOptions.unitTests.isIncludeAndroidResources = true
 }
