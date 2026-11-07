@@ -14,6 +14,7 @@ import io.github.ukpratik.mukhar.domain.billing.EntitlementSnapshot
 import io.github.ukpratik.mukhar.domain.billing.Plan
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.domain.prompt.Track
+import io.github.ukpratik.mukhar.domain.words.DailyWordPicker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -155,8 +156,24 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
 
     // M4: words.
 
-    /** Daily new words, 1 to 5 (US-020). */
-    suspend fun setDailyNewWords(count: Int) = update { it[K.dailyNewWords] = count.coerceIn(1, 5) }
+    /** New words a day for [lang], 5 to 50 (US-076). */
+    suspend fun setDailyNewWords(lang: Lang, count: Int) = update { it[K.dailyWords(lang)] = count.coerceIn(DailyWordPicker.COUNT_RANGE) }
+
+    /** The Words tab language last used (US-075); null until a tab was picked. */
+    val wordsTab: Flow<Lang?> = store.data.map { p -> p[K.wordsTab]?.let { code -> Lang.entries.firstOrNull { it.code == code } } }.distinctUntilChanged()
+
+    suspend fun setWordsTab(lang: Lang) = update { it[K.wordsTab] = lang.code }
+
+    /** Today's words the user opened (B-rc1-01: lowering the count never removes them). Kept for one streak day only. */
+    suspend fun openedDailyWords(day: LocalDate): Set<String> = store.data.first().let { p ->
+        if (p[K.openedDay] == day.toString()) p[K.openedIds].orEmpty() else emptySet()
+    }
+
+    suspend fun markDailyWordOpened(day: LocalDate, wordId: String) = update {
+        val same = it[K.openedDay] == day.toString()
+        it[K.openedDay] = day.toString()
+        it[K.openedIds] = (if (same) it[K.openedIds].orEmpty() else emptySet()) + wordId
+    }
 
     /** Sentence checks used on [day] (a quota day, 03:00 IST), mirrored for display only; the server decides (US-023). */
     val checksUsed: Flow<Pair<LocalDate?, Int>> = store.data.map { p ->
@@ -285,7 +302,7 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
             firstName = this[K.firstName],
             langs = this[K.langs].orEmpty().mapNotNull { code -> Lang.entries.firstOrNull { it.code == code } }.toSet(),
             tracks = this[K.tracks].orEmpty().mapNotNull(GoalTrack::fromKey).toSet(),
-            dailyNewWords = this[K.dailyNewWords] ?: 3,
+            dailyNewWords = Lang.entries.associateWith { dailyWords(it) },
             reminder = if (minutes != null && routine != null) {
                 ReminderSettings(LocalTime.ofSecondOfDay(minutes * 60L), routine, this[K.reminderPhrase])
             } else {
@@ -310,6 +327,14 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
             softCapInr = this[K.softCapInr] ?: DEFAULT_SOFT_CAP_INR,
         )
     }
+
+    /**
+     * The per-language count; before rc2 there was one `daily_new_words` (1 to 5) for both languages, which now
+     * seeds both, raised to the new minimum of 5 (read-time migration, nothing is rewritten).
+     */
+    private fun Preferences.dailyWords(lang: Lang): Int = this[K.dailyWords(lang)]
+        ?: this[K.dailyNewWords]?.coerceIn(DailyWordPicker.COUNT_RANGE)
+        ?: DailyWordPicker.DEFAULT_COUNT
 
     private fun Preferences.toTalkPrefs(): TalkPrefs {
         val picked = this[K.langs].orEmpty()
@@ -352,7 +377,12 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val firstName = stringPreferencesKey("first_name")
         val langs = stringSetPreferencesKey("langs")
         val tracks = stringSetPreferencesKey("tracks")
+        /** rc1's single count (1 to 5); read only to seed the per-language counts. */
         val dailyNewWords = intPreferencesKey("daily_new_words")
+        fun dailyWords(lang: Lang) = intPreferencesKey("daily_new_words_${lang.code}")
+        val wordsTab = stringPreferencesKey("words_tab_lang")
+        val openedDay = stringPreferencesKey("daily_opened_day")
+        val openedIds = stringSetPreferencesKey("daily_opened_ids")
         val reminderTime = intPreferencesKey("reminder_time_min")
         val reminderRoutine = stringPreferencesKey("reminder_routine")
         val reminderPhrase = stringPreferencesKey("reminder_phrase")

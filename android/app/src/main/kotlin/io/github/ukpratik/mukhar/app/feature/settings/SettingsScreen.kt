@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
@@ -37,7 +38,9 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material.icons.outlined.WorkspacePremium
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
@@ -47,6 +50,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -76,6 +80,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
@@ -101,6 +106,8 @@ import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.work.ReminderCopy
 import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.model.Lang
+import io.github.ukpratik.mukhar.domain.words.DailyWordPicker
+import io.github.ukpratik.mukhar.ui.theme.MukharTheme
 import io.github.ukpratik.mukhar.ui.theme.MukharCard
 import io.github.ukpratik.mukhar.ui.theme.MukharSpace
 import java.time.LocalTime
@@ -112,7 +119,7 @@ data class SettingsActions(
     val onOpenUrl: (String) -> Unit = {},
     val onLangs: (Set<Lang>) -> Unit = {},
     val onTracks: (Set<GoalTrack>) -> Unit = {},
-    val onDailyWords: (Int) -> Unit = {},
+    val onDailyWords: (Lang, Int) -> Unit = { _, _ -> },
     val onWeeklyGoal: (Int) -> Unit = {},
     val onReminderOn: (Boolean) -> Unit = {},
     val onReminderTime: (LocalTime) -> Unit = {},
@@ -193,7 +200,7 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 Divider()
                 LinkRow(Icons.Outlined.Flag, stringResource(R.string.settings_tracks), GoalTrack.entries.filter { it in s.tracks }.map { stringResource(it.label()) }.joinToString(", ")) { dialog = SettingsDialog.TRACKS }
                 Divider()
-                SegRow(Icons.Outlined.MenuBook, stringResource(R.string.settings_daily_words), stringResource(R.string.settings_daily_words_sub), (1..5).toList(), s.dailyNewWords, { it.toString() }, actions.onDailyWords)
+                DailyWordsRow(s.practiceLangs, s.dailyNewWords, actions.onDailyWords)
                 Divider()
                 SegRow(Icons.Outlined.EventAvailable, stringResource(R.string.settings_weekly_goal), stringResource(R.string.settings_weekly_goal_sub), listOf(3, 5, 7), state.weeklyGoal, { pluralStringResource(R.plurals.settings_days, it, it) }, actions.onWeeklyGoal)
             }
@@ -353,6 +360,67 @@ private fun SwitchRow(icon: ImageVector, title: String, sub: String, checked: Bo
         Switch(checked = checked, onCheckedChange = null)
     }
 }
+
+/**
+ * US-076: one stepper per practice language, 5 to 50 in steps of 5, with the revision-time estimate under each and a
+ * soft note above 20. Steppers (not a slider) so TalkBack and 200 % text work without fine dragging.
+ */
+@Composable
+private fun DailyWordsRow(langs: List<Lang>, counts: Map<Lang, Int>, onChange: (Lang, Int) -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).testTag(TAG_DAILY_WORDS)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            Icon(Icons.Outlined.MenuBook, null, tint = MaterialTheme.colorScheme.primary)
+            RowText(stringResource(R.string.settings_daily_words), stringResource(R.string.settings_daily_words_sub), Modifier.weight(1f))
+        }
+        langs.forEach { lang ->
+            val n = counts[lang] ?: DailyWordPicker.DEFAULT_COUNT
+            val name = stringResource(langLabel(lang))
+            val value = stringResource(R.string.settings_daily_words_value_a11y, name, n)
+            Column(Modifier.fillMaxWidth().padding(start = 38.dp, top = 10.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        name, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                    )
+                    StepButton(Icons.Rounded.Remove, stringResource(R.string.settings_daily_words_fewer_a11y, name), n > DailyWordPicker.MIN_COUNT, "${TAG_DAILY_WORDS}_minus_${lang.code}") {
+                        onChange(lang, n - STEP)
+                    }
+                    Text(
+                        n.toString(),
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.widthIn(min = 40.dp).testTag("${TAG_DAILY_WORDS}_value_${lang.code}")
+                            .semantics { contentDescription = value; liveRegion = LiveRegionMode.Polite },
+                    )
+                    StepButton(Icons.Rounded.Add, stringResource(R.string.settings_daily_words_more_a11y, name), n < DailyWordPicker.MAX_COUNT, "${TAG_DAILY_WORDS}_plus_${lang.code}") {
+                        onChange(lang, n + STEP)
+                    }
+                }
+                Text(
+                    stringResource(R.string.settings_daily_words_cost, DailyWordPicker.revisionMinutes(n)),
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (n > DailyWordPicker.SOFT_LIMIT) {
+                    Text(
+                        stringResource(R.string.settings_daily_words_lot),
+                        style = MaterialTheme.typography.bodySmall, color = MukharTheme.colors.accentInk,
+                        modifier = Modifier.padding(top = 2.dp).testTag("${TAG_DAILY_WORDS}_lot_${lang.code}"),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StepButton(icon: ImageVector, description: String, enabled: Boolean, tag: String, onClick: () -> Unit) {
+    OutlinedIconButton(
+        onClick = onClick, enabled = enabled,
+        modifier = Modifier.size(MukharSpace.touch).testTag(tag).semantics { contentDescription = description },
+    ) { Icon(icon, null) }
+}
+
+private const val STEP = 5
 
 @Composable
 private fun <T> SegRow(icon: ImageVector, title: String, sub: String, options: List<T>, selected: T, label: @Composable (T) -> String, onPick: (T) -> Unit) {
@@ -548,6 +616,7 @@ private fun Deleted(onStartFresh: () -> Unit) {
 }
 
 const val TAG_SETTINGS_LIST = "settings_list"
+const val TAG_DAILY_WORDS = "settings_daily_words"
 const val TAG_SWITCH_REMINDER = "settings_reminder"
 const val TAG_SWITCH_STUTTER = "settings_stutter"
 const val TAG_SWITCH_TRANSLIT = "settings_translit"

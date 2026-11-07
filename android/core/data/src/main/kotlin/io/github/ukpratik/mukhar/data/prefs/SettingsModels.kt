@@ -2,6 +2,7 @@ package io.github.ukpratik.mukhar.data.prefs
 
 import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.model.Lang
+import io.github.ukpratik.mukhar.domain.words.DailyWordPicker
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -57,7 +58,8 @@ data class Settings(
     val firstName: String? = null,
     val langs: Set<Lang> = emptySet(),
     val tracks: Set<GoalTrack> = emptySet(),
-    val dailyNewWords: Int = 3,
+    /** New words a day per practice language, 5 to 50 (US-076, D-045). Missing languages use the default. */
+    val dailyNewWords: Map<Lang, Int> = Lang.entries.associateWith { DailyWordPicker.DEFAULT_COUNT },
     val reminder: ReminderSettings? = null,
     val stutterFriendly: Boolean = false,
     val keepBaselineAudio: Boolean = false,
@@ -81,6 +83,11 @@ data class Settings(
 ) {
     /** Talks need the S04 consent; without it only offline features run (S07 state 5). */
     val talksEnabled: Boolean get() = disclosureConsentAt != null
+
+    fun dailyWordsFor(lang: Lang): Int = dailyNewWords[lang] ?: DailyWordPicker.DEFAULT_COUNT
+
+    /** The practice languages in display order (English first), English when none is set yet. */
+    val practiceLangs: List<Lang> get() = Lang.entries.filter { it in langs }.ifEmpty { listOf(Lang.EN) }
 }
 
 const val DEFAULT_SOFT_CAP_INR = 100

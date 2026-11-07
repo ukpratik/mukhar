@@ -36,4 +36,16 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <plurals name="words_history_revise_week">
+        <item quantity="one">Revise all from this week (%d word)</item>
+        <item quantity="other">Revise all from this week (%d words)</item>
+    </plurals>
+    <plurals name="words_history_revise_day_a11y">
+        <item quantity="one">Revise this %1$d word from %2$s</item>
+        <item quantity="other">Revise these %1$d words from %2$s</item>
+    </plurals>
+    <plurals name="today_words_more">
+        <item quantity="one">%d more in Words</item>
+        <item quantity="other">%d more in Words</item>
+    </plurals>
 </resources>

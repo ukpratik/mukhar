@@ -112,7 +112,7 @@ class SettingsViewModel @Inject constructor(
         store.setLangsAndTracks(state.value.settings.langs.ifEmpty { setOf(Lang.EN) }, tracks)
     }
 
-    fun onDailyWords(n: Int) = save { store.setDailyNewWords(n) }
+    fun onDailyWords(lang: Lang, n: Int) = save { store.setDailyNewWords(lang, n) }
 
     fun onWeeklyGoal(goal: Int) = save { habits.setWeeklyGoal(goal) }
 

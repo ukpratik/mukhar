@@ -211,9 +211,12 @@ fun MukharNavHost(
 fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
     composable<WordsRoute> {
         WordsScreen(
-            onOpenGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) },
+            onOpenGym = { lang -> navController.navigate(ReviewRoute(ReviewRoute.GYM, lang = lang?.code)) },
             onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
             onTalk = navController::navigateToTalk,
+            onRevise = { lang, from, to ->
+                navController.navigate(ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, from = from.toString(), to = to.toString()))
+            },
         )
     }
 }

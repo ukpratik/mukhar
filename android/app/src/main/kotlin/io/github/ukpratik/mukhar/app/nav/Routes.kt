@@ -47,12 +47,23 @@ data class RecordRoute(
 
 // M4: Word Gym (S13), quick revision (S15) and word detail (S14).
 
-/** S13 ([mode] = gym) or S15 ([mode] = revise). [wordId] reviews one word now (S14 "Practise in a sentence"). */
+/**
+ * S13 ([mode] = gym) or S15 ([mode] = revise). [wordId] reviews one word now (S14 "Practise in a sentence").
+ * [lang] limits the Word Gym to one Words tab (US-075). [mode] = extra is History's extra practice (US-077): the
+ * words first shown from [from] to [to] (ISO dates), due or not.
+ */
 @Serializable
-data class ReviewRoute(val mode: String = GYM, val wordId: String? = null) {
+data class ReviewRoute(
+    val mode: String = GYM,
+    val wordId: String? = null,
+    val lang: String? = null,
+    val from: String? = null,
+    val to: String? = null,
+) {
     companion object {
         const val GYM = "gym"
         const val REVISE = "revise"
+        const val EXTRA = "extra"
     }
 }
 

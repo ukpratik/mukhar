@@ -7,6 +7,17 @@
     <string name="words_section_a11y">Section</string>
     <string name="words_seg_bank">Word bank</string>
     <string name="words_seg_lines">Saved lines</string>
+    <!-- rc2: US-075 language tabs, US-076 used-up list, US-077 History -->
+    <string name="words_seg_history">History</string>
+    <string name="words_lang_tabs_a11y">Words language</string>
+    <string name="words_history_empty">Words you meet each day, and words you save from talks, will show up here.</string>
+    <string name="words_history_today">Today</string>
+    <string name="words_history_yesterday">Yesterday</string>
+    <string name="words_history_revise_day">Revise these</string>
+    <string name="words_exhausted">You\'ve met every word in Mukhar\'s %1$s list. New ones arrive with updates.</string>
+    <string name="words_next_none">Not reviewed yet</string>
+    <string name="words_next_due">Review due now</string>
+    <string name="words_next_in">Next review in %1$s</string>
     <string name="words_gym">Word Gym</string>
     <string name="words_gym_nothing">Nothing to review yet</string>
     <string name="words_gym_caught_up">All caught up for today</string>

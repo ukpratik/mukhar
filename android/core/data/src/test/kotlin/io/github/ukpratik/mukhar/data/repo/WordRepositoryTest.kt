@@ -54,13 +54,12 @@ class WordRepositoryTest {
     @Test
     fun dailyWordsAreCuratedForTheUsersTracksAndStableAllDay() = runTest {
         val first = repo.ensureDailyWords(today)
-        assertThat(first).hasSize(3) // default 3 (US-020)
+        assertThat(first).hasSize(5) // default 5 per language (US-076)
         val words = repo.observeDailyWords(today).first()
         assertThat(words.map { it.id }).containsExactlyElementsIn(first).inOrder()
         assertThat(words.all { it.lang == Lang.EN && it.tracks.any { t -> t in setOf("interviews", "professional") } }).isTrue()
         assertThat(words.all { it.source == WordSource.CURATED && it.pos != null }).isTrue()
-        // Same streak day, even after the setting changes: the persisted picks come back.
-        stores.settings.setDailyNewWords(5)
+        // Same streak day, same settings: the persisted picks come back.
         clock.advanceBy(Duration.ofHours(8))
         assertThat(repo.ensureDailyWords(today)).isEqualTo(first)
         // Each daily word entered the Word Gym with a word → meaning card due now.
@@ -69,15 +68,131 @@ class WordRepositoryTest {
 
     @Test
     fun talkWordsComeFirstAndTheCountFollowsTheSetting() = runTest {
-        stores.settings.setDailyNewWords(4)
+        stores.settings.setDailyNewWords(Lang.EN, 6)
         harvest("pivotal")
         harvest("undocumented")
         val picked = repo.ensureDailyWords(today)
-        assertThat(picked).hasSize(4)
+        assertThat(picked).hasSize(6)
         assertThat(picked.take(2)).containsExactly("en:pivotal", "en:undocumented").inOrder()
         // Tomorrow they aren't picked again; new curated words are.
         val tomorrow = repo.ensureDailyWords(today.plusDays(1))
         assertThat(tomorrow).containsNoneIn(picked)
+    }
+
+    @Test
+    fun eachLanguageGetsItsOwnCount() = runTest {
+        stores.settings.setProfile(null, setOf(Lang.EN, Lang.HI), setOf(GoalTrack.INTERVIEWS, GoalTrack.EVERYDAY))
+        stores.settings.setDailyNewWords(Lang.EN, 10)
+        stores.settings.setDailyNewWords(Lang.HI, 5)
+        val words = repo.observeDailyWords(today).first()
+        assertThat(words.count { it.lang == Lang.EN }).isEqualTo(10)
+        assertThat(words.count { it.lang == Lang.HI }).isEqualTo(5)
+    }
+
+    @Test
+    fun raisingTheCountMidDayTopsUpAtOnce() = runTest {
+        val first = repo.ensureDailyWords(today) // 5
+        stores.settings.setDailyNewWords(Lang.EN, 8)
+        val after = repo.ensureDailyWords(today)
+        assertThat(after).hasSize(8)
+        assertThat(after.take(5)).isEqualTo(first)
+        // The observed list follows the setting without a new day (B-rc1-01).
+        stores.settings.setDailyNewWords(Lang.EN, 9)
+        assertThat(repo.observeDailyWords(today).first { it.size == 9 }.map { it.id }.take(8)).isEqualTo(after)
+    }
+
+    @Test
+    fun loweringTheCountKeepsWordsAlreadyOpenedOrGraded() = runTest {
+        stores.settings.setDailyNewWords(Lang.EN, 8)
+        val picked = repo.ensureDailyWords(today)
+        // Opened the last one, graded the 7th.
+        repo.markOpened(picked[7])
+        repo.grade("wm:${picked[6]}", Rating.GOOD, null)
+        stores.settings.setDailyNewWords(Lang.EN, 5)
+        val after = repo.ensureDailyWords(today)
+        assertThat(after).containsExactlyElementsIn(picked.take(3) + picked.drop(6)).inOrder()
+        // Removed unseen curated words leave the Word Gym (and can be picked another day).
+        assertThat(dao.word(picked[5])).isNull()
+        assertThat(dao.cardsForWord(picked[5])).isEmpty()
+        assertThat(dao.word(picked[7])).isNotNull()
+    }
+
+    @Test
+    fun whenTheListRunsOutWordsComeFromOtherTracksThenTheLanguageIsMarkedUsedUp() = runTest {
+        val tiny = """{"version":1,"lang":"en","words":[""" + (1..7).joinToString(",") { i ->
+            val track = if (i <= 2) "interviews" else "everyday"
+            """{"id":"en:w$i","lemma":"w$i","pos":"noun","meaning":"m$i","gloss":"g","example":"e","tracks":["$track"],"register":"casual","difficulty":"easy"}"""
+        } + "]}"
+        val hiEmpty = """{"version":1,"lang":"hi","words":[]}"""
+        val small = testWordRepository(
+            stores.db, clock, stores.settings, habits,
+            io.github.ukpratik.mukhar.data.content.WordCatalog({ l -> if (l == Lang.EN) tiny else hiEmpty }, kotlinx.serialization.json.Json { ignoreUnknownKeys = true }),
+        )
+        val day1 = small.ensureDailyWords(today)
+        // Only 2 interview words: the rest come from any track.
+        assertThat(day1).hasSize(5)
+        assertThat(day1).containsAtLeast("en:w1", "en:w2")
+        assertThat(small.exhaustedLangs.value).isEmpty()
+        val day2 = small.ensureDailyWords(today.plusDays(1))
+        assertThat(day2).hasSize(2) // only 2 left
+        assertThat(small.exhaustedLangs.value).containsExactly(Lang.EN)
+        // Next day: nothing new, no crash; the streak isn't touched by daily words at all.
+        assertThat(small.ensureDailyWords(today.plusDays(2))).isEmpty()
+    }
+
+    // ---- History and extra practice (US-077) ----
+
+    @Test
+    fun historyGroupsWordsByDayPerLanguageEvenBeforeGrading() = runTest {
+        val yesterday = repo.ensureDailyWords(today.minusDays(1))
+        val todays = repo.ensureDailyWords(today)
+        harvest("pivotal")
+        val history = repo.observeHistory(Lang.EN).first()
+        assertThat(history.map { it.day }).containsExactly(today, today.minusDays(1)).inOrder()
+        assertThat(history[0].words.map { it.id }).containsExactlyElementsIn(todays + "en:pivotal").inOrder()
+        assertThat(history[1].words.map { it.id }).containsExactlyElementsIn(yesterday).inOrder()
+        assertThat(history[0].words.all { it.status == WordStatus.NEW }).isTrue()
+        assertThat(repo.observeHistory(Lang.HI).first()).isEmpty()
+    }
+
+    @Test
+    fun extraPracticeReviewsTheDaysWordsAndGradesAreNormalFsrsReviews() = runTest {
+        val todays = repo.ensureDailyWords(today)
+        val first = repo.queue(ReviewMode.GYM).first { it.type == CardType.WORD_MEANING }
+        repo.grade(first.id, Rating.EASY, null) // now not due for days
+        assertThat(repo.queue(ReviewMode.GYM).map { it.id }).doesNotContain(first.id)
+        val extra = repo.queueExtra(Lang.EN, today, today)
+        // All of today's word → meaning cards, due or not; tomorrow's meaning → word cards aren't released yet.
+        assertThat(extra.map { it.id }).containsAtLeastElementsIn(todays.map { "wm:$it" })
+        assertThat(extra.none { it.type == CardType.MEANING_WORD }).isTrue()
+        val before = dao.card(first.id)!!
+        val expected = io.github.ukpratik.mukhar.domain.fsrs.Fsrs(enableFuzzing = false)
+            .review(WordRepository.run { before.toDomain() }, Rating.GOOD, clock.now(), null).first
+        repo.grade(first.id, Rating.GOOD, null)
+        assertThat(dao.card(first.id)!!.due).isEqualTo(expected.due.toEpochMilli())
+        // An empty range is an empty session.
+        assertThat(repo.queueExtra(Lang.EN, today.minusDays(9), today.minusDays(8))).isEmpty()
+    }
+
+    @Test
+    fun gymDueAndQueueFilterByLanguage() = runTest {
+        stores.settings.setProfile(null, setOf(Lang.EN, Lang.HI), setOf(GoalTrack.EVERYDAY))
+        repo.ensureDailyWords(today)
+        assertThat(repo.observeGymDue(Lang.HI).first()).isEqualTo(5)
+        assertThat(repo.queue(ReviewMode.GYM, lang = Lang.HI).all { it.lang == Lang.HI }).isTrue()
+        assertThat(repo.queue(ReviewMode.GYM, lang = Lang.EN).all { it.lang == Lang.EN }).isTrue()
+        // Ten new words today (5 + 5) all fit in today's new-card budget.
+        assertThat(repo.queue(ReviewMode.GYM).size).isEqualTo(10)
+    }
+
+    @Test
+    fun wordsToTryPreferDueAndLearningWords() = runTest {
+        harvest("pivotal")
+        harvest("concise")
+        val c = repo.queue(ReviewMode.GYM).first { it.word!!.lemma == "concise" }
+        repo.grade(c.id, Rating.AGAIN, null) // learning, due again in minutes
+        assertThat(repo.wordsToTry(Lang.EN, 2).first()).isEqualTo("concise")
+        assertThat(repo.wordsToTry(Lang.HI)).isEmpty()
     }
 
     // ---- Harvest (US-021) ----

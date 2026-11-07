@@ -197,6 +197,20 @@ interface WordDao {
 
     @Query("SELECT * FROM daily_word WHERE day = :day ORDER BY position")
     fun observeDailyWords(day: String): Flow<List<DailyWordEntity>>
+
+    /** Every day's words, for the learnt-words history (US-077). */
+    @Query("SELECT * FROM daily_word ORDER BY day, position")
+    fun observeAllDailyWords(): Flow<List<DailyWordEntity>>
+
+    @Query("SELECT * FROM daily_word ORDER BY day, position")
+    suspend fun allDailyWords(): List<DailyWordEntity>
+
+    /** Trims an unseen word from a day's set when the count is lowered (B-rc1-01). */
+    @Query("DELETE FROM daily_word WHERE day = :day AND word_id = :wordId")
+    suspend fun deleteDailyWord(day: String, wordId: String)
+
+    @Query("SELECT COUNT(*) FROM daily_word WHERE word_id = :wordId")
+    suspend fun dailyRowCount(wordId: String): Int
 }
 
 /** Streak, habit, reminders, prompts and insights (US-031 to US-033, US-050). */

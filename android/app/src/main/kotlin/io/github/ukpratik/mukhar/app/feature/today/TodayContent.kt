@@ -535,7 +535,10 @@ private fun WordsSection(state: TodayUiState, actions: TodayActions) {
                 modifier = Modifier.padding(MukharSpace.l),
             )
         }
-        state.words.forEachIndexed { i, w ->
+        // With up to 50 a day per language, Today shows the first few of each; the rest are in Words (US-076).
+        val shown = state.words.groupBy { it.lang }.flatMap { (_, ws) -> ws.take(TODAY_WORDS_PER_LANG) }
+        val more = state.words.size - shown.size
+        shown.forEachIndexed { i, w ->
             if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             val meta = posAndRegister(w)
             Row(
@@ -569,8 +572,22 @@ private fun WordsSection(state: TodayUiState, actions: TodayActions) {
                 SpeakerSlot(state.voices[w.lang] == true, hearDescription(w.lemma, w.lang), { actions.onSpeak(w) })
             }
         }
+        if (more > 0) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Text(
+                pluralStringResource(R.plurals.today_words_more, more, more),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.fillMaxWidth().heightIn(min = MukharSpace.touch).clickable(role = Role.Button, onClick = actions.onOpenWords)
+                    .padding(horizontal = MukharSpace.l, vertical = 12.dp).testTag(TAG_WORDS_MORE),
+            )
+        }
     }
 }
+
+/** Today's card shows this many of each language's daily words. */
+const val TODAY_WORDS_PER_LANG = 5
+const val TAG_WORDS_MORE = "today_words_more"
 
 private fun mmss(ms: Long): String = "%d:%02d".format(ms / 60_000, ms / 1000 % 60)
 

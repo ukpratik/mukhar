@@ -1,5 +1,11 @@
 package io.github.ukpratik.mukhar.app.feature.settings
 
+import androidx.compose.ui.test.onNodeWithContentDescription
+
+import androidx.compose.ui.test.assertTextEquals
+
+import androidx.compose.ui.test.assertContentDescriptionEquals
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -99,5 +105,24 @@ class SettingsContentTest {
         compose.setContent { MukharTheme { SettingsContent(SettingsUiState(loading = false, settings = settings, delete = DeleteStage.CONFIRM), SettingsActions()) } }
         compose.onNodeWithText("On this phone, right away").assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
         compose.onNodeWithText("On our servers, within 30 days").assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
+    }
+
+    @Test
+    fun dailyWordsHaveAStepperPerLanguageWithTheCostAndASoftNote() {
+        var state by mutableStateOf(SettingsUiState(loading = false, settings = settings.copy(dailyNewWords = mapOf(Lang.EN to 20, Lang.HI to 5))))
+        val changes = mutableListOf<Pair<Lang, Int>>()
+        val actions = SettingsActions(onDailyWords = { l, n ->
+            changes += l to n
+            state = state.copy(settings = state.settings.copy(dailyNewWords = state.settings.dailyNewWords + (l to n)))
+        })
+        compose.setContent { MukharTheme { SettingsContent(state, actions) } }
+        compose.onNodeWithTag("${TAG_DAILY_WORDS}_value_en").performScrollTo().assertContentDescriptionEquals("English: 20 new words a day")
+        compose.onNodeWithText("≈ 5 min of revision a day once it builds up").assertExists()
+        compose.onNodeWithTag("${TAG_DAILY_WORDS}_lot_en").assertDoesNotExist()
+        compose.onNodeWithContentDescription("More new English words a day").performScrollTo().performClick()
+        assertThat(changes).containsExactly(Lang.EN to 25)
+        compose.onNodeWithTag("${TAG_DAILY_WORDS}_lot_en").performScrollTo().assertTextEquals("That's a lot. Most people remember more with fewer.")
+        // Hindi is at the minimum: "fewer" is off.
+        compose.onNodeWithContentDescription("Fewer new Hindi words a day").performScrollTo().assertIsNotEnabled()
     }
 }

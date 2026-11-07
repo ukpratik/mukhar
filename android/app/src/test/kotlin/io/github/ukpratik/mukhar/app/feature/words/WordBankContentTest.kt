@@ -49,7 +49,7 @@ class WordBankContentTest {
         compose.onNodeWithTag(TAG_WORDS_EMPTY).assertIsDisplayed()
         compose.onNodeWithText("Your words will live here").assertIsDisplayed()
         compose.onNodeWithText(
-            "Words you add from your talks, plus 3 picks a day for Interviews and Professional. The first ones arrive tomorrow morning.",
+            "Words you add from your talks, plus 5 picks a day for Interviews and Professional. The first ones arrive tomorrow morning.",
         ).assertIsDisplayed()
         compose.onNodeWithContentDescription("Review: nothing due yet").assertIsDisplayed()
         compose.onNodeWithText("Do today's talk").performClick()

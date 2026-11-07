@@ -143,4 +143,49 @@ class SettingsStoreTest {
         store.clearAll()
         assertThat(store.soundLabPractised.first()).isEmpty()
     }
+
+    // ---- US-076: per-language daily words, migrated from rc1's single count ----
+
+    private fun rawStore(dir: java.io.File) = androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+        scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.SupervisorJob() + kotlinx.coroutines.Dispatchers.IO),
+    ) { java.io.File(dir, "settings.preferences_pb") }
+
+    @Test
+    fun dailyWordsDefaultToFivePerLanguageAndClampTo5To50() = runBlocking<Unit> {
+        assertThat(store.current().dailyNewWords).containsExactly(Lang.EN, 5, Lang.HI, 5)
+        store.setDailyNewWords(Lang.EN, 12)
+        store.setDailyNewWords(Lang.HI, 80)
+        assertThat(store.current().dailyWordsFor(Lang.EN)).isEqualTo(12)
+        assertThat(store.current().dailyWordsFor(Lang.HI)).isEqualTo(50)
+        store.setDailyNewWords(Lang.EN, 1)
+        assertThat(store.current().dailyWordsFor(Lang.EN)).isEqualTo(5)
+    }
+
+    @Test
+    fun rc1DailyCountSeedsBothLanguagesRaisedToFive() = runBlocking<Unit> {
+        val dir = java.nio.file.Files.createTempDirectory("mukhar-migrate").toFile()
+        val raw = rawStore(dir)
+        raw.updateData { p -> p.toMutablePreferences().apply { set(androidx.datastore.preferences.core.intPreferencesKey("daily_new_words"), 3) } }
+        val migrated = SettingsStore(raw)
+        assertThat(migrated.current().dailyNewWords).containsExactly(Lang.EN, 5, Lang.HI, 5)
+        // Setting one language leaves the other on the migrated value.
+        migrated.setDailyNewWords(Lang.HI, 20)
+        assertThat(migrated.current().dailyNewWords).containsExactly(Lang.EN, 5, Lang.HI, 20)
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun wordsTabAndOpenedWordsAreRemembered() = runBlocking<Unit> {
+        assertThat(store.wordsTab.first()).isNull()
+        store.setWordsTab(Lang.HI)
+        assertThat(store.wordsTab.first()).isEqualTo(Lang.HI)
+        val day = LocalDate.of(2026, 11, 7)
+        store.markDailyWordOpened(day, "en:a")
+        store.markDailyWordOpened(day, "en:b")
+        assertThat(store.openedDailyWords(day)).containsExactly("en:a", "en:b")
+        // A new day starts empty.
+        assertThat(store.openedDailyWords(day.plusDays(1))).isEmpty()
+        store.markDailyWordOpened(day.plusDays(1), "en:c")
+        assertThat(store.openedDailyWords(day.plusDays(1))).containsExactly("en:c")
+    }
 }

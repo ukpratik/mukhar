@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 
@@ -125,6 +126,8 @@ class ReviewViewModel @Inject constructor(
 ) : ViewModel() {
     private val route = savedState.toRoute<ReviewRoute>()
     private val mode = if (route.mode == ReviewRoute.REVISE) ReviewMode.REVISE else ReviewMode.GYM
+    private val extra = route.mode == ReviewRoute.EXTRA
+    private val lang = route.lang?.let { code -> Lang.entries.firstOrNull { it.code == code } }
     private val _state = MutableStateFlow(ReviewUiState(mode = mode))
     val state: StateFlow<ReviewUiState> = _state.asStateFlow()
     private val effects = Channel<ReviewEffect>(Channel.BUFFERED)
@@ -147,7 +150,13 @@ class ReviewViewModel @Inject constructor(
     }
 
     private suspend fun load() {
-        val cards = words.queue(mode, route.wordId)
+        val cards = if (extra) {
+            val today = words.today()
+            val from = route.from?.let(LocalDate::parse) ?: today
+            words.queueExtra(lang, from, route.to?.let(LocalDate::parse) ?: today)
+        } else {
+            words.queue(mode, route.wordId, lang)
+        }
         _state.update { it.copy(loading = false, cards = cards, index = 0, flipped = startsFlipped(cards.firstOrNull()), sentence = SentenceUi()) }
         onCardShown()
     }
@@ -202,7 +211,8 @@ class ReviewViewModel @Inject constructor(
     private suspend fun finish() {
         if (graded == 0 && _state.value.cards.isEmpty()) return
         if (graded > 0) analytics.log(AnalyticsEvent.reviewSessionCompleted(graded))
-        val more = words.queue(mode).size
+        // Extra practice is one pass over the chosen words; "keep going" would show them again.
+        val more = if (extra) 0 else words.queue(mode, lang = lang).size
         _state.update {
             it.copy(
                 done = DoneUi(

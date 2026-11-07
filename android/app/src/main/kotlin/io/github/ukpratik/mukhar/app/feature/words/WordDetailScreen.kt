@@ -102,6 +102,8 @@ class WordDetailViewModel @Inject constructor(
 
     init {
         speaker.warmUp()
+        // Opened today: the word stays in today's set even if the daily count is lowered (B-rc1-01).
+        viewModelScope.launch { words.markOpened(id) }
     }
 
     fun speak() {
