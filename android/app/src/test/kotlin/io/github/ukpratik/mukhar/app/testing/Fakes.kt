@@ -133,7 +133,15 @@ class OnboardingHarness(
     fun close() {
         // Wait for DataStore's in-flight write to stop before deleting its folder; deleting first made a late write
         // throw "Inoperable file" into the next test under a loaded full-suite run (flaky OnboardingUiTest, M6B).
-        kotlinx.coroutines.runBlocking { scope.coroutineContext[kotlinx.coroutines.Job]!!.cancelAndJoin() }
+        // Don't block the main thread while joining: in-flight work may need the main looper to finish (a blocking
+        // join here deadlocked the suite). Keep idling the looper until the scope's job completes, up to 5 s.
+        val job = scope.coroutineContext[kotlinx.coroutines.Job]!!
+        job.cancel()
+        val end = System.currentTimeMillis() + 5_000
+        while (!job.isCompleted && System.currentTimeMillis() < end) {
+            shadowOf(Looper.getMainLooper()).idle()
+            Thread.sleep(5)
+        }
         shadowOf(Looper.getMainLooper()).idle()
         dir.deleteRecursively()
     }
