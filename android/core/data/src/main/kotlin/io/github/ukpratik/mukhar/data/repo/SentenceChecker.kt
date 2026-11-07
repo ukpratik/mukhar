@@ -7,6 +7,7 @@ import io.github.ukpratik.mukhar.data.util.IdGenerator
 import io.github.ukpratik.mukhar.data.work.AnalysisPipeline
 import io.github.ukpratik.mukhar.data.work.SentenceCheckRequest
 import io.github.ukpratik.mukhar.domain.Clock
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.domain.quota.Decision
 import io.github.ukpratik.mukhar.domain.quota.QuotaKind
@@ -22,8 +23,13 @@ import kotlinx.coroutines.flow.first
 import java.io.File
 
 /** Checks used today against the plan's limit (free 10). A display mirror only: the Worker is the authority. */
-data class CheckQuota(val used: Int, val limit: Int) {
-    val exhausted: Boolean get() = used >= limit
+data class CheckQuota(val used: Int, val limit: Int, val unlimited: Boolean = false) {
+    val exhausted: Boolean get() = !unlimited && used >= limit
+
+    companion object {
+        /** On the phone and on the user's own keys there's no daily check limit (D-039). */
+        val UNLIMITED = CheckQuota(0, Int.MAX_VALUE, unlimited = true)
+    }
 }
 
 data class SentenceCheck(
@@ -47,13 +53,16 @@ class SentenceChecker(
     private val entitlements: Entitlements,
     private val clock: Clock,
     private val ids: IdGenerator,
+    /** Whether the server quota applies (only Mukhar Cloud, off in R1). Tests pass `{ true }` to cover the cloud rules. */
+    private val serverQuota: (AnalysisMode) -> Boolean = { it.usesServerQuota },
 ) {
-    val quota: Flow<CheckQuota> = combine(settings.checksUsed, entitlements.isPremium) { (day, used), premium ->
-        status(day, used, premium)
+    val quota: Flow<CheckQuota> = combine(settings.checksUsed, entitlements.isPremium, settings.analysisMode) { (day, used), premium, mode ->
+        if (serverQuota(mode)) status(day, used, premium) else CheckQuota.UNLIMITED
     }
 
     suspend fun check(lang: Lang, target: String, meaning: String, audio: File, durationMs: Long): Outcome<SentenceCheck> {
         try {
+            if (!serverQuota(settings.analysisMode.first())) return checkWithoutQuota(lang, target, meaning, audio, durationMs)
             val premium = entitlements.isPremium.first()
             val (day, used) = settings.checksUsed.first()
             val today = QuotaMirror.quotaDay(clock.now())
@@ -90,9 +99,33 @@ class SentenceChecker(
         }
     }
 
+    /** Local and own-key modes: no QuotaMirror, no counter (D-039). The ≤ 15 s clip rule still applies. */
+    private suspend fun checkWithoutQuota(lang: Lang, target: String, meaning: String, audio: File, durationMs: Long): Outcome<SentenceCheck> {
+        if (durationMs > SentenceCheckRules.MAX_CLIP_MS + CLIP_GRACE_MS) return Outcome.Err(AppError.AudioTooLong)
+        val request = SentenceCheckRequest(ids.newId(), lang, target, meaning, durationMs)
+        return when (val r = pipeline.checkSentence(request, audio)) {
+            is Outcome.Err -> r
+            is Outcome.Ok -> {
+                val a = r.value
+                Outcome.Ok(
+                    SentenceCheck(
+                        verdict = SentenceCheckRules.verdict(a.result, a.wordFound, target, a.transcript),
+                        transcript = a.transcript, corrected = a.corrected, example = a.example, note = a.note,
+                        quota = CheckQuota.UNLIMITED,
+                    ),
+                )
+            }
+        }
+    }
+
     private fun status(day: java.time.LocalDate?, used: Int, premium: Boolean): CheckQuota {
         val today = QuotaMirror.quotaDay(clock.now())
         val s = QuotaMirror.status(if (premium) Tier.PREMIUM else Tier.FREE, clock.now(), Usage(uidChecks = if (day == today) used else 0))
         return CheckQuota(s.checksUsed, s.checksLimit)
+    }
+
+    private companion object {
+        /** The recorder stops at 15 s; allow encoder rounding. */
+        const val CLIP_GRACE_MS = 1_000L
     }
 }

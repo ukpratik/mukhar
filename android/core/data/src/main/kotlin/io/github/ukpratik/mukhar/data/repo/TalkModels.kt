@@ -69,6 +69,8 @@ data class StoredFeedback(
     val fallbackGrow: Boolean,
     val rating: Int?,
     val reported: Boolean,
+    /** Who wrote the notes (`rule-coach` for the offline coach, a Claude model id, or the Worker's model). */
+    val model: String = "",
 )
 
 /** Everything the Analysing/Results screens need, straight from Room so it survives process death (LLD §5). */
@@ -78,6 +80,8 @@ data class TalkDetails(
     val metrics: MetricsEntity?,
     val feedback: StoredFeedback?,
     val credit: Credit?,
+    /** `talk_transcript.provider` (`vosk`, `deepgram`, `sarvam`, …): decides the per-metric reliability (ADR-008). */
+    val transcriptProvider: String? = null,
 ) {
     val lang: Lang get() = Lang.fromCode(session.lang)
 }

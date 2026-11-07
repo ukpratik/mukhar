@@ -12,7 +12,7 @@ import io.github.ukpratik.mukhar.data.billing.RemoteAccountServer
 import io.github.ukpratik.mukhar.data.repo.EntitlementRepository
 import io.github.ukpratik.mukhar.data.repo.Entitlements
 import io.github.ukpratik.mukhar.data.work.AnalysisPipeline
-import io.github.ukpratik.mukhar.data.work.RemoteAnalysisPipeline
+import io.github.ukpratik.mukhar.data.work.PipelineRouter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Release builds: the real Worker pipeline, real free storage, Google Play Billing and the Worker's account routes.
+ * Release builds: the analysis-mode router (on-device, own keys; Mukhar Cloud off in R1, ADR-008), real free storage, Google Play Billing and the Worker's account routes.
  * No debug hooks (build-plan "Debug hooks"). Analytics events are dropped until Firebase is added (ADR-007).
  */
 @Module
@@ -29,7 +29,7 @@ import javax.inject.Singleton
 object VariantModule {
     @Provides
     @Singleton
-    fun pipeline(remote: RemoteAnalysisPipeline): AnalysisPipeline = remote
+    fun pipeline(router: PipelineRouter): AnalysisPipeline = router
 
     @Provides
     @Singleton

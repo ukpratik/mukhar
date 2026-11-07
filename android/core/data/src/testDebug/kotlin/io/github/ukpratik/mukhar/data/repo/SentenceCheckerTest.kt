@@ -7,6 +7,7 @@ import io.github.ukpratik.mukhar.data.debug.DebugControls
 import io.github.ukpratik.mukhar.data.debug.FakeAnalysisPipeline
 import io.github.ukpratik.mukhar.data.net.AppError
 import io.github.ukpratik.mukhar.data.net.Outcome
+import io.github.ukpratik.mukhar.data.util.IdGenerator
 import io.github.ukpratik.mukhar.data.work.SentenceCheckRequest
 import io.github.ukpratik.mukhar.data.work.SentenceCheckResult
 import io.github.ukpratik.mukhar.domain.FixedClock
@@ -37,9 +38,13 @@ class SentenceCheckerTest {
     private val pipeline = ScriptedPipeline()
     private val premium = MutableStateFlow(false)
     private var n = 0
-    private val checker = SentenceChecker(pipeline, stores.settings, object : Entitlements {
+    private val entitlements = object : Entitlements {
         override val isPremium = premium
-    }, clock) { "00000000-0000-4000-8000-%012d".format(++n) }
+    }
+    private val ids = IdGenerator { "00000000-0000-4000-8000-%012d".format(++n) }
+
+    // The quota cases cover Mukhar Cloud's rules (kept, off in R1), so the server quota is switched on for them.
+    private val checker = SentenceChecker(pipeline, stores.settings, entitlements, clock, ids, serverQuota = { true })
     private val dir: File = Files.createTempDirectory("chk").toFile()
 
     @After
@@ -109,5 +114,20 @@ class SentenceCheckerTest {
         assertThat(results.map { it.result }).containsExactly("ok", "almost", "no").inOrder()
         assertThat(results.map { it.wordFound }).containsExactly(true, true, false).inOrder()
         assertThat(CannedChecks.answer(Lang.HI, "सटीक", 0).wordFound).isTrue()
+    }
+
+    @Test
+    fun onThePhoneAndOnOwnKeysThereIsNoDailyLimit() = runTest {
+        val local = SentenceChecker(pipeline, stores.settings, entitlements, clock, ids)
+        assertThat(local.quota.first()).isEqualTo(CheckQuota.UNLIMITED)
+        assertThat(CheckQuota.UNLIMITED.exhausted).isFalse()
+        pipeline.checkAnswers += answer("ok", true)
+        repeat(12) {
+            val r = local.check(Lang.EN, "pivotal", "very important", clip(), 4_000)
+            assertThat(r).isInstanceOf(Outcome.Ok::class.java)
+        }
+        // Nothing was counted: the mirror isn't used without Mukhar Cloud.
+        assertThat(stores.settings.checksUsed.first().second).isEqualTo(0)
+        assertThat(local.quota.first().exhausted).isFalse()
     }
 }

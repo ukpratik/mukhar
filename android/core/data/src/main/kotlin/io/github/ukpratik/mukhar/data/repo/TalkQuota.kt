@@ -37,8 +37,19 @@ class TalkQuota @Inject constructor(
     private val entitlements: Entitlements,
     private val clock: Clock,
 ) {
+    /** Whether the server quota applies (only Mukhar Cloud, off in R1). Tests switch it on to cover the cloud rules. */
+    @androidx.annotation.VisibleForTesting
+    internal var serverQuota: suspend () -> Boolean = { settings.analysisMode.first().usesServerQuota }
+
     suspend fun status(): TalkQuotaStatus {
         val now = clock.now()
+        // D-039: no daily limits on the phone or on the user's own keys. Only Mukhar Cloud (off in R1) has a quota.
+        if (!serverQuota()) {
+            return TalkQuotaStatus(
+                exhausted = false, used = 0, limit = Int.MAX_VALUE, premium = entitlements.isPremium.first(),
+                resetsAt = QuotaMirror.resetsAt(QuotaMirror.quotaDay(now)), serverRefused = false,
+            )
+        }
         val day = QuotaMirror.quotaDay(now)
         val from = QuotaMirror.resetsAt(day.minusDays(1)).toEpochMilli()
         val to = QuotaMirror.resetsAt(day).toEpochMilli()

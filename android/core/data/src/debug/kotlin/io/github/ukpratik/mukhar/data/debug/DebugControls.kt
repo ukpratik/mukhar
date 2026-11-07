@@ -31,7 +31,8 @@ enum class FakeMode { NONE, STT_FAIL, LLM_FAIL, BUSY, OFFLINE, SELF_HARM }
 enum class LowStorage(val bytes: Long?) { OFF(null), WARN(38L * 1024 * 1024), BLOCK(6L * 1024 * 1024) }
 
 data class DebugState(
-    val useFake: Boolean = true,
+    /** Force the canned fake pipeline (demos). Off: the real analysis-mode router, as in release (ADR-008). */
+    val useFake: Boolean = false,
     val mode: FakeMode = FakeMode.NONE,
     val delayMs: Long = 1_500,
     val lowStorage: LowStorage = LowStorage.OFF,
@@ -60,7 +61,7 @@ class DebugControls(context: Context) {
     }
 
     private fun read() = DebugState(
-        useFake = prefs.getBoolean(K_FAKE, true),
+        useFake = prefs.getBoolean(K_FAKE, false),
         mode = runCatching { FakeMode.valueOf(prefs.getString(K_MODE, null) ?: "NONE") }.getOrDefault(FakeMode.NONE),
         delayMs = prefs.getLong(K_DELAY, 1_500),
         lowStorage = runCatching { LowStorage.valueOf(prefs.getString(K_STORAGE, null) ?: "OFF") }.getOrDefault(LowStorage.OFF),
@@ -69,7 +70,7 @@ class DebugControls(context: Context) {
     )
 
     private companion object {
-        const val K_FAKE = "use_fake"
+        const val K_FAKE = "force_fake"
         const val K_MODE = "fake_mode"
         const val K_DELAY = "fake_delay_ms"
         const val K_STORAGE = "low_storage"
@@ -78,7 +79,7 @@ class DebugControls(context: Context) {
     }
 }
 
-/** Routes each call to the fake or the real Worker, as the debug menu says. */
+/** Routes each call to the fake or the real analysis-mode router, as the debug menu says. */
 class DebugAnalysisPipeline(
     private val controls: DebugControls,
     private val fake: AnalysisPipeline,

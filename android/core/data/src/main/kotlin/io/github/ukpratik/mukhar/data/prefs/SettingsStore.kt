@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.billing.EntitlementSnapshot
 import io.github.ukpratik.mukhar.domain.billing.Plan
 import io.github.ukpratik.mukhar.domain.model.Lang
@@ -241,6 +242,39 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         it[K.talkQuotaLimit] = q.limit.coerceAtLeast(0)
     }
 
+    // 2A (ADR-008): analysis mode, own-key spending.
+
+    val analysisMode: Flow<AnalysisMode> = store.data.map { AnalysisMode.fromKey(it[K.analysisMode]) }.distinctUntilChanged()
+
+    suspend fun setAnalysisMode(mode: AnalysisMode) = update { it[K.analysisMode] = mode.key }
+
+    suspend fun setSoftCap(on: Boolean, inr: Int = DEFAULT_SOFT_CAP_INR) = update {
+        it[K.softCapOn] = on
+        it[K.softCapInr] = inr.coerceIn(MIN_SOFT_CAP, MAX_SOFT_CAP)
+    }
+
+    val byokUsage: Flow<ByokUsage> = store.data.map { p ->
+        ByokUsage(
+            month = p[K.usageMonth].orEmpty(),
+            talks = p[K.usageTalks] ?: 0,
+            deepgramMs = p[K.usageDeepgramMs] ?: 0,
+            sarvamMs = p[K.usageSarvamMs] ?: 0,
+            inputTokens = p[K.usageIn] ?: 0,
+            outputTokens = p[K.usageOut] ?: 0,
+        )
+    }.distinctUntilChanged()
+
+    /** Adds one talk's use to [month] (`yyyy-MM`), starting the month from zero when it changed. */
+    suspend fun addByokUsage(month: String, talks: Int, deepgramMs: Long, sarvamMs: Long, inputTokens: Long, outputTokens: Long) = update {
+        val same = it[K.usageMonth] == month
+        it[K.usageMonth] = month
+        it[K.usageTalks] = (if (same) it[K.usageTalks] ?: 0 else 0) + talks
+        it[K.usageDeepgramMs] = (if (same) it[K.usageDeepgramMs] ?: 0 else 0) + deepgramMs
+        it[K.usageSarvamMs] = (if (same) it[K.usageSarvamMs] ?: 0 else 0) + sarvamMs
+        it[K.usageIn] = (if (same) it[K.usageIn] ?: 0 else 0) + inputTokens
+        it[K.usageOut] = (if (same) it[K.usageOut] ?: 0 else 0) + outputTokens
+    }
+
     /** Delete all my data (US-063): every key goes, so the next start is a fresh install (onboarding). */
     suspend fun clearAll() = update { it.clear() }
 
@@ -271,6 +305,9 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
             reminderBackoffLevel = this[K.backoff] ?: 0,
             oemGuideShown = this[K.oemGuideShown] ?: false,
             notificationTipDismissed = this[K.notifTipDismissed] ?: false,
+            analysisMode = AnalysisMode.fromKey(this[K.analysisMode]),
+            softCapOn = this[K.softCapOn] ?: false,
+            softCapInr = this[K.softCapInr] ?: DEFAULT_SOFT_CAP_INR,
         )
     }
 
@@ -355,10 +392,21 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val talkQuotaDay = stringPreferencesKey("talk_quota_day")
         val talkQuotaUsed = intPreferencesKey("talk_quota_used")
         val talkQuotaLimit = intPreferencesKey("talk_quota_limit")
+        val analysisMode = stringPreferencesKey("analysis_mode")
+        val softCapOn = booleanPreferencesKey("byok_soft_cap_on")
+        val softCapInr = intPreferencesKey("byok_soft_cap_inr")
+        val usageMonth = stringPreferencesKey("byok_usage_month")
+        val usageTalks = intPreferencesKey("byok_usage_talks")
+        val usageDeepgramMs = longPreferencesKey("byok_usage_deepgram_ms")
+        val usageSarvamMs = longPreferencesKey("byok_usage_sarvam_ms")
+        val usageIn = longPreferencesKey("byok_usage_input_tokens")
+        val usageOut = longPreferencesKey("byok_usage_output_tokens")
         fun talkTrack(lang: Lang) = stringPreferencesKey("talk_track_${lang.code}")
     }
 
     private companion object {
         const val MAX_NAME = 40
+        const val MIN_SOFT_CAP = 10
+        const val MAX_SOFT_CAP = 10_000
     }
 }

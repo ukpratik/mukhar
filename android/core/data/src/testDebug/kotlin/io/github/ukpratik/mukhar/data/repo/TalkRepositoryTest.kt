@@ -520,4 +520,47 @@ class TalkRepositoryTest {
         assertThat(row.status).isEqualTo(TalkStatus.DISCARDED) // nothing is kept from a refused baseline
         assertThat(row.audioPath).isNull()
     }
+
+    // ---- ADR-008 (2A) ----
+
+    @Test
+    fun noEngineKeepsTheTalkSavedWithoutTimedRetriesAndAKeyReRunsIt() = runTest {
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Err(AppError.EngineUnavailable)
+        assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done) // not Retry: nothing to wait for
+        val s = status(id)
+        assertThat(s.status).isEqualTo(TalkStatus.FAILED)
+        assertThat(s.errorCode).isEqualTo("MODEL_NOT_INSTALLED")
+        assertThat(File(s.audioPath!!).exists()).isTrue() // the recording stays
+        // App start doesn't re-enqueue it on a timer.
+        scheduler.enqueued.clear()
+        repo.recoverOnStart()
+        assertThat(scheduler.enqueued).doesNotContain(id)
+        // Adding a key / a model re-runs it through the queue, from the saved audio.
+        pipeline.transcribeAnswers.clear()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        assertThat(repo.retryWaitingForEngine()).isEqualTo(1)
+        assertThat(scheduler.enqueued).contains(id)
+        assertThat(status(id).errorCode).isNull()
+    }
+
+    @Test
+    fun notesValidatedOnThePhoneAreStoredAsTheyAreWithAverages() = runTest {
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Ok(TranscribeResult("local-1", "vosk", "small", 60_000, CannedTalks.words(Lang.EN)))
+        pipeline.feedbackAnswers += { req ->
+            // Metrics-based glow (no quote): would be dropped by the grounding validator.
+            val f = Feedback("s", Glow(Feedback.NO_SPAN, Feedback.NO_SPAN, "", "Your pace stayed comfortable."), null, emptyList(), emptyList(), Safety.NONE)
+            assertThat(req.transcriptProvider).isEqualTo("vosk")
+            assertThat(req.durationMs).isEqualTo(60_000)
+            Outcome.Ok(FeedbackResult("rule-coach-v1", "rule-coach", f, 0, false, false, validatedOnDevice = true))
+        }
+        assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done)
+        val details = repo.observeTalk(id).first()!!
+        assertThat(details.feedback!!.feedback.glow!!.note).isEqualTo("Your pace stayed comfortable.")
+        assertThat(details.feedback!!.model).isEqualTo("rule-coach")
+        assertThat(details.transcriptProvider).isEqualTo("vosk")
+        assertThat(details.feedback!!.fallbackGlow).isFalse()
+    }
 }

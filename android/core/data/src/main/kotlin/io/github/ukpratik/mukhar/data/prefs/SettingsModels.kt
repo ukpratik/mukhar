@@ -1,5 +1,6 @@
 package io.github.ukpratik.mukhar.data.prefs
 
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.model.Lang
 import java.time.Instant
 import java.time.LocalDate
@@ -72,10 +73,30 @@ data class Settings(
     val reminderBackoffLevel: Int = 0,
     val oemGuideShown: Boolean = false,
     val notificationTipDismissed: Boolean = false,
+    /** ADR-008: how talks are analysed. Cloud is "coming soon" in R1 and runs as on-device if ever stored. */
+    val analysisMode: AnalysisMode = AnalysisMode.DEFAULT,
+    /** "Ask before going over ₹[softCapInr]" a month on the user's own keys (off by default). */
+    val softCapOn: Boolean = false,
+    val softCapInr: Int = DEFAULT_SOFT_CAP_INR,
 ) {
     /** Talks need the S04 consent; without it only offline features run (S07 state 5). */
     val talksEnabled: Boolean get() = disclosureConsentAt != null
 }
+
+const val DEFAULT_SOFT_CAP_INR = 100
+
+/**
+ * This month's use of the user's own keys (ADR-008 "Cost transparency"): local estimates only, never sent anywhere.
+ * [month] is `yyyy-MM`; a new month starts from zero.
+ */
+data class ByokUsage(
+    val month: String = "",
+    val talks: Int = 0,
+    val deepgramMs: Long = 0,
+    val sarvamMs: Long = 0,
+    val inputTokens: Long = 0,
+    val outputTokens: Long = 0,
+)
 
 /** Small habit bookkeeping that has no Room column (sessions today for repair, one-time notices). */
 data class HabitMarks(

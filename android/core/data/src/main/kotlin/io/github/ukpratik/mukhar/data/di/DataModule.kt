@@ -53,6 +53,32 @@ import io.github.ukpratik.mukhar.data.work.AndroidTalkNotifier
 import io.github.ukpratik.mukhar.data.work.TalkNotifier
 import io.github.ukpratik.mukhar.data.work.WorkManagerAnalysisScheduler
 import io.github.ukpratik.mukhar.domain.Clock
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import io.github.ukpratik.mukhar.data.byok.AnthropicClient
+import io.github.ukpratik.mukhar.data.byok.ByokFile
+import io.github.ukpratik.mukhar.data.byok.ByokFileSerializer
+import io.github.ukpratik.mukhar.data.byok.ByokHttp
+import io.github.ukpratik.mukhar.data.byok.ByokHttpClient
+import io.github.ukpratik.mukhar.data.byok.ByokKeyRepository
+import io.github.ukpratik.mukhar.data.byok.ByokUsageLog
+import io.github.ukpratik.mukhar.data.byok.DeepgramClient
+import io.github.ukpratik.mukhar.data.byok.KeyVault
+import io.github.ukpratik.mukhar.data.byok.SarvamClient
+import io.github.ukpratik.mukhar.data.byok.TinkKeystoreCipher
+import io.github.ukpratik.mukhar.data.local.LocalAnalysisPipeline
+import io.github.ukpratik.mukhar.data.local.LocalTranscriber
+import io.github.ukpratik.mukhar.data.local.ModelManager
+import io.github.ukpratik.mukhar.data.local.NoOpModelManager
+import io.github.ukpratik.mukhar.data.local.SynonymRepository
+import io.github.ukpratik.mukhar.data.local.SynonymSource
+import io.github.ukpratik.mukhar.data.local.UnavailableLocalTranscriber
+import io.github.ukpratik.mukhar.data.util.MukharLog
+import io.github.ukpratik.mukhar.data.work.ByokAnalysisPipeline
+import io.github.ukpratik.mukhar.data.work.PipelineRouter
+import io.github.ukpratik.mukhar.data.work.RemoteAnalysisPipeline
+import kotlinx.coroutines.flow.first
+import okhttp3.OkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,7 +92,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
@@ -238,9 +263,86 @@ object DataModule {
         trialReminders: TrialReminderScheduler,
         analytics: Analytics,
         reminders: ReminderScheduler,
+        vault: KeyVault,
     ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR)), sync, trialReminders, analytics) {
         reminders.reschedule()
+        vault.wipe() // own API keys, their Tink keyset and the Keystore master key (ADR-008)
     }
+
+    // ---- 2A (ADR-008): analysis modes, on-device pipeline, own keys ----
+
+    /** `files/datastore/byok.pb`: encrypted own keys, excluded from Auto Backup and device transfer. */
+    @Provides
+    @Singleton
+    fun byokStore(@ApplicationContext context: Context): DataStore<ByokFile> =
+        DataStoreFactory.create(ByokFileSerializer) { File(context.filesDir, ByokFileSerializer.FILE) }
+
+    @Provides
+    @Singleton
+    fun keyVault(store: DataStore<ByokFile>, @ApplicationContext context: Context): KeyVault = KeyVault(store, TinkKeystoreCipher(context))
+
+    @Provides
+    @Singleton
+    @ByokHttpClient
+    fun byokHttp(): OkHttpClient = ByokHttp.client(MukharLog::i)
+
+    @Provides
+    @Singleton
+    fun deepgram(@ByokHttpClient http: OkHttpClient, json: Json): DeepgramClient = DeepgramClient(http, json)
+
+    @Provides
+    @Singleton
+    fun sarvam(@ByokHttpClient http: OkHttpClient, json: Json): SarvamClient = SarvamClient(http, json)
+
+    @Provides
+    @Singleton
+    fun anthropic(@ByokHttpClient http: OkHttpClient, json: Json): AnthropicClient = AnthropicClient(http, json)
+
+    @Provides
+    @Singleton
+    fun byokKeys(vault: KeyVault, deepgram: DeepgramClient, sarvam: SarvamClient, anthropic: AnthropicClient): ByokKeyRepository =
+        ByokKeyRepository(vault, deepgram, sarvam, anthropic)
+
+    @Provides
+    @Singleton
+    fun synonyms(@ApplicationContext context: Context, json: Json): SynonymSource = SynonymRepository(context, json)
+
+    /** 2A: no offline engine yet ("model not installed"). Stage 2B binds the Vosk transcriber here. */
+    @Provides
+    @Singleton
+    fun localTranscriber(): LocalTranscriber = UnavailableLocalTranscriber
+
+    /** 2A: models listed, not downloadable yet. Stage 2B binds the Vosk model download manager here. */
+    @Provides
+    @Singleton
+    fun modelManager(): ModelManager = NoOpModelManager()
+
+    @Provides
+    @Singleton
+    fun usageLog(settings: SettingsStore, clock: Clock): ByokUsageLog = ByokUsageLog(settings, clock)
+
+    @Provides
+    @Singleton
+    fun localPipeline(transcriber: LocalTranscriber, synonyms: SynonymSource): LocalAnalysisPipeline =
+        LocalAnalysisPipeline(transcriber, synonyms, IdGenerator.Random)
+
+    @Provides
+    @Singleton
+    fun byokPipeline(
+        vault: KeyVault,
+        deepgram: DeepgramClient,
+        sarvam: SarvamClient,
+        anthropic: AnthropicClient,
+        local: LocalAnalysisPipeline,
+        transcriber: LocalTranscriber,
+        usage: ByokUsageLog,
+    ): ByokAnalysisPipeline = ByokAnalysisPipeline(vault, deepgram, sarvam, anthropic, local, transcriber, usage, IdGenerator.Random)
+
+    /** THE analysis pipeline in release (and in debug unless the debug menu forces the fake): picks per call by mode. */
+    @Provides
+    @Singleton
+    fun router(settings: SettingsStore, local: LocalAnalysisPipeline, byok: ByokAnalysisPipeline, remote: RemoteAnalysisPipeline): PipelineRouter =
+        PipelineRouter({ settings.analysisMode.first() }, local, byok, remote)
 
     /** `cache/share/`: share-card images (S21), served by the app's FileProvider and wiped with the data. */
     const val SHARE_DIR = "share"

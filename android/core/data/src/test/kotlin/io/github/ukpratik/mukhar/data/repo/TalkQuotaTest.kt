@@ -23,7 +23,9 @@ class TalkQuotaTest {
     private val stores = TestStores()
     private val clock = FixedClock(Instant.parse("2026-11-06T13:10:00Z"), ZoneId.of("Asia/Kolkata")) // 18:40 IST
     private val premium = MutableStateFlow(false)
+    // These cover Mukhar Cloud's quota rules (kept, off in R1), so the server quota is switched on here.
     private val quota = TalkQuota(stores.db.progressDao(), stores.settings, object : Entitlements { override val isPremium = premium }, clock)
+        .apply { serverQuota = { true } }
 
     @After
     fun tearDown() = stores.close()
@@ -73,5 +75,17 @@ class TalkQuotaTest {
         val s = quota.status()
         assertThat(s.serverRefused).isTrue()
         assertThat(s.exhausted).isTrue()
+    }
+
+    @Test
+    fun onThePhoneAndOnOwnKeysThereIsNoDailyLimit() = runTest {
+        val local = TalkQuota(stores.db.progressDao(), stores.settings, object : Entitlements { override val isPremium = premium }, clock)
+        stores.settings.setServerTalkQuota(ServerTalkQuota(QuotaMirror.quotaDay(clock.now()), 5, 1))
+        for (mode in io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.entries) {
+            stores.settings.setAnalysisMode(mode)
+            assertThat(local.status().exhausted).isFalse()
+        }
+        // The cloud rules would have refused it.
+        assertThat(quota.status().exhausted).isTrue()
     }
 }

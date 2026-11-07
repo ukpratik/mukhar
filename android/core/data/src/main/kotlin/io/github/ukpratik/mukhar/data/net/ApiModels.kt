@@ -97,7 +97,16 @@ data class FeedbackDto(
     @SerialName("better_versions") val betterVersions: List<BetterVersionDto> = emptyList(),
     val mistakes: List<MistakeDto> = emptyList(),
     val safety: String = "none",
+    /** On the phone only (never from the Worker): the offline coach's word upgrades and the analysis notes. */
+    @SerialName("word_upgrades") val wordUpgrades: List<WordUpgradeDto> = emptyList(),
+    val notes: List<String> = emptyList(),
 )
+
+@Serializable
+data class AlternativeDto(val word: String, val meaning: String, val register: String, val example: String)
+
+@Serializable
+data class WordUpgradeDto(val word: String, val count: Int, @SerialName("first_index") val firstIndex: Int, val alternatives: List<AlternativeDto>)
 
 @Serializable
 data class FallbackFlagsDto(val glow: Boolean = false, val grow: Boolean = false)

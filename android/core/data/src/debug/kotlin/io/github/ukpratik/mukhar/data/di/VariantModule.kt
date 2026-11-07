@@ -21,7 +21,7 @@ import io.github.ukpratik.mukhar.data.debug.SharedPrefsFakeStore
 import io.github.ukpratik.mukhar.data.repo.EntitlementRepository
 import io.github.ukpratik.mukhar.data.repo.Entitlements
 import io.github.ukpratik.mukhar.data.work.AnalysisPipeline
-import io.github.ukpratik.mukhar.data.work.RemoteAnalysisPipeline
+import io.github.ukpratik.mukhar.data.work.PipelineRouter
 import io.github.ukpratik.mukhar.domain.Clock
 import dagger.Module
 import dagger.Provides
@@ -32,7 +32,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * Debug builds: the fake pipeline by default, plus the low-storage and plan switches, fake Play billing with the
+ * Debug builds: the same analysis-mode router as release (the debug menu can force the canned fake pipeline), plus the low-storage and plan switches, fake Play billing with the
  * trial-expiry override, and an in-memory analytics log (build-plan "Debug hooks"). The billing switch applies
  * after a restart.
  */
@@ -45,8 +45,8 @@ object VariantModule {
 
     @Provides
     @Singleton
-    fun pipeline(controls: DebugControls, remote: RemoteAnalysisPipeline): AnalysisPipeline =
-        DebugAnalysisPipeline(controls, FakeAnalysisPipeline(controls), remote)
+    fun pipeline(controls: DebugControls, router: PipelineRouter): AnalysisPipeline =
+        DebugAnalysisPipeline(controls, FakeAnalysisPipeline(controls), router)
 
     @Provides
     @Singleton

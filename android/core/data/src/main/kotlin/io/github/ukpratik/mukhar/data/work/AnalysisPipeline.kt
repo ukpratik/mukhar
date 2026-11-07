@@ -2,6 +2,7 @@ package io.github.ukpratik.mukhar.data.work
 
 import io.github.ukpratik.mukhar.data.net.Outcome
 import io.github.ukpratik.mukhar.domain.feedback.Feedback
+import io.github.ukpratik.mukhar.domain.metrics.MetricAverages
 import io.github.ukpratik.mukhar.domain.metrics.Metrics
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.domain.model.Word
@@ -9,8 +10,9 @@ import java.io.File
 
 /**
  * Speech-to-text and coach's notes for one talk (LLD §4.9: the same code runs in the foreground path and in
- * [AnalysisWorker]). [RemoteAnalysisPipeline] calls the Worker; debug builds default to a canned fake
- * (build-plan "Debug hooks").
+ * [AnalysisWorker]). [PipelineRouter] picks one per call from the user's analysis mode (ADR-008): on-device
+ * ([io.github.ukpratik.mukhar.data.local.LocalAnalysisPipeline]), own keys ([ByokAnalysisPipeline]) or the Worker
+ * ([RemoteAnalysisPipeline], off in R1). Debug builds can force a canned fake (build-plan "Debug hooks").
  */
 interface AnalysisPipeline {
     suspend fun transcribe(request: TranscribeRequest, audio: File): Outcome<TranscribeResult>
@@ -67,6 +69,11 @@ data class FeedbackRequest(
     val lowConf: Set<Int>,
     val metrics: Metrics,
     val speechMs: Long,
+    /** The user's previous 5 talks in this language (the offline coach compares against them). */
+    val averages: MetricAverages? = null,
+    val durationMs: Long = 0,
+    /** Who made the transcript (`talk_transcript.provider`): own-key notes say when it was the offline engine. */
+    val transcriptProvider: String? = null,
 )
 
 data class FeedbackResult(
@@ -76,6 +83,11 @@ data class FeedbackResult(
     val dropped: Int,
     val fallbackGlow: Boolean,
     val fallbackGrow: Boolean,
+    /**
+     * True when the notes were checked on the phone already (the offline coach's notes, or own-key AI notes after
+     * the grounding validator): TalkRepository doesn't validate them again, since metrics-based items have no quote.
+     */
+    val validatedOnDevice: Boolean = false,
 )
 
 data class ReportRequest(

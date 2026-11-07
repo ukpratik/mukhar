@@ -1,5 +1,7 @@
 package io.github.ukpratik.mukhar.data.net
 
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisNote
+import io.github.ukpratik.mukhar.domain.feedback.Alternative
 import io.github.ukpratik.mukhar.domain.feedback.BetterVersion
 import io.github.ukpratik.mukhar.domain.feedback.Feedback
 import io.github.ukpratik.mukhar.domain.feedback.Glow
@@ -9,6 +11,7 @@ import io.github.ukpratik.mukhar.domain.feedback.Mistake
 import io.github.ukpratik.mukhar.domain.feedback.Register
 import io.github.ukpratik.mukhar.domain.feedback.Safety
 import io.github.ukpratik.mukhar.domain.feedback.UpgradedWord
+import io.github.ukpratik.mukhar.domain.feedback.WordUpgrade
 import io.github.ukpratik.mukhar.domain.model.Word
 
 // Wire ⇄ domain mapping. Domain stays free of serialization (LLD §1).
@@ -29,6 +32,10 @@ fun FeedbackDto.toDomain(): Feedback = Feedback(
     },
     mistakes = mistakes.map { Mistake(it.start, it.end, it.quote, it.fix) },
     safety = Safety.fromKey(safety),
+    wordUpgrades = wordUpgrades.map { u ->
+        WordUpgrade(u.word, u.count, u.firstIndex, u.alternatives.map { Alternative(it.word, it.meaning, Register.fromKey(it.register), it.example) })
+    },
+    notes = notes.mapNotNull(AnalysisNote::fromKey),
 )
 
 fun Feedback.toDto(): FeedbackDto = FeedbackDto(
@@ -43,4 +50,8 @@ fun Feedback.toDto(): FeedbackDto = FeedbackDto(
     },
     mistakes = mistakes.map { MistakeDto(it.start, it.end, it.quote, it.fix) },
     safety = safety.key,
+    wordUpgrades = wordUpgrades.map { u ->
+        WordUpgradeDto(u.word, u.count, u.firstIndex, u.alternatives.map { AlternativeDto(it.word, it.meaning, it.register.key, it.example) })
+    },
+    notes = notes.map { it.key },
 )

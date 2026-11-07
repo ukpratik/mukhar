@@ -13,6 +13,7 @@ import io.github.ukpratik.mukhar.data.db.TalkSessionEntity
 import io.github.ukpratik.mukhar.data.db.TranscriptEntity
 import io.github.ukpratik.mukhar.data.db.WordDao
 import io.github.ukpratik.mukhar.data.net.AppError
+import io.github.ukpratik.mukhar.data.net.ENGINE_UNAVAILABLE_CODE
 import io.github.ukpratik.mukhar.data.net.Outcome
 import io.github.ukpratik.mukhar.data.net.errorCode
 import io.github.ukpratik.mukhar.data.net.isTerminal
@@ -246,7 +247,12 @@ class TalkRepository(
         val lowConf = lowConfidence(words)
         val metrics = MetricsCalculator.compute(words, lang, stutterFriendly)
         val prompt = prompts.byId(s.promptId)?.text ?: if (s.kind == TalkKind.BASELINE.key) BASELINE_PROMPT else ""
-        val request = FeedbackRequest(serverId, lang, s.track, prompt, stutterFriendly, words, lowConf, metrics, s.speechMs.toLong())
+        val request = FeedbackRequest(
+            serverId, lang, s.track, prompt, stutterFriendly, words, lowConf, metrics, s.speechMs.toLong(),
+            averages = previousAverages(lang, s.createdAt),
+            durationMs = s.durationMs.toLong(),
+            transcriptProvider = talkDao.transcript(id)?.provider,
+        )
         var outcome = pipeline.feedback(request)
         // Two silent automatic retries for an LLM failure before the user sees "Try again" (S10 state 4 notes).
         var retries = 0
@@ -259,7 +265,13 @@ class TalkRepository(
             is Outcome.Err -> onError(id, outcome.error, Stage.LLM)
             is Outcome.Ok -> {
                 val r = outcome.value
-                val checked = GroundingValidator.validate(r.feedback, words.map { it.w }, lowConf, stutterFriendly)
+                // Notes checked on the phone already (offline coach, own-key AI) aren't validated twice: their
+                // metrics-based glow/grow have no quote to check.
+                val checked = if (r.validatedOnDevice) {
+                    GroundingValidator.Result(r.feedback, 0, fallbackGlow = false, fallbackGrow = false)
+                } else {
+                    GroundingValidator.validate(r.feedback, words.map { it.w }, lowConf, stutterFriendly)
+                }
                 if (checked.dropped > 0) MukharLog.w("grounding: client dropped ${checked.dropped} item(s)")
                 talkDao.upsertFeedback(
                     FeedbackEntity(
@@ -312,6 +324,12 @@ class TalkRepository(
                 val wait = error.resetsAtMs?.let { it - clock.now().toEpochMilli() }?.coerceAtLeast(MIN_RETRY_MS)
                 AnalysisRun.RetryAfter(wait ?: BUSY_RETRY_MS)
             }
+            error is AppError.EngineUnavailable -> {
+                // No offline model and no usable speech-to-text key: saved, never retried on a timer. Adding a key
+                // or a model re-runs it ([retryWaitingForEngine]); "Try again" works too.
+                update(id) { it.copy(status = TalkStatus.FAILED, errorCode = error.errorCode, leaseUntil = null) }
+                AnalysisRun.Done
+            }
             error.isTerminal -> {
                 update(id) { it.copy(status = TalkStatus.FAILED, errorCode = error.errorCode, leaseUntil = null) }
                 AnalysisRun.Done
@@ -358,6 +376,19 @@ class TalkRepository(
 
     fun observeRecovered(): Flow<TalkSessionEntity?> = talkDao.observeRecovered()
 
+    /**
+     * ADR-008: talks saved while nothing could transcribe them (no offline model, no key) are analysed again from
+     * their saved audio, through the queue, once the user adds a key, installs a model or changes the mode.
+     */
+    suspend fun retryWaitingForEngine(): Int {
+        val waiting = talkDao.sessionsWithStatus(listOf(TalkStatus.FAILED)).filter { it.errorCode == ENGINE_UNAVAILABLE_CODE && it.audioPath != null }
+        for (s in waiting) {
+            talkDao.updateSession(s.copy(errorCode = null, updatedAt = clock.now().toEpochMilli()))
+            startAnalysis(s.id)
+        }
+        return waiting.size
+    }
+
     // ---- Reading ----
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -372,7 +403,7 @@ class TalkRepository(
                 talkDao.observeFeedback(id),
                 habits.observeCredit(stopAt, ZoneId.of(session.zoneId)),
             ) { t, m, f, credit ->
-                TalkDetails(session, t?.let(::parseWords), m, f?.let(::parseFeedback), credit)
+                TalkDetails(session, t?.let(::parseWords), m, f?.let(::parseFeedback), credit, transcriptProvider = t?.provider)
             }
         }
     }
@@ -392,6 +423,7 @@ class TalkRepository(
             longPausesPerMin = avg(rows.mapNotNull { it.longPausesPerMin }),
             repetitions = avg(rows.mapNotNull { it.repetitions?.toDouble() }),
             mattr = avg(rows.mapNotNull { it.mattr }),
+            spanMs = rows.map { it.spanMs.toDouble() }.average(),
         )
     }
 
@@ -471,6 +503,7 @@ class TalkRepository(
         fallbackGrow = f.fallbackGrow,
         rating = f.rating,
         reported = f.reported,
+        model = f.model,
     )
 
     companion object {
@@ -483,7 +516,9 @@ class TalkRepository(
             TalkStatus.RECORDED, TalkStatus.QUEUED, TalkStatus.UPLOADING, TalkStatus.TRANSCRIBED, TalkStatus.FEEDBACK_READY,
             TalkStatus.FEEDBACK_FAILED, TalkStatus.FAILED,
         )
-        private val NO_AUTO_RETRY = setOf("TOO_LITTLE_SPEECH", "AUDIO_TOO_LONG", TalkCodes.AUDIO_MISSING, "LLM_FAILED", "BASELINE_USED")
+        private val NO_AUTO_RETRY = setOf(
+            "TOO_LITTLE_SPEECH", "AUDIO_TOO_LONG", TalkCodes.AUDIO_MISSING, "LLM_FAILED", "BASELINE_USED", ENGINE_UNAVAILABLE_CODE,
+        )
 
         /** The S05 prompt (not in `prompts.json`; the baseline has one fixed prompt). */
         const val BASELINE_PROMPT = "Tell us who you are, and one thing you'd like to get better at when you speak."

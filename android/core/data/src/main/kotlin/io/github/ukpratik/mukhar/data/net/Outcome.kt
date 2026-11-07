@@ -34,6 +34,13 @@ sealed interface AppError {
     data object BaselineUsed : AppError
     data object UpdateRequired : AppError
     data object Storage : AppError
+
+    /**
+     * ADR-008: nothing can turn this talk into text right now: the offline speech model for its language isn't
+     * installed and no usable speech-to-text key is set. The recording stays saved; it's analysed again when a model
+     * or a key is added (never retried on a timer).
+     */
+    data object EngineUnavailable : AppError
     data class Unknown(val cause: String) : AppError
 }
 
@@ -60,5 +67,9 @@ val AppError.errorCode: String
         AppError.UpdateRequired -> "UPDATE_REQUIRED"
         AppError.Storage -> "STORAGE"
         AppError.BaselineUsed -> "BASELINE_USED"
+        AppError.EngineUnavailable -> ENGINE_UNAVAILABLE_CODE
         is AppError.Unknown -> "UNKNOWN"
     }
+
+/** `talk_session.error_code` for [AppError.EngineUnavailable]: no offline model and no speech-to-text key. */
+const val ENGINE_UNAVAILABLE_CODE = "MODEL_NOT_INSTALLED"
