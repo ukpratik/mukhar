@@ -85,7 +85,7 @@ class IdeasSheetTest {
     @Test
     fun withAKeyWriteShowsTheCostAndSendsAnEvent() {
         show(state(AiIdeasUi.Ready))
-        compose.onNodeWithText("≈ ₹0.10 on your key").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("≈ ₹0.05 on your key").performScrollTo().assertIsDisplayed()
         compose.onNodeWithTag(TAG_IDEAS_WRITE).performScrollTo().performClick()
         assertThat(events).containsExactly(IdeasEvent.Write)
     }
