@@ -1,5 +1,7 @@
 package io.github.ukpratik.mukhar.domain.feedback
 
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisNote
+
 /** The coach's notes for one talk (LLD §4.3 output schema). Token indices refer to the indexed transcript. */
 data class Feedback(
     val summary: String,
@@ -8,7 +10,26 @@ data class Feedback(
     val betterVersions: List<BetterVersion>,
     val mistakes: List<Mistake>,
     val safety: Safety,
-)
+    /** Offline coach (RuleCoach): overused words with curated "Try instead" alternatives. Empty for AI notes. */
+    val wordUpgrades: List<WordUpgrade> = emptyList(),
+    /** How this talk was analysed, when it's worth saying (fallbacks, offline transcript). */
+    val notes: List<AnalysisNote> = emptyList(),
+) {
+    companion object {
+        /** A glow or grow that isn't tied to a quote (metrics-based, from the offline coach or a fallback). */
+        const val NO_SPAN = -1
+    }
+}
+
+/** True when the item quotes a token range of the transcript. */
+val Glow.hasSpan: Boolean get() = start >= 0 && quote.isNotBlank()
+val Grow.hasSpan: Boolean get() = start >= 0 && quote.isNotBlank()
+
+/** An overused word ([count] times, first at token [firstIndex]) and up to 3 curated alternatives. */
+data class WordUpgrade(val word: String, val count: Int, val firstIndex: Int, val alternatives: List<Alternative>)
+
+/** One curated alternative from `synonyms_{en,hi}.json`: register and an example sentence. */
+data class Alternative(val word: String, val meaning: String, val register: Register, val example: String)
 
 data class Glow(val start: Int, val end: Int, val quote: String, val note: String)
 

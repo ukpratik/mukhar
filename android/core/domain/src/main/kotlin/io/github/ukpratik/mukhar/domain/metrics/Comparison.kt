@@ -22,6 +22,8 @@ data class MetricAverages(
     val longPausesPerMin: Double?,
     val repetitions: Double?,
     val mattr: Double?,
+    /** Average speaking span (ms), for the offline coach's "longer talk" glow. Null when not known. */
+    val spanMs: Double? = null,
 )
 
 /** "Compared with your previous 5-talk average", within the same language only (US-013). */
