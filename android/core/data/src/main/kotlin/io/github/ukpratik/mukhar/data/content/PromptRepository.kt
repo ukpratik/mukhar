@@ -37,12 +37,15 @@ class PromptRepository(
     private val habitDao: HabitDao,
     private val clock: Clock,
     private val json: Json,
+    /** Prompts marked as done (US-079). */
+    private val done: suspend () -> Set<String> = { emptySet() },
 ) {
-    constructor(context: Context, habitDao: HabitDao, clock: Clock, json: Json) : this(
+    constructor(context: Context, habitDao: HabitDao, clock: Clock, json: Json, done: suspend () -> Set<String>) : this(
         load = { withContext(Dispatchers.IO) { context.assets.open(ASSET).bufferedReader().use { it.readText() } } },
         habitDao = habitDao,
         clock = clock,
         json = json,
+        done = done,
     )
 
     private val mutex = Mutex()
@@ -54,14 +57,24 @@ class PromptRepository(
 
     suspend fun byId(id: String): Prompt? = all().firstOrNull { it.id == id }
 
-    /** A prompt for [lang] and [track] that wasn't among the last 30 shown, recorded as shown. */
+    /** A prompt for [lang] and [track] that wasn't among the last 30 shown and isn't done, recorded as shown. */
     suspend fun next(lang: Lang, track: Track, currentId: String?): Prompt? {
-        val pool = PromptPicker.pool(all(), lang, track).ifEmpty { all().filter { it.lang == lang } }
+        val pool = pool(lang, track)
         val recent = habitDao.recentPromptIds(PromptPicker.NO_REPEAT)
-        val prompt = PromptPicker.next(pool, recent, currentId) ?: return null
+        val prompt = PromptPicker.next(pool, recent, currentId, done = done()) ?: return null
         habitDao.insertPromptHistory(PromptHistoryEntity(promptId = prompt.id, shownAt = clock.now().toEpochMilli()))
         return prompt
     }
+
+    /** Prompts left (not done) for [lang] and [track], and the pool size: "12 of 43 left". */
+    suspend fun remaining(lang: Lang, track: Track): Pair<Int, Int> {
+        val pool = pool(lang, track)
+        val doneIds = done()
+        return pool.count { it.id !in doneIds } to pool.size
+    }
+
+    private suspend fun pool(lang: Lang, track: Track): List<Prompt> =
+        PromptPicker.pool(all(), lang, track).ifEmpty { all().filter { it.lang == lang } }
 
     companion object {
         const val ASSET = "prompts.json"

@@ -59,6 +59,13 @@ interface TalkDao {
     @Query("UPDATE feedback SET reported = 1 WHERE session_id = :id")
     suspend fun markReported(id: String)
 
+    /** Talks whose recording is still on the phone (US-080), newest first. */
+    @Query("SELECT * FROM talk_session WHERE audio_path IS NOT NULL ORDER BY created_at DESC")
+    fun observeWithAudio(): Flow<List<TalkSessionEntity>>
+
+    @Query("SELECT * FROM talk_session WHERE audio_path IS NOT NULL ORDER BY created_at DESC")
+    suspend fun withAudio(): List<TalkSessionEntity>
+
     @Query("SELECT * FROM talk_session WHERE status IN (:statuses) ORDER BY created_at")
     suspend fun sessionsWithStatus(statuses: List<String>): List<TalkSessionEntity>
 
@@ -86,7 +93,8 @@ interface TalkDao {
 
     @Query(
         "SELECT m.* FROM metrics m JOIN talk_session s ON s.id = m.session_id " +
-            "WHERE s.lang = :lang AND s.kind = 'talk' AND s.created_at < :before ORDER BY s.created_at DESC LIMIT :limit",
+            "WHERE s.lang = :lang AND s.kind = 'talk' AND s.created_at < :before AND m.algo_version < 100 " +
+            "ORDER BY s.created_at DESC LIMIT :limit",
     )
     suspend fun recentMetrics(lang: String, before: Long, limit: Int = 5): List<MetricsEntity>
 }

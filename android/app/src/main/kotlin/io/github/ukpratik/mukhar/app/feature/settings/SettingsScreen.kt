@@ -43,6 +43,8 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.outlined.LibraryMusic
+import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -137,6 +139,8 @@ data class SettingsActions(
     val onDownloadModel: (Lang) -> Unit = {},
     val onSoftCap: (Boolean) -> Unit = {},
     val onKeys: () -> Unit = {},
+    val onRecordings: () -> Unit = {},
+    val onResetDonePrompts: () -> Unit = {},
 )
 
 @Composable
@@ -146,6 +150,7 @@ fun SettingsScreen(
     onDisclosure: () -> Unit,
     onStartFresh: () -> Unit,
     onKeys: () -> Unit = {},
+    onRecordings: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -177,11 +182,13 @@ fun SettingsScreen(
             onDownloadModel = viewModel::onDownloadModel,
             onSoftCap = viewModel::onSoftCap,
             onKeys = onKeys,
+            onRecordings = onRecordings,
+            onResetDonePrompts = viewModel::onResetDonePrompts,
         ),
     )
 }
 
-private enum class SettingsDialog { NONE, LANGS, TRACKS, TIME, PHRASE }
+private enum class SettingsDialog { NONE, LANGS, TRACKS, TIME, PHRASE, RESET_DONE }
 
 /** S19: four groups (Practice, Reminders, Coaching, Privacy) plus Plan; Delete all my data at the bottom, neutral. */
 @Composable
@@ -203,6 +210,13 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 DailyWordsRow(s.practiceLangs, s.dailyNewWords, actions.onDailyWords)
                 Divider()
                 SegRow(Icons.Outlined.EventAvailable, stringResource(R.string.settings_weekly_goal), stringResource(R.string.settings_weekly_goal_sub), listOf(3, 5, 7), state.weeklyGoal, { pluralStringResource(R.plurals.settings_days, it, it) }, actions.onWeeklyGoal)
+                if (state.donePrompts > 0) {
+                    Divider()
+                    LinkRow(
+                        Icons.Outlined.TaskAlt, stringResource(R.string.settings_done_prompts),
+                        pluralStringResource(R.plurals.settings_done_prompts_sub, state.donePrompts, state.donePrompts), tag = TAG_DONE_PROMPTS,
+                    ) { dialog = SettingsDialog.RESET_DONE }
+                }
             }
             Group(R.string.settings_group_analysis) { AnalysisGroupContent(state.analysis, actions) }
             CloudSoonCard(Modifier.padding(top = 10.dp))
@@ -229,6 +243,12 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
                 }
             }
             Group(R.string.settings_group_privacy) {
+                LinkRow(
+                    Icons.Outlined.LibraryMusic, stringResource(R.string.settings_recordings),
+                    stringResource(R.string.settings_recordings_sub, sizeLabel(state.recordingsBytes), capLabel(state.recordingsCapMb)),
+                    tag = TAG_RECORDINGS, onClick = actions.onRecordings,
+                )
+                Divider()
                 SwitchRow(Icons.Outlined.GraphicEq, stringResource(R.string.settings_keep_baseline), stringResource(R.string.settings_keep_baseline_sub), s.keepBaselineAudio, actions.onKeepBaselineAudio, TAG_SWITCH_BASELINE)
                 Divider()
                 SwitchRow(Icons.Outlined.Insights, stringResource(R.string.settings_analytics), stringResource(R.string.settings_analytics_sub), s.analyticsConsent, actions.onAnalytics, TAG_SWITCH_ANALYTICS)
@@ -284,6 +304,15 @@ fun SettingsContent(state: SettingsUiState, actions: SettingsActions, modifier: 
         SettingsDialog.PHRASE -> s.reminder?.let { r ->
             PhraseDialog(r.customPhrase.orEmpty(), onDone = { actions.onReminderPhrase(it); dialog = SettingsDialog.NONE }, onDismiss = { dialog = SettingsDialog.NONE })
         }
+        SettingsDialog.RESET_DONE -> AlertDialog(
+            onDismissRequest = { dialog = SettingsDialog.NONE },
+            title = { Text(stringResource(R.string.settings_done_prompts_reset_title)) },
+            text = { Text(pluralStringResource(R.plurals.settings_done_prompts_reset_body, state.donePrompts, state.donePrompts)) },
+            confirmButton = {
+                TextButton(onClick = { actions.onResetDonePrompts(); dialog = SettingsDialog.NONE }) { Text(stringResource(R.string.settings_done_prompts_reset)) }
+            },
+            dismissButton = { TextButton(onClick = { dialog = SettingsDialog.NONE }) { Text(stringResource(R.string.recordings_cancel)) } },
+        )
         SettingsDialog.NONE -> Unit
     }
     if (state.delete == DeleteStage.CONFIRM || state.delete == DeleteStage.DELETING) DeleteSheet(state, actions)
@@ -632,6 +661,8 @@ const val TAG_DELETE_KEEP = "delete_keep"
 const val TAG_DELETING = "delete_deleting"
 const val TAG_START_FRESH = "deleted_start_fresh"
 const val TAG_PICK_MAX = "settings_pick_max"
+const val TAG_RECORDINGS = "settings_recordings"
+const val TAG_DONE_PROMPTS = "settings_done_prompts"
 
 /** Above this the segmented controls become radio lists. */
 private const val SEG_MAX_FONT_SCALE = 1.5f

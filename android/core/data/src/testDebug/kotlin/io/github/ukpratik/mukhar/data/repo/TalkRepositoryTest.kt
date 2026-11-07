@@ -563,4 +563,112 @@ class TalkRepositoryTest {
         assertThat(details.transcriptProvider).isEqualTo("vosk")
         assertThat(details.feedback!!.fallbackGlow).isFalse()
     }
+
+    // ---- D-048: voice-only report when no transcript can be written ----
+
+    /** 40 s of syllable-like bursts (4 a second) with 2 s gaps every 10 s, as a decoder would hand them over. */
+    private val voiceDecoder = io.github.ukpratik.mukhar.data.audio.PcmDecoder { _, onPcm ->
+        val sr = 16_000
+        val random = kotlin.random.Random(3)
+        repeat(4) {
+            val n = 10 * sr
+            val speech = ShortArray(n) { i ->
+                val env = kotlin.math.sin(Math.PI * ((i * 4.0 / sr) % 1.0))
+                (env * env * kotlin.math.sin(2 * Math.PI * 180 * i / sr) * 9_000 + random.nextInt(-30, 31)).toInt().toShort()
+            }
+            onPcm(speech, n)
+            val gap = ShortArray(2 * sr) { random.nextInt(-30, 31).toShort() }
+            onPcm(gap, gap.size)
+        }
+        true
+    }
+
+    private fun repoWith(decoder: io.github.ukpratik.mukhar.data.audio.PcmDecoder): TalkRepository {
+        val prompts = PromptRepository({ File("src/main/assets/prompts.json").readText() }, db.habitDao(), clock, json)
+        return TalkRepository(
+            db.talkDao(), db.wordDao(), HabitRepository(db.habitDao(), tempSettingsStore(), clock), settings, pipeline, prompts, scheduler,
+            RecordingFiles(dir), { freeBytes }, clock, { "talk-${++nextId}" }, json, TestScope(),
+            testWordRepository(db, clock), decoder,
+        )
+    }
+
+    @Test
+    fun noTranscriptStillGivesAVoiceOnlyReportAndKeepsTheAudio() = runTest {
+        repo = repoWith(voiceDecoder)
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Err(AppError.EngineUnavailable)
+        assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done)
+        val s = status(id)
+        assertThat(s.status).isEqualTo(TalkStatus.FEEDBACK_READY)
+        assertThat(s.errorCode).isEqualTo("AUDIO_ONLY:MODEL_NOT_INSTALLED")
+        assertThat(TalkCodes.audioOnlyReason(s.errorCode)).isEqualTo("MODEL_NOT_INSTALLED")
+        assertThat(File(s.audioPath!!).exists()).isTrue()
+        val details = repo.observeTalk(id).first()!!
+        assertThat(details.words).isNull()
+        assertThat(details.metrics!!.algoVersion).isEqualTo(100)
+        assertThat(details.metrics!!.longPauses).isEqualTo(3)
+        assertThat(details.metrics!!.wpm).isGreaterThan(0.0)
+        assertThat(details.feedback!!.model).isEqualTo("acoustic-coach")
+        assertThat(details.feedback!!.feedback.notes.map { it.key }).contains("audio_only")
+        // Estimates don't feed "your average" for later talks.
+        assertThat(repo.previousAverages(Lang.EN, clock.now().toEpochMilli() + 1)).isNull()
+    }
+
+    @Test
+    fun writeTranscriptLaterReplacesTheVoiceOnlyReport() = runTest {
+        repo = repoWith(voiceDecoder)
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Err(AppError.Offline)
+        repo.analyze(id)
+        assertThat(TalkCodes.isAudioOnly(status(id).errorCode)).isTrue()
+
+        pipeline.transcribeAnswers.clear()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        assertThat(repo.writeTranscript(id)).isTrue()
+        assertThat(scheduler.enqueued).contains(id)
+        assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done)
+        val s = status(id)
+        assertThat(s.status).isEqualTo(TalkStatus.FEEDBACK_READY)
+        assertThat(s.errorCode).isNull()
+        assertThat(s.audioPath).isNull() // deleted after the full analysis, as before (not kept)
+        val details = repo.observeTalk(id).first()!!
+        assertThat(details.words).isNotEmpty()
+        assertThat(details.metrics!!.algoVersion).isEqualTo(1)
+        assertThat(details.feedback!!.model).isEqualTo("haiku")
+    }
+
+    @Test
+    fun addingAKeyUpgradesVoiceOnlyReports() = runTest {
+        repo = repoWith(voiceDecoder)
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Err(AppError.EngineUnavailable)
+        repo.analyze(id)
+        scheduler.enqueued.clear()
+        assertThat(repo.retryWaitingForEngine()).isEqualTo(1)
+        assertThat(scheduler.enqueued).contains(id)
+        assertThat(status(id).status).isEqualTo(TalkStatus.RECORDED)
+    }
+
+    @Test
+    fun silentAudioIsTooLittleSpeechNotAnEmptyReport() = runTest {
+        repo = repoWith { _, onPcm -> onPcm(ShortArray(16_000 * 30), 16_000 * 30); true }
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Err(AppError.EngineUnavailable)
+        repo.analyze(id)
+        assertThat(status(id).status).isEqualTo(TalkStatus.FAILED)
+        assertThat(status(id).errorCode).isEqualTo("TOO_LITTLE_SPEECH")
+    }
+
+    @Test
+    fun baselinesAreNeverVoiceOnly() = runTest {
+        repo = repoWith(voiceDecoder)
+        val (id, file) = repo.startSession(TalkSpec(TalkKind.BASELINE, Lang.EN, Track.EVERYDAY, "baseline"))
+        file.writeBytes(ByteArray(128))
+        repo.finishRecording(id, RecordingResult(file, 60_000, 45_000, 25.0, false))
+        pipeline.transcribeAnswers += Outcome.Err(AppError.EngineUnavailable)
+        repo.analyze(id)
+        assertThat(status(id).status).isEqualTo(TalkStatus.FAILED)
+        assertThat(status(id).errorCode).isEqualTo("MODEL_NOT_INSTALLED")
+    }
 }

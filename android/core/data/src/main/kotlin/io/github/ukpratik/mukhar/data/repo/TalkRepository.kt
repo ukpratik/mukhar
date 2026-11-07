@@ -6,6 +6,7 @@ import io.github.ukpratik.mukhar.data.audio.RecordingResult
 import io.github.ukpratik.mukhar.data.audio.StorageInfo
 import io.github.ukpratik.mukhar.data.content.PromptRepository
 import io.github.ukpratik.mukhar.data.db.CardEntity
+import io.github.ukpratik.mukhar.data.audio.PcmDecoder
 import io.github.ukpratik.mukhar.data.db.FeedbackEntity
 import io.github.ukpratik.mukhar.data.db.MetricsEntity
 import io.github.ukpratik.mukhar.data.db.TalkDao
@@ -37,6 +38,8 @@ import io.github.ukpratik.mukhar.domain.metrics.MetricAverages
 import io.github.ukpratik.mukhar.domain.metrics.MetricsCalculator
 import io.github.ukpratik.mukhar.domain.metrics.WpmBand
 import io.github.ukpratik.mukhar.domain.model.Lang
+import io.github.ukpratik.mukhar.domain.audio.AcousticAnalyzer
+import io.github.ukpratik.mukhar.domain.coach.AcousticCoach
 import io.github.ukpratik.mukhar.domain.model.Word
 import io.github.ukpratik.mukhar.domain.talk.StorageLevel
 import io.github.ukpratik.mukhar.domain.talk.StoragePolicy
@@ -76,6 +79,10 @@ class TalkRepository(
     private val json: Json,
     private val appScope: CoroutineScope,
     private val wordRepo: WordRepository,
+    /** D-048: decodes a saved recording for the voice-only report when no transcript can be written. */
+    private val decoder: PcmDecoder = PcmDecoder.None,
+    /** US-080: keeps recordings under the size limit after each talk and at start. */
+    private val recordings: RecordingsRepository? = null,
 ) {
     // ---- Recording ----
 
@@ -120,6 +127,7 @@ class TalkRepository(
             return StopOutcome.TooShort(result.speechMs)
         }
         talkDao.updateSession(base.copy(status = TalkStatus.RECORDED))
+        recordings?.let { r -> appScope.launch { r.enforceCap() } }
         val credit = habits.creditTalk(now, clock.zone(), result.speechMs)
         if (replaces != null) discard(replaces)
         return StopOutcome.Saved(id, credit)
@@ -218,7 +226,7 @@ class TalkRepository(
             val parentServerId = before.parentId?.let { talkDao.session(it)?.serverSessionId }
             val request = TranscribeRequest(id, before.kind, parentServerId, lang, before.durationMs.toLong(), wasQueued)
             when (val r = pipeline.transcribe(request, audio)) {
-                is Outcome.Err -> return onError(id, r.error, Stage.STT)
+                is Outcome.Err -> return voiceOnly(before, audio, lang, r.error, prefs.stutterFriendly) ?: onError(id, r.error, Stage.STT)
                 is Outcome.Ok -> {
                     val t = r.value
                     val at = clock.now().toEpochMilli()
@@ -306,6 +314,59 @@ class TalkRepository(
         }
     }
 
+    /**
+     * D-048: when no transcript can be written (no engine, no key, key refused, offline, vendor down), the talk still
+     * gets a report: pace (estimated), pauses and the coach's notes from the voice alone. The recording is kept so
+     * "Write the transcript" can finish the full analysis later ([writeTranscript]). Returns null when this doesn't
+     * apply (baselines, too-short or too-long audio, an undecodable file): the normal error policy runs instead.
+     */
+    private suspend fun voiceOnly(s: TalkSessionEntity, audio: File, lang: Lang, error: AppError, stutterFriendly: Boolean): AnalysisRun? {
+        if (s.kind == TalkKind.BASELINE.key) return null
+        if (error is AppError.TooLittleSpeech || error is AppError.Quota || error.errorCode == "AUDIO_TOO_LONG") return null
+        val analyzer = AcousticAnalyzer()
+        if (!decoder.decode(audio) { pcm, n -> analyzer.feed(pcm, n) }) return null
+        val m = analyzer.result(lang)
+        if (m.speechMs < MIN_VOICE_SPEECH_MS || m.syllables == 0) {
+            update(s.id) { it.copy(status = TalkStatus.FAILED, errorCode = "TOO_LITTLE_SPEECH", leaseUntil = null) }
+            return AnalysisRun.Done
+        }
+        talkDao.upsertMetrics(
+            MetricsEntity(
+                sessionId = s.id, wpm = m.estWpm, wpmBand = m.wpmBand.key, lexicalTokens = 0, fillerCount = 0,
+                fillersPerMin = 0.0,
+                longPauses = if (stutterFriendly) null else m.longPauses,
+                longPausesPerMin = if (stutterFriendly) null else m.longPausesPerMin,
+                repetitions = null, mattr = null, spanMs = m.spanMs.toInt(), algoVersion = AcousticAnalyzer.ALGO_VERSION,
+            ),
+        )
+        // Stutter-friendly mode doesn't score pauses, so the coach doesn't talk about them either.
+        val coachInput = if (stutterFriendly) m.copy(longPauses = 0, longPausesPerMin = 0.0) else m
+        val feedback = AcousticCoach.coach(coachInput, lang, previousAverages(lang, s.createdAt), emptyList())
+        talkDao.upsertFeedback(
+            FeedbackEntity(
+                sessionId = s.id,
+                json = json.encodeToString(FeedbackDto.serializer(), feedback.toDto()),
+                promptVersion = AcousticCoach.VERSION, model = AcousticCoach.MODEL, dropped = 0,
+                fallbackGlow = false, fallbackGrow = false, safety = feedback.safety.key, rating = null, reported = false,
+                createdAt = clock.now().toEpochMilli(),
+            ),
+        )
+        MukharLog.i("analysis: voice-only report (${error.errorCode})")
+        update(s.id) { it.copy(status = TalkStatus.FEEDBACK_READY, errorCode = TalkCodes.AUDIO_ONLY_PREFIX + error.errorCode, leaseUntil = null) }
+        return AnalysisRun.Done
+    }
+
+    /** "Write the transcript" on a voice-only report: runs the full analysis again from the kept recording. */
+    suspend fun writeTranscript(id: String): Boolean {
+        val s = talkDao.session(id) ?: return false
+        if (!TalkCodes.isAudioOnly(s.errorCode)) return false
+        val audio = s.audioPath?.let(::File)
+        if (audio == null || !audio.exists()) return false
+        talkDao.updateSession(s.copy(status = TalkStatus.RECORDED, errorCode = null, updatedAt = clock.now().toEpochMilli()))
+        startAnalysis(id)
+        return true
+    }
+
     /** Error policy (LLD §6, HLD §8.1). Nothing here deletes the recording. */
     private suspend fun onError(id: String, error: AppError, stage: Stage): AnalysisRun {
         MukharLog.i("analysis: ${stage.name} ${error.errorCode}")
@@ -372,6 +433,7 @@ class TalkRepository(
             scheduler.enqueue(s.id)
         }
         releaseUnansweredBaselineAudio()
+        recordings?.enforceCap()
     }
 
     fun observeRecovered(): Flow<TalkSessionEntity?> = talkDao.observeRecovered()
@@ -386,7 +448,13 @@ class TalkRepository(
             talkDao.updateSession(s.copy(errorCode = null, updatedAt = clock.now().toEpochMilli()))
             startAnalysis(s.id)
         }
-        return waiting.size
+        // Voice-only reports (D-048) get their transcript too, newest first, at most a week old.
+        val weekAgo = clock.now().toEpochMilli() - VOICE_ONLY_RETRY_WINDOW_MS
+        val voiceOnly = talkDao.sessionsWithStatus(listOf(TalkStatus.FEEDBACK_READY))
+            .filter { TalkCodes.isAudioOnly(it.errorCode) && it.audioPath != null && it.createdAt >= weekAgo }
+        var upgraded = 0
+        for (s in voiceOnly) if (writeTranscript(s.id)) upgraded++
+        return waiting.size + upgraded
     }
 
     // ---- Reading ----
@@ -512,6 +580,10 @@ class TalkRepository(
         const val MIN_RETRY_MS = 60_000L
         const val SILENT_LLM_RETRIES = 2
         const val SILENT_RETRY_DELAY_MS = 1_000L
+
+        /** Under this much detected speech a voice-only report isn't worth showing (D-048). */
+        const val MIN_VOICE_SPEECH_MS = 5_000L
+        const val VOICE_ONLY_RETRY_WINDOW_MS = 7L * 24 * 60 * 60_000L
         private val ALL_STATUSES = listOf(
             TalkStatus.RECORDED, TalkStatus.QUEUED, TalkStatus.UPLOADING, TalkStatus.TRANSCRIBED, TalkStatus.FEEDBACK_READY,
             TalkStatus.FEEDBACK_FAILED, TalkStatus.FAILED,

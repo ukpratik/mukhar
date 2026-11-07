@@ -44,4 +44,26 @@ class PromptPickerTest {
         assertThat(PromptPicker.pool(all, Lang.EN, Track.EVERYDAY).map { it.id }).containsExactly("p1")
         assertThat(PromptPicker.pool(all, Lang.HI, Track.EVERYDAY).map { it.id }).containsExactly("p2")
     }
+
+    @Test
+    fun donePromptsNeverComeBackWhileOthersRemain() {
+        val pool = (1..10).map { prompt(it) }
+        val done = setOf("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8")
+        val random = Random(1)
+        val recent = ArrayDeque<String>()
+        var current: String? = null
+        repeat(100) {
+            val next = PromptPicker.next(pool, recent.toList(), current, random, done)!!
+            assertThat(next.id).isIn(listOf("p9", "p10"))
+            recent.addFirst(next.id)
+            current = next.id
+        }
+    }
+
+    @Test
+    fun whenEveryPromptIsDoneTheyComeBackLeastRecentFirst() {
+        val pool = (1..3).map { prompt(it) }
+        val next = PromptPicker.next(pool, listOf("p2", "p3", "p1"), "p2", Random(1), done = setOf("p1", "p2", "p3"))
+        assertThat(next!!.id).isEqualTo("p1")
+    }
 }

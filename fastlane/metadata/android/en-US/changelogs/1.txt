@@ -1,6 +1,9 @@
 First release.
 
 - Talk practice with transcript, pace, fillers, pauses and coaching (using your own Deepgram/Sarvam and Anthropic keys)
+- No key yet? Every talk still gets pace, pauses and coach's notes measured from your voice
+- Mark a prompt as done and it won't come back
+- Settings → Recordings: play, delete, and a space limit (500 MB default)
 - Word Gym and spaced revision in English and Hindi
 - Streaks, reminders, progress and Sound Lab
 - No ads, no trackers, no account

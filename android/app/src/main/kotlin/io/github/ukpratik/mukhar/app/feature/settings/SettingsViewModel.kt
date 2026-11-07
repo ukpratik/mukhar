@@ -17,6 +17,7 @@ import io.github.ukpratik.mukhar.data.prefs.SettingsStore
 import io.github.ukpratik.mukhar.data.repo.DataWiper
 import io.github.ukpratik.mukhar.data.repo.EntitlementRepository
 import io.github.ukpratik.mukhar.data.repo.HabitRepository
+import io.github.ukpratik.mukhar.data.repo.RecordingsRepository
 import io.github.ukpratik.mukhar.data.repo.TalkRepository
 import io.github.ukpratik.mukhar.data.work.ReminderScheduler
 import io.github.ukpratik.mukhar.domain.Clock
@@ -50,7 +51,14 @@ data class SettingsUiState(
     val analysis: AnalysisUi = AnalysisUi(),
     /** D-039: the Plan row is hidden while Premium is switched off. */
     val showPlan: Boolean = PremiumGate.PAYWALL_ENABLED,
+    /** US-080: space used by recordings and the limit. */
+    val recordingsBytes: Long = 0,
+    val recordingsCapMb: Int = io.github.ukpratik.mukhar.domain.talk.RecordingRetention.DEFAULT_CAP_MB,
+    /** US-079: prompts marked as done. */
+    val donePrompts: Int = 0,
 )
+
+private data class Extras(val recordingsBytes: Long, val capMb: Int, val donePrompts: Int)
 
 private data class Transient(val delete: DeleteStage = DeleteStage.NONE, val understood: Boolean = false, val talks: Int = 0, val words: Int = 0)
 
@@ -67,6 +75,7 @@ class SettingsViewModel @Inject constructor(
     private val clock: Clock,
     private val models: ModelManager,
     keys: ByokKeyRepository,
+    recordings: RecordingsRepository,
 ) : ViewModel() {
     private val transient = MutableStateFlow(Transient())
 
@@ -82,13 +91,17 @@ class SettingsViewModel @Inject constructor(
         )
     }
 
+    private val extras = combine(recordings.observe(), recordings.capMb, store.donePrompts) { items, cap, done ->
+        Extras(items.sumOf { it.bytes }, cap, done.size)
+    }
+
     val state: StateFlow<SettingsUiState> = combine(
         store.settings,
         habits.observe().map { it.week.goal },
         entitlements.snapshot,
         transient,
-        analysis,
-    ) { s, goal, e, t, a ->
+        combine(analysis, extras) { a, x -> a to x },
+    ) { s, goal, e, t, (a, x) ->
         if (s.reminder != null) lastReminder = s.reminder
         SettingsUiState(
             loading = false,
@@ -103,6 +116,9 @@ class SettingsViewModel @Inject constructor(
             talkCount = t.talks,
             wordCount = t.words,
             analysis = a,
+            recordingsBytes = x.recordingsBytes,
+            recordingsCapMb = x.capMb,
+            donePrompts = x.donePrompts,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), SettingsUiState())
 
@@ -138,6 +154,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onStutterFriendly(on: Boolean) = save { store.setStutterFriendly(on) }
+
+    fun onResetDonePrompts() = save { store.clearDonePrompts() }
 
     fun onTransliteration(on: Boolean) = save { store.setTransliteration(on) }
 

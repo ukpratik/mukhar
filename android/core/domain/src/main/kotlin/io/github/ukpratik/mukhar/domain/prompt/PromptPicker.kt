@@ -34,14 +34,23 @@ data class Prompt(
 
 /**
  * Shuffle with no repeat of the last 30 shown (US-010). Unlimited: when every prompt in the pool was shown recently,
- * the least recently shown one (other than the current) comes back.
+ * the least recently shown one (other than the current) comes back. Prompts the user marked as done (US-079) never
+ * come back while any other prompt is left in the pool.
  */
 object PromptPicker {
     const val NO_REPEAT = 30
 
     /** [recent] is most-recent-first prompt ids from `prompt_history`. */
-    fun next(pool: List<Prompt>, recent: List<String>, currentId: String?, random: Random = Random.Default): Prompt? {
+    fun next(
+        pool: List<Prompt>,
+        recent: List<String>,
+        currentId: String?,
+        random: Random = Random.Default,
+        done: Set<String> = emptySet(),
+    ): Prompt? {
         if (pool.isEmpty()) return null
+        val open = pool.filter { it.id !in done }
+        if (open.isNotEmpty() && open.size < pool.size) return next(open, recent, currentId, random)
         val blocked = recent.take(NO_REPEAT).toSet() + listOfNotNull(currentId)
         val fresh = pool.filter { it.id !in blocked }
         if (fresh.isNotEmpty()) return fresh[random.nextInt(fresh.size)]

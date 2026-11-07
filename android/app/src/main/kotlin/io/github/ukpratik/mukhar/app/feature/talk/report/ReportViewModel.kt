@@ -9,6 +9,7 @@ import io.github.ukpratik.mukhar.app.R
 import io.github.ukpratik.mukhar.app.nav.ReportRoute
 import io.github.ukpratik.mukhar.data.content.PromptRepository
 import io.github.ukpratik.mukhar.data.net.Outcome
+import io.github.ukpratik.mukhar.data.prefs.SettingsStore
 import io.github.ukpratik.mukhar.data.prefs.UserSettings
 import io.github.ukpratik.mukhar.data.analytics.Analytics
 import io.github.ukpratik.mukhar.data.analytics.AnalyticsEvent
@@ -42,6 +43,12 @@ sealed interface ReportEvent {
     /** ADR-008: a talk waiting for an engine is analysed again from its saved audio (through the queue). */
     data object Reanalyse : ReportEvent
     data object Discard : ReportEvent
+
+    /** D-048: run the full analysis again from the kept recording. */
+    data object WriteTranscript : ReportEvent
+
+    /** US-079: mark this talk's prompt as done (or undo). */
+    data class SetPromptDone(val done: Boolean) : ReportEvent
     data class Rate(val value: Int) : ReportEvent
     data class ToggleWord(val word: UpgradedWord, val example: String) : ReportEvent
     data class ToggleSave(val line: BetterUi) : ReportEvent
@@ -63,6 +70,7 @@ class ReportViewModel @Inject constructor(
     private val settings: UserSettings,
     entitlements: Entitlements,
     private val analytics: Analytics,
+    private val store: SettingsStore,
 ) : ViewModel() {
     private var feedbackShownLogged = false
     private val id = savedState.toRoute<ReportRoute>().sessionId
@@ -86,11 +94,12 @@ class ReportViewModel @Inject constructor(
     }.filterNotNull()
 
     val state: StateFlow<ReportUiState> = base.flatMapLatest { s ->
-        combine(talks.observeCollectedWords(id), talks.observeSavedLines(id), retrying) { words, lines, busy ->
+        combine(talks.observeCollectedWords(id), talks.observeSavedLines(id), retrying, store.donePrompts) { words, lines, busy, done ->
             s.copy(
                 collectedWordIds = words.toSet(),
                 savedLines = lines.mapNotNull { it.substringAfterLast(':').toIntOrNull() }.toSet(),
                 retrying = busy,
+                promptDone = s.promptId in done,
             )
         }
     }.onEach { s ->
@@ -112,6 +121,12 @@ class ReportViewModel @Inject constructor(
                 ReportEvent.RetryTranscript -> talks.analyze(id)
                 ReportEvent.Reanalyse -> talks.analyzeRecovered(id)
                 ReportEvent.Discard -> talks.discard(id)
+                ReportEvent.WriteTranscript -> talks.writeTranscript(id)
+                is ReportEvent.SetPromptDone -> {
+                    val promptId = state.value.promptId.ifEmpty { return@launch }
+                    store.setPromptDone(promptId, e.done)
+                    if (e.done) effects.send(ReportEffect.Toast(R.string.toast_prompt_done, undo = ReportEvent.SetPromptDone(false)))
+                }
                 is ReportEvent.Rate -> {
                     talks.rate(id, e.value)
                     analytics.log(AnalyticsEvent.feedbackRated(e.value))

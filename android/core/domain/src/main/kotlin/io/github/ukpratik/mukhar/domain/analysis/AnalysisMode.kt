@@ -47,7 +47,10 @@ enum class AnalysisNote(val key: String) {
     OFFLINE_TRANSCRIPT("offline_transcript"),
 
     /** The soft monthly spending cap was reached, so this talk was analysed on the phone. */
-    SOFT_CAP_REACHED("soft_cap_reached");
+    SOFT_CAP_REACHED("soft_cap_reached"),
+
+    /** No transcript could be written, so pace (estimated), pauses and the notes come from the voice alone (D-048). */
+    AUDIO_ONLY("audio_only");
 
     companion object {
         fun fromKey(key: String): AnalysisNote? = entries.firstOrNull { it.key == key }

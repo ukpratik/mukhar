@@ -28,7 +28,7 @@
 </ul>
 
 <p><b>How talks are analysed in this version</b></p>
-<p>Talk analysis uses your own API keys: paste a Deepgram or Sarvam key (speech-to-text) and, optionally, an Anthropic key (coaching). Your phone sends the recording straight to those services under your account; Mukhar has no server and never sees your keys or audio. Without keys, talks are recorded and saved, and you can analyse them later. A fully offline speech engine is coming in the next release.</p>
+<p>Talk analysis uses your own API keys: paste a Deepgram or Sarvam key (speech-to-text) and, optionally, an Anthropic key (coaching). Your phone sends the recording straight to those services under your account; Mukhar has no server and never sees your keys or audio. Without keys, every talk still gets its pace, pauses and coach's notes measured from your voice, and the full transcript can be written later. A fully offline speech engine is coming in the next release.</p>
 
 <p><b>Privacy</b></p>
 <p>Your talks, words and progress stay on your phone. No ads, no trackers, no account. Keys are stored encrypted on the device and are never backed up. Mukhar is for ages 18 and up.</p>

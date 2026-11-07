@@ -24,7 +24,7 @@
     <string name="credit_counted" tools:ignore="PluralsCandidate">Day %1$d counted</string>
     <string name="credit_counted_goal" tools:ignore="PluralsCandidate">Day %1$d counted · weekly goal met</string>
     <string name="credit_short">Talk saved · 30 s counts for your streak</string>
-    <string name="private_line">Private by default. Audio is deleted after analysis.</string>
+    <string name="private_line">Private by default. Audio stays on this phone and is deleted after analysis.</string>
     <string name="back_to_today">Back to Today</string>
     <string name="try_again">Try again</string>
     <string name="discard">Discard</string>
@@ -116,7 +116,7 @@
     <string name="keep_it">Keep it</string>
     <string name="mic_unavailable">The microphone is busy. Close other apps that use it and try again.</string>
     <string name="perm_title">Mukhar needs the microphone to hear your talk</string>
-    <string name="perm_body">Your audio stays private and is deleted after analysis.</string>
+    <string name="perm_body">Your audio stays on this phone and is deleted after analysis.</string>
     <string name="perm_allow">Allow microphone</string>
     <string name="perm_denied_body">Microphone access is off for Mukhar. Turn it on in Settings to record a talk.</string>
     <string name="rec_title">We kept your talk</string>

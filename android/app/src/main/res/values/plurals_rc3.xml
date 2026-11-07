@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- rc3: US-079 done prompts. -->
+    <plurals name="prompt_left">
+        <item quantity="one">%1$d of %2$d prompt left in this track</item>
+        <item quantity="other">%1$d of %2$d prompts left in this track</item>
+    </plurals>
+    <plurals name="settings_done_prompts_sub">
+        <item quantity="one">%1$d prompt marked as done. Tap to bring it back.</item>
+        <item quantity="other">%1$d prompts marked as done. Tap to bring them all back.</item>
+    </plurals>
+    <plurals name="settings_done_prompts_reset_body">
+        <item quantity="one">The prompt you marked as done can be picked again.</item>
+        <item quantity="other">All %1$d prompts you marked as done can be picked again.</item>
+    </plurals>
+</resources>

@@ -28,6 +28,7 @@ import io.github.ukpratik.mukhar.app.feature.plan.PlanScreen
 import io.github.ukpratik.mukhar.app.feature.progress.ProgressScreen
 import io.github.ukpratik.mukhar.app.feature.quota.QuotaScreen
 import io.github.ukpratik.mukhar.app.feature.settings.KeysScreen
+import io.github.ukpratik.mukhar.app.feature.settings.RecordingsScreen
 import io.github.ukpratik.mukhar.app.feature.settings.SettingsScreen
 import io.github.ukpratik.mukhar.app.feature.share.ShareScreen
 import io.github.ukpratik.mukhar.app.feature.soundlab.SoundLabRoute // M6
@@ -140,9 +141,13 @@ fun MukharNavHost(
                     onDisclosure = { navController.navigate(DisclosureRoute) },
                     onStartFresh = onDataDeleted,
                     onKeys = { navController.navigate(KeysRoute) },
+                    onRecordings = { navController.navigate(RecordingsRoute) },
                 )
             }
             composable<KeysRoute> { KeysScreen(onBack = { navController.popBackStack() }) }
+            composable<RecordingsRoute> {
+                RecordingsScreen(onBack = { navController.popBackStack() }, onOpen = { id -> navController.navigate(ReportRoute(id)) })
+            }
             composable<PlanRoute> { PlanScreen(onClose = { if (!navController.popBackStack()) navController.navigate(TodayRoute) }) }
             composable<ShareRoute> { ShareScreen(onClose = { navController.popBackStack() }) }
             composable<QuotaRoute> {
@@ -165,7 +170,10 @@ fun MukharNavHost(
             composable<ReportRoute> {
                 ReportScreen(
                     ReportActions(
-                        onBack = home,
+                        // Opened from Settings → Recordings: back returns there; otherwise to Today as before.
+                        onBack = {
+                            if (navController.previousBackStackEntry?.destination?.hasRoute<RecordingsRoute>() == true) navController.popBackStack() else home()
+                        },
                         onSayAgain = { s ->
                             val m = s.meta ?: return@ReportActions
                             navController.navigate(RecordRoute(s.promptId, m.lang.code, m.track.key, parentId = s.sessionId, capS = s.retakeCapS?.toInt()))
@@ -238,5 +246,5 @@ fun NavGraphBuilder.meDestination(navController: NavHostController) {
 /** Full-screen talk routes (S09 to S12): no bottom bar, and they handle their own window insets. */
 private val FULL_SCREEN_TALK = listOf(
     RecordRoute::class, ReportRoute::class, SayAgainRoute::class, RecoveredRoute::class,
-    SettingsRoute::class, PlanRoute::class, QuotaRoute::class, ShareRoute::class, KeysRoute::class,
+    SettingsRoute::class, PlanRoute::class, QuotaRoute::class, ShareRoute::class, KeysRoute::class, RecordingsRoute::class,
 )

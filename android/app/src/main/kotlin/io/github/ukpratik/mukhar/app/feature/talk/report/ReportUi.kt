@@ -5,6 +5,7 @@ import io.github.ukpratik.mukhar.data.repo.TalkCodes
 import io.github.ukpratik.mukhar.data.repo.TalkDetails
 import io.github.ukpratik.mukhar.data.repo.TalkKind
 import io.github.ukpratik.mukhar.data.repo.TalkStatus
+import io.github.ukpratik.mukhar.data.db.MetricsEntity
 import io.github.ukpratik.mukhar.domain.audio.EnergyVad
 import io.github.ukpratik.mukhar.data.net.ENGINE_UNAVAILABLE_CODE
 import io.github.ukpratik.mukhar.domain.analysis.AnalysisNote
@@ -68,7 +69,12 @@ data class MetricTileUi(
     val wide: Boolean = false,
     /** ADR-008: the engine can't measure this one exactly (offline recognition): shown as "≈ value" with a tip. */
     val approx: Boolean = false,
+    /** D-048 voice-only report: this metric needs words, so it waits for the transcript. */
+    val needsTranscript: Boolean = false,
 )
+
+/** Why a report was made from the voice alone (D-048), for the "No transcript" card. */
+enum class VoiceOnlyReason { NO_ENGINE, OFFLINE, SERVICE, AUDIO_GONE }
 
 data class TokenUi(
     val text: String,
@@ -130,6 +136,10 @@ data class ReportUiState(
     val ruleNotes: Boolean = false,
     val notes: List<AnalysisNote> = emptyList(),
     val upgrades: List<WordUpgradeUi> = emptyList(),
+    /** D-048: no transcript; pace (≈), pauses and notes come from the voice alone. */
+    val voiceOnly: VoiceOnlyReason? = null,
+    /** US-079: this talk's prompt is marked as done (it won't be picked again). */
+    val promptDone: Boolean = false,
 )
 
 /** Pure mapping from Room rows to the screen state, unit-testable without Compose. */
@@ -163,6 +173,8 @@ object ReportMapper {
         val glowRange = feedback?.glow?.takeIf { it.hasSpan }?.let { it.start..it.end }
         val growRange = feedback?.grow?.takeIf { it.hasSpan }?.let { it.start..it.end }
         val reliability = EngineReliability.of(d.transcriptProvider, lang)
+        val voiceOnly = if (phase == ReportPhase.READY && TalkCodes.isAudioOnly(s.errorCode)) voiceOnlyReason(TalkCodes.audioOnlyReason(s.errorCode)) else null
+        val voiceTiles = if (voiceOnly != null) d.metrics?.let { voiceTiles(it, lang, stutterFriendly) }.orEmpty() else null
 
         return ReportUiState(
             sessionId = s.id,
@@ -172,7 +184,7 @@ object ReportMapper {
             credit = credit(d.credit, s.speechMs.toLong()),
             stutterFriendly = stutterFriendly,
             noisy = s.snrDb > 0 && s.snrDb < EnergyVad.NOISY_SNR_DB,
-            tiles = metrics?.let { tiles(it, averages, lang, stutterFriendly, reliability) }.orEmpty(),
+            tiles = voiceTiles ?: metrics?.let { tiles(it, averages, lang, stutterFriendly, reliability) }.orEmpty(),
             transcript = metrics?.let { transcript(words, it, glowRange, growRange, stutterFriendly) },
             summary = feedback?.summary?.takeIf { it.isNotBlank() },
             fillersDown = metrics != null && averages != null && metrics.fillersPerMin < averages.fillersPerMin,
@@ -191,6 +203,36 @@ object ReportMapper {
             ruleNotes = d.feedback?.model == RuleCoach.MODEL,
             notes = feedback?.notes.orEmpty(),
             upgrades = feedback?.wordUpgrades.orEmpty().map { WordUpgradeUi(it.word, it.count, it.alternatives) },
+            voiceOnly = voiceOnly,
+        )
+    }
+
+    fun voiceOnlyReason(code: String?): VoiceOnlyReason = when (code) {
+        ENGINE_UNAVAILABLE_CODE -> VoiceOnlyReason.NO_ENGINE
+        "OFFLINE" -> VoiceOnlyReason.OFFLINE
+        TalkCodes.AUDIO_MISSING -> VoiceOnlyReason.AUDIO_GONE
+        else -> VoiceOnlyReason.SERVICE
+    }
+
+    /** D-048: pace is an estimate from syllables, pauses are measured; fillers and variety wait for words. */
+    fun voiceTiles(m: MetricsEntity, lang: Lang, stutter: Boolean): List<MetricTileUi> {
+        val (low, high) = if (lang == Lang.HI) 100.0 to 150.0 else 110.0 to 160.0
+        val band = WpmBand.entries.firstOrNull { it.key == m.wpmBand } ?: WpmBand.COMFORTABLE
+        val pace = MetricTileUi(
+            kind = MetricKind.PACE, value = m.wpm.toInt().toString(), unit = MetricUnit.WPM, bandPosition = bandPosition(m.wpm, low, high),
+            delta = MetricDelta.Band(band, provisional = true), good = band == WpmBand.COMFORTABLE, approx = true,
+        )
+        val perMin = m.longPausesPerMin
+        val pauses = if (stutter || perMin == null) {
+            MetricTileUi(MetricKind.PAUSES, off = true)
+        } else {
+            MetricTileUi(MetricKind.PAUSES, value = one(perMin), unit = MetricUnit.PER_MIN)
+        }
+        return listOf(
+            pace,
+            pauses,
+            MetricTileUi(MetricKind.FILLERS, needsTranscript = true),
+            MetricTileUi(MetricKind.VARIETY, needsTranscript = true),
         )
     }
 

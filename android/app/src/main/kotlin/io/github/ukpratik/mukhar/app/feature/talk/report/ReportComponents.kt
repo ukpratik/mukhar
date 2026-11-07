@@ -156,7 +156,7 @@ fun MetricsGrid(tiles: List<MetricTileUi>, onInfo: (MetricKind) -> Unit, modifie
 private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: Modifier) {
     val label = metricLabel(t.kind)
     val spoken = metricSpoken(t, label)
-    if (t.off) {
+    if (t.off || t.needsTranscript) {
         val dash = MukharTheme.colors.lineStrong
         Column(
             modifier
@@ -172,7 +172,10 @@ private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: 
                 .semantics(mergeDescendants = true) { contentDescription = spoken },
         ) {
             Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(stringResource(R.string.not_scored), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp))
+            Text(
+                stringResource(if (t.needsTranscript) R.string.needs_transcript else R.string.not_scored),
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp),
+            )
         }
         return
     }
@@ -197,6 +200,7 @@ private fun MetricTile(t: MetricTileUi, onInfo: (MetricKind) -> Unit, modifier: 
 @Composable
 private fun metricSpoken(t: MetricTileUi, label: String): String {
     if (t.off) return stringResource(R.string.a11y_metric_pair, label, stringResource(R.string.not_scored))
+    if (t.needsTranscript) return stringResource(R.string.a11y_metric_pair, label, stringResource(R.string.needs_transcript))
     if (t.locked) return stringResource(R.string.a11y_metric_pair, label, stringResource(R.string.variety_locked))
     val unit = when (t.unit) {
         MetricUnit.WPM -> stringResource(R.string.a11y_unit_wpm)

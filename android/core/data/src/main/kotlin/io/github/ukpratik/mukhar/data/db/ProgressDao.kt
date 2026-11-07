@@ -34,7 +34,9 @@ interface ProgressDao {
         "SELECT s.id, s.kind, s.lang, s.created_at, s.zone_id, s.speech_ms, s.duration_ms, s.audio_path, s.audio_kept, " +
             "m.wpm, m.wpm_band, m.fillers_per_min, m.long_pauses_per_min, m.repetitions, m.mattr, m.lexical_tokens " +
             "FROM talk_session s JOIN metrics m ON m.session_id = s.id " +
-            "WHERE s.kind IN ('talk', 'retake', 'baseline') AND s.status != 'discarded' ORDER BY s.created_at",
+            "WHERE s.kind IN ('talk', 'retake', 'baseline') AND s.status != 'discarded' " +
+            // Voice-only estimates (algo 100, D-048) stay out of the charts: no fillers or words were measured.
+            "AND m.algo_version < 100 ORDER BY s.created_at",
     )
     fun observeAnalysedTalks(): Flow<List<TalkMetricsRow>>
 
@@ -42,7 +44,9 @@ interface ProgressDao {
         "SELECT s.id, s.kind, s.lang, s.created_at, s.zone_id, s.speech_ms, s.duration_ms, s.audio_path, s.audio_kept, " +
             "m.wpm, m.wpm_band, m.fillers_per_min, m.long_pauses_per_min, m.repetitions, m.mattr, m.lexical_tokens " +
             "FROM talk_session s JOIN metrics m ON m.session_id = s.id " +
-            "WHERE s.kind IN ('talk', 'retake', 'baseline') AND s.status != 'discarded' ORDER BY s.created_at",
+            "WHERE s.kind IN ('talk', 'retake', 'baseline') AND s.status != 'discarded' " +
+            // Voice-only estimates (algo 100, D-048) stay out of the charts: no fillers or words were measured.
+            "AND m.algo_version < 100 ORDER BY s.created_at",
     )
     suspend fun analysedTalks(): List<TalkMetricsRow>
 

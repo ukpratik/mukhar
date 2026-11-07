@@ -49,9 +49,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.testTag
+import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -209,6 +212,28 @@ fun PromptContent(
                 Text(stringResource(R.string.record))
             }
         }
+        // US-079: a prompt already spoken about can be retired from here too.
+        if (state.prompt != null && state.total > 0) {
+            if (state.left == 0) {
+                Text(
+                    stringResource(R.string.prompt_all_done), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 2.dp, top = 10.dp),
+                )
+            } else {
+                TextButton(
+                    onClick = { onEvent(PromptEvent.MarkDone) },
+                    modifier = Modifier.padding(top = 4.dp).heightIn(min = 48.dp).testTag(TAG_PROMPT_MARK_DONE),
+                ) {
+                    Icon(Icons.Rounded.TaskAlt, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.prompt_mark_done))
+                }
+                Text(
+                    pluralStringResource(R.plurals.prompt_left, state.total, state.left, state.total), style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(start = 14.dp),
+                )
+            }
+        }
         // M6: Sound Lab entry (S22, US-070)
         if (onOpenSoundLab != null) SoundLabEntryCard(onOpenSoundLab, Modifier.padding(top = 20.dp))
     }
@@ -291,3 +316,5 @@ private fun SwitchRow(label: String, cd: String, checked: Boolean, onChange: (Bo
         Switch(checked = checked, onCheckedChange = null)
     }
 }
+
+const val TAG_PROMPT_MARK_DONE = "prompt_mark_done"

@@ -75,6 +75,8 @@ import io.github.ukpratik.mukhar.data.local.NoOpModelManager
 import io.github.ukpratik.mukhar.data.local.SynonymRepository
 import io.github.ukpratik.mukhar.data.local.SynonymSource
 import io.github.ukpratik.mukhar.data.local.UnavailableLocalTranscriber
+import io.github.ukpratik.mukhar.data.audio.MediaCodecPcmDecoder
+import io.github.ukpratik.mukhar.data.repo.RecordingsRepository
 import io.github.ukpratik.mukhar.data.util.MukharLog
 import io.github.ukpratik.mukhar.data.work.ByokAnalysisPipeline
 import io.github.ukpratik.mukhar.data.work.PipelineRouter
@@ -184,8 +186,8 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun prompts(@ApplicationContext context: Context, habitDao: HabitDao, clock: Clock, json: Json): PromptRepository =
-        PromptRepository(context, habitDao, clock, json)
+    fun prompts(@ApplicationContext context: Context, habitDao: HabitDao, clock: Clock, json: Json, settings: SettingsStore): PromptRepository =
+        PromptRepository(context, habitDao, clock, json, done = settings::donePromptIds)
 
     @Provides
     @Singleton
@@ -203,9 +205,16 @@ object DataModule {
         json: Json,
         @ApplicationScope scope: CoroutineScope,
         words: WordRepository,
+        recordings: RecordingsRepository,
     ): TalkRepository = TalkRepository(
         talkDao, wordDao, habits, settings, pipeline, prompts, scheduler, files, storage, clock, IdGenerator.Random, json, scope, words,
+        MediaCodecPcmDecoder(), recordings,
     )
+
+    @Provides
+    @Singleton
+    fun recordings(talkDao: TalkDao, files: RecordingFiles, settings: SettingsStore, clock: Clock): RecordingsRepository =
+        RecordingsRepository(talkDao, files, settings, clock)
 
     @Provides
     @Singleton

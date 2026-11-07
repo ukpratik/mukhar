@@ -5,7 +5,7 @@
     <string name="settings_group_analysis">Analysis</string>
     <string name="analysis_mode_heading">How Mukhar listens</string>
     <string name="mode_on_device">On this phone</string>
-    <string name="mode_on_device_sub">Free. Offline speech arrives in the next update. Until then, talks are saved to analyse later.</string>
+    <string name="mode_on_device_sub">Free. Offline speech arrives in the next update. Until then, each talk gets pace, pauses and notes from your voice.</string>
     <string name="mode_own_keys">Use my own keys</string>
     <string name="mode_own_keys_sub">Advanced. Your Deepgram, Sarvam or Anthropic account, called straight from your phone.</string>
     <string name="mode_cloud">Mukhar Cloud</string>

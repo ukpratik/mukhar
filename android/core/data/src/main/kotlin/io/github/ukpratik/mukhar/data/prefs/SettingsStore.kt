@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import io.github.ukpratik.mukhar.domain.talk.RecordingRetention
 import io.github.ukpratik.mukhar.domain.analysis.AnalysisMode
 import io.github.ukpratik.mukhar.domain.billing.EntitlementSnapshot
 import io.github.ukpratik.mukhar.domain.billing.Plan
@@ -292,6 +293,25 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         it[K.usageOut] = (if (same) it[K.usageOut] ?: 0 else 0) + outputTokens
     }
 
+    // US-079: prompts the user marked as done never come back while others remain.
+
+    val donePrompts: Flow<Set<String>> = store.data.map { it[K.donePrompts].orEmpty() }.distinctUntilChanged()
+
+    suspend fun donePromptIds(): Set<String> = donePrompts.first()
+
+    suspend fun setPromptDone(id: String, done: Boolean) = update {
+        val current = it[K.donePrompts].orEmpty()
+        it[K.donePrompts] = if (done) current + id else current - id
+    }
+
+    suspend fun clearDonePrompts() = update { it.remove(K.donePrompts) }
+
+    // US-080: the most space recordings may take before the oldest are deleted.
+
+    val recordingsCapMb: Flow<Int> = store.data.map { it[K.recordingsCapMb] ?: RecordingRetention.DEFAULT_CAP_MB }.distinctUntilChanged()
+
+    suspend fun setRecordingsCapMb(mb: Int) = update { it[K.recordingsCapMb] = mb.coerceIn(RecordingRetention.CAP_OPTIONS_MB.first(), RecordingRetention.CAP_OPTIONS_MB.last()) }
+
     /** Delete all my data (US-063): every key goes, so the next start is a fresh install (onboarding). */
     suspend fun clearAll() = update { it.clear() }
 
@@ -381,6 +401,8 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         val dailyNewWords = intPreferencesKey("daily_new_words")
         fun dailyWords(lang: Lang) = intPreferencesKey("daily_new_words_${lang.code}")
         val wordsTab = stringPreferencesKey("words_tab_lang")
+        val donePrompts = stringSetPreferencesKey("done_prompt_ids")
+        val recordingsCapMb = intPreferencesKey("recordings_cap_mb")
         val openedDay = stringPreferencesKey("daily_opened_day")
         val openedIds = stringSetPreferencesKey("daily_opened_ids")
         val reminderTime = intPreferencesKey("reminder_time_min")

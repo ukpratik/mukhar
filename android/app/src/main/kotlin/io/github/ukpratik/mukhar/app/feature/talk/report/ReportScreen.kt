@@ -105,6 +105,7 @@ import io.github.ukpratik.mukhar.app.feature.talk.common.clock
 import io.github.ukpratik.mukhar.app.feature.talk.common.langLabel
 import io.github.ukpratik.mukhar.app.feature.talk.common.rememberHaptics
 import io.github.ukpratik.mukhar.app.feature.talk.common.trackLabel
+import io.github.ukpratik.mukhar.domain.analysis.AnalysisNote
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.ui.theme.TileShape
 import io.github.ukpratik.mukhar.ui.theme.MukharCard
@@ -139,6 +140,7 @@ fun ReportScreen(actions: ReportActions, vm: ReportViewModel = hiltViewModel()) 
         R.string.toast_already_in_gym to stringResource(R.string.toast_already_in_gym),
         R.string.toast_reported to stringResource(R.string.toast_reported),
         R.string.toast_report_failed to stringResource(R.string.toast_report_failed),
+        R.string.toast_prompt_done to stringResource(R.string.toast_prompt_done),
     )
     val undo = stringResource(R.string.undo)
     LaunchedEffect(vm) {
@@ -496,7 +498,11 @@ private fun ColumnScope.Report(
     }
     state.credit?.let { CreditPill(it) }
     if (state.offline) OfflineChip(Modifier.padding(top = 4.dp))
-    AnalysisNotes(state.notes, Modifier.padding(top = 8.dp))
+    // A voice-only report explains itself in its own card, so its note isn't repeated.
+    AnalysisNotes(if (state.voiceOnly != null) state.notes - AnalysisNote.AUDIO_ONLY else state.notes, Modifier.padding(top = 8.dp))
+    state.voiceOnly?.let { reason ->
+        VoiceOnlyCard(reason, onWrite = { onEvent(ReportEvent.WriteTranscript) }, onKeys = actions.onKeys, modifier = Modifier.padding(top = 12.dp))
+    }
     if (state.stutterFriendly) StutterNote(actions.onSettings)
     if (state.noisy) {
         MukharBanner(Icons.Rounded.GraphicEq, stringResource(R.string.noise_title), stringResource(R.string.noise_body_results), BannerTone.WARN, Modifier.padding(top = 12.dp), assertive = true)
@@ -558,6 +564,9 @@ private fun ColumnScope.Report(
     Spacer(Modifier.height(12.dp))
     AnimatedVisibility(visible = state.glow != null, enter = fadeIn()) { state.glow?.let { GlowCard(it, lang, toTranscript) } }
     AnimatedVisibility(visible = state.grow != null, enter = fadeIn()) { state.grow?.let { GrowCard(it, lang, toTranscript) } }
+    if (phase == ReportPhase.READY && !state.isRetake && state.promptText.isNotEmpty()) {
+        PromptDoneCard(state.promptDone, onChange = { onEvent(ReportEvent.SetPromptDone(it)) }, modifier = Modifier.padding(top = 4.dp, bottom = 12.dp))
+    }
 
     if (state.better.isNotEmpty()) {
         SectionHead(stringResource(R.string.better_title), betterCount(state.better.size), Modifier.padding(top = 10.dp))

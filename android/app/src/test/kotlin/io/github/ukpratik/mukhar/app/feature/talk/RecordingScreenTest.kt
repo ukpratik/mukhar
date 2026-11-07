@@ -52,7 +52,7 @@ class RecordingScreenTest {
         compose.onNodeWithText("Try: what it was → what you did → the result → one lesson.").assertExists()
         compose.onNodeWithText("Mic sounds good").assertExists()
         compose.onNodeWithText("30 seconds to think first").assertExists()
-        compose.onNodeWithText("Private by default. Audio is deleted after analysis.").assertExists()
+        compose.onNodeWithText("Private by default. Audio stays on this phone and is deleted after analysis.").assertExists()
         compose.onNodeWithContentDescription("Start recording. Up to 3:00").performSemanticsAction(SemanticsActions.OnClick)
         assertThat(events).containsExactly(RecordEvent.Start)
     }

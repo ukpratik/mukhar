@@ -100,6 +100,7 @@ fun noteText(note: AnalysisNote): Int = when (note) {
     AnalysisNote.LLM_UNGROUNDED -> R.string.note_llm_ungrounded
     AnalysisNote.OFFLINE_TRANSCRIPT -> R.string.note_offline_transcript
     AnalysisNote.SOFT_CAP_REACHED -> R.string.note_soft_cap
+    AnalysisNote.AUDIO_ONLY -> R.string.note_audio_only
 }
 
 /** Replaces the grammar/rewrites section in local mode (ADR-008 copy). */

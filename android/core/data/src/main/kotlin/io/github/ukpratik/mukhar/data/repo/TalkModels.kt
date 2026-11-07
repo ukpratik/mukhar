@@ -29,6 +29,15 @@ object TalkCodes {
     /** Process died while recording; the saved part waits for the user (S09 state 8). */
     const val RECOVERED = "RECOVERED"
     const val AUDIO_MISSING = "AUDIO_MISSING"
+
+    /**
+     * D-048: no transcript could be written, so the report was made from the voice alone. The code after the prefix
+     * says why (`ENGINE_UNAVAILABLE`, `OFFLINE`, `KEY_REJECTED`…); the audio stays so the transcript can be written later.
+     */
+    const val AUDIO_ONLY_PREFIX = "AUDIO_ONLY:"
+
+    fun isAudioOnly(errorCode: String?): Boolean = errorCode?.startsWith(AUDIO_ONLY_PREFIX) == true
+    fun audioOnlyReason(errorCode: String?): String? = errorCode?.takeIf(::isAudioOnly)?.removePrefix(AUDIO_ONLY_PREFIX)
 }
 
 /** `talk_session.kind` written by the recorder. [BASELINE] is the free one-time starting point (US-003, D-031). */

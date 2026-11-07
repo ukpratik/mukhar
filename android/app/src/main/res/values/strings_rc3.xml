@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- rc3: US-079 mark a prompt as done (D-049). -->
+    <string name="prompt_done_title">Finished with this prompt?</string>
+    <string name="prompt_done_body">Mark it as done and Speak Studio won\'t show it again.</string>
+    <string name="prompt_done_cta">Mark as done</string>
+    <string name="prompt_done_state">Done. This prompt won\'t come back.</string>
+    <string name="toast_prompt_done">Marked as done. You won\'t see this prompt again.</string>
+    <string name="prompt_mark_done">Done this one already? Mark as done</string>
+    <string name="prompt_all_done">You\'ve done every prompt in this track. They come back now, oldest first.</string>
+    <string name="settings_done_prompts">Done prompts</string>
+    <string name="settings_done_prompts_reset_title">Bring back done prompts?</string>
+    <string name="settings_done_prompts_reset">Bring them back</string>
+
+    <!-- rc3: D-048 report from the voice alone when no transcript could be written. -->
+    <string name="needs_transcript">Needs a transcript</string>
+    <string name="note_audio_only">No transcript this time, so these numbers and notes come from your voice alone.</string>
+    <string name="voice_only_title">Measured from your voice</string>
+    <string name="voice_only_no_engine">Mukhar couldn\'t write a transcript: there\'s no speech-to-text on this phone yet, or your Deepgram or Sarvam key didn\'t work. So your pace (≈) and pauses were measured from your voice. Offline speech arrives in the next update.</string>
+    <string name="voice_only_offline">You were offline, so the transcript wasn\'t written. Your pace (≈) and pauses were measured from your voice.</string>
+    <string name="voice_only_service">The speech-to-text service didn\'t work this time, so your pace (≈) and pauses were measured from your voice.</string>
+    <string name="voice_only_gone">The recording was deleted, so this talk can\'t get a transcript. The numbers below stay.</string>
+    <string name="voice_only_kept">Fillers, word variety and the coach\'s line-by-line notes need a transcript. Your recording stays on this phone so it can be written later (Settings → Recordings).</string>
+    <string name="voice_only_kept_key">Fillers, word variety and the coach\'s line-by-line notes need a transcript. Your recording stays on this phone, and the transcript is written as soon as you add a key.</string>
+    <string name="voice_only_write">Write the transcript</string>
+    <string name="voice_only_keys">Add a speech-to-text key</string>
+    <string name="voice_only_try_again">Try writing the transcript again</string>
+
+    <!-- rc3: US-080 Settings → Recordings (D-050). -->
+    <string name="settings_recordings">Recordings</string>
+    <string name="settings_recordings_sub">%1$s on this phone · limit %2$s</string>
+    <string name="recordings_title">Recordings</string>
+    <string name="recordings_usage">%1$s of %2$s used</string>
+    <string name="recordings_usage_a11y">%1$s of %2$s used by recordings</string>
+    <string name="recordings_explain">When recordings go over the limit, the oldest are deleted first. Your reports, numbers and notes always stay. Talks still waiting for analysis are never deleted automatically.</string>
+    <string name="recordings_limit">Space limit</string>
+    <string name="recordings_empty_title">No recordings on this phone</string>
+    <string name="recordings_empty_body">Mukhar deletes each recording after its report, unless you chose to keep it or its transcript is still to be written.</string>
+    <string name="recordings_pending">Waiting for analysis</string>
+    <string name="recordings_awaiting_transcript">Transcript can still be written</string>
+    <string name="recordings_starting_point">Starting point</string>
+    <string name="recordings_open">Open report</string>
+    <string name="recordings_play_cd">Play recording from %1$s</string>
+    <string name="recordings_stop_cd">Stop playing</string>
+    <string name="recordings_delete_cd">Delete recording from %1$s</string>
+    <string name="recordings_delete_title">Delete this recording?</string>
+    <string name="recordings_delete_body">The report and numbers stay. Only the audio is deleted.</string>
+    <string name="recordings_delete_pending_body">This talk hasn\'t been analysed yet. Without the recording it can\'t be.</string>
+    <string name="recordings_delete_all">Delete all recordings</string>
+    <string name="recordings_delete_all_title">Delete all recordings?</string>
+    <string name="recordings_delete_all_body">%1$s of audio will be deleted. Reports and numbers stay. Talks waiting for analysis can\'t be analysed afterwards.</string>
+    <string name="recordings_delete">Delete</string>
+    <string name="recordings_cancel">Cancel</string>
+    <string name="recordings_deleted">Recording deleted</string>
+    <string name="recordings_deleted_all">Recordings deleted</string>
+    <string name="recordings_play_failed">This recording can\'t be played.</string>
+    <string name="mb_value">%1$s MB</string>
+    <string name="gb_value">%1$s GB</string>
+</resources>
