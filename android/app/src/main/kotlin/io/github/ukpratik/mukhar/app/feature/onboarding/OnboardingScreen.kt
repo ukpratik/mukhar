@@ -191,7 +191,11 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, onFinished: () -> Unit, onE
                 OnboardingStep.WELCOME -> WelcomeCta(state.yearValid, viewModel::onAgeContinue)
                 OnboardingStep.BLOCKED -> BlockedCta(onExit)
                 OnboardingStep.LANGUAGES -> LanguagesCta(state.tracks.isNotEmpty(), viewModel::onProfileContinue)
-                OnboardingStep.WARMUP -> WarmupCta(state, ::requestMic, viewModel::onMicDenied, viewModel::onWarmupDone, viewModel::onWarmupContinue)
+                OnboardingStep.WARMUP -> WarmupCta(
+                    state, ::requestMic,
+                    { viewModel.onWarmupNotNow(context.hasPermission(Manifest.permission.RECORD_AUDIO)) },
+                    viewModel::onWarmupDone, viewModel::onWarmupContinue,
+                )
                 OnboardingStep.MIC_DENIED -> MicDeniedCta(
                     permanentlyDenied = micPermanentlyDenied,
                     onTryAgain = {

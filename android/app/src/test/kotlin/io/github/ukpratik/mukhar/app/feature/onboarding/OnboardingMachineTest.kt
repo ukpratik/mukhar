@@ -45,6 +45,15 @@ class OnboardingMachineTest {
     }
 
     @Test
+    fun skippingOnlyTheWarmupGoesToPrivacy() {
+        val s = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.SkipWarmup)
+        assertThat(s.step).isEqualTo(S.DISCLOSURE)
+        assertThat(s.micSkipped).isFalse()
+        assertThat(run(E.Agree, from = s).step).isEqualTo(S.LISTENING)
+        assertThat(run(E.Back, from = s).step).isEqualTo(S.WARMUP)
+    }
+
+    @Test
     fun noMicSkipsPrivacyAndBaseline() {
         val denied = run(E.AgeEntered(1998, 2026), E.ProfileDone, E.MicDenied)
         assertThat(denied.step).isEqualTo(S.MIC_DENIED)

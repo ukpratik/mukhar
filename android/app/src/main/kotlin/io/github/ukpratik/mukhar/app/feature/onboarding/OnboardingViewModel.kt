@@ -293,6 +293,16 @@ class OnboardingViewModel @Inject constructor(
         move(OnboardingEvent.MicDenied)
     }
 
+    /**
+     * "Not now" on S03. With the mic allowed it skips only the warm-up and goes on to S04 (I-001); without it, it's
+     * the no-mic explainer as before.
+     */
+    fun onWarmupNotNow(micGranted: Boolean) {
+        if (!micGranted) return onMicDenied()
+        cancelWarmup()
+        move(OnboardingEvent.SkipWarmup)
+    }
+
     fun onRetryMic() = move(OnboardingEvent.RetryMic)
 
     fun onContinueWithoutMic() {

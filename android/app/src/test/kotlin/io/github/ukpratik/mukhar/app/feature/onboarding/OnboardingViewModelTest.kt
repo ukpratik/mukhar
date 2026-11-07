@@ -122,6 +122,24 @@ class OnboardingViewModelTest {
     }
 
     @Test
+    fun notNowOnTheWarmupWithTheMicAllowedSkipsOnlyTheWarmup() {
+        // I-001: no "no microphone" explainer when the mic is allowed; privacy comes next.
+        h.resumeAt(OnboardingStep.WARMUP)
+        waitFor { !state.loading }
+        h.vm.onWarmupNotNow(micGranted = true)
+        await(OnboardingStep.DISCLOSURE)
+        assertThat(settings().micSkipped).isFalse()
+    }
+
+    @Test
+    fun notNowOnTheWarmupWithoutTheMicExplainsTheMic() {
+        h.resumeAt(OnboardingStep.WARMUP)
+        waitFor { !state.loading }
+        h.vm.onWarmupNotNow(micGranted = false)
+        await(OnboardingStep.MIC_DENIED)
+    }
+
+    @Test
     fun noMicSkipsPrivacyAndBaselineAndGivesNoCredit() {
         h.resumeAt(OnboardingStep.WARMUP)
         waitFor { !state.loading }

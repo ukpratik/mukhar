@@ -30,6 +30,8 @@ sealed interface OnboardingEvent {
     data object ProfileDone : OnboardingEvent
     data object WarmupDone : OnboardingEvent
     data object MicDenied : OnboardingEvent
+    /** "Not now" on the warm-up with the mic already allowed: skip only the warm-up (I-001). */
+    data object SkipWarmup : OnboardingEvent
     data object RetryMic : OnboardingEvent
     data object ContinueWithoutMic : OnboardingEvent
     data object Agree : OnboardingEvent
@@ -78,6 +80,7 @@ object OnboardingMachine {
             copy(step = OnboardingStep.DISCLOSURE, micSkipped = false)
         }
         OnboardingEvent.MicDenied -> state.onlyFrom(OnboardingStep.WARMUP) { copy(step = OnboardingStep.MIC_DENIED) }
+        OnboardingEvent.SkipWarmup -> state.onlyFrom(OnboardingStep.WARMUP) { copy(step = OnboardingStep.DISCLOSURE, micSkipped = false) }
         OnboardingEvent.RetryMic -> state.onlyFrom(OnboardingStep.MIC_DENIED) { copy(step = OnboardingStep.WARMUP) }
         OnboardingEvent.ContinueWithoutMic -> state.onlyFrom(OnboardingStep.MIC_DENIED) {
             copy(step = OnboardingStep.REMINDER, micSkipped = true)
