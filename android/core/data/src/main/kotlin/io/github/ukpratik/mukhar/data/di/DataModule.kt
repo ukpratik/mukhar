@@ -56,6 +56,8 @@ import io.github.ukpratik.mukhar.domain.Clock
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import io.github.ukpratik.mukhar.data.byok.AnthropicClient
+import io.github.ukpratik.mukhar.data.ideas.FileIdeasCache
+import io.github.ukpratik.mukhar.data.ideas.SpeakingIdeasRepository
 import io.github.ukpratik.mukhar.data.byok.ByokFile
 import io.github.ukpratik.mukhar.data.byok.ByokFileSerializer
 import io.github.ukpratik.mukhar.data.byok.ByokHttp
@@ -264,7 +266,7 @@ object DataModule {
         analytics: Analytics,
         reminders: ReminderScheduler,
         vault: KeyVault,
-    ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR)), sync, trialReminders, analytics) {
+    ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR), File(context.filesDir, FileIdeasCache.DIR)), sync, trialReminders, analytics) {
         reminders.reschedule()
         vault.wipe() // own API keys, their Tink keyset and the Keystore master key (ADR-008)
     }
@@ -337,6 +339,12 @@ object DataModule {
         transcriber: LocalTranscriber,
         usage: ByokUsageLog,
     ): ByokAnalysisPipeline = ByokAnalysisPipeline(vault, deepgram, sarvam, anthropic, local, transcriber, usage, IdGenerator.Random)
+
+    /** US-078: AI speaking ideas on the user's own Anthropic key, cached in `files/ideas`. */
+    @Provides
+    @Singleton
+    fun speakingIdeas(vault: KeyVault, anthropic: AnthropicClient, @ApplicationContext context: Context, json: Json, usage: ByokUsageLog): SpeakingIdeasRepository =
+        SpeakingIdeasRepository(vault, anthropic, FileIdeasCache(File(context.filesDir, FileIdeasCache.DIR), json), usage)
 
     /** THE analysis pipeline in release (and in debug unless the debug menu forces the fake): picks per call by mode. */
     @Provides

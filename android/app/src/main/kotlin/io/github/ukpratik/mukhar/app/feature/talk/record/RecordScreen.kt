@@ -126,6 +126,13 @@ import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.ui.theme.FrauncesDisplay
 import io.github.ukpratik.mukhar.ui.theme.MukharCard
 import io.github.ukpratik.mukhar.ui.theme.MukharSpace
+import io.github.ukpratik.mukhar.app.feature.talk.ideas.SpeakingIdeasSheet
+import io.github.ukpratik.mukhar.app.feature.talk.ideas.TAG_PEEK_IDEAS
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import io.github.ukpratik.mukhar.ui.theme.MukharTheme
 import io.github.ukpratik.mukhar.ui.theme.timerStyle
 
@@ -183,6 +190,11 @@ fun RecordScreen(
     }
     BackHandler { vm.onEvent(RecordEvent.Close) }
 
+    // US-078 "peek": the ideas stay hidden while recording until asked for; leaving for Settings isn't offered here.
+    var ideasOpen by rememberSaveable { mutableStateOf(false) }
+    val prompt = state.prompt
+    if (ideasOpen && prompt != null) SpeakingIdeasSheet(prompt, state.track, onDismiss = { ideasOpen = false }, onOpenKeys = null)
+
     RecordContent(
         state = state,
         onEvent = vm::onEvent,
@@ -199,6 +211,7 @@ fun RecordScreen(
         },
         onOpenStorage = vm::openStorageSettings,
         snackbar = snackbar,
+        onPeekIdeas = { ideasOpen = true },
     )
 }
 
@@ -211,6 +224,22 @@ fun RecordContent(
     onAllowAgain: () -> Unit = {},
     onOpenStorage: () -> Unit = {},
     snackbar: SnackbarHostState = remember { SnackbarHostState() },
+    onPeekIdeas: (() -> Unit)? = null,
+) {
+    CompositionLocalProvider(LocalPeekIdeas provides onPeekIdeas) { RecordBody(state, onEvent, onAllowAgain, onOpenStorage, snackbar) }
+}
+
+/** The "Peek ideas" action for the prompt card (null hides it), without threading it through every phase. */
+private val LocalPeekIdeas = staticCompositionLocalOf<(() -> Unit)?> { null }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RecordBody(
+    state: RecordUiState,
+    onEvent: (RecordEvent) -> Unit,
+    onAllowAgain: () -> Unit,
+    onOpenStorage: () -> Unit,
+    snackbar: SnackbarHostState,
 ) {
     val paper = MaterialTheme.colorScheme.background
     val tint = MaterialTheme.colorScheme.primaryContainer
@@ -363,6 +392,18 @@ private fun PromptCard(state: RecordUiState, showHint: Boolean) {
                     Icon(Icons.Rounded.Lightbulb, null, tint = MukharTheme.colors.accentInk, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(tip, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            val peek = LocalPeekIdeas.current
+            if (peek != null && !state.isRetake) {
+                val peekCd = stringResource(R.string.ideas_peek_a11y)
+                TextButton(
+                    onClick = peek,
+                    modifier = Modifier.heightIn(min = MukharSpace.touch).testTag(TAG_PEEK_IDEAS).semantics { contentDescription = peekCd },
+                ) {
+                    Icon(Icons.Rounded.Lightbulb, null, tint = MukharTheme.colors.accentInk, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(R.string.ideas_peek))
                 }
             }
         }

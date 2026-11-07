@@ -114,6 +114,7 @@ fun MukharNavHost(
                 PromptScreen(
                     onRecord = { prompt, track -> navController.navigate(RecordRoute(prompt.id, prompt.lang.code, track)) },
                     onOpenSoundLab = { navController.navigate(SoundLabRoute) }, // M6: Sound Lab entry (S22)
+                    onOpenKeys = { navController.navigate(KeysRoute) }, // US-078: the locked AI ideas line
                 )
             }
             soundLabDestination(navController) // M6: S22 Sound Lab lite

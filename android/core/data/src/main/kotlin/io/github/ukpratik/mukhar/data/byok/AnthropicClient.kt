@@ -38,6 +38,8 @@ data class LlmUsage(val inputTokens: Long, val outputTokens: Long)
 
 data class LlmFeedback(val feedback: Feedback, val model: String, val usage: LlmUsage)
 
+data class LlmIdeas(val ideas: SpeakingIdeas, val model: String, val usage: LlmUsage)
+
 data class LlmSentence(val result: String, val corrected: String, val example: String, val note: String, val usage: LlmUsage)
 
 /**
@@ -65,6 +67,20 @@ class AnthropicClient(
             val o = out.jsonObject
             val result = o.str("result").takeIf { it in FeedbackPrompt.SENTENCE_RESULTS } ?: throw IllegalArgumentException("result")
             ByokResult.Ok(LlmSentence(result, o.str("corrected"), o.str("example"), o.str("note"), usage))
+        }
+    }
+
+    /**
+     * "Write me ideas" (US-078 b, D-046): angles, an outline, a short opening, phrases and words for a talk prompt.
+     * Same request shape as the coach (structured JSON at effort `low`); the system prompt varies by track and
+     * language, so it isn't marked for caching. A `refusal`, `max_tokens`, bad JSON or HTTP error is a [ByokResult.Fail]
+     * and the caller shows the free guide.
+     */
+    suspend fun speakingIdeas(key: String, request: IdeasRequest): ByokResult<LlmIdeas> {
+        val system = SpeakingIdeasPrompt.system(request.track, request.lang, request.difficulty)
+        val body = body(system, SpeakingIdeasPrompt.userMessage(request), SpeakingIdeasPrompt.SCHEMA, SpeakingIdeasPrompt.MAX_TOKENS, cacheSystem = false)
+        return message(key, body) { out, model, usage ->
+            ByokResult.Ok(LlmIdeas(SpeakingIdeasPrompt.tidy(json.decodeFromJsonElement(SpeakingIdeas.serializer(), out)), model, usage))
         }
     }
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- rc2: US-078 "Need ideas?" on the prompt (D-046). Template copy for the free guide lives in core/domain. -->
+    <string name="ideas_need">Need ideas?</string>
+    <string name="ideas_need_a11y">Need ideas? Opens a speaking guide for this prompt</string>
+    <string name="ideas_peek">Peek ideas</string>
+    <string name="ideas_peek_a11y">Peek at ideas for this prompt</string>
+    <string name="ideas_title">Ideas for this prompt</string>
+    <string name="ideas_guardrail">Ideas to get you started. Say it your own way.</string>
+    <string name="ideas_guide_title">Free guide · %1$s</string>
+    <string name="ideas_for_this_prompt">For this prompt</string>
+    <string name="ideas_for_this_prompt_line">For this prompt: %1$s</string>
+    <string name="ideas_opening">An opening to borrow</string>
+    <string name="ideas_words">Words to try</string>
+    <string name="ideas_locked">Full AI ideas: add your Anthropic key in Settings, or wait for Mukhar Cloud or offline AI (coming).</string>
+    <string name="ideas_write">Write me ideas</string>
+    <string name="ideas_regenerate">Regenerate</string>
+    <string name="ideas_try_again">Try again</string>
+    <string name="ideas_cost">≈ ₹0.10 on your key</string>
+    <string name="ideas_writing">Writing ideas…</string>
+    <string name="ideas_ai_angles">Angles you could take</string>
+    <string name="ideas_ai_outline">Outline</string>
+    <string name="ideas_ai_opening">A sample opening</string>
+    <string name="ideas_ai_phrases">Useful phrases</string>
+    <string name="ideas_fail_offline">No internet, so here\'s the free guide above.</string>
+    <string name="ideas_fail_key">Your Anthropic key wasn\'t accepted. Check it in Settings → Your keys; the free guide is above.</string>
+    <string name="ideas_fail_refused">The AI couldn\'t write ideas for this one; the free guide is above.</string>
+    <string name="ideas_fail_busy">The AI is busy right now; the free guide is above. Try again in a minute.</string>
+    <string name="ideas_fail_bad">The AI\'s answer didn\'t come through properly; the free guide is above.</string>
+    <string name="ideas_fail_paused">Your keys are paused for this month (your spending limit); the free guide is above.</string>
+</resources>

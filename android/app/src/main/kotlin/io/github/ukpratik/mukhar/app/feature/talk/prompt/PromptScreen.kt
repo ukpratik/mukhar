@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Autorenew
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Shuffle
@@ -44,6 +45,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,6 +71,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.ukpratik.mukhar.app.R
 import io.github.ukpratik.mukhar.app.feature.talk.common.InfoChip
+import io.github.ukpratik.mukhar.app.feature.talk.ideas.SpeakingIdeasSheet
+import io.github.ukpratik.mukhar.app.feature.talk.ideas.TAG_NEED_IDEAS
 import io.github.ukpratik.mukhar.app.feature.talk.common.difficultyLabel
 import io.github.ukpratik.mukhar.app.feature.talk.common.rememberHaptics
 import io.github.ukpratik.mukhar.app.feature.talk.common.trackLabel
@@ -80,9 +87,19 @@ import io.github.ukpratik.mukhar.ui.theme.MukharTheme
 
 /** S08 Prompt picker (the Practice tab, US-010). Today's Talk skips this screen (D-020). */
 @Composable
-fun PromptScreen(onRecord: (Prompt, String) -> Unit, onOpenSoundLab: (() -> Unit)? = null, vm: PromptViewModel = hiltViewModel()) {
+fun PromptScreen(
+    onRecord: (Prompt, String) -> Unit,
+    onOpenSoundLab: (() -> Unit)? = null,
+    onOpenKeys: () -> Unit = {},
+    vm: PromptViewModel = hiltViewModel(),
+) {
     val state by vm.state.collectAsStateWithLifecycle()
     val haptics = rememberHaptics()
+    var ideasOpen by rememberSaveable { mutableStateOf(false) }
+    val prompt = state.prompt
+    if (ideasOpen && prompt != null) {
+        SpeakingIdeasSheet(prompt, state.track, onDismiss = { ideasOpen = false }, onOpenKeys = onOpenKeys)
+    }
     PromptContent(
         state = state,
         onEvent = { e ->
@@ -91,12 +108,19 @@ fun PromptScreen(onRecord: (Prompt, String) -> Unit, onOpenSoundLab: (() -> Unit
         },
         onRecord = { state.prompt?.let { onRecord(it, state.track.key) } },
         onOpenSoundLab = onOpenSoundLab,
+        onNeedIdeas = { ideasOpen = true },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord: () -> Unit, onOpenSoundLab: (() -> Unit)? = null) {
+fun PromptContent(
+    state: PromptUiState,
+    onEvent: (PromptEvent) -> Unit,
+    onRecord: () -> Unit,
+    onOpenSoundLab: (() -> Unit)? = null,
+    onNeedIdeas: () -> Unit = {},
+) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = MukharSpace.gutter).padding(top = 18.dp, bottom = 24.dp),
     ) {
@@ -155,7 +179,7 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
             },
             label = "prompt",
         ) { prompt ->
-            if (prompt != null) PromptCard(prompt, state, onEvent)
+            if (prompt != null) PromptCard(prompt, state, onEvent, onNeedIdeas)
         }
 
         Row(Modifier.padding(start = 2.dp, top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -191,7 +215,7 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
 }
 
 @Composable
-private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEvent) -> Unit) {
+private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEvent) -> Unit, onNeedIdeas: () -> Unit) {
     val hi = prompt.lang == Lang.HI
     MukharCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Column(Modifier.padding(18.dp)) {
@@ -239,6 +263,17 @@ private fun PromptCard(prompt: Prompt, state: PromptUiState, onEvent: (PromptEve
                         }
                     }
                 }
+            }
+            // US-078: a speaking guide for this prompt (free, offline), plus AI ideas with the user's own key.
+            val needCd = stringResource(R.string.ideas_need_a11y)
+            OutlinedButton(
+                onClick = onNeedIdeas,
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).heightIn(min = MukharSpace.touch).testTag(TAG_NEED_IDEAS)
+                    .semantics { contentDescription = needCd },
+            ) {
+                Icon(Icons.Rounded.Lightbulb, null, tint = MukharTheme.colors.accentInk, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.ideas_need))
             }
         }
     }
