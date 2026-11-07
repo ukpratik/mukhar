@@ -11,7 +11,7 @@
     <string name="words_gym_nothing">Nothing to review yet</string>
     <string name="words_gym_caught_up">All caught up for today</string>
     <string name="words_gym_due_sub">~%1$d min · works offline</string>
-    <string name="words_gym_a11y" tools:ignore="PluralsCandidate">Word Gym: %1$d due, about %2$d minutes. Start review</string>
+    <string name="words_gym_a11y" tools:ignore="PluralsCandidate">Word Gym: %1$d due, about %2$d min. Start review</string>
     <string name="words_gym_nothing_a11y">Review: nothing due yet</string>
     <string name="words_empty_title">Your words will live here</string>
     <string name="words_empty_goals">your goals</string>

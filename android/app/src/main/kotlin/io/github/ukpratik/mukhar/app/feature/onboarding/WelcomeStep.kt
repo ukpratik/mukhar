@@ -64,7 +64,7 @@ fun WelcomeBody(yearText: String, yearValid: Boolean, onYearChange: (String) -> 
                 contentAlignment = Alignment.Center,
             ) {
                 CappedFontScale {
-                    Text("V", style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp), color = MaterialTheme.colorScheme.onPrimary)
+                    Text("M", style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp), color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Box(Modifier.align(Alignment.TopEnd).offset(x = (-9).dp, y = 9.dp).size(8.dp).clip(CircleShape).background(MukharTheme.colors.accent))
             }

@@ -37,7 +37,7 @@
     <string name="talk_shuffle">Another prompt</string>
     <string name="talk_card_a11y">%1$s, %2$s, %3$s. %4$s Start talk</string>
     <string name="talks_off_title">Talks are off</string>
-    <string name="talks_off_body">Daily talks and coach\'s notes need two online services. See what\'s sent before you decide.</string>
+    <string name="talks_off_body">Record daily talks and get coach\'s notes. See exactly what leaves your phone first: nothing, unless you add your own keys.</string>
     <string name="talks_off_a11y">Talks are off. Turn on talks: see what leaves your phone first</string>
 
     <string name="today_done_title">You\'re done for today.</string>

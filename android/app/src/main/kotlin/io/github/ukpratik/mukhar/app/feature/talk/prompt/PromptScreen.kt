@@ -165,7 +165,7 @@ fun PromptContent(state: PromptUiState, onEvent: (PromptEvent) -> Unit, onRecord
                 stringResource(
                     when {
                         state.fresh -> R.string.no_repeat_line
-                        state.premium -> R.string.time_line_premium
+                        state.premium || !io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.CLOUD_ENABLED -> R.string.time_line_premium
                         else -> R.string.time_line_free
                     },
                 ),

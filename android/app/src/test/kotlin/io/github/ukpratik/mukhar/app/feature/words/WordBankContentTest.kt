@@ -59,7 +59,7 @@ class WordBankContentTest {
     @Test
     fun listShowsTalkWordsWithStatusesAndTheGymRow() {
         show(list)
-        compose.onNodeWithContentDescription("Word Gym: 8 due, about 2 minutes. Start review").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Word Gym: 8 due, about 2 min. Start review").assertIsDisplayed()
         compose.onNodeWithText("From your talks").assertIsDisplayed()
         compose.onNodeWithText("Interviews").assertIsDisplayed()
         compose.onNodeWithText("5 in total").assertIsDisplayed()

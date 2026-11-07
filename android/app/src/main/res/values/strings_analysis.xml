@@ -5,7 +5,7 @@
     <string name="settings_group_analysis">Analysis</string>
     <string name="analysis_mode_heading">How Mukhar listens</string>
     <string name="mode_on_device">On this phone</string>
-    <string name="mode_on_device_sub">Free · recommended. Nothing leaves your phone.</string>
+    <string name="mode_on_device_sub">Free. Offline speech arrives in the next update. Until then, talks are saved to analyse later.</string>
     <string name="mode_own_keys">Use my own keys</string>
     <string name="mode_own_keys_sub">Advanced. Your Deepgram, Sarvam or Anthropic account, called straight from your phone.</string>
     <string name="mode_cloud">Mukhar Cloud</string>
@@ -82,7 +82,7 @@
     <!-- Onboarding: How should Mukhar listen? -->
     <string name="listen_title">How should Mukhar listen?</string>
     <string name="listen_lead">You can change this any time in Settings → Analysis.</string>
-    <string name="listen_device_title">On this phone (free, recommended)</string>
+    <string name="listen_device_title">On this phone (free)</string>
     <string name="listen_device_body">Mukhar turns your talk into text on your phone. Nothing leaves your device. It needs a one-time download of about 40 MB per language (Wi-Fi recommended). Offline transcripts are less accurate: Mukhar may miss some \"um\"s and mishear names or mixed Hindi-English, so filler counts are estimates and there are no grammar fixes. Pace and pauses are accurate.</string>
     <string name="listen_device_download">Download English (36 MB) · Download Hindi (42 MB): coming in the next update. Your talks are saved until then.</string>
     <string name="listen_keys_title">Use my own AI keys (advanced)</string>

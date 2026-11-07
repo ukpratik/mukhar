@@ -14,4 +14,6 @@ object FreePlan : Entitlements {
     override val isPremium: Flow<Boolean> = flowOf(false)
 }
 
-fun capSeconds(premium: Boolean): Int = if (premium) TalkThresholds.PREMIUM_CAP_S else TalkThresholds.FREE_CAP_S
+/** Talk length cap. The 2-minute free cap exists only for Mukhar Cloud; with Cloud off every talk gets 3 minutes (D-039). */
+fun capSeconds(premium: Boolean): Int =
+    if (premium || !io.github.ukpratik.mukhar.domain.analysis.AnalysisMode.CLOUD_ENABLED) TalkThresholds.PREMIUM_CAP_S else TalkThresholds.FREE_CAP_S

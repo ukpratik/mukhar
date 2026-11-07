@@ -213,7 +213,7 @@ private fun NotificationPreview(reminder: ReminderSettings, time: LocalTime, mod
     MukharCard(modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = a11y }, shape = MaterialTheme.shapes.medium) {
         Row(Modifier.padding(MukharSpace.m), horizontalArrangement = Arrangement.spacedBy(MukharSpace.m)) {
             Box(Modifier.size(28.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
-                CappedFontScale { Text("V", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimary) }
+                CappedFontScale { Text("M", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimary) }
             }
             Column {
                 Text(stringResource(R.string.reminder_preview_header, timeLabel(time)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
