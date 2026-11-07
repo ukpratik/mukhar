@@ -177,7 +177,6 @@
     <string name="settings_daily_words_lot">That\'s a lot. Most people remember more with fewer.</string>
     <string name="settings_daily_words_fewer_a11y">Fewer new %1$s words a day</string>
     <string name="settings_daily_words_more_a11y">More new %1$s words a day</string>
-    <string name="settings_daily_words_value_a11y">%1$s: %2$d new words a day</string>
     <string name="settings_weekly_goal">Weekly goal</string>
     <string name="settings_weekly_goal_sub">Days a week you want to practise</string>
     <string name="settings_reminder">Daily reminder</string>

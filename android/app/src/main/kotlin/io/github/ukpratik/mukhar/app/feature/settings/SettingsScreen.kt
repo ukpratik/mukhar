@@ -375,7 +375,7 @@ private fun DailyWordsRow(langs: List<Lang>, counts: Map<Lang, Int>, onChange: (
         langs.forEach { lang ->
             val n = counts[lang] ?: DailyWordPicker.DEFAULT_COUNT
             val name = stringResource(langLabel(lang))
-            val value = stringResource(R.string.settings_daily_words_value_a11y, name, n)
+            val value = pluralStringResource(R.plurals.settings_daily_words_value_a11y, n, name, n)
             Column(Modifier.fillMaxWidth().padding(start = 38.dp, top = 10.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
