@@ -50,8 +50,10 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // D-044: without the upload key the release APK stays unsigned (F-Droid builds from source and signs it
             // itself). Pass -Pmukhar.debugSignRelease=true to sign a local test build with the debug key instead.
-            signingConfig = signingConfigs.findByName("upload")
-                ?: if (providers.gradleProperty("mukhar.debugSignRelease").orNull == "true") signingConfigs.getByName("debug") else null
+            // Keep this on one line with spaces: F-Droid's build server deletes the signingConfigs block and any line
+            // shaped like "signingConfig = x" (fdroidserver remove_signing_keys), which would leave a split line dangling.
+            val debugSign = providers.gradleProperty("mukhar.debugSignRelease").orNull == "true"
+            signingConfig = signingConfigs.findByName("upload") ?: (if (debugSign) signingConfigs.getByName("debug") else null)
         }
     }
 
