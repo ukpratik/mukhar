@@ -72,7 +72,7 @@ class TodayContentTest {
             .assertHasClickAction()
         compose.onNodeWithTag(TAG_STREAK_CARD).assertHasClickAction()
         compose.onNode(hasContentDescription("Today's talk, English", substring = true)).performScrollTo()
-        compose.onNodeWithContentDescription("Revise · 8 due. ~3 min").performScrollTo()
+        compose.onNodeWithContentDescription("Revise · 8 due. ~2 min").performScrollTo()
         compose.onAllNodes(hasContentDescription("starting point", substring = true)).assertCountEquals(0)
         compose.onNodeWithTag(TAG_STREAK_CARD).performClick()
         assertThat(streakOpened).isTrue()
@@ -106,7 +106,7 @@ class TodayContentTest {
         var turnOn = false
         show(TodayFixtures.talksOff, TodayActions(onTurnOnTalks = { turnOn = true }))
         described("Day 3. Revising 5 cards keeps your streak going. Weekly goal 2 of 5 days. Open streak details")
-        compose.onNodeWithContentDescription("Revise · 7 due. Works fully on your phone · ~3 min").performScrollTo()
+        compose.onNodeWithContentDescription("Revise · 7 due. Works fully on your phone · ~2 min").performScrollTo()
         compose.onAllNodesWithTag(TAG_TALK_CARD).assertCountEquals(0)
         compose.onAllNodes(hasContentDescription("starting point", substring = true)).assertCountEquals(0)
         described("Talks are off. Turn on talks: see what leaves your phone first").performClick()

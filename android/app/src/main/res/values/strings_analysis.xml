@@ -34,7 +34,7 @@
     <string name="keys_stt_heading">Speech-to-text</string>
     <string name="keys_llm_heading">Coaching</string>
     <string name="provider_deepgram">Deepgram</string>
-    <string name="provider_sarvam">Sarvam (Hindi)</string>
+    <string name="provider_sarvam">Sarvam (Hindi, also English)</string>
     <string name="provider_anthropic">Anthropic (Claude)</string>
     <string name="key_masked">••••%1$s</string>
     <string name="key_field_label">Paste your %1$s key</string>

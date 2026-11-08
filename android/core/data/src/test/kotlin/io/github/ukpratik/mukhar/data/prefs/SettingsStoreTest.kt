@@ -116,7 +116,8 @@ class SettingsStoreTest {
         var p = store.currentPrefs()
         assertThat(p.langs).containsExactly(Lang.HI)
         assertThat(p.lastLang).isEqualTo(Lang.HI) // never a language the user didn't pick
-        assertThat(p.tracksFor(Lang.HI)).containsExactly(Track.INTERVIEWS) // word power has no talk prompts
+        // Word power has no prompts of its own, so it practises on everyday topics (I-004).
+        assertThat(p.tracksFor(Lang.HI)).containsExactly(Track.INTERVIEWS, Track.EVERYDAY).inOrder()
         store.setTrack(Lang.HI, Track.INTERVIEWS)
         store.setStutterFriendly(true)
         store.setThinkTime(true)
@@ -128,9 +129,19 @@ class SettingsStoreTest {
     }
 
     @Test
-    fun onlyNonTalkGoalsFallBackToTheDefaultTracks() = runBlocking<Unit> {
+    fun contentCreationOpensOnPublicSpeakingThenTheDefaults() = runBlocking<Unit> {
+        // I-004: Speak Studio opened on Professional for a content-creation-only user.
         store.setProfile(null, setOf(Lang.EN), setOf(GoalTrack.CONTENT_CREATION))
-        assertThat(store.currentPrefs().tracksFor(Lang.EN)).isEqualTo(TalkPrefs.DEFAULT_TRACKS[Lang.EN])
+        val p = store.currentPrefs()
+        assertThat(p.trackFor(Lang.EN)).isEqualTo(Track.PUBLIC_SPEAKING)
+        assertThat(p.tracksFor(Lang.EN))
+            .containsExactly(Track.PUBLIC_SPEAKING, Track.PROFESSIONAL, Track.INTERVIEWS, Track.EVERYDAY).inOrder()
+    }
+
+    @Test
+    fun goalTracksKeepTheUsersOrderAndSkipTheDefaults() = runBlocking<Unit> {
+        store.setProfile(null, setOf(Lang.EN), setOf(GoalTrack.EVERYDAY, GoalTrack.CONTENT_CREATION))
+        assertThat(store.currentPrefs().tracksFor(Lang.EN)).containsExactly(Track.PUBLIC_SPEAKING, Track.EVERYDAY).inOrder()
     }
 
     @Test

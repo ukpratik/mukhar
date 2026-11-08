@@ -137,6 +137,46 @@ class ByokClientsTest {
         return out.toByteArray()
     }
 
+    /** Frames with [payload] bytes each, except [small] payload bytes for frames in [quiet] (an encoder's silence). */
+    private fun adtsSized(frames: Int, payload: Int, quiet: IntRange, small: Int): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        repeat(frames) { i ->
+            val n = if (i in quiet) small else payload
+            out.write(io.github.ukpratik.mukhar.data.audio.AdtsWriter.header(n))
+            out.write(ByteArray(n) { 1 })
+        }
+        return out.toByteArray()
+    }
+
+    @Test
+    fun adtsChunkerCutsInTheQuietestMomentByLevel() {
+        // 64 s of speech at -20 dB with a 0.5 s silence at 24.0–24.5 s: the first cut goes there, not at 29 s.
+        val data = adts(1000)
+        val levels = FloatArray(6_400) { if (it in 2_400 until 2_450) -70f else -20f }
+        val pieces = AdtsChunker.split(data, 29_000, levels)
+        assertThat(pieces[0].durationMs).isIn(com.google.common.collect.Range.closed(24_000L, 24_500L))
+        assertThat(pieces.sumOf { it.bytes.size }).isEqualTo(data.size)
+        assertThat(pieces.all { it.durationMs <= 29_000 }).isTrue()
+        assertThat(pieces.last().let { it.startMs + it.durationMs }).isEqualTo(64_000)
+    }
+
+    @Test
+    fun adtsChunkerFallsBackToSmallFramesWithoutLevels() {
+        // Frames 390–396 (≈ 25.0–25.4 s) are tiny, as an encoder writes silence.
+        val data = adtsSized(1000, payload = 200, quiet = 390..396, small = 4)
+        val pieces = AdtsChunker.split(data, 29_000)
+        assertThat(pieces[0].durationMs).isIn(com.google.common.collect.Range.closed(24_960L, 25_408L))
+        assertThat(pieces.sumOf { it.bytes.size }).isEqualTo(data.size)
+    }
+
+    @Test
+    fun adtsChunkerNeverLooksFurtherBackThanTheSearchWindow() {
+        // The only silence is at 10 s, more than 8 s before the 29 s limit: cut at the limit as before.
+        val levels = FloatArray(6_400) { if (it in 1_000 until 1_050) -70f else -20f }
+        val pieces = AdtsChunker.split(adts(1000), 29_000, levels)
+        assertThat(pieces[0].durationMs).isAtLeast(29_000L - AdtsChunker.SEARCH_MS)
+    }
+
     @Test
     fun adtsChunkerCutsAtFrameBoundaries() {
         val data = adts(1000) // 64 s

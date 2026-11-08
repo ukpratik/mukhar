@@ -44,6 +44,16 @@ data class TalkPrefs(
 
     companion object {
         /** The tracks drawn in S08 when onboarding picked no talk track (or before it ran). */
+        /**
+         * The talk track for a goal (I-004, D-051). Content creation is talking to an audience (public speaking);
+         * word power has no prompts of its own, so it practises on everyday topics.
+         */
+        fun talkTrackFor(goal: GoalTrack): Track = when (goal) {
+            GoalTrack.CONTENT_CREATION -> Track.PUBLIC_SPEAKING
+            GoalTrack.WORD_POWER -> Track.EVERYDAY
+            else -> Track.fromKey(goal.key)
+        }
+
         val DEFAULT_TRACKS = mapOf(
             Lang.EN to listOf(Track.PROFESSIONAL, Track.INTERVIEWS, Track.EVERYDAY),
             Lang.HI to listOf(Track.PROFESSIONAL, Track.EVERYDAY, Track.PUBLIC_SPEAKING),
@@ -359,13 +369,18 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
     private fun Preferences.toTalkPrefs(): TalkPrefs {
         val picked = this[K.langs].orEmpty()
         val langs = Lang.entries.filter { it.code in picked }.ifEmpty { TalkPrefs().langs }
-        // Goal tracks without talk prompts (content creation, word power) don't add a talk track.
-        val talkTracks = GoalTrack.entries.filter { it.key in this[K.tracks].orEmpty() }
-            .mapNotNull { g -> Track.entries.firstOrNull { it.key == g.key } }
+        // I-004: goals without their own prompts map to the nearest talk track, so Speak Studio opens on the user's goal.
+        // Only borrowed tracks (e.g. content creation alone): the goal's track first, then the defaults for variety.
+        val goals = GoalTrack.entries.filter { it.key in this[K.tracks].orEmpty() }
+        val talkTracks = goals.map(TalkPrefs::talkTrackFor).distinct()
+        val ownTrack = goals.any { g -> Track.entries.any { it.key == g.key } }
         val lastLang = this[K.talkLang]?.let { code -> langs.firstOrNull { it.code == code } } ?: langs.first()
         return TalkPrefs(
             langs = langs,
-            tracks = langs.associateWith { talkTracks.ifEmpty { TalkPrefs.DEFAULT_TRACKS[it].orEmpty() } },
+            tracks = langs.associateWith { l ->
+                val defaults = TalkPrefs.DEFAULT_TRACKS[l].orEmpty()
+                if (ownTrack) talkTracks else (talkTracks + defaults).distinct()
+            },
             lastLang = lastLang,
             lastTrack = Lang.entries.mapNotNull { l -> this[K.talkTrack(l)]?.let { l to Track.fromKey(it) } }.toMap(),
             stutterFriendly = this[K.stutterFriendly] ?: false,

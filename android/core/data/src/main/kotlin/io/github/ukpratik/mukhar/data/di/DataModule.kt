@@ -303,7 +303,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun sarvam(@ByokHttpClient http: OkHttpClient, json: Json): SarvamClient = SarvamClient(http, json)
+    fun sarvam(@ByokHttpClient http: OkHttpClient, json: Json): SarvamClient = SarvamClient(http, json, decoder = MediaCodecPcmDecoder())
 
     @Provides
     @Singleton

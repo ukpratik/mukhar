@@ -1,5 +1,6 @@
 package io.github.ukpratik.mukhar.app.feature.words
 
+import io.github.ukpratik.mukhar.domain.revise.ReviewEstimate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -134,7 +135,7 @@ data class WordBankUiState(
             } && (tracks.isEmpty() || w.tracks.any { it in tracks })
         }
     val talkCount: Int get() = words.count { it.source == WordSource.TALK }
-    val gymMinutes: Int get() = ((gymDue + 3) / 4).coerceIn(1, 5)
+    val gymMinutes: Int get() = ReviewEstimate.minutes(gymDue)
 
     /** The language whose "you've met every word" note applies on this tab. */
     val exhaustedHere: Lang? get() = (tab ?: langs.singleOrNull())?.takeIf { it in exhausted }

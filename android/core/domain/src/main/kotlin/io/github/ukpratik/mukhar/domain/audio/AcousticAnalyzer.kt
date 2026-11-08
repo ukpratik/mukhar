@@ -62,6 +62,9 @@ class AcousticAnalyzer {
 
     fun result(lang: Lang): AcousticMetrics = analyze(levels.toFloatArray(), lang)
 
+    /** The 10 ms frame levels in dBFS fed so far (where to cut a long talk for speech-to-text, D-052). */
+    fun levels(): FloatArray = levels.toFloatArray()
+
     companion object {
         const val SAMPLE_RATE = 16_000
         const val FRAME_MS = 10

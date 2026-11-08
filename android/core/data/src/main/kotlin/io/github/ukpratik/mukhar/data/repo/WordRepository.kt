@@ -342,10 +342,13 @@ class WordRepository(
         cards.filter { it.type == CardType.SAVED_LINE.key }.sortedByDescending { it.createdAt }
     }
 
-    /** Word cards due before the next 03:00 (the Word Gym row on S14), for [lang] when the Words tab has one. */
+    /**
+     * Word cards due before the next 03:00 (the Word Gym row on S14), for [lang] when the Words tab has one. Not capped
+     * at a session's [GYM_MAX] (I-003): the tabs add up to the count Today shows, and a second session takes the rest.
+     */
     fun observeGymDue(lang: Lang? = null): Flow<Int> = dao.observeCards().map { cards ->
         val cutoff = nextCutoff(clock.now(), clock.zone()).toEpochMilli()
-        cards.count { !it.suspended && it.wordId != null && it.due < cutoff && (lang == null || it.lang == lang.code) }.coerceAtMost(GYM_MAX)
+        cards.count { !it.suspended && it.wordId != null && it.due < cutoff && (lang == null || it.lang == lang.code) }
     }
 
     /** "Remove from Word Gym" suspends the word's cards (Undo restores them, S14 notes). */

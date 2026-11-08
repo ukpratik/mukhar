@@ -1,5 +1,7 @@
 package io.github.ukpratik.mukhar.data.byok
 
+import io.github.ukpratik.mukhar.data.audio.PcmDecoder
+import io.github.ukpratik.mukhar.domain.audio.AcousticAnalyzer
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.domain.model.Word
 import kotlinx.coroutines.CancellationException
@@ -23,7 +25,8 @@ import java.nio.ByteOrder
  * Sarvam speech-to-text (Hindi, Hinglish), straight from the phone with the user's key (ADR-008). The sync REST
  * endpoint (`POST /speech-to-text`, header `api-subscription-key`, multipart `file`) is meant for clips under 30 s,
  * and the batch job API's upload steps aren't documented well enough to build on yet, so a talk is cut into ADTS
- * pieces of at most [MAX_CHUNK_MS] at frame boundaries (each piece is valid AAC on its own) and sent one by one.
+ * pieces of at most [MAX_CHUNK_MS] at frame boundaries (each piece is valid AAC on its own), cut in a quiet moment
+ * ([AdtsChunker]), and sent one by one.
  *
  * Sarvam returns chunk-level timestamps only ("word-level timestamps are not supported"), so word times are
  * interpolated by character length inside each timestamp chunk and offset by the piece's start: they're approximate
@@ -34,10 +37,17 @@ class SarvamClient(
     private val http: OkHttpClient,
     private val json: Json,
     private val base: HttpUrl = BASE.toHttpUrl(),
+    private val decoder: PcmDecoder = PcmDecoder.None,
 ) {
     suspend fun transcribe(key: String, audio: File, lang: Lang): ByokResult<SttResult> {
+        // Levels only matter for talks long enough to be cut; a decode failure falls back to frame sizes.
+        val levels = if (audio.length() > SHORT_TALK_BYTES) {
+            AcousticAnalyzer().let { a -> if (decoder.decode(audio) { pcm, n -> a.feed(pcm, n) }) a.levels() else null }
+        } else {
+            null
+        }
         val pieces = try {
-            AdtsChunker.split(audio.readBytes(), MAX_CHUNK_MS)
+            AdtsChunker.split(audio.readBytes(), MAX_CHUNK_MS, levels)
         } catch (e: IOException) {
             return ByokResult.Fail(ByokError.BadResponse("audio"))
         }
@@ -108,6 +118,8 @@ class SarvamClient(
         const val MODEL = "saaras:v3"
         const val PROVIDER = "sarvam"
         const val MAX_CHUNK_MS = 29_000L
+        /** Under ≈ 28 s at the recorder's 32 kbps a talk is one piece, so there's nothing to cut (no decode). */
+        private const val SHORT_TALK_BYTES = 110_000L
         const val CONFIDENCE = 0.9
         private val AAC = "audio/aac".toMediaType()
         private val WAV = "audio/wav".toMediaType()
@@ -157,36 +169,77 @@ class SarvamClient(
     }
 }
 
-/** Cuts an ADTS AAC stream into pieces of whole frames, each at most a given length (ADTS frames stand alone). */
+/**
+ * Cuts an ADTS AAC stream into pieces of whole frames, each at most a given length (ADTS frames stand alone).
+ *
+ * A cut at a fixed length lands mid-word and the engine mishears both halves ("fixed it" → "fixed stiff"), so each
+ * cut goes at the quietest moment in the last [SEARCH_MS] of the piece: by [levels] (10 ms frame levels in dB, from
+ * the decoded audio) when given, else by frame size (an encoder spends few bytes on silence). Ties take the latest.
+ */
 object AdtsChunker {
     data class Piece(val bytes: ByteArray, val startMs: Long, val durationMs: Long)
 
+    const val SEARCH_MS = 8_000L
+
     private val RATES = intArrayOf(96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000, 7350)
 
-    fun split(data: ByteArray, maxMs: Long): List<Piece> {
-        val pieces = mutableListOf<Piece>()
+    private class Frame(val offset: Int, val size: Int, val startSample: Long, val samples: Long)
+
+    fun split(data: ByteArray, maxMs: Long, levels: FloatArray? = null): List<Piece> {
+        val frames = ArrayList<Frame>()
         var pos = 0
-        var pieceStart = 0
-        var pieceSamples = 0L
-        var doneSamples = 0L
+        var samples = 0L
         var rate = 16_000
         while (pos + 7 <= data.size) {
             val sync = (data[pos].toInt() and 0xFF) == 0xFF && (data[pos + 1].toInt() and 0xF0) == 0xF0
             val len = ((data[pos + 3].toInt() and 0x03) shl 11) or ((data[pos + 4].toInt() and 0xFF) shl 3) or ((data[pos + 5].toInt() and 0xE0) shr 5)
             if (!sync || len < 7 || pos + len > data.size) break
             rate = RATES.getOrElse((data[pos + 2].toInt() shr 2) and 0x0F) { 16_000 }
-            val blocks = (data[pos + 6].toInt() and 0x03) + 1
-            val frameSamples = 1024L * blocks
-            if (pieceSamples > 0 && (pieceSamples + frameSamples) * 1000 / rate > maxMs) {
-                pieces += Piece(data.copyOfRange(pieceStart, pos), doneSamples * 1000 / rate, pieceSamples * 1000 / rate)
-                doneSamples += pieceSamples
-                pieceStart = pos
-                pieceSamples = 0
-            }
-            pieceSamples += frameSamples
+            val frameSamples = 1024L * ((data[pos + 6].toInt() and 0x03) + 1)
+            frames += Frame(pos, len, samples, frameSamples)
+            samples += frameSamples
             pos += len
         }
-        if (pieceSamples > 0) pieces += Piece(data.copyOfRange(pieceStart, pos), doneSamples * 1000 / rate, pieceSamples * 1000 / rate)
+        if (frames.isEmpty()) return emptyList()
+        fun ms(sampleCount: Long) = sampleCount * 1000 / rate
+        fun msAt(i: Int) = ms(if (i < frames.size) frames[i].startSample else samples)
+        // Quietness of a cut before frame [i]: the frames on both sides of it.
+        fun score(i: Int): Double {
+            val around = (maxOf(0, i - 1)..minOf(frames.lastIndex, i)).toList()
+            return if (levels != null) {
+                around.map { f ->
+                    val from = (msAt(f) / 10).toInt()
+                    val to = (msAt(f + 1) / 10).toInt().coerceAtLeast(from + 1)
+                    (from until to).mapNotNull { levels.getOrNull(it)?.toDouble() }.average().takeIf { !it.isNaN() } ?: 0.0
+                }.average()
+            } else {
+                around.map { frames[it].size.toDouble() }.average()
+            }
+        }
+
+        val pieces = mutableListOf<Piece>()
+        var first = 0
+        while (first < frames.size) {
+            // The furthest frame end that keeps this piece within maxMs (always at least one frame).
+            var end = first + 1
+            while (end < frames.size && msAt(end + 1) - msAt(first) <= maxMs) end++
+            val cut = if (end >= frames.size) {
+                frames.size
+            } else {
+                var best = end
+                var bestScore = score(end)
+                var i = end - 1
+                while (i > first && msAt(end) - msAt(i) <= SEARCH_MS) {
+                    val sc = score(i)
+                    if (sc < bestScore) { best = i; bestScore = sc }
+                    i--
+                }
+                best
+            }
+            val to = if (cut < frames.size) frames[cut].offset else pos
+            pieces += Piece(data.copyOfRange(frames[first].offset, to), msAt(first), msAt(cut) - msAt(first))
+            first = cut
+        }
         return pieces
     }
 }

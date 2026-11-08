@@ -1,5 +1,6 @@
 package io.github.ukpratik.mukhar.app.feature.today
 
+import io.github.ukpratik.mukhar.domain.revise.ReviewEstimate
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.prefs.Settings
 import io.github.ukpratik.mukhar.data.repo.HabitSnapshot
@@ -137,7 +138,7 @@ object TodayStateMapper {
                 kind = reviseKind,
                 due = i.dueNow,
                 dueTomorrow = i.dueTomorrow,
-                minutes = ((i.dueNow + 2) / 3).coerceIn(1, 3),
+                minutes = ReviewEstimate.minutes(i.dueNow),
                 offline = !i.online,
                 talksOff = !talksOn,
             ),

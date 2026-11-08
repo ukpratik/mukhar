@@ -1,5 +1,6 @@
 package io.github.ukpratik.mukhar.app.feature.talk.report
 
+import io.github.ukpratik.mukhar.data.repo.TalkRepository
 import io.github.ukpratik.mukhar.data.repo.Credit
 import io.github.ukpratik.mukhar.data.repo.TalkCodes
 import io.github.ukpratik.mukhar.data.repo.TalkDetails
@@ -159,6 +160,12 @@ object ReportMapper {
         val s = d.session
         val lang = d.lang
         val metrics: Metrics? = d.words?.takeIf { it.isNotEmpty() }?.let { MetricsCalculator.compute(it, lang, stutterFriendly) }
+            ?.let { m ->
+                // D-052: for per-piece timestamps (Sarvam) the stored long pauses were measured from the audio.
+                val stored = d.metrics?.takeIf { d.transcriptProvider in TalkRepository.CHUNK_TIMED_PROVIDERS }
+                if (stored == null || m.longPauses == null || stored.longPauses == null) m
+                else m.copy(longPauses = stored.longPauses, longPausesPerMin = stored.longPausesPerMin)
+            }
         val safety = d.feedback?.feedback?.safety ?: Safety.NONE
         val phase = phase(s.status, s.errorCode, d.words != null, safety)
         val feedback = d.feedback?.feedback

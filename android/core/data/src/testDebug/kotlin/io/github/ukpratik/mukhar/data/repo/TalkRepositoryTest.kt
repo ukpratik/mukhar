@@ -615,6 +615,32 @@ class TalkRepositoryTest {
     }
 
     @Test
+    fun sarvamTalksTakeTheirLongPausesFromTheAudio() = runTest {
+        // D-052: Sarvam's per-piece timestamps hide pauses; the recording has 3 gaps of 2 s.
+        repo = repoWith(voiceDecoder)
+        val id = recorded()
+        pipeline.transcribeAnswers += Outcome.Ok(TranscribeResult("srv-1", "sarvam", "saaras:v3", 60_000, CannedTalks.words(Lang.EN)))
+        var coachSaw: Int? = null
+        pipeline.feedbackAnswers += { req -> coachSaw = req.metrics.longPauses; cannedFeedback()(req) }
+        assertThat(repo.analyze(id)).isEqualTo(AnalysisRun.Done)
+        val m = repo.observeTalk(id).first()!!.metrics!!
+        assertThat(m.longPauses).isEqualTo(3)
+        assertThat(m.algoVersion).isEqualTo(1) // still a transcript report
+        assertThat(coachSaw).isEqualTo(3) // the coach sees the same number as the report
+    }
+
+    @Test
+    fun otherEnginesKeepTheTranscriptPauses() = runTest {
+        repo = repoWith(voiceDecoder)
+        val id = recorded()
+        pipeline.transcribeAnswers += transcript()
+        pipeline.feedbackAnswers += cannedFeedback()
+        repo.analyze(id)
+        val expected = io.github.ukpratik.mukhar.domain.metrics.MetricsCalculator.compute(CannedTalks.words(Lang.EN), Lang.EN).longPauses
+        assertThat(repo.observeTalk(id).first()!!.metrics!!.longPauses).isEqualTo(expected)
+    }
+
+    @Test
     fun writeTranscriptLaterReplacesTheVoiceOnlyReport() = runTest {
         repo = repoWith(voiceDecoder)
         val id = recorded()

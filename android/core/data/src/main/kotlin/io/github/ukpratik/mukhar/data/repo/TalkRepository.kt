@@ -34,8 +34,11 @@ import io.github.ukpratik.mukhar.data.work.TranscribeRequest
 import io.github.ukpratik.mukhar.domain.Clock
 import io.github.ukpratik.mukhar.domain.feedback.GroundingValidator
 import io.github.ukpratik.mukhar.domain.feedback.UpgradedWord
+import io.github.ukpratik.mukhar.data.byok.SarvamClient
 import io.github.ukpratik.mukhar.domain.metrics.MetricAverages
+import io.github.ukpratik.mukhar.domain.metrics.Metrics
 import io.github.ukpratik.mukhar.domain.metrics.MetricsCalculator
+import io.github.ukpratik.mukhar.domain.metrics.Wpm
 import io.github.ukpratik.mukhar.domain.metrics.WpmBand
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.domain.audio.AcousticAnalyzer
@@ -232,6 +235,7 @@ class TalkRepository(
                     val at = clock.now().toEpochMilli()
                     talkDao.upsertTranscript(TranscriptEntity(id, encodeWords(t.words), t.provider, t.model, at))
                     val metrics = MetricsCalculator.compute(t.words, lang, prefs.stutterFriendly)
+                        .withAudioPauses(if (t.provider in CHUNK_TIMED_PROVIDERS) audioPauses(audio) else null)
                     talkDao.upsertMetrics(
                         MetricsEntity(
                             sessionId = id, wpm = metrics.wpm, wpmBand = metrics.wpmBand.key,
@@ -253,13 +257,15 @@ class TalkRepository(
         val s = talkDao.session(id) ?: return AnalysisRun.Gone
         val serverId = s.serverSessionId ?: return onError(id, AppError.Unknown("no_server_session"), Stage.LLM)
         val lowConf = lowConfidence(words)
-        val metrics = MetricsCalculator.compute(words, lang, stutterFriendly)
+        val provider = talkDao.transcript(id)?.provider
+        val stored = if (provider in CHUNK_TIMED_PROVIDERS) talkDao.metrics(id)?.longPauses else null
+        val metrics = MetricsCalculator.compute(words, lang, stutterFriendly).withAudioPauses(stored)
         val prompt = prompts.byId(s.promptId)?.text ?: if (s.kind == TalkKind.BASELINE.key) BASELINE_PROMPT else ""
         val request = FeedbackRequest(
             serverId, lang, s.track, prompt, stutterFriendly, words, lowConf, metrics, s.speechMs.toLong(),
             averages = previousAverages(lang, s.createdAt),
             durationMs = s.durationMs.toLong(),
-            transcriptProvider = talkDao.transcript(id)?.provider,
+            transcriptProvider = provider,
         )
         var outcome = pipeline.feedback(request)
         // Two silent automatic retries for an LLM failure before the user sees "Try again" (S10 state 4 notes).
@@ -313,6 +319,21 @@ class TalkRepository(
             }
         }
     }
+
+    /**
+     * Long pauses measured from the recording (D-052), for engines whose timestamps are per piece, not per word
+     * (Sarvam): their interpolated word times hide every pause. Null when the audio can't be decoded.
+     */
+    private suspend fun audioPauses(audio: File): Int? {
+        val analyzer = AcousticAnalyzer()
+        if (!decoder.decode(audio) { pcm, n -> analyzer.feed(pcm, n) }) return null
+        return analyzer.result(Lang.EN).longPauses
+    }
+
+    /** Stutter-friendly metrics don't score pauses, so they stay null. */
+    private fun Metrics.withAudioPauses(longPauses: Int?): Metrics =
+        if (longPauses == null || this.longPauses == null) this
+        else copy(longPauses = longPauses, longPausesPerMin = Wpm.perMinute(longPauses, spanMs))
 
     /**
      * D-048: when no transcript can be written (no engine, no key, key refused, offline, vendor down), the talk still
@@ -583,6 +604,9 @@ class TalkRepository(
 
         /** Under this much detected speech a voice-only report isn't worth showing (D-048). */
         const val MIN_VOICE_SPEECH_MS = 5_000L
+
+        /** Speech-to-text engines with per-piece timestamps: their long pauses come from the audio (D-052). */
+        val CHUNK_TIMED_PROVIDERS = setOf(SarvamClient.PROVIDER)
         const val VOICE_ONLY_RETRY_WINDOW_MS = 7L * 24 * 60 * 60_000L
         private val ALL_STATUSES = listOf(
             TalkStatus.RECORDED, TalkStatus.QUEUED, TalkStatus.UPLOADING, TalkStatus.TRANSCRIBED, TalkStatus.FEEDBACK_READY,

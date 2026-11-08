@@ -39,8 +39,16 @@ class TodayStateMapperTest {
         assertThat(s.streak!!.dots).containsExactly(DayDot.DONE, DayDot.DONE, DayDot.DONE, DayDot.DONE, DayDot.TODAY, DayDot.EMPTY, DayDot.EMPTY).inOrder()
         assertThat(s.talk!!.eyebrow).isEqualTo(TalkEyebrow.TODAY)
         assertThat(s.revise.kind).isEqualTo(ReviseKind.DUE)
-        assertThat(s.revise.minutes).isEqualTo(3)
+        assertThat(s.revise.minutes).isEqualTo(2) // 8 cards × 15 s
         assertThat(s.doneForToday).isFalse()
+    }
+
+    @Test
+    fun reviseMinutesGrowWithTheDueCount() {
+        // I-002: 10 and 30 due both said "~3 min".
+        val habit = TodayFixtures.snapshot(emptyMap(), TodayFixtures.monday)
+        assertThat(TodayStateMapper.map(TodayFixtures.inputs(habit = habit, dueNow = 10)).revise.minutes).isEqualTo(3)
+        assertThat(TodayStateMapper.map(TodayFixtures.inputs(habit = habit, dueNow = 30)).revise.minutes).isEqualTo(8)
     }
 
     @Test

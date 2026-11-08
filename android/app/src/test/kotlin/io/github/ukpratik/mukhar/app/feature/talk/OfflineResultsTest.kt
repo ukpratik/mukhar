@@ -87,6 +87,20 @@ class OfflineResultsTest {
     }
 
     @Test
+    fun sarvamReportsShowTheLongPausesMeasuredFromTheAudio() {
+        // D-052: Sarvam's word times are interpolated, so the stored (audio-measured) pauses win over the words'.
+        val base = TalkFixtures.details()
+        val m = MetricsCalculator.compute(base.words!!, Lang.EN)
+        val stored = io.github.ukpratik.mukhar.data.db.MetricsEntity(
+            "s1", m.wpm, m.wpmBand.key, m.lexicalTokens, m.fillerCount, m.fillersPerMin, 2, 2.6, m.repetitions, m.mattr, m.spanMs.toInt(), 1,
+        )
+        fun pauses(provider: String) = ReportMapper.map(base.copy(transcriptProvider = provider, metrics = stored), TalkFixtures.AVERAGES, "Prompt", false, 180)
+            .tiles.first { it.kind == MetricKind.PAUSES }.value
+        assertThat(pauses("sarvam")).isEqualTo("2.6")
+        assertThat(pauses("deepgram")).isEqualTo("%.1f".format(java.util.Locale.US, m.longPausesPerMin))
+    }
+
+    @Test
     fun needsEngineIsItsOwnState() {
         assertThat(ReportMapper.phase(TalkStatus.FAILED, "MODEL_NOT_INSTALLED", false, io.github.ukpratik.mukhar.domain.feedback.Safety.NONE))
             .isEqualTo(ReportPhase.NEEDS_ENGINE)
