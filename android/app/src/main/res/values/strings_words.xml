@@ -8,9 +8,7 @@
     <string name="words_seg_bank">Word bank</string>
     <string name="words_seg_lines">Saved lines</string>
     <!-- rc2: US-075 language tabs, US-076 used-up list, US-077 History -->
-    <string name="words_seg_history">History</string>
     <string name="words_lang_tabs_a11y">Words language</string>
-    <string name="words_history_empty">Words you meet each day, and words you save from talks, will show up here.</string>
     <string name="words_history_today">Today</string>
     <string name="words_history_yesterday">Yesterday</string>
     <string name="words_history_revise_day">Revise these</string>

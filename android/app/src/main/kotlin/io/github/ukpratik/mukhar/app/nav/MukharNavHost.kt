@@ -41,6 +41,7 @@ import io.github.ukpratik.mukhar.app.feature.talk.report.ReportScreen
 import io.github.ukpratik.mukhar.app.feature.talk.sayagain.SayAgainScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordDetailScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordsScreen
+import io.github.ukpratik.mukhar.app.feature.words.deck.DeckScreen
 import io.github.ukpratik.mukhar.app.feature.words.review.ReviewScreen
 
 /**
@@ -125,6 +126,12 @@ fun MukharNavHost(
                     onBack = { navController.popBackStack() },
                     onPractise = { id -> navController.navigate(ReviewRoute(ReviewRoute.GYM, wordId = id)) },
                     onSeeLine = { id -> navController.navigate(ReportRoute(id)) },
+                )
+            }
+            composable<DeckRoute> {
+                DeckScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) { popUpTo<DeckRoute> { inclusive = true } } },
                 )
             }
             composable<ReviewRoute> {
@@ -224,8 +231,12 @@ fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
             onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
             onTalk = navController::navigateToTalk,
             onRevise = { lang, from, to ->
-                navController.navigate(ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, from = from.toString(), to = to.toString()))
+                navController.navigate(
+                    ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, from = from.toString(), to = to.toString(), set = ReviewRoute.SET_DONE),
+                )
             },
+            onOpenDeck = { lang -> navController.navigate(DeckRoute(lang?.code)) },
+            onPractiseStarred = { lang -> navController.navigate(ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, set = ReviewRoute.SET_STARRED)) },
         )
     }
 }

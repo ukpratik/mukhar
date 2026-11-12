@@ -80,9 +80,7 @@ import io.github.ukpratik.mukhar.app.feature.onboarding.currentLocale
 import io.github.ukpratik.mukhar.app.feature.onboarding.largeFont
 import io.github.ukpratik.mukhar.app.feature.onboarding.label
 import io.github.ukpratik.mukhar.app.feature.onboarding.timeLabel
-import io.github.ukpratik.mukhar.app.feature.words.SpeakerSlot
-import io.github.ukpratik.mukhar.app.feature.words.hearDescription
-import io.github.ukpratik.mukhar.app.feature.words.posAndRegister
+import io.github.ukpratik.mukhar.app.feature.words.deck.DeckEntryCard
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.repo.WordItem
 import io.github.ukpratik.mukhar.data.repo.WordSource
@@ -110,7 +108,8 @@ data class TodayActions(
     val onTipTap: () -> Unit = {},
     val onDismissTip: () -> Unit = {},
     val onOpenWord: (String) -> Unit = {},
-    val onSpeak: (WordItem) -> Unit = {},
+    /** US-081: the new word deck. */
+    val onOpenDeck: () -> Unit = {},
     val onKeepTrial: () -> Unit = {},
     val onManageTrial: () -> Unit = {},
 )
@@ -513,8 +512,7 @@ private fun BaselineCard(onClick: () -> Unit) {
     )
 }
 
-/** Today's words (US-020): meaning, example, register and source, with the speaker when a voice is installed. */
-@OptIn(ExperimentalLayoutApi::class)
+/** Today's words (US-081): the new word deck card, with a link to the word bank. */
 @Composable
 private fun WordsSection(state: TodayUiState, actions: TodayActions) {
     Row(Modifier.fillMaxWidth().padding(top = MukharSpace.s, start = 2.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -526,68 +524,9 @@ private fun WordsSection(state: TodayUiState, actions: TodayActions) {
             Text(stringResource(R.string.today_word_bank), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
         }
     }
-    MukharCard(Modifier.fillMaxWidth().testTag(TAG_WORDS)) {
-        if (state.words.isEmpty()) {
-            Text(
-                stringResource(R.string.today_words_soon),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(MukharSpace.l),
-            )
-        }
-        // With up to 50 a day per language, Today shows the first few of each; the rest are in Words (US-076).
-        val shown = state.words.groupBy { it.lang }.flatMap { (_, ws) -> ws.take(TODAY_WORDS_PER_LANG) }
-        val more = state.words.size - shown.size
-        shown.forEachIndexed { i, w ->
-            if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            val meta = posAndRegister(w)
-            Row(
-                Modifier.fillMaxWidth().clickable(role = Role.Button) { actions.onOpenWord(w.id) }
-                    .padding(start = MukharSpace.l, end = MukharSpace.s, top = 12.dp, bottom = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.Bottom) {
-                        Text(
-                            w.lemma,
-                            style = if (w.lang == Lang.HI) MukharTheme.type.hiBodyLarge.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                        Text(meta, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Text(
-                        "${if (w.lang == Lang.HI) w.gloss ?: w.meaning else w.meaning} “${w.example}”",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    if (w.source == WordSource.TALK) {
-                        Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Rounded.Mic, null, tint = MukharTheme.colors.accentInk, modifier = Modifier.size(14.dp))
-                            Text(stringResource(R.string.today_word_from_talk), style = MaterialTheme.typography.labelSmall, color = MukharTheme.colors.accentInk, modifier = Modifier.padding(start = 4.dp))
-                        }
-                    }
-                }
-                SpeakerSlot(state.voices[w.lang] == true, hearDescription(w.lemma, w.lang), { actions.onSpeak(w) })
-            }
-        }
-        if (more > 0) {
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            Text(
-                pluralStringResource(R.plurals.today_words_more, more, more),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.fillMaxWidth().heightIn(min = MukharSpace.touch).clickable(role = Role.Button, onClick = actions.onOpenWords)
-                    .padding(horizontal = MukharSpace.l, vertical = 12.dp).testTag(TAG_WORDS_MORE),
-            )
-        }
-    }
+    DeckEntryCard(state.deck, Modifier.testTag(TAG_WORDS), onOpen = actions.onOpenDeck)
 }
 
-/** Today's card shows this many of each language's daily words. */
-const val TODAY_WORDS_PER_LANG = 5
-const val TAG_WORDS_MORE = "today_words_more"
 
 private fun mmss(ms: Long): String = "%d:%02d".format(ms / 60_000, ms / 1000 % 60)
 

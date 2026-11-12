@@ -123,7 +123,9 @@ class RecordingsRepository(
         val known = talkDao.withAudio().mapNotNull { it.audioPath }.map { File(it).absolutePath }.toSet()
         val cutoff = clock.now().toEpochMilli() - olderThanMs
         files.dir.listFiles().orEmpty().count { f ->
-            f.isFile && f.absolutePath !in known && f.lastModified() <= cutoff && f.delete()
+            // olderThanMs = 0 (Delete all) takes every orphan; the age check compares the injected clock with the
+            // file system's, so it only applies to the automatic clean-up.
+            f.isFile && f.absolutePath !in known && (olderThanMs == 0L || f.lastModified() <= cutoff) && f.delete()
         }
     }
 

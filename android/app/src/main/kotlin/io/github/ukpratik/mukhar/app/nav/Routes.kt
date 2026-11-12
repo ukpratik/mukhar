@@ -59,13 +59,20 @@ data class ReviewRoute(
     val lang: String? = null,
     val from: String? = null,
     val to: String? = null,
+    /** With [mode] = extra: [SET_DONE] or [SET_STARRED] practises words from Words → Done or Starred (US-081). */
+    val set: String? = null,
 ) {
     companion object {
         const val GYM = "gym"
         const val REVISE = "revise"
         const val EXTRA = "extra"
+        const val SET_DONE = "done"
+        const val SET_STARRED = "starred"
     }
 }
+
+/** US-081: the new word deck for one language ([lang] code) or all practice languages. */
+@Serializable data class DeckRoute(val lang: String? = null)
 
 @Serializable data class WordDetailRoute(val wordId: String)
 

@@ -152,8 +152,13 @@ class ReviewViewModel @Inject constructor(
     private suspend fun load() {
         val cards = if (extra) {
             val today = words.today()
-            val from = route.from?.let(LocalDate::parse) ?: today
-            words.queueExtra(lang, from, route.to?.let(LocalDate::parse) ?: today)
+            val from = route.from?.let(LocalDate::parse)
+            val to = route.to?.let(LocalDate::parse)
+            when (route.set) {
+                ReviewRoute.SET_DONE -> words.queueDeck(lang, starred = false, from, to)
+                ReviewRoute.SET_STARRED -> words.queueDeck(lang, starred = true, from, to)
+                else -> words.queueExtra(lang, from ?: today, to ?: today)
+            }
         } else {
             words.queue(mode, route.wordId, lang)
         }

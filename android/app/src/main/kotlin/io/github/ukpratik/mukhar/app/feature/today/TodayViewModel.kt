@@ -95,10 +95,8 @@ class TodayViewModel @Inject constructor(
         Extras(waiting, recovered, n, allowed, online)
     }
 
-    /** Today's words, re-picked when the streak day changes (03:00). */
-    private val todaysWords = ticks.map { words.today() }.distinctUntilChanged().flatMapLatest { words.observeDailyWords(it) }
-
-    private val wordsAndVoices = combine(todaysWords, speaker.voices) { w, v -> w to v }
+    /** The new word deck (US-081), re-read when the streak day changes (03:00) so today's count restarts. */
+    private val deck = ticks.map { words.today() }.distinctUntilChanged().flatMapLatest { words.observeDeck(null, preview = 1) }
 
     /** Re-checked each minute so the banner appears when trial day 6 starts while Today is open. */
     private val trialBanner = combine(entitlements.snapshot, settings.trialBannerDismissedDay, ticks) { e, dismissed, _ ->
@@ -108,7 +106,7 @@ class TodayViewModel @Inject constructor(
 
     private val extrasAndBanner = combine(extras, trialBanner) { x, b -> x to b }
 
-    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extrasAndBanner, wordsAndVoices) { h, s, (dueNow, dueTomorrow), (x, banner), (w, v) ->
+    val state: StateFlow<TodayUiState> = combine(habit.observe(ticks), settings.settings, due, extrasAndBanner, deck) { h, s, (dueNow, dueTomorrow), (x, banner), d ->
         TodayStateMapper.map(
             TodayInputs(
                 now = clock.now().atZone(clock.zone()),
@@ -122,7 +120,7 @@ class TodayViewModel @Inject constructor(
                 notificationsAllowed = x.notificationsAllowed,
                 shuffle = x.shuffle,
             ),
-        ).copy(words = w, voices = v, trialBanner = banner)
+        ).copy(deck = d, trialBanner = banner)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), TodayUiState())
 
     init {
@@ -135,7 +133,6 @@ class TodayViewModel @Inject constructor(
         speaker.warmUp()
     }
 
-    fun onSpeak(word: WordItem) = speaker.speak(word.lemma, word.lang)
 
     fun onShuffle() = shuffle.update { it + 1 }
 

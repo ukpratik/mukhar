@@ -107,7 +107,7 @@ object DataModule {
     @Provides
     @Singleton
     fun database(@ApplicationContext context: Context): MukharDatabase =
-        Room.databaseBuilder(context, MukharDatabase::class.java, MukharDatabase.NAME).build()
+        Room.databaseBuilder(context, MukharDatabase::class.java, MukharDatabase.NAME).addMigrations(*MukharDatabase.MIGRATIONS).build()
 
     @Provides
     fun talkDao(db: MukharDatabase): TalkDao = db.talkDao()

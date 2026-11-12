@@ -57,7 +57,6 @@ class TodayContentTest {
         compose.onNodeWithContentDescription("Record your 1-minute starting point").performScrollTo()
         compose.onNodeWithContentDescription("Revise. Nothing due yet. Words you add show up here tomorrow.").performScrollTo()
         exists("Today's words")
-        exists("New words for your goals show up here each morning.")
         compose.onNodeWithTag(TAG_TALK_CARD).performClick()
         assertThat(talk).isEqualTo(1)
     }
@@ -128,23 +127,14 @@ class TodayContentTest {
     }
 
     @Test
-    fun todaysWordsShowRealDailyWordsWithTheSpeakerOnlyWithAVoice() {
-        var opened: String? = null
-        val words = listOf(
-            io.github.ukpratik.mukhar.app.feature.words.WordsFixtures.articulate,
-            io.github.ukpratik.mukhar.app.feature.words.WordsFixtures.concise,
-            io.github.ukpratik.mukhar.app.feature.words.WordsFixtures.sateek,
-        )
+    fun todaysWordsCardShowsTheDeckProgressAndOpensIt() {
+        var opened = false
         show(
-            TodayFixtures.midDay.copy(words = words, voices = mapOf(io.github.ukpratik.mukhar.domain.model.Lang.EN to true, io.github.ukpratik.mukhar.domain.model.Lang.HI to false)),
-            TodayActions(onOpenWord = { opened = it }),
+            TodayFixtures.midDay.copy(deck = io.github.ukpratik.mukhar.app.feature.words.DeckFixtures.state()),
+            TodayActions(onOpenDeck = { opened = true }),
         )
-        compose.onAllNodes(hasText("From your talk", substring = true)).assertCountEquals(2) // concise is curated
-        compose.onNodeWithContentDescription("Hear articulate, Indian English voice").performScrollTo()
-        compose.onNodeWithContentDescription("Hear concise, Indian English voice").performScrollTo()
-        compose.onAllNodes(hasContentDescription("Hear सटीक", substring = true)).assertCountEquals(0) // no Hindi voice: hidden
-        compose.onNode(hasText("Short and clear", substring = true)).performScrollTo().performClick()
-        assertThat(opened).isEqualTo("en:concise")
+        compose.onNode(hasContentDescription("New words. 2 of 5 today. Next: lucid", substring = true)).performScrollTo().performClick()
+        assertThat(opened).isTrue()
     }
 
     @Test

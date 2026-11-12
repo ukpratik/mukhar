@@ -56,8 +56,23 @@ object DailyWordPicker {
         langs: List<String>,
         tracks: List<String>,
         day: LocalDate,
+    ): List<WordCandidate> = choose(count.coerceIn(0, MAX_COUNT), talkWords, curated, langs, tracks, day)
+
+    /**
+     * US-081: the new word deck's order, the same round-robin as [pick] with no cap, so the deck always has a next
+     * card while curated words remain.
+     */
+    fun order(curated: List<WordCandidate>, langs: List<String>, tracks: List<String>, day: LocalDate): List<WordCandidate> =
+        choose(Int.MAX_VALUE, emptyList(), curated, langs, tracks, day)
+
+    private fun choose(
+        n: Int,
+        talkWords: List<WordCandidate>,
+        curated: List<WordCandidate>,
+        langs: List<String>,
+        tracks: List<String>,
+        day: LocalDate,
     ): List<WordCandidate> {
-        val n = count.coerceIn(0, MAX_COUNT)
         if (n == 0) return emptyList()
         val chosen = talkWords.take(n).toMutableList()
         if (chosen.size >= n) return chosen

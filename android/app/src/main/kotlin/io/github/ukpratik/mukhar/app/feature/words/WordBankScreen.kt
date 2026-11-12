@@ -26,6 +26,9 @@ import androidx.compose.material.icons.outlined.BookmarkAdded
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarOutline
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
@@ -70,6 +73,10 @@ import io.github.ukpratik.mukhar.app.R
 import io.github.ukpratik.mukhar.app.feature.onboarding.Eyebrow
 import io.github.ukpratik.mukhar.app.feature.talk.common.ArtCircle
 import io.github.ukpratik.mukhar.data.prefs.SettingsStore
+import io.github.ukpratik.mukhar.app.feature.words.deck.DeckEntryCard
+import io.github.ukpratik.mukhar.data.repo.DeckCard
+import io.github.ukpratik.mukhar.data.repo.DeckLists
+import io.github.ukpratik.mukhar.data.repo.DeckState
 import io.github.ukpratik.mukhar.data.repo.WordItem
 import io.github.ukpratik.mukhar.data.repo.WordRepository
 import io.github.ukpratik.mukhar.data.repo.WordSource
@@ -99,7 +106,7 @@ import kotlinx.coroutines.launch
 import java.time.ZoneId
 import javax.inject.Inject
 
-enum class WordsSection { BANK, HISTORY, LINES }
+enum class WordsSection { BANK, STARRED, DONE, LINES }
 
 enum class SourceFilter { ALL, TALKS, CURATED }
 
@@ -120,8 +127,15 @@ data class WordBankUiState(
     val langs: List<Lang> = listOf(Lang.EN),
     /** The selected tab's language, or null with one language (then nothing is filtered). */
     val tab: Lang? = null,
-    /** Learnt-words history for the tab (US-077), newest day first. */
-    val history: List<WordRepository.HistoryDay> = emptyList(),
+    /** Words → Done for the tab, by the day they were marked (US-081; replaces History), newest day first. */
+    val done: List<WordRepository.HistoryDay> = emptyList(),
+    /** Words → Starred for the tab, newest first (US-081). */
+    val starred: List<WordItem> = emptyList(),
+    /** Discarded words, which can be brought back (US-081). */
+    val discarded: List<DeckCard> = emptyList(),
+    val showDiscarded: Boolean = false,
+    /** The new word deck for the tab (US-081). */
+    val deck: DeckState? = null,
     /** Languages whose curated list is used up (US-076). */
     val exhausted: Set<Lang> = emptySet(),
     val today: LocalDate = LocalDate.now(),
@@ -146,6 +160,7 @@ sealed interface WordBankEvent {
     data class Source(val filter: SourceFilter) : WordBankEvent
     data class ToggleTrack(val track: String) : WordBankEvent
     data class Tab(val lang: Lang) : WordBankEvent
+    data object ToggleDiscarded : WordBankEvent
 }
 
 /**
@@ -163,18 +178,17 @@ class WordBankViewModel @Inject constructor(private val words: WordRepository, p
         langs to (if (langs.size < 2) null else t?.takeIf { it in langs } ?: langs.first())
     }.distinctUntilChanged()
 
-    private data class PerTab(val langs: List<Lang>, val tab: Lang?, val due: Int, val history: List<WordRepository.HistoryDay>)
+    private data class PerTab(val langs: List<Lang>, val tab: Lang?, val due: Int, val lists: DeckLists, val deck: DeckState)
 
-    // Observing today's words keeps the day's set in step with Settings (picked, topped up or trimmed).
     private val perTab = tab.flatMapLatest { (langs, lang) ->
-        combine(words.observeGymDue(lang), words.observeHistory(lang), words.observeDailyWords(words.today())) { due, history, _ ->
-            PerTab(langs, lang, due, history)
+        combine(words.observeGymDue(lang), words.observeDeckLists(lang), words.observeDeck(lang, preview = 1)) { due, lists, deck ->
+            PerTab(langs, lang, due, lists, deck)
         }
     }
 
     val state: StateFlow<WordBankUiState> = combine(
         ui, words.observeBank(), perTab, words.observeSavedLines(), combine(settings.settings, words.exhaustedLangs, ::Pair),
-    ) { u, bank, t, lines, (s, exhausted) ->
+    ) { u, bank, t, lines, (s, _) ->
         u.copy(
             loading = false,
             words = bank.filter { t.tab == null || it.lang == t.tab },
@@ -184,8 +198,11 @@ class WordBankViewModel @Inject constructor(private val words: WordRepository, p
             dailyCount = s.dailyWordsFor(t.tab ?: t.langs.first()),
             langs = t.langs,
             tab = t.tab,
-            history = t.history,
-            exhausted = exhausted,
+            done = t.lists.done,
+            starred = t.lists.starred,
+            discarded = t.lists.discarded,
+            deck = t.deck,
+            exhausted = if (t.deck.remaining == 0) (t.tab?.let(::setOf) ?: t.langs.toSet()) else emptySet(),
             today = words.today(),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WordBankUiState())
@@ -196,7 +213,16 @@ class WordBankViewModel @Inject constructor(private val words: WordRepository, p
             is WordBankEvent.Source -> ui.update { it.copy(source = e.filter) }
             is WordBankEvent.ToggleTrack -> ui.update { it.copy(tracks = if (e.track in it.tracks) it.tracks - e.track else it.tracks + e.track) }
             is WordBankEvent.Tab -> viewModelScope.launch { settings.setWordsTab(e.lang) }
+            WordBankEvent.ToggleDiscarded -> ui.update { it.copy(showDiscarded = !it.showDiscarded) }
         }
+    }
+
+    fun setStarred(id: String, starred: Boolean) {
+        viewModelScope.launch { words.setStarred(id, starred) }
+    }
+
+    fun bringBack(id: String) {
+        viewModelScope.launch { words.bringBack(id) }
     }
 }
 
@@ -206,8 +232,14 @@ data class WordBankActions(
     val onOpenGym: (Lang?) -> Unit = {},
     val onOpenWord: (String) -> Unit = {},
     val onTalk: () -> Unit = {},
-    /** Extra practice from History: words first shown from..to, in the tab's language. */
+    /** Extra practice from Done: words marked done from..to, in the tab's language. */
     val onRevise: (Lang?, LocalDate, LocalDate) -> Unit = { _, _, _ -> },
+    /** The new word deck for the tab's language (null = all). */
+    val onOpenDeck: (Lang?) -> Unit = {},
+    /** Extra practice of the tab's starred words. */
+    val onPractiseStarred: (Lang?) -> Unit = {},
+    val onStar: (String, Boolean) -> Unit = { _, _ -> },
+    val onBringBack: (String) -> Unit = {},
 )
 
 @Composable
@@ -216,10 +248,12 @@ fun WordsScreen(
     onOpenWord: (String) -> Unit,
     onTalk: () -> Unit,
     onRevise: (Lang?, LocalDate, LocalDate) -> Unit = { _, _, _ -> },
+    onOpenDeck: (Lang?) -> Unit = {},
+    onPractiseStarred: (Lang?) -> Unit = {},
     vm: WordBankViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    WordBankContent(state, WordBankActions(vm::onEvent, onOpenGym, onOpenWord, onTalk, onRevise))
+    WordBankContent(state, WordBankActions(vm::onEvent, onOpenGym, onOpenWord, onTalk, onRevise, onOpenDeck, onPractiseStarred, vm::setStarred, vm::bringBack))
 }
 
 /** S14 states 1 (empty) and 2 (list with filters), plus History and Saved lines, under optional language tabs. Stateless. */
@@ -239,6 +273,7 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
         )
         val tab = state.tab
         if (tab != null && state.langs.size > 1) LangTabs(state.langs, tab) { actions.onEvent(WordBankEvent.Tab(it)) }
+        DeckEntryCard(state.deck) { actions.onOpenDeck(state.tab) }
         val sectionLabel = stringResource(R.string.words_section_a11y)
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().semantics { contentDescription = sectionLabel; isTraversalGroup = true }) {
             WordsSection.entries.forEachIndexed { i, s ->
@@ -252,7 +287,8 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
                             stringResource(
                                 when (s) {
                                     WordsSection.BANK -> R.string.words_seg_bank
-                                    WordsSection.HISTORY -> R.string.words_seg_history
+                                    WordsSection.STARRED -> R.string.words_seg_starred
+                                    WordsSection.DONE -> R.string.words_seg_done
                                     WordsSection.LINES -> R.string.words_seg_lines
                                 },
                             ),
@@ -265,7 +301,8 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
         }
         when (state.section) {
             WordsSection.BANK -> Bank(state, actions)
-            WordsSection.HISTORY -> History(state, actions)
+            WordsSection.STARRED -> Starred(state, actions)
+            WordsSection.DONE -> Done(state, actions)
             WordsSection.LINES -> Lines(state)
         }
     }
@@ -299,21 +336,21 @@ private fun LangTabs(langs: List<Lang>, selected: Lang, onSelect: (Lang) -> Unit
     }
 }
 
-/** US-077: words by the day they were first shown, with extra practice for a day or the week. */
+/** US-081 Done (was US-077 History): words by the day they were marked done, with extra practice for a day or the week. */
 @Composable
-private fun History(state: WordBankUiState, actions: WordBankActions) {
-    state.exhaustedHere?.let { ExhaustedNote(it) }
-    if (state.history.isEmpty()) {
+private fun Done(state: WordBankUiState, actions: WordBankActions) {
+    if (state.done.isEmpty()) {
         Text(
-            stringResource(R.string.words_history_empty),
+            stringResource(R.string.words_done_empty),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = MukharSpace.s).testTag(TAG_HISTORY_EMPTY),
         )
+        Discarded(state, actions)
         return
     }
     val weekStart = WordHistory.weekStart(state.today)
-    val weekCount = state.history.filter { !it.day.isBefore(weekStart) }.sumOf { it.words.size }
+    val weekCount = state.done.filter { !it.day.isBefore(weekStart) }.sumOf { it.words.size }
     if (weekCount > 0) {
         OutlinedButton(
             onClick = { actions.onRevise(state.tab, weekStart, state.today) },
@@ -324,7 +361,7 @@ private fun History(state: WordBankUiState, actions: WordBankActions) {
             Text(pluralStringResource(R.plurals.words_history_revise_week, weekCount, weekCount))
         }
     }
-    state.history.forEach { day ->
+    state.done.forEach { day ->
         val label = dayLabel(day.day, state.today)
         Row(Modifier.fillMaxWidth().padding(top = MukharSpace.s), verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -342,7 +379,97 @@ private fun History(state: WordBankUiState, actions: WordBankActions) {
         MukharCard(Modifier.fillMaxWidth()) {
             day.words.forEachIndexed { i, w ->
                 if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                WordRow(w, showNext = true) { actions.onOpenWord(w.id) }
+                WordRow(w, showNext = true, trailing = { StarToggle(w, starred = false, actions.onStar) }) { actions.onOpenWord(w.id) }
+            }
+        }
+    }
+    Discarded(state, actions)
+}
+
+/** US-081 Starred: saved or liked words (all in the Word Gym), with practice for all of them. */
+@Composable
+private fun Starred(state: WordBankUiState, actions: WordBankActions) {
+    if (state.starred.isEmpty()) {
+        Column(Modifier.fillMaxWidth().padding(top = MukharSpace.xl).testTag(TAG_STARRED_EMPTY), horizontalAlignment = Alignment.CenterHorizontally) {
+            ArtCircle(Icons.Rounded.StarOutline)
+            Text(
+                stringResource(R.string.words_starred_empty_title),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.padding(top = 18.dp).semantics { heading() },
+            )
+            Text(
+                stringResource(R.string.words_starred_empty_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+        }
+        return
+    }
+    OutlinedButton(
+        onClick = { actions.onPractiseStarred(state.tab) },
+        modifier = Modifier.fillMaxWidth().heightIn(min = MukharSpace.touch).testTag(TAG_PRACTISE_STARRED),
+    ) {
+        Icon(Icons.Outlined.FitnessCenter, null)
+        Spacer(Modifier.width(8.dp))
+        Text(pluralStringResource(R.plurals.words_starred_practise, state.starred.size, state.starred.size))
+    }
+    MukharCard(Modifier.fillMaxWidth()) {
+        state.starred.forEachIndexed { i, w ->
+            if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            WordRow(w, showNext = true, trailing = { StarToggle(w, starred = true, actions.onStar) }) { actions.onOpenWord(w.id) }
+        }
+    }
+}
+
+/** Star / unstar a word in the lists (it moves between Starred and Done). */
+@Composable
+private fun StarToggle(w: WordItem, starred: Boolean, onStar: (String, Boolean) -> Unit) {
+    val cd = stringResource(if (starred) R.string.words_unstar_cd else R.string.words_star_cd, w.lemma)
+    IconButton(onClick = { onStar(w.id, !starred) }, modifier = Modifier.testTag("star_${w.id}").semantics { contentDescription = cd }) {
+        Icon(
+            if (starred) Icons.Rounded.Star else Icons.Rounded.StarOutline,
+            null,
+            tint = if (starred) MukharTheme.colors.accentInk else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** "3 discarded words · Show": each can be brought back to the deck. */
+@Composable
+private fun Discarded(state: WordBankUiState, actions: WordBankActions) {
+    if (state.discarded.isEmpty()) return
+    Row(Modifier.fillMaxWidth().padding(top = MukharSpace.s), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            pluralStringResource(R.plurals.words_discarded, state.discarded.size, state.discarded.size),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        TextButton(onClick = { actions.onEvent(WordBankEvent.ToggleDiscarded) }, modifier = Modifier.testTag(TAG_DISCARDED_TOGGLE)) {
+            Text(stringResource(if (state.showDiscarded) R.string.words_discarded_hide else R.string.words_discarded_show))
+        }
+    }
+    if (!state.showDiscarded) return
+    MukharCard(Modifier.fillMaxWidth()) {
+        state.discarded.forEachIndexed { i, c ->
+            if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(Modifier.fillMaxWidth().padding(start = MukharSpace.l, end = MukharSpace.xs, top = 6.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
+                    Text(
+                        c.lemma,
+                        style = if (c.lang == Lang.HI) MukharTheme.type.hiBodyLarge.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(if (c.lang == Lang.HI) c.gloss else c.meaning, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                val cd = stringResource(R.string.words_bring_back_cd, c.lemma)
+                TextButton(onClick = { actions.onBringBack(c.id) }, modifier = Modifier.testTag("bring_back_${c.id}").semantics { contentDescription = cd }) {
+                    Text(stringResource(R.string.words_bring_back))
+                }
             }
         }
     }
@@ -486,13 +613,14 @@ private fun selectedCheck(selected: Boolean): (@Composable () -> Unit)? =
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun WordRow(w: WordItem, showNext: Boolean = false, onClick: () -> Unit) {
+private fun WordRow(w: WordItem, showNext: Boolean = false, trailing: (@Composable () -> Unit)? = null, onClick: () -> Unit) {
     val meta = posAndRegister(w)
     val status = statusLabel(w)
     val next = if (showNext) nextReviewLabel(w) else null
     val a11y = stringResource(R.string.word_row_a11y, w.lemma, meta, w.meaning, status) + (next?.let { ". $it" } ?: "")
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     Row(
-        Modifier.fillMaxWidth().testTag("word_${w.id}").clickable(role = Role.Button, onClick = onClick).clearAndSetSemantics { contentDescription = a11y }
+        Modifier.weight(1f).testTag("word_${w.id}").clickable(role = Role.Button, onClick = onClick).clearAndSetSemantics { contentDescription = a11y }
             .padding(horizontal = MukharSpace.l, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -530,6 +658,8 @@ private fun WordRow(w: WordItem, showNext: Boolean = false, onClick: () -> Unit)
         }
         Spacer(Modifier.width(8.dp))
         StatusChip(w)
+    }
+    trailing?.invoke()
     }
 }
 
@@ -623,3 +753,6 @@ const val TAG_EXHAUSTED = "words_exhausted"
 const val TAG_GYM_ROW = "word_gym_row"
 const val TAG_WORDS_EMPTY = "words_empty"
 const val TAG_WORDS_COUNT = "words_count"
+const val TAG_STARRED_EMPTY = "words_starred_empty"
+const val TAG_PRACTISE_STARRED = "words_practise_starred"
+const val TAG_DISCARDED_TOGGLE = "words_discarded_toggle"

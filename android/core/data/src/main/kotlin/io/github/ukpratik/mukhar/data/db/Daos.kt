@@ -206,6 +206,23 @@ interface WordDao {
     @Query("SELECT * FROM daily_word WHERE day = :day ORDER BY position")
     fun observeDailyWords(day: String): Flow<List<DailyWordEntity>>
 
+    // --- US-081: new word deck ---
+
+    @Upsert
+    suspend fun upsertDeck(row: WordDeckEntity)
+
+    @Query("DELETE FROM word_deck WHERE word_id = :wordId")
+    suspend fun deleteDeck(wordId: String)
+
+    @Query("SELECT * FROM word_deck WHERE word_id = :wordId")
+    suspend fun deckRow(wordId: String): WordDeckEntity?
+
+    @Query("SELECT * FROM word_deck")
+    suspend fun deckRows(): List<WordDeckEntity>
+
+    @Query("SELECT * FROM word_deck")
+    fun observeDeck(): Flow<List<WordDeckEntity>>
+
     /** Every day's words, for the learnt-words history (US-077). */
     @Query("SELECT * FROM daily_word ORDER BY day, position")
     fun observeAllDailyWords(): Flow<List<DailyWordEntity>>

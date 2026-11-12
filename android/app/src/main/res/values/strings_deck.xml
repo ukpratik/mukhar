@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- US-081: the new word deck (D-054). -->
+    <string name="deck_title">New words</string>
+    <string name="deck_back_cd">Back</string>
+    <plurals name="deck_progress">
+        <item quantity="one">%1$d of %2$d today</item>
+        <item quantity="other">%1$d of %2$d today</item>
+    </plurals>
+    <plurals name="deck_progress_a11y">
+        <item quantity="one">%1$d of today\'s %2$d new word</item>
+        <item quantity="other">%1$d of today\'s %2$d new words</item>
+    </plurals>
+    <plurals name="deck_progress_extra">
+        <item quantity="one">%1$d today · goal met</item>
+        <item quantity="other">%1$d today · goal met</item>
+    </plurals>
+    <string name="deck_coming_back">Back again</string>
+    <string name="deck_meaning_en">Meaning</string>
+    <string name="deck_meaning_hi">हिंदी में</string>
+    <string name="deck_meaning_hi_word">मतलब</string>
+    <string name="deck_meaning_en_word">In English</string>
+    <string name="deck_example">Example</string>
+    <string name="deck_hear_example_cd">Hear the example</string>
+    <string name="deck_swipe_hint">Swipe right if you\'ve got it, left for later.</string>
+    <string name="deck_done">Got it</string>
+    <string name="deck_star">Star</string>
+    <string name="deck_later">Later</string>
+    <string name="deck_discard">Not for me</string>
+    <string name="deck_done_cd">Got it: mark %1$s as done and add it to your Word Gym</string>
+    <string name="deck_star_cd">Star %1$s: save it and add it to your Word Gym</string>
+    <string name="deck_later_cd">Later: show %1$s again in a few days</string>
+    <string name="deck_discard_cd">Not for me: never show %1$s again</string>
+    <string name="deck_toast_done">Done. %1$s is in your Word Gym.</string>
+    <string name="deck_toast_star">Starred. Find %1$s in Words → Starred.</string>
+    <string name="deck_toast_later">%1$s will come back in 3 days, or after 50 more cards.</string>
+    <string name="deck_toast_discard">%1$s won\'t show again.</string>
+    <string name="deck_goal_title">That\'s today\'s words</string>
+    <plurals name="deck_goal_body">
+        <item quantity="one">You\'ve met %d new word today. The ones you got or starred are in your Word Gym, so they\'ll come back until they stick.</item>
+        <item quantity="other">You\'ve met %d new words today. The ones you got or starred are in your Word Gym, so they\'ll come back until they stick.</item>
+    </plurals>
+    <string name="deck_keep_going">Keep going</string>
+    <string name="deck_open_gym">Open the Word Gym</string>
+    <string name="deck_back_to_words">Back to Words</string>
+    <string name="deck_empty_title">You\'ve met every word</string>
+    <string name="deck_empty_body">There are no new words left here for now. Words you put off with Later come back after a few days.</string>
+    <!-- Entry card on Words and Today -->
+    <string name="deck_entry_title">New words</string>
+    <string name="deck_entry_next">Next: %1$s</string>
+    <string name="deck_entry_done_today">Today\'s goal is done. Keep going any time.</string>
+    <string name="deck_entry_none">No new words left for now.</string>
+    <string name="deck_entry_a11y">New words. %1$s. %2$s</string>
+    <!-- Words sections -->
+    <string name="words_seg_starred">Starred</string>
+    <string name="words_seg_done">Done</string>
+    <string name="words_starred_empty_title">No starred words yet</string>
+    <string name="words_starred_empty_body">Tap Star on a new word to keep it here. Starred words are in your Word Gym too.</string>
+    <plurals name="words_starred_practise">
+        <item quantity="one">Practise %d starred word</item>
+        <item quantity="other">Practise %d starred words</item>
+    </plurals>
+    <string name="words_done_empty">Words you mark \"Got it\" show here, by the day you learnt them.</string>
+    <string name="words_unstar_cd">Unstar %1$s</string>
+    <string name="words_star_cd">Star %1$s</string>
+    <plurals name="words_discarded">
+        <item quantity="one">%d discarded word</item>
+        <item quantity="other">%d discarded words</item>
+    </plurals>
+    <string name="words_discarded_show">Show</string>
+    <string name="words_discarded_hide">Hide</string>
+    <string name="words_bring_back">Bring back</string>
+    <string name="words_bring_back_cd">Bring back %1$s to the new words</string>
+</resources>

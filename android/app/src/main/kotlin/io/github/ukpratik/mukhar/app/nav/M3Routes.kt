@@ -30,6 +30,7 @@ fun NavGraphBuilder.todayDestination(navController: NavHostController) {
             onOpenRevise = { navController.navigate(ReviewRoute(ReviewRoute.REVISE)) },
             onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
             onOpenWords = { navController.navigateTab(WordsRoute) },
+            onOpenDeck = { navController.navigate(DeckRoute()) },
             onOpenMe = { navController.navigateTab(MeRoute) },
             onTurnOnTalks = { navController.navigate(DisclosureRoute) },
             onRecordBaseline = { navController.navigate(BaselineRoute) },

@@ -44,10 +44,6 @@
         <item quantity="one">Revise this %1$d word from %2$s</item>
         <item quantity="other">Revise these %1$d words from %2$s</item>
     </plurals>
-    <plurals name="today_words_more">
-        <item quantity="one">%d more in Words</item>
-        <item quantity="other">%d more in Words</item>
-    </plurals>
     <plurals name="settings_daily_words_value_a11y">
         <item quantity="one">%1$s: %2$d new word a day</item>
         <item quantity="other">%1$s: %2$d new words a day</item>

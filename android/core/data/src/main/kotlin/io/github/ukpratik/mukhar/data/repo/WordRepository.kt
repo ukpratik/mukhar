@@ -6,6 +6,7 @@ import io.github.ukpratik.mukhar.data.db.CardEntity
 import io.github.ukpratik.mukhar.data.db.DailyWordEntity
 import io.github.ukpratik.mukhar.data.db.ReviewLogEntity
 import io.github.ukpratik.mukhar.data.db.WordDao
+import io.github.ukpratik.mukhar.data.db.WordDeckEntity
 import io.github.ukpratik.mukhar.data.db.WordEntity
 import io.github.ukpratik.mukhar.data.prefs.SettingsStore
 import io.github.ukpratik.mukhar.domain.Clock
@@ -25,6 +26,9 @@ import io.github.ukpratik.mukhar.domain.streak.nextCutoff
 import io.github.ukpratik.mukhar.domain.streak.streakDay
 import io.github.ukpratik.mukhar.domain.text.Normalizer
 import io.github.ukpratik.mukhar.domain.words.DailyWordPicker
+import io.github.ukpratik.mukhar.domain.words.DeckChoice
+import io.github.ukpratik.mukhar.domain.words.DeckDecision
+import io.github.ukpratik.mukhar.domain.words.WordDeck
 import io.github.ukpratik.mukhar.domain.words.DailyWordPlan
 import io.github.ukpratik.mukhar.domain.words.WordHistory
 import io.github.ukpratik.mukhar.domain.words.HarvestPolicy
@@ -94,6 +98,43 @@ sealed interface HarvestResult {
 }
 
 enum class ReviewMode { GYM, REVISE }
+
+/** A card in the new word deck (US-081): a curated word with everything the card shows. [comingBack] = a Later card. */
+data class DeckCard(
+    val id: String,
+    val lang: Lang,
+    val lemma: String,
+    val translit: String?,
+    val pos: String?,
+    val register: String,
+    val meaning: String,
+    val gloss: String,
+    val example: String,
+    val exampleGloss: String?,
+    val comingBack: Boolean = false,
+)
+
+/** The deck for one language (or all): the next [cards], how many are left, and today's goal (US-081). */
+data class DeckState(
+    val cards: List<DeckCard>,
+    val remaining: Int,
+    val decidedToday: Int,
+    val goal: Int,
+    /** "Keep going" was tapped today, so the goal screen doesn't show again. */
+    val keepGoing: Boolean,
+) {
+    val goalMet: Boolean get() = decidedToday >= goal
+}
+
+/** Undo for one deck decision: the row before it, and whether the decision added the word to the Word Gym. */
+data class DeckUndo(val wordId: String, val previous: WordDeckEntity?, val addedToGym: Boolean)
+
+/** Words → Starred, Done (by the day they were marked) and Discarded (US-081). */
+data class DeckLists(
+    val starred: List<WordItem>,
+    val done: List<WordRepository.HistoryDay>,
+    val discarded: List<DeckCard>,
+)
 
 /**
  * Words, cards and reviews (US-020 to US-023, US-040; LLD §2.1, §4.5). Curated words come from [WordCatalog];
@@ -196,6 +237,122 @@ class WordRepository(
 
     private fun langFromId(id: String): Lang = Lang.entries.firstOrNull { id.startsWith("${it.code}:") } ?: Lang.EN
 
+    // ---- New word deck (US-081, D-054) ----
+
+    private val keepGoingDay = MutableStateFlow<LocalDate?>(null)
+
+    /**
+     * The deck for [lang] (every practice language when null): Later cards that are back, then new curated words in
+     * the user's tracks, round-robin across languages. Words already in the Word Gym another way never show.
+     */
+    fun observeDeck(lang: Lang?, preview: Int = DECK_PREVIEW): Flow<DeckState> =
+        combine(settings.settings, dao.observeDeck(), dao.observeWords(), keepGoingDay) { s, rows, words, keep ->
+            val langs = lang?.let(::listOf) ?: s.practiceLangs
+            val day = today()
+            val decisions = rows.mapNotNull { it.toDecision() }
+            val pool = langs.flatMap { catalog.words(it) }
+            val byId = pool.associateBy { it.id }
+            val order = DailyWordPicker.order(
+                pool.map { WordCandidate(it.id, it.lang.code, it.tracks.toSet()) }, langs.map { it.code }, s.tracks.map { it.key }, day,
+            ).map { it.id }
+            val inGym = words.map { it.id }.toSet() - rows.map { it.wordId }.toSet()
+            val queue = WordDeck.queue(order, decisions.filter { it.wordId in byId }, clock.now(), exclude = inGym)
+            val later = decisions.filter { it.choice == DeckChoice.LATER }.map { it.wordId }.toSet()
+            val mine = decisions.filter { d -> langs.any { d.wordId.startsWith("${it.code}:") } }
+            DeckState(
+                cards = queue.take(preview).mapNotNull { id -> byId[id]?.toDeckCard(comingBack = id in later) },
+                remaining = queue.size,
+                decidedToday = WordDeck.decidedToday(mine, dayStart(day)),
+                goal = langs.sumOf { s.dailyWordsFor(it) },
+                keepGoing = keep == day,
+            )
+        }
+
+    /** Done, Star, Later or Discard for one card. Done and Star put the word into the Word Gym. Returns the undo. */
+    suspend fun decide(wordId: String, choice: DeckChoice): DeckUndo? = mutex.withLock {
+        val w = catalog.byId(wordId) ?: return@withLock null
+        val previous = dao.deckRow(wordId)
+        val now = clock.now()
+        val seq = WordDeck.nextSeq(dao.deckRows().mapNotNull { it.toDecision() })
+        dao.upsertDeck(WordDeckEntity(wordId, w.lang.code, choice.key, now.toEpochMilli(), seq))
+        var added = false
+        if (choice.inGym) {
+            if (dao.word(wordId) == null) {
+                addCurated(w, now)
+                added = true
+            } else {
+                dao.setWordSuspended(wordId, false)
+            }
+        }
+        DeckUndo(wordId, previous, added)
+    }
+
+    /** Puts the card back as it was before the decision; a word the decision added leaves the Word Gym unless graded since. */
+    suspend fun undo(u: DeckUndo) = mutex.withLock {
+        if (u.previous == null) dao.deleteDeck(u.wordId) else dao.upsertDeck(u.previous)
+        if (u.addedToGym && !graded(u.wordId)) {
+            dao.deleteCardsForWord(u.wordId)
+            dao.deleteWord(u.wordId)
+        }
+    }
+
+    /** Star or unstar a word in the lists: it moves between Starred and Done and stays in the Word Gym. */
+    suspend fun setStarred(wordId: String, starred: Boolean) = mutex.withLock {
+        val row = dao.deckRow(wordId) ?: return@withLock
+        if (DeckChoice.of(row.choice)?.inGym != true) return@withLock
+        dao.upsertDeck(row.copy(choice = (if (starred) DeckChoice.STARRED else DeckChoice.DONE).key))
+    }
+
+    /** A discarded word goes back into the deck as a new word. */
+    suspend fun bringBack(wordId: String) = mutex.withLock {
+        if (dao.deckRow(wordId)?.choice == DeckChoice.DISCARDED.key) dao.deleteDeck(wordId)
+    }
+
+    /** "Keep going" past today's goal. */
+    fun keepGoing() {
+        keepGoingDay.value = today()
+    }
+
+    fun observeDeckLists(lang: Lang?): Flow<DeckLists> =
+        combine(dao.observeDeck(), observeBank(includeRemoved = true)) { rows, bank ->
+            val byId = bank.associateBy { it.id }
+            val mine = rows.filter { lang == null || it.lang == lang.code }.sortedByDescending { it.decidedAt }
+            fun of(c: DeckChoice) = mine.filter { it.choice == c.key }
+            DeckLists(
+                starred = of(DeckChoice.STARRED).mapNotNull { byId[it.wordId] },
+                done = of(DeckChoice.DONE).groupBy { streakDay(Instant.ofEpochMilli(it.decidedAt), clock.zone()) }
+                    .map { (day, rs) -> HistoryDay(day, rs.mapNotNull { byId[it.wordId] }) }
+                    .filter { it.words.isNotEmpty() }
+                    .sortedByDescending { it.day },
+                discarded = of(DeckChoice.DISCARDED).mapNotNull { catalog.byId(it.wordId)?.toDeckCard() },
+            )
+        }
+
+    /**
+     * Extra practice from Words → Done ("Revise" for a day or the week) or Starred: the word cards of those words, due
+     * or not, through the normal FSRS [grade] (as [queueExtra]).
+     */
+    suspend fun queueDeck(lang: Lang?, starred: Boolean, from: LocalDate?, to: LocalDate?): List<ReviewCard> {
+        val choice = if (starred) DeckChoice.STARRED else DeckChoice.DONE
+        val ids = dao.deckRows()
+            .filter { it.choice == choice.key && (lang == null || it.lang == lang.code) }
+            .filter { r ->
+                val day = streakDay(Instant.ofEpochMilli(r.decidedAt), clock.zone())
+                (from == null || !day.isBefore(from)) && (to == null || !day.isAfter(to))
+            }
+            .sortedBy { it.decidedAt }
+            .map { it.wordId }
+        return extraCards(ids)
+    }
+
+    private fun WordDeckEntity.toDecision(): DeckDecision? =
+        DeckChoice.of(choice)?.let { DeckDecision(wordId, it, Instant.ofEpochMilli(decidedAt), seq) }
+
+    private fun CuratedWord.toDeckCard(comingBack: Boolean = false) = DeckCard(
+        id = id, lang = lang, lemma = lemma, translit = translit, pos = pos, register = register, meaning = meaning, gloss = gloss,
+        example = example, exampleGloss = exampleGloss, comingBack = comingBack,
+    )
+
     // ---- History (US-077) ----
 
     /** One day of the learnt-words history. */
@@ -232,7 +389,10 @@ class WordRepository(
     suspend fun queueExtra(lang: Lang?, from: LocalDate, to: LocalDate): List<ReviewCard> {
         val days = history(dao.allDailyWords(), observeBank(includeRemoved = true).first(), dao.observeCards().first(), lang)
             .filter { !it.day.isBefore(from) && !it.day.isAfter(to) }
-        val ids = days.sortedBy { it.day }.flatMap { d -> d.words.map { it.id } }
+        return extraCards(days.sortedBy { it.day }.flatMap { d -> d.words.map { it.id } })
+    }
+
+    private suspend fun extraCards(ids: List<String>): List<ReviewCard> {
         val now = clock.now().toEpochMilli()
         return ids.flatMap { id -> dao.cardsForWord(id).filter { !it.suspended && (it.state != CardState.NEW.value || it.due <= now) } }
             .filter { it.type == CardType.WORD_MEANING.key || it.type == CardType.MEANING_WORD.key }
@@ -453,6 +613,8 @@ class WordRepository(
 
     companion object {
         const val GYM_MAX = 20
+        /** Deck cards prepared ahead (the top card and the ones behind it). */
+        const val DECK_PREVIEW = 3
         /** Cards in one extra-practice session from History. */
         const val EXTRA_MAX = 40
         /** Talk words sort after the day's daily words in History. */

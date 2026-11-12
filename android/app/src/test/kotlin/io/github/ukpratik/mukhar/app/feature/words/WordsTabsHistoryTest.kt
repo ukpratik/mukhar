@@ -24,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.time.LocalDate
 
-/** US-075 language tabs and US-077 History on Robolectric. */
+/** US-075 language tabs, US-081 Done (was US-077 History), Starred and Discarded on Robolectric. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], qualifiers = "w411dp-h891dp")
 class WordsTabsHistoryTest {
@@ -76,14 +76,14 @@ class WordsTabsHistoryTest {
     }
 
     @Test
-    fun historyGroupsByDayWithReviseActions() {
-        var state by mutableStateOf(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, history = history, today = today))
+    fun doneGroupsByDayWithReviseActions() {
+        var state by mutableStateOf(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, done = history, today = today))
         compose.setContent {
             MukharTheme {
                 WordBankContent(state, WordBankActions(onEvent = { e -> if (e is WordBankEvent.Section) state = state.copy(section = e.section) }, onRevise = { l, f, t -> revised += Triple(l, f, t) }))
             }
         }
-        compose.onNodeWithTag("words_seg_history").performClick()
+        compose.onNodeWithTag("words_seg_done").performClick()
         compose.onNodeWithText("Today").assertIsDisplayed()
         compose.onNodeWithText("Yesterday").assertIsDisplayed()
         compose.onNodeWithText("Thu 5 Nov").performScrollTo().assertIsDisplayed()
@@ -101,9 +101,70 @@ class WordsTabsHistoryTest {
     }
 
     @Test
-    fun emptyHistoryAndUsedUpListSaySoKindly() {
-        show(WordBankUiState(loading = false, section = WordsSection.HISTORY, langs = listOf(Lang.EN), exhausted = setOf(Lang.EN), today = today))
+    fun emptyDoneSaysWhatGoesThere() {
+        show(WordBankUiState(loading = false, section = WordsSection.DONE, langs = listOf(Lang.EN), today = today))
         compose.onNodeWithTag(TAG_HISTORY_EMPTY).assertIsDisplayed()
-        compose.onNodeWithText("You've met every word in Mukhar's English list. New ones arrive with updates.").assertIsDisplayed()
+    }
+
+    @Test
+    fun starredListsWordsWithPractiseAndUnstar() {
+        val starred = mutableListOf<Pair<String, Boolean>>()
+        val practised = mutableListOf<Lang?>()
+        compose.setContent {
+            MukharTheme {
+                WordBankContent(
+                    WordBankUiState(loading = false, section = WordsSection.STARRED, langs = listOf(Lang.EN), starred = listOf(WordsFixtures.articulate), today = today),
+                    WordBankActions(onStar = { id, on -> starred += id to on }, onPractiseStarred = { practised += it }),
+                )
+            }
+        }
+        compose.onNodeWithText("Practise 1 starred word").performClick()
+        assertThat(practised).containsExactly(null)
+        compose.onNodeWithContentDescription("Unstar articulate").performClick()
+        assertThat(starred).containsExactly("en:articulate" to false)
+    }
+
+    @Test
+    fun emptyStarredExplainsTheStar() {
+        show(WordBankUiState(loading = false, section = WordsSection.STARRED, langs = listOf(Lang.EN), today = today))
+        compose.onNodeWithTag(TAG_STARRED_EMPTY).assertIsDisplayed()
+    }
+
+    @Test
+    fun discardedWordsCanBeBroughtBack() {
+        val back = mutableListOf<String>()
+        var state by mutableStateOf(
+            WordBankUiState(loading = false, section = WordsSection.DONE, langs = listOf(Lang.EN), discarded = listOf(DeckFixtures.lucid), today = today),
+        )
+        compose.setContent {
+            MukharTheme {
+                WordBankContent(
+                    state,
+                    WordBankActions(
+                        onEvent = { e -> if (e is WordBankEvent.ToggleDiscarded) state = state.copy(showDiscarded = !state.showDiscarded) },
+                        onBringBack = { back += it },
+                    ),
+                )
+            }
+        }
+        compose.onNodeWithText("1 discarded word").assertIsDisplayed()
+        compose.onNodeWithTag(TAG_DISCARDED_TOGGLE).performClick()
+        compose.onNodeWithContentDescription("Bring back lucid to the new words").performScrollTo().performClick()
+        assertThat(back).containsExactly("en:lucid")
+    }
+
+    @Test
+    fun theNewWordsCardOpensTheDeckForTheTab() {
+        val opened = mutableListOf<Lang?>()
+        compose.setContent {
+            MukharTheme {
+                WordBankContent(
+                    WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.HI, deck = DeckFixtures.state(), today = today),
+                    WordBankActions(onOpenDeck = { opened += it }),
+                )
+            }
+        }
+        compose.onNodeWithTag(io.github.ukpratik.mukhar.app.feature.words.deck.TAG_DECK_ENTRY).performClick()
+        assertThat(opened).containsExactly(Lang.HI)
     }
 }

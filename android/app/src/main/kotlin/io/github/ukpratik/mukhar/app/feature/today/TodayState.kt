@@ -4,7 +4,7 @@ import io.github.ukpratik.mukhar.domain.revise.ReviewEstimate
 import io.github.ukpratik.mukhar.data.prefs.ReminderSettings
 import io.github.ukpratik.mukhar.data.prefs.Settings
 import io.github.ukpratik.mukhar.data.repo.HabitSnapshot
-import io.github.ukpratik.mukhar.data.repo.WordItem
+import io.github.ukpratik.mukhar.data.repo.DeckState
 import io.github.ukpratik.mukhar.domain.model.Lang
 import io.github.ukpratik.mukhar.data.today.RecoveredTalk
 import io.github.ukpratik.mukhar.data.today.WaitingTalks
@@ -67,10 +67,8 @@ data class TodayUiState(
     val habit: HabitSnapshot? = null,
     /** Opens the streak sheet once to tell the user about a freeze or a fresh start (US-032). */
     val autoOpenSheet: Boolean = false,
-    /** Today's words (US-020): from the user's talks first, then curated; picked once per streak day. */
-    val words: List<WordItem> = emptyList(),
-    /** Installed TTS voices; the speaker is hidden for a language without one. */
-    val voices: Map<Lang, Boolean> = emptyMap(),
+    /** The new word deck (US-081): today's progress and the next word. */
+    val deck: DeckState? = null,
     /** The day-6 trial banner (US-062), on top, even when notifications are off. */
     val trialBanner: io.github.ukpratik.mukhar.app.feature.plan.TrialBannerUi? = null,
 )

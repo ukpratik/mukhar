@@ -28,6 +28,8 @@ android {
     }
 
     testOptions.unitTests.isIncludeAndroidResources = true
+    // MigrationTestHelper reads the exported schemas as test assets.
+    sourceSets { getByName("test") { assets.directories.add("$projectDir/schemas") } }
 }
 
 // LLD §2.1: exportSchema = true, schemas committed; every shipped version stays frozen in core/data/schemas.
@@ -55,6 +57,7 @@ dependencies {
     implementation(libs.tink.android)
 
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.room.testing)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.work.testing)

@@ -26,6 +26,7 @@ fun TodayDestination(
     onRecordBaseline: () -> Unit,
     onOpenRecovered: (String) -> Unit,
     onOpenWord: (String) -> Unit = {},
+    onOpenDeck: () -> Unit = {},
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -53,7 +54,7 @@ fun TodayDestination(
             onTipTap = { context.openNotificationSettings() },
             onDismissTip = viewModel::onDismissTip,
             onOpenWord = onOpenWord,
-            onSpeak = viewModel::onSpeak,
+            onOpenDeck = onOpenDeck,
             onKeepTrial = viewModel::onKeepTrial,
             onManageTrial = { context.openPlaySubscriptions() },
         ),

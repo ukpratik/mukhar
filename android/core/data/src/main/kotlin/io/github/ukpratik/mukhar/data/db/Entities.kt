@@ -174,6 +174,16 @@ data class DailyWordEntity(
     val position: Int,
 )
 
+/** US-081 (schema v2): one row per word the user decided in the new word deck. [choice] is a `DeckChoice` key. */
+@Entity(tableName = "word_deck", indices = [Index("seq")])
+data class WordDeckEntity(
+    @PrimaryKey @ColumnInfo(name = "word_id") val wordId: String,
+    val lang: String,
+    val choice: String,
+    @ColumnInfo(name = "decided_at") val decidedAt: Long,
+    val seq: Long,
+)
+
 @Entity(tableName = "insight")
 data class InsightEntity(
     @PrimaryKey @ColumnInfo(name = "rule_key") val ruleKey: String,
