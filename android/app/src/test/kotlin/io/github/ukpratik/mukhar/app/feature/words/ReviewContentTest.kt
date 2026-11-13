@@ -58,7 +58,7 @@ class ReviewContentTest {
     @Test
     fun cardFrontRecallsFirstThenFlips() {
         show(WordsFixtures.front)
-        compose.onNodeWithText("Word Gym").assertIsDisplayed()
+        compose.onNodeWithText("Practise").assertIsDisplayed()
         compose.onNodeWithContentDescription("Card 4 of 12").assertIsDisplayed()
         compose.onNodeWithContentDescription("Close review. Progress is saved").assertIsDisplayed()
         compose.onNodeWithContentDescription("articulate, verb · power. Tap to show the meaning").assertIsDisplayed()

@@ -122,9 +122,19 @@ data class DeckState(
     val goal: Int,
     /** "Keep going" was tapped today, so the goal screen doesn't show again. */
     val keepGoing: Boolean,
+    /** Later words not back yet. */
+    val later: Int = 0,
+    /** Fewer than [WordRepository.HINT_DECISIONS] decisions ever: the swipe hint still shows. */
+    val showHint: Boolean = false,
+    /** Word cards learnt or revised today; 5 count the streak day (D-055). */
+    val practisedToday: Int = 0,
 ) {
     val goalMet: Boolean get() = decidedToday >= goal
+    val countsToday: Boolean get() = practisedToday >= io.github.ukpratik.mukhar.domain.streak.StreakEngine.MIN_REVIEW_CARDS
 }
+
+/** Words → Revise (D-055): word cards due now, and how many come up tomorrow and in the next 7 days. */
+data class RevisionSummary(val due: Int, val tomorrow: Int, val week: Int)
 
 /** Undo for one deck decision: the row before it, and whether the decision added the word to the Word Gym. */
 data class DeckUndo(val wordId: String, val previous: WordDeckEntity?, val addedToGym: Boolean)
@@ -246,7 +256,7 @@ class WordRepository(
      * the user's tracks, round-robin across languages. Words already in the Word Gym another way never show.
      */
     fun observeDeck(lang: Lang?, preview: Int = DECK_PREVIEW): Flow<DeckState> =
-        combine(settings.settings, dao.observeDeck(), dao.observeWords(), keepGoingDay) { s, rows, words, keep ->
+        combine(settings.settings, dao.observeDeck(), dao.observeWords(), keepGoingDay, observeWordReviewsToday()) { s, rows, words, keep, reviewed ->
             val langs = lang?.let(::listOf) ?: s.practiceLangs
             val day = today()
             val decisions = rows.mapNotNull { it.toDecision() }
@@ -265,8 +275,43 @@ class WordRepository(
                 decidedToday = WordDeck.decidedToday(mine, dayStart(day)),
                 goal = langs.sumOf { s.dailyWordsFor(it) },
                 keepGoing = keep == day,
+                later = decisions.count { it.choice == DeckChoice.LATER && it.wordId in byId } - queue.count { it in later },
+                showHint = decisions.count { it.seq > 0 } < HINT_DECISIONS,
+                practisedToday = WordDeck.decidedToday(decisions, dayStart(day)) + reviewed,
             )
         }
+
+    /** Word-card grades since today's 03:00 (re-read when a grade is logged). */
+    private fun observeWordReviewsToday(): Flow<Int> = dao.observeCards().map { dao.wordReviewsSince(dayStart(today()).toEpochMilli()) }
+
+    /**
+     * D-055: 5 word cards a day (deck decisions plus word revision grades) count the streak day, like a Revise
+     * session. The habit repository credits a day once, so this is safe to call after every card.
+     */
+    suspend fun creditWordPractice(): CreditResult? {
+        val since = dayStart(today())
+        val total = WordDeck.decidedToday(dao.deckRows().mapNotNull { it.toDecision() }, since) + dao.wordReviewsSince(since.toEpochMilli())
+        return if (total >= io.github.ukpratik.mukhar.domain.streak.StreakEngine.MIN_REVIEW_CARDS) habits.credit(Activity.Review(clock.now(), clock.zone(), total)) else null
+    }
+
+    /** Words → Revise summary for [lang] (all when null). */
+    fun observeRevision(lang: Lang? = null): Flow<RevisionSummary> = dao.observeCards().map { cards ->
+        val cutoff = nextCutoff(clock.now(), clock.zone())
+        val words = cards.filter { !it.suspended && it.wordId != null && (lang == null || it.lang == lang.code) }
+        val day = Duration.ofDays(1).toMillis()
+        val c = cutoff.toEpochMilli()
+        RevisionSummary(
+            due = words.count { it.due < c },
+            tomorrow = words.count { it.due >= c && it.due < c + day },
+            week = words.count { it.due >= c && it.due < c + 7 * day },
+        )
+    }
+
+    /** Words → Revise: grade a word card ("Knew it" = Good, "Again" = Again) and credit the streak (D-055). */
+    suspend fun gradeWord(cardId: String, knew: Boolean, durationMs: Long?): CreditResult? {
+        grade(cardId, if (knew) Rating.GOOD else Rating.AGAIN, durationMs)
+        return creditWordPractice()
+    }
 
     /** Done, Star, Later or Discard for one card. Done and Star put the word into the Word Gym. Returns the undo. */
     suspend fun decide(wordId: String, choice: DeckChoice): DeckUndo? = mutex.withLock {
@@ -285,7 +330,7 @@ class WordRepository(
             }
         }
         DeckUndo(wordId, previous, added)
-    }
+    }.also { if (it != null) creditWordPractice() }
 
     /** Puts the card back as it was before the decision; a word the decision added leaves the Word Gym unless graded since. */
     suspend fun undo(u: DeckUndo) = mutex.withLock {
@@ -615,6 +660,8 @@ class WordRepository(
         const val GYM_MAX = 20
         /** Deck cards prepared ahead (the top card and the ones behind it). */
         const val DECK_PREVIEW = 3
+        /** The swipe hint shows for a user's first decisions. */
+        const val HINT_DECISIONS = 10
         /** Cards in one extra-practice session from History. */
         const val EXTRA_MAX = 40
         /** Talk words sort after the day's daily words in History. */

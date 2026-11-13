@@ -16,7 +16,7 @@
 <p><b>Words and revision</b></p>
 <ul>
 <li>New words one card at a time, for interviews, work, public speaking, content creation or everyday talk: the meaning in English and Hindi, an example and the pronunciation. Got it, Star, Later or Not for me.</li>
-<li>Word Gym: practise the words you chose, then use them in your own sentence.</li>
+<li>Revise: the words you learnt come back when it's time. See the word, recall the meaning, then Knew it or Again.</li>
 <li>Spaced revision (FSRS) brings words back before you forget them, with a 2-minute quick revision.</li>
 </ul>
 

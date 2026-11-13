@@ -43,7 +43,7 @@ class WordsTabsHistoryTest {
                     state,
                     WordBankActions(
                         onEvent = { events += it },
-                        onOpenGym = { gyms += it },
+                        onOpenRevision = { gyms += it },
                         onRevise = { l, f, t -> revised += Triple(l, f, t) },
                     ),
                 )
@@ -65,25 +65,24 @@ class WordsTabsHistoryTest {
 
     @Test
     fun twoLanguagesShowTabsAndPickingOneIsReported() {
-        show(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, words = listOf(WordsFixtures.pivotal), gymDue = 3))
+        show(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, words = listOf(WordsFixtures.pivotal), section = WordsSection.REVISE, revision = io.github.ukpratik.mukhar.data.repo.RevisionSummary(3, 0, 0)))
         compose.onNodeWithTag(TAG_WORDS_TABS).assertIsDisplayed()
         compose.onNodeWithTag("words_tab_en").assertIsSelected()
         compose.onNodeWithTag("words_tab_hi").performClick()
         assertThat(events).contains(WordBankEvent.Tab(Lang.HI))
-        // The Word Gym opens for the tab's language.
-        compose.onNodeWithTag(TAG_GYM_ROW).performClick()
+        // Revise opens for the tab's language.
+        compose.onNodeWithTag(TAG_REVISE_START).performClick()
         assertThat(gyms).containsExactly(Lang.EN)
     }
 
     @Test
     fun doneGroupsByDayWithReviseActions() {
-        var state by mutableStateOf(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, done = history, today = today))
+        var state by mutableStateOf(WordBankUiState(loading = false, langs = listOf(Lang.EN, Lang.HI), tab = Lang.EN, done = history, section = WordsSection.MY_WORDS, filter = MyWordsFilter.DONE, today = today))
         compose.setContent {
             MukharTheme {
                 WordBankContent(state, WordBankActions(onEvent = { e -> if (e is WordBankEvent.Section) state = state.copy(section = e.section) }, onRevise = { l, f, t -> revised += Triple(l, f, t) }))
             }
         }
-        compose.onNodeWithTag("words_seg_done").performClick()
         compose.onNodeWithText("Today").assertIsDisplayed()
         compose.onNodeWithText("Yesterday").assertIsDisplayed()
         compose.onNodeWithText("Thu 5 Nov").performScrollTo().assertIsDisplayed()
@@ -92,17 +91,20 @@ class WordsTabsHistoryTest {
         compose.onAllNodesWithTag("word_en:pivotal").assertCountEquals(1)
 
         compose.onNodeWithContentDescription("Revise these 2 words from Today").performScrollTo().performClick()
-        compose.onNodeWithTag(TAG_REVISE_WEEK).performScrollTo().performClick()
-        assertThat(revised).containsExactly(
-            Triple(Lang.EN, today, today),
-            Triple(Lang.EN, today.minusDays(6), today),
-        ).inOrder()
-        compose.onNodeWithText("Revise all from this week (4 words)").assertExists()
+        assertThat(revised).containsExactly(Triple(Lang.EN, today, today))
+    }
+
+    @Test
+    fun reviseOffersThisWeeksDoneWords() {
+        show(WordBankUiState(loading = false, langs = listOf(Lang.EN), section = WordsSection.REVISE, done = history, today = today))
+        compose.onNodeWithText("Revise all from this week (4 words)").performScrollTo().performClick()
+        assertThat(revised).containsExactly(Triple(null, today.minusDays(6), today))
+        compose.onNodeWithText("All caught up").assertIsDisplayed()
     }
 
     @Test
     fun emptyDoneSaysWhatGoesThere() {
-        show(WordBankUiState(loading = false, section = WordsSection.DONE, langs = listOf(Lang.EN), today = today))
+        show(WordBankUiState(loading = false, section = WordsSection.MY_WORDS, filter = MyWordsFilter.DONE, langs = listOf(Lang.EN), today = today))
         compose.onNodeWithTag(TAG_HISTORY_EMPTY).assertIsDisplayed()
     }
 
@@ -113,7 +115,7 @@ class WordsTabsHistoryTest {
         compose.setContent {
             MukharTheme {
                 WordBankContent(
-                    WordBankUiState(loading = false, section = WordsSection.STARRED, langs = listOf(Lang.EN), starred = listOf(WordsFixtures.articulate), today = today),
+                    WordBankUiState(loading = false, section = WordsSection.MY_WORDS, filter = MyWordsFilter.STARRED, langs = listOf(Lang.EN), starred = listOf(WordsFixtures.articulate), today = today),
                     WordBankActions(onStar = { id, on -> starred += id to on }, onPractiseStarred = { practised += it }),
                 )
             }
@@ -126,7 +128,7 @@ class WordsTabsHistoryTest {
 
     @Test
     fun emptyStarredExplainsTheStar() {
-        show(WordBankUiState(loading = false, section = WordsSection.STARRED, langs = listOf(Lang.EN), today = today))
+        show(WordBankUiState(loading = false, section = WordsSection.MY_WORDS, filter = MyWordsFilter.STARRED, langs = listOf(Lang.EN), today = today))
         compose.onNodeWithTag(TAG_STARRED_EMPTY).assertIsDisplayed()
     }
 
@@ -134,7 +136,7 @@ class WordsTabsHistoryTest {
     fun discardedWordsCanBeBroughtBack() {
         val back = mutableListOf<String>()
         var state by mutableStateOf(
-            WordBankUiState(loading = false, section = WordsSection.DONE, langs = listOf(Lang.EN), discarded = listOf(DeckFixtures.lucid), today = today),
+            WordBankUiState(loading = false, section = WordsSection.LEARN, langs = listOf(Lang.EN), discarded = listOf(DeckFixtures.lucid), today = today),
         )
         compose.setContent {
             MukharTheme {
@@ -154,7 +156,7 @@ class WordsTabsHistoryTest {
     }
 
     @Test
-    fun theNewWordsCardOpensTheDeckForTheTab() {
+    fun learnStartsTheDeckForTheTab() {
         val opened = mutableListOf<Lang?>()
         compose.setContent {
             MukharTheme {
@@ -164,7 +166,7 @@ class WordsTabsHistoryTest {
                 )
             }
         }
-        compose.onNodeWithTag(io.github.ukpratik.mukhar.app.feature.words.deck.TAG_DECK_ENTRY).performClick()
+        compose.onNodeWithText("Continue").performScrollTo().performClick()
         assertThat(opened).containsExactly(Lang.HI)
     }
 }

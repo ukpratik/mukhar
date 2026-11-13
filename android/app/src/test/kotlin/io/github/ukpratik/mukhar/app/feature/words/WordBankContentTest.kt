@@ -40,28 +40,25 @@ class WordBankContentTest {
         loading = false,
         words = listOf(WordsFixtures.pivotal, WordsFixtures.articulate, WordsFixtures.undocumented, WordsFixtures.streamline, WordsFixtures.concise),
         trackChips = listOf("interviews", "professional"),
-        gymDue = 8,
+        section = WordsSection.MY_WORDS,
     )
 
     @Test
     fun emptySaysWhatWillAppearAndNeverBlames() {
-        show(WordBankUiState(loading = false, trackChips = listOf("interviews", "professional")))
+        show(WordBankUiState(loading = false, section = WordsSection.MY_WORDS, trackChips = listOf("interviews", "professional")))
         compose.onNodeWithTag(TAG_WORDS_EMPTY).assertIsDisplayed()
         compose.onNodeWithText("Your words will live here").assertIsDisplayed()
         compose.onNodeWithText(
             "Words you add from your talks, plus 5 picks a day for Interviews and Professional. The first ones arrive tomorrow morning.",
         ).assertIsDisplayed()
-        compose.onNodeWithContentDescription("Review: nothing due yet").assertIsDisplayed()
         compose.onNodeWithText("Do today's talk").performClick()
         assertThat(talks).isEqualTo(1)
     }
 
     @Test
-    fun listShowsTalkWordsWithStatusesAndTheGymRow() {
+    fun myWordsListsWordsWithStatuses() {
         show(list)
-        compose.onNodeWithContentDescription("Word Gym: 8 due, about 2 min. Start review").assertIsDisplayed()
         compose.onNodeWithText("From your talks").assertIsDisplayed()
-        compose.onNodeWithText("Interviews").assertIsDisplayed()
         compose.onNodeWithText("5 in total").assertIsDisplayed()
         compose.onNodeWithContentDescription("pivotal, adj. · power. Of central importance.. Learning").performScrollTo()
         compose.onNodeWithContentDescription("undocumented, adj. · formal. Not written down anywhere.. New").performScrollTo()
@@ -72,17 +69,17 @@ class WordBankContentTest {
 
     @Test
     fun filtersNarrowTheList() {
-        show(list.copy(source = SourceFilter.TALKS))
-        compose.onNodeWithText("4 from your talks · 5 in total").assertIsDisplayed()
+        show(list.copy(filter = MyWordsFilter.TALKS))
+        compose.onNodeWithText("4 in total").assertIsDisplayed()
         compose.onAllNodes(hasText("concise")).assertCountEquals(0)
-        compose.onNodeWithText("Curated").performClick()
-        compose.onNodeWithText("Interviews").performClick()
-        assertThat(events).containsExactly(WordBankEvent.Source(SourceFilter.CURATED), WordBankEvent.ToggleTrack("interviews")).inOrder()
+        compose.onNodeWithTag("words_filter_starred").performClick()
+        compose.onNodeWithTag("words_filter_lines").performScrollTo().performClick()
+        assertThat(events).containsExactly(WordBankEvent.Filter(MyWordsFilter.STARRED), WordBankEvent.Filter(MyWordsFilter.LINES)).inOrder()
     }
 
     @Test
     fun savedLinesSegment() {
-        show(list.copy(section = WordsSection.LINES))
+        show(list.copy(filter = MyWordsFilter.LINES))
         compose.onNodeWithText("No saved lines yet").assertIsDisplayed()
     }
 

@@ -5,7 +5,9 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -92,7 +94,7 @@ class DeckContentTest {
     @Test
     fun theButtonsSayWhatTheyDoAndTheCardHasTalkBackActions() {
         show(DeckUiState(false, DeckFixtures.state()))
-        compose.onNodeWithContentDescription("Got it: mark lucid as done and add it to your Word Gym").assertExists()
+        compose.onNodeWithContentDescription("Got it: mark lucid as learnt. It comes back in Revise").assertExists()
         compose.onNodeWithContentDescription("Not for me: never show lucid again").assertExists()
         val card = compose.onNodeWithTag(TAG_DECK_CARD).fetchSemanticsNode()
         val labels = card.config[SemanticsActions.CustomActions].map { it.label }
@@ -126,5 +128,32 @@ class DeckContentTest {
     fun anEmptyDeckSaysSo() {
         show(DeckUiState(false, DeckFixtures.state(cards = emptyList(), remaining = 0)))
         compose.onNodeWithTag(TAG_DECK_EMPTY).assertIsDisplayed()
+    }
+
+    @Test
+    fun theHintShowsOnlyForNewUsersAndTodayCountsShows() {
+        show(DeckUiState(false, DeckFixtures.state().copy(showHint = false, practisedToday = 5)))
+        compose.onAllNodesWithTag(TAG_DECK_HINT).assertCountEquals(0)
+        compose.onNodeWithTag(TAG_TODAY_COUNTS, useUnmergedTree = true).assertIsDisplayed()
+        compose.onNodeWithContentDescription("2 of today's 5 new words. Today counts").assertExists()
+    }
+
+    @Test
+    fun theToastSitsInItsOwnSlotAboveTheButtons() {
+        compose.setContent {
+            MukharTheme {
+                val host = androidx.compose.runtime.remember { androidx.compose.material3.SnackbarHostState() }
+                androidx.compose.runtime.LaunchedEffect(Unit) { host.showSnackbar("Got it · lucid", "Undo", duration = androidx.compose.material3.SnackbarDuration.Indefinite) }
+                DeckContent(DeckUiState(false, DeckFixtures.state()), DeckActions(), snackbar = host)
+            }
+        }
+        compose.waitForIdle()
+        val toast = compose.onNodeWithText("Got it · lucid").fetchSemanticsNode().boundsInRoot
+        for (tag in listOf(TAG_DECK_DONE, TAG_DECK_STAR, TAG_DECK_LATER, TAG_DECK_DISCARD)) {
+            val button = compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot
+            assertThat(toast.bottom).isAtMost(button.top)
+        }
+        val card = compose.onNodeWithTag(TAG_DECK_CARD).fetchSemanticsNode().boundsInRoot
+        assertThat(toast.top).isAtLeast(card.bottom)
     }
 }

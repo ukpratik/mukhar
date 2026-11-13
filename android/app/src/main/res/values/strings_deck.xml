@@ -27,21 +27,22 @@
     <string name="deck_star">Star</string>
     <string name="deck_later">Later</string>
     <string name="deck_discard">Not for me</string>
-    <string name="deck_done_cd">Got it: mark %1$s as done and add it to your Word Gym</string>
-    <string name="deck_star_cd">Star %1$s: save it and add it to your Word Gym</string>
+    <string name="deck_done_cd">Got it: mark %1$s as learnt. It comes back in Revise</string>
+    <string name="deck_star_cd">Star %1$s: save it. It comes back in Revise</string>
     <string name="deck_later_cd">Later: show %1$s again in a few days</string>
     <string name="deck_discard_cd">Not for me: never show %1$s again</string>
-    <string name="deck_toast_done">Done. %1$s is in your Word Gym.</string>
-    <string name="deck_toast_star">Starred. Find %1$s in Words → Starred.</string>
-    <string name="deck_toast_later">%1$s will come back in 3 days, or after 50 more cards.</string>
-    <string name="deck_toast_discard">%1$s won\'t show again.</string>
+    <string name="deck_toast_done">Got it · %1$s</string>
+    <string name="deck_toast_star">Starred · %1$s</string>
+    <string name="deck_toast_later">%1$s · back in 3 days</string>
+    <string name="deck_toast_discard">%1$s won\'t show again</string>
     <string name="deck_goal_title">That\'s today\'s words</string>
     <plurals name="deck_goal_body">
-        <item quantity="one">You\'ve met %d new word today. The ones you got or starred are in your Word Gym, so they\'ll come back until they stick.</item>
-        <item quantity="other">You\'ve met %d new words today. The ones you got or starred are in your Word Gym, so they\'ll come back until they stick.</item>
+        <item quantity="one">You\'ve met %d new word today. The ones you got or starred come back in Revise, so they stick.</item>
+        <item quantity="other">You\'ve met %d new words today. The ones you got or starred come back in Revise, so they stick.</item>
     </plurals>
     <string name="deck_keep_going">Keep going</string>
-    <string name="deck_open_gym">Open the Word Gym</string>
+    <string name="deck_revise">Revise words</string>
+    <string name="deck_today_counts">Today counts</string>
     <string name="deck_back_to_words">Back to Words</string>
     <string name="deck_empty_title">You\'ve met every word</string>
     <string name="deck_empty_body">There are no new words left here for now. Words you put off with Later come back after a few days.</string>
@@ -55,7 +56,7 @@
     <string name="words_seg_starred">Starred</string>
     <string name="words_seg_done">Done</string>
     <string name="words_starred_empty_title">No starred words yet</string>
-    <string name="words_starred_empty_body">Tap Star on a new word to keep it here. Starred words are in your Word Gym too.</string>
+    <string name="words_starred_empty_body">Tap Star on a new word to keep it here. Starred words come back in Revise too.</string>
     <plurals name="words_starred_practise">
         <item quantity="one">Practise %d starred word</item>
         <item quantity="other">Practise %d starred words</item>
@@ -71,4 +72,57 @@
     <string name="words_discarded_hide">Hide</string>
     <string name="words_bring_back">Bring back</string>
     <string name="words_bring_back_cd">Bring back %1$s to the new words</string>
+    <!-- D-055: Words → Revise (replaces the Word Gym) -->
+    <string name="revision_title">Revise words</string>
+    <string name="revision_progress">%1$d of %2$d</string>
+    <string name="revision_progress_a11y">Card %1$d of %2$d</string>
+    <string name="revision_ask_meaning">What does it mean?</string>
+    <string name="revision_ask_word">Which word means this?</string>
+    <string name="revision_show_meaning">Show the meaning</string>
+    <string name="revision_show_word">Show the word</string>
+    <string name="revision_again">Again</string>
+    <string name="revision_knew">Knew it</string>
+    <string name="revision_again_cd">Again: show %1$s again soon</string>
+    <string name="revision_knew_cd">Knew it: %1$s comes back later</string>
+    <string name="revision_done_title">Revision done</string>
+    <plurals name="revision_done_body">
+        <item quantity="one">You revised %1$d word and knew %2$d.</item>
+        <item quantity="other">You revised %1$d words and knew %2$d.</item>
+    </plurals>
+    <plurals name="revision_tomorrow">
+        <item quantity="one">%d word is due tomorrow.</item>
+        <item quantity="other">%d words are due tomorrow.</item>
+    </plurals>
+    <string name="revision_empty_title">All caught up</string>
+    <plurals name="revision_empty_body">
+        <item quantity="one">Nothing to revise right now. %d word is due tomorrow.</item>
+        <item quantity="other">Nothing to revise right now. %d words are due tomorrow.</item>
+    </plurals>
+    <string name="revision_learn">Learn new words</string>
+    <!-- D-055: Words sections -->
+    <string name="words_seg_learn">Learn</string>
+    <string name="words_seg_revise">Revise</string>
+    <string name="words_seg_mine">My words</string>
+    <string name="words_learn_next">Next word</string>
+    <string name="words_learn_start">Start</string>
+    <string name="words_learn_continue">Continue</string>
+    <string name="words_learn_keep_going">Keep going</string>
+    <plurals name="words_later_waiting">
+        <item quantity="one">%d word you put off with Later will come back in a few days.</item>
+        <item quantity="other">%d words you put off with Later will come back in a few days.</item>
+    </plurals>
+    <plurals name="words_revise_due">
+        <item quantity="one">%d word to revise</item>
+        <item quantity="other">%d words to revise</item>
+    </plurals>
+    <string name="words_revise_due_sub">About %1$d min. Tap to see each meaning, then say if you knew it.</string>
+    <string name="words_revise_caught_up">All caught up</string>
+    <string name="words_revise_caught_up_sub">Words you learn come back here when it\'s time to revise them.</string>
+    <string name="words_revise_start">Start revision</string>
+    <string name="words_revise_tomorrow">Tomorrow</string>
+    <string name="words_revise_week">Next 7 days</string>
+    <plurals name="words_n_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
 </resources>

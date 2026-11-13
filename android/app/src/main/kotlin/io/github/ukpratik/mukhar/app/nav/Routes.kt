@@ -59,13 +59,21 @@ data class ReviewRoute(
     val lang: String? = null,
     val from: String? = null,
     val to: String? = null,
-    /** With [mode] = extra: [SET_DONE] or [SET_STARRED] practises words from Words → Done or Starred (US-081). */
-    val set: String? = null,
 ) {
     companion object {
         const val GYM = "gym"
         const val REVISE = "revise"
         const val EXTRA = "extra"
+    }
+}
+
+/**
+ * D-055 Words → Revise (replaces the Word Gym): word cards due now for [lang], or with [set] the words from Starred
+ * ([SET_STARRED]) or Done ([SET_DONE], marked between [from] and [to], ISO dates).
+ */
+@Serializable
+data class RevisionRoute(val lang: String? = null, val set: String? = null, val from: String? = null, val to: String? = null) {
+    companion object {
         const val SET_DONE = "done"
         const val SET_STARRED = "starred"
     }

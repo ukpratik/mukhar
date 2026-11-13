@@ -224,14 +224,14 @@
         <item quantity="one">%d line</item>
         <item quantity="other">%d lines</item>
     </plurals>
-    <string name="better_tip">Tap a highlighted word to add it to Word Gym.</string>
+    <string name="better_tip">Tap a highlighted word to add it to your words.</string>
     <string name="save_line">Save line</string>
     <string name="saved_line">Saved</string>
-    <string name="add_word_cd">Add %1$s to Word Gym</string>
-    <string name="added_word_cd">%1$s added to Word Gym</string>
-    <string name="toast_added">Added to Word Gym</string>
-    <string name="toast_added_later">Added. It joins your Word Gym on a later day (5 new words a day).</string>
-    <string name="toast_already_in_gym">Already in your Word Gym</string>
+    <string name="add_word_cd">Add %1$s to your words</string>
+    <string name="added_word_cd">%1$s added to your words</string>
+    <string name="toast_added">Added to your words</string>
+    <string name="toast_added_later">Added. It joins your revision on a later day (5 new words a day).</string>
+    <string name="toast_already_in_gym">Already in your words</string>
     <string name="rate_question">Was this useful?</string>
     <string name="rate_cd">Rate this feedback</string>
     <string name="rate_no">Not useful</string>

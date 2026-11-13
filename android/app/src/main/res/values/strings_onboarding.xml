@@ -99,7 +99,7 @@
     <string name="mic_denied_pace">Your pace, pauses and filler words</string>
     <string name="mic_denied_feedback">One thing you did well, one to try</string>
     <string name="mic_denied_again">Say it again and hear yourself improve</string>
-    <string name="mic_denied_offline">Word Gym and revision work without it.</string>
+    <string name="mic_denied_offline">Words and revision work without it.</string>
     <string name="mic_open_settings">Open settings</string>
     <string name="mic_continue_without">Continue without mic</string>
 
@@ -124,7 +124,7 @@
     <string name="declined_back">Back to what leaves your phone</string>
     <string name="declined_title">No problem. Your call.</string>
     <string name="declined_body">Talks need those two services, so they\'ll stay off for now. Nothing has been sent.</string>
-    <string name="declined_offline">Word Gym and revision work fully on your phone</string>
+    <string name="declined_offline">Words and revision work fully on your phone</string>
     <string name="declined_streak">They keep your streak going too</string>
     <string name="declined_turn_on">Turn talks on any time from Today or Settings</string>
     <string name="declined_changed_mind">I\'ve changed my mind, agree</string>

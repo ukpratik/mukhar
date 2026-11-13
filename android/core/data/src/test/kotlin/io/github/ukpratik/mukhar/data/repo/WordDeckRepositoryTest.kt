@@ -28,7 +28,8 @@ import java.time.ZoneId
 class WordDeckRepositoryTest {
     private val stores = TestStores()
     private val clock = FixedClock(Instant.parse("2026-11-12T04:30:00Z"), ZoneId.of("Asia/Kolkata")) // 10:00 IST
-    private val repo = testWordRepository(stores.db, clock, stores.settings)
+    private val habits = HabitRepository(stores.db.habitDao(), stores.settings, clock)
+    private val repo = testWordRepository(stores.db, clock, stores.settings, habits)
     private val dao = stores.db.wordDao()
 
     @Before
@@ -169,5 +170,59 @@ class WordDeckRepositoryTest {
         val today = LocalDate.of(2026, 11, 12)
         assertThat(repo.queueDeck(null, starred = false, today, today).map { it.word?.id }.toSet()).containsExactly(a.id)
         assertThat(repo.queueDeck(null, starred = true, null, null).map { it.word?.id }.toSet()).containsExactly(b.id)
+    }
+
+    // ---- D-055: streak credit and Words → Revise ----
+
+    @Test
+    fun fiveWordCardsADayCountTheStreak() = runTest {
+        repeat(4) { repo.decide(deck().cards.first().id, DeckChoice.DONE) }
+        assertThat(stores.db.habitDao().streakDays()).isEmpty()
+        assertThat(deck().countsToday).isFalse()
+        repo.decide(deck().cards.first().id, DeckChoice.LATER)
+        assertThat(stores.db.habitDao().streakDays().map { it.day }).containsExactly("2026-11-12")
+        assertThat(deck().practisedToday).isEqualTo(5)
+        assertThat(deck().countsToday).isTrue()
+    }
+
+    @Test
+    fun revisionGradesCountTowardTheStreakToo() = runTest {
+        val words = deck().cards.take(3)
+        words.forEach { repo.decide(it.id, DeckChoice.DONE) }
+        assertThat(repo.gradeWord("wm:${words[0].id}", knew = true, durationMs = 1_000)).isNull() // 4 so far
+        assertThat(repo.gradeWord("wm:${words[1].id}", knew = false, durationMs = 1_000)?.creditedDay).isEqualTo(LocalDate.of(2026, 11, 12))
+        assertThat(deck().practisedToday).isEqualTo(5)
+    }
+
+    @Test
+    fun knewItSchedulesLaterThanAgain() = runTest {
+        val (a, b) = deck().cards
+        repo.decide(a.id, DeckChoice.DONE)
+        repo.decide(b.id, DeckChoice.DONE)
+        repo.gradeWord("wm:${a.id}", knew = true, durationMs = null)
+        repo.gradeWord("wm:${b.id}", knew = false, durationMs = null)
+        assertThat(dao.card("wm:${a.id}")!!.due).isGreaterThan(dao.card("wm:${b.id}")!!.due)
+    }
+
+    @Test
+    fun theRevisionSummaryCountsDueTomorrowAndTheWeek() = runTest {
+        val (a, b) = deck().cards
+        repo.decide(a.id, DeckChoice.DONE)
+        repo.decide(b.id, DeckChoice.STARRED)
+        // Two word -> meaning cards due now; the meaning -> word cards arrive tomorrow.
+        val r = repo.observeRevision().first()
+        assertThat(r.due).isEqualTo(2)
+        assertThat(r.tomorrow).isEqualTo(2)
+        assertThat(r.week).isEqualTo(2)
+        assertThat(repo.observeRevision(Lang.HI).first().due).isEqualTo(0)
+    }
+
+    @Test
+    fun theSwipeHintStopsAfterTenCardsAndLaterCountsWait() = runTest {
+        assertThat(deck().showHint).isTrue()
+        repo.decide(deck().cards.first().id, DeckChoice.LATER)
+        assertThat(deck().later).isEqualTo(1)
+        repeat(9) { repo.decide(deck().cards.first().id, DeckChoice.DISCARDED) }
+        assertThat(deck().showHint).isFalse()
     }
 }

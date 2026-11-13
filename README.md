@@ -13,7 +13,7 @@
   - vocabulary variety
   - one thing you did well and one thing to work on, both quoted from your own talk
 - **Say it again.** Retake the same topic and compare the two talks.
-- **Word Gym.** Learn words that suit your goal (professional, content creation, public speaking, everyday, or just cool words). Use each word in your own spoken sentence.
+- **Words.** Learn new words one card at a time, chosen for your goal (professional, content creation, public speaking, everyday, or just cool words): Got it, Star, Later or Not for me. Words you learn come back in Revise until they stick.
 - **Spaced revision.** FSRS scheduling brings words back just before you'd forget them. A quick revision mode takes 2 minutes.
 - **Habit loop.** Daily streaks with freezes and a repair window, gentle reminders that back off if you ignore them, and a weekly goal.
 - **Progress.** Trends, personal bests, insights, and a share card.

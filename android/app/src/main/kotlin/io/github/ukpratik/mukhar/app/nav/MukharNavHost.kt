@@ -22,6 +22,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.github.ukpratik.mukhar.app.feature.plan.PlanScreen
@@ -42,6 +43,7 @@ import io.github.ukpratik.mukhar.app.feature.talk.sayagain.SayAgainScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordDetailScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordsScreen
 import io.github.ukpratik.mukhar.app.feature.words.deck.DeckScreen
+import io.github.ukpratik.mukhar.app.feature.words.revise.RevisionScreen
 import io.github.ukpratik.mukhar.app.feature.words.review.ReviewScreen
 
 /**
@@ -128,10 +130,18 @@ fun MukharNavHost(
                     onSeeLine = { id -> navController.navigate(ReportRoute(id)) },
                 )
             }
-            composable<DeckRoute> {
+            composable<DeckRoute> { entry ->
+                val lang = entry.toRoute<DeckRoute>().lang
                 DeckScreen(
                     onBack = { navController.popBackStack() },
-                    onOpenGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) { popUpTo<DeckRoute> { inclusive = true } } },
+                    onRevise = { navController.navigate(RevisionRoute(lang)) { popUpTo<DeckRoute> { inclusive = true } } },
+                )
+            }
+            composable<RevisionRoute> { entry ->
+                val lang = entry.toRoute<RevisionRoute>().lang
+                RevisionScreen(
+                    onBack = { navController.popBackStack() },
+                    onLearn = { navController.navigate(DeckRoute(lang)) { popUpTo<RevisionRoute> { inclusive = true } } },
                 )
             }
             composable<ReviewRoute> {
@@ -162,7 +172,7 @@ fun MukharNavHost(
                     onClose = home,
                     onPremium = { navController.navigate(PlanRoute(PlanRoute.SOURCE_QUOTA)) },
                     onRevise = { navController.navigate(ReviewRoute(ReviewRoute.REVISE)) { popUpTo<QuotaRoute> { inclusive = true } } },
-                    onGym = { navController.navigate(ReviewRoute(ReviewRoute.GYM)) { popUpTo<QuotaRoute> { inclusive = true } } },
+                    onGym = { navController.navigate(RevisionRoute()) { popUpTo<QuotaRoute> { inclusive = true } } },
                 )
             }
 
@@ -227,16 +237,14 @@ fun MukharNavHost(
 fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
     composable<WordsRoute> {
         WordsScreen(
-            onOpenGym = { lang -> navController.navigate(ReviewRoute(ReviewRoute.GYM, lang = lang?.code)) },
+            onOpenRevision = { lang -> navController.navigate(RevisionRoute(lang?.code)) },
             onOpenWord = { id -> navController.navigate(WordDetailRoute(id)) },
             onTalk = navController::navigateToTalk,
             onRevise = { lang, from, to ->
-                navController.navigate(
-                    ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, from = from.toString(), to = to.toString(), set = ReviewRoute.SET_DONE),
-                )
+                navController.navigate(RevisionRoute(lang?.code, RevisionRoute.SET_DONE, from.toString(), to.toString()))
             },
             onOpenDeck = { lang -> navController.navigate(DeckRoute(lang?.code)) },
-            onPractiseStarred = { lang -> navController.navigate(ReviewRoute(ReviewRoute.EXTRA, lang = lang?.code, set = ReviewRoute.SET_STARRED)) },
+            onPractiseStarred = { lang -> navController.navigate(RevisionRoute(lang?.code, RevisionRoute.SET_STARRED)) },
         )
     }
 }

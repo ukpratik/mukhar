@@ -89,7 +89,7 @@
     <string name="quota_talk_waiting">Your latest talk is saved. We\'ll analyse it when your next free talk opens, so nothing you said is lost.</string>
     <string name="quota_still_free">STILL FREE, AS MUCH AS YOU LIKE</string>
     <string name="quota_revise">Revise</string>
-    <string name="quota_gym">Word Gym</string>
+    <string name="quota_gym">Revise words</string>
     <string name="quota_checks_unlimited">Unlimited checks</string>
     <string name="quota_tomorrow">Come back tomorrow</string>
     <string name="quota_try_premium">Try Premium free for 7 days</string>
@@ -100,7 +100,7 @@
     <string name="paywall_title">Talk as much as you like</string>
     <string name="paywall_lead">Free stays free. Premium removes the daily limit.</string>
     <string name="paywall_incl_talks">Unlimited coached talks, up to 3 min each (fair use: 20 a day)</string>
-    <string name="paywall_incl_checks">Unlimited sentence checks in Word Gym</string>
+    <string name="paywall_incl_checks">Unlimited sentence checks</string>
     <string name="paywall_incl_sayagain">Say It Again on every talk, English and Hindi</string>
     <string name="paywall_incl_free">Streak, revision and progress stay free for everyone</string>
     <string name="paywall_plans_a11y">Choose a plan</string>

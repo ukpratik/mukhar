@@ -47,7 +47,7 @@ class WordsA11yTest {
     }
 
     private fun bank(state: WordBankUiState) {
-        compose.setContent { MukharTheme { WordBankContent(state, WordBankActions(onEvent = { bankEvents += it }, onOpenGym = { gym++ })) } }
+        compose.setContent { MukharTheme { WordBankContent(state, WordBankActions(onEvent = { bankEvents += it }, onOpenRevision = { gym++ })) } }
     }
 
     @Test
@@ -92,18 +92,17 @@ class WordsA11yTest {
     }
 
     @Test
-    fun gymRowIsOneClickableSentence() {
-        bank(WordBankUiState(loading = false, words = listOf(WordsFixtures.pivotal), gymDue = 8))
-        compose.onNodeWithTag(TAG_GYM_ROW).assert(hasClickAction()).performSemanticsAction(SemanticsActions.OnClick)
+    fun startRevisionIsAButton() {
+        bank(WordBankUiState(loading = false, section = WordsSection.REVISE, words = listOf(WordsFixtures.pivotal), revision = io.github.ukpratik.mukhar.data.repo.RevisionSummary(8, 0, 0)))
+        compose.onNodeWithTag(TAG_REVISE_START).assert(hasClickAction()).performSemanticsAction(SemanticsActions.OnClick)
         assertThat(gym).isEqualTo(1)
     }
 
     @Test
     fun filterChipsExposeSelectionAndTheCountIsLive() {
-        bank(WordBankUiState(loading = false, words = listOf(WordsFixtures.pivotal, WordsFixtures.concise), trackChips = listOf("interviews"), tracks = setOf("interviews")))
+        bank(WordBankUiState(loading = false, section = WordsSection.MY_WORDS, words = listOf(WordsFixtures.pivotal, WordsFixtures.concise)))
         compose.onNode(hasText("All") and hasClickAction()).assertIsSelected()
         compose.onNode(hasText("From your talks") and hasClickAction()).assertIsNotSelected()
-        compose.onNode(hasText("Interviews") and hasClickAction()).assertIsSelected()
         compose.onNodeWithTag(TAG_WORDS_COUNT).assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.LiveRegion))
     }
 }

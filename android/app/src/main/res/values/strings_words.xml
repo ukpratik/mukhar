@@ -5,7 +5,6 @@
     <!-- S14 -->
     <string name="words_title">Words</string>
     <string name="words_section_a11y">Section</string>
-    <string name="words_seg_bank">Word bank</string>
     <string name="words_seg_lines">Saved lines</string>
     <!-- rc2: US-075 language tabs, US-076 used-up list, US-077 History -->
     <string name="words_lang_tabs_a11y">Words language</string>
@@ -16,12 +15,6 @@
     <string name="words_next_none">Not reviewed yet</string>
     <string name="words_next_due">Review due now</string>
     <string name="words_next_in">Next review in %1$s</string>
-    <string name="words_gym">Word Gym</string>
-    <string name="words_gym_nothing">Nothing to review yet</string>
-    <string name="words_gym_caught_up">All caught up for today</string>
-    <string name="words_gym_due_sub">~%1$d min · works offline</string>
-    <string name="words_gym_a11y" tools:ignore="PluralsCandidate">Word Gym: %1$d due, about %2$d min. Start review</string>
-    <string name="words_gym_nothing_a11y">Review: nothing due yet</string>
     <string name="words_empty_title">Your words will live here</string>
     <string name="words_empty_goals">your goals</string>
     <string name="words_and">%1$s and %2$s</string>
@@ -30,9 +23,6 @@
     <string name="words_filter_a11y">Filter words</string>
     <string name="words_filter_all">All</string>
     <string name="words_filter_talks">From your talks</string>
-    <string name="words_filter_curated">Curated</string>
-    <string name="words_count_talks" tools:ignore="PluralsCandidate">%1$d from your talks · %2$d in total</string>
-    <string name="words_count_curated" tools:ignore="PluralsCandidate">%1$d curated · %2$d in total</string>
     <string name="words_count_all">%1$d in total</string>
     <string name="words_none_match">No words match these filters yet.</string>
     <string name="words_lines_empty_title">No saved lines yet</string>
@@ -78,16 +68,16 @@
     <string name="word_next_today">Today</string>
     <string name="word_next_first">After your first review</string>
     <string name="word_practise">Practise in a sentence</string>
-    <string name="word_remove">Remove from Word Gym</string>
-    <string name="word_add_back">Add back to Word Gym</string>
-    <string name="word_removed">Removed from Word Gym</string>
+    <string name="word_remove">Stop revising this word</string>
+    <string name="word_add_back">Revise this word again</string>
+    <string name="word_removed">This word won\'t come up in Revise</string>
     <string name="voice_tip_title">Add a %1$s voice to hear words</string>
     <string name="voice_tip_body">Your phone has no %1$s (India) voice yet. It\'s free and works offline.</string>
     <string name="voice_tip_open">Open voice settings</string>
     <string name="voice_tip_not_now">Not now</string>
 
     <!-- S13 / S15 review -->
-    <string name="gym_title">Word Gym</string>
+    <string name="gym_title">Practise</string>
     <string name="revise_bar_title">Revise</string>
     <string name="review_close_cd">Close review. Progress is saved</string>
     <string name="revise_close_cd">Close revision. Progress is saved</string>
@@ -164,7 +154,7 @@
 
     <!-- S15 done -->
     <string name="done_title_revise">Revision done. Nicely kept.</string>
-    <string name="done_title_gym">Word Gym done. Nicely kept.</string>
+    <string name="done_title_gym">Practice done. Nicely kept.</string>
     <string name="done_body">%1$s in %2$s.</string>
     <string name="done_time">%1$d min %2$d s</string>
     <string name="done_time_s">%1$d s</string>

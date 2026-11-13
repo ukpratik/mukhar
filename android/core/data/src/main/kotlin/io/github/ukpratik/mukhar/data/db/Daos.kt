@@ -223,6 +223,10 @@ interface WordDao {
     @Query("SELECT * FROM word_deck")
     fun observeDeck(): Flow<List<WordDeckEntity>>
 
+    /** Grades of word cards since [sinceMs] (D-055 streak credit). */
+    @Query("SELECT COUNT(*) FROM review_log r JOIN card c ON c.id = r.card_id WHERE c.word_id IS NOT NULL AND r.reviewed_at >= :sinceMs")
+    suspend fun wordReviewsSince(sinceMs: Long): Int
+
     /** Every day's words, for the learnt-words history (US-077). */
     @Query("SELECT * FROM daily_word ORDER BY day, position")
     fun observeAllDailyWords(): Flow<List<DailyWordEntity>>

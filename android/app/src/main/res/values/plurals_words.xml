@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="words_gym_due">
-        <item quantity="one">Word Gym · %d due</item>
-        <item quantity="other">Word Gym · %d due</item>
-    </plurals>
     <plurals name="word_next_in">
         <item quantity="one">In %d day</item>
         <item quantity="other">In %d days</item>

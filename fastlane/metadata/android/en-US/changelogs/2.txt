@@ -1,5 +1,5 @@
-- New words come one card at a time, with the meaning in English and Hindi, an example and the pronunciation
-- On each card choose Got it, Star, Later or Not for me; swipe right for Got it, left for Later
-- Only words you get or star go into your Word Gym; Later brings a word back in 3 days or after 50 cards
-- Words now has Starred and Done lists, and discarded words can be brought back
-- Daily goal for new words, with Keep going when you want more
+- Words has three parts: Learn new words, Revise the ones you know, and My words
+- Learn: one card at a time with the meaning in English and Hindi, an example and the pronunciation; Got it, Star, Later or Not for me
+- Revise: see the word, recall the meaning, then Knew it or Again; words come back when it's time
+- Starred and Done lists; discarded words can be brought back
+- 5 word cards a day count for your streak

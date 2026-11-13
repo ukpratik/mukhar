@@ -155,11 +155,12 @@ data class DeckActions(
     val onDecide: (DeckCard, DeckChoice) -> Unit = { _, _ -> },
     val onSpeak: (String, Lang) -> Unit = { _, _ -> },
     val onKeepGoing: () -> Unit = {},
-    val onOpenGym: () -> Unit = {},
+    /** Words → Revise (D-055). */
+    val onRevise: () -> Unit = {},
 )
 
 @Composable
-fun DeckScreen(onBack: () -> Unit, onOpenGym: () -> Unit, vm: DeckViewModel = hiltViewModel()) {
+fun DeckScreen(onBack: () -> Unit, onRevise: () -> Unit, vm: DeckViewModel = hiltViewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val undoLabel = stringResource(R.string.undo)
@@ -182,18 +183,20 @@ fun DeckScreen(onBack: () -> Unit, onOpenGym: () -> Unit, vm: DeckViewModel = hi
             }
         }
     }
-    Scaffold(snackbarHost = { SnackbarHost(snackbar) }, containerColor = MaterialTheme.colorScheme.background) { padding ->
+    // The toast lives in its own slot above the actions (D-055), not in the Scaffold, so it never covers a button.
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         DeckContent(
             state,
-            DeckActions(onBack = onBack, onDecide = vm::decide, onSpeak = vm::speak, onKeepGoing = vm::keepGoing, onOpenGym = onOpenGym),
+            DeckActions(onBack = onBack, onDecide = vm::decide, onSpeak = vm::speak, onKeepGoing = vm::keepGoing, onRevise = onRevise),
             Modifier.padding(padding),
+            snackbar = snackbar,
         )
     }
 }
 
 /** Stateless: progress, the card stack and the four actions, or the goal / empty screens. */
 @Composable
-fun DeckContent(state: DeckUiState, actions: DeckActions, modifier: Modifier = Modifier) {
+fun DeckContent(state: DeckUiState, actions: DeckActions, modifier: Modifier = Modifier, snackbar: SnackbarHostState? = null) {
     Column(modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).testTag(TAG_DECK)) {
         MukharAppBar(stringResource(R.string.deck_title), stringResource(R.string.deck_back_cd), actions.onBack)
         val deck = state.deck ?: return@Column
@@ -201,24 +204,28 @@ fun DeckContent(state: DeckUiState, actions: DeckActions, modifier: Modifier = M
         when {
             state.showGoal -> GoalMet(deck, actions)
             deck.cards.isEmpty() -> Empty(actions)
-            else -> Stack(state, actions)
+            else -> Stack(state, actions, snackbar)
         }
     }
 }
 
 @Composable
 private fun Progress(deck: DeckState) {
-    val a11y = pluralStringResource(R.plurals.deck_progress_a11y, deck.goal, deck.decidedToday, deck.goal)
+    val counts = stringResource(R.string.deck_today_counts)
+    val a11y = pluralStringResource(R.plurals.deck_progress_a11y, deck.goal, deck.decidedToday, deck.goal) + if (deck.countsToday) ". $counts" else ""
     Column(
         Modifier.fillMaxWidth().padding(horizontal = MukharSpace.gutter).padding(bottom = MukharSpace.s)
             .semantics(mergeDescendants = true) { contentDescription = a11y; liveRegion = LiveRegionMode.Polite },
     ) {
-        Text(
-            if (deck.goalMet) pluralStringResource(R.plurals.deck_progress_extra, deck.decidedToday, deck.decidedToday) else pluralStringResource(R.plurals.deck_progress, deck.goal, deck.decidedToday, deck.goal),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.testTag(TAG_DECK_PROGRESS),
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                if (deck.goalMet) pluralStringResource(R.plurals.deck_progress_extra, deck.decidedToday, deck.decidedToday) else pluralStringResource(R.plurals.deck_progress, deck.goal, deck.decidedToday, deck.goal),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f).testTag(TAG_DECK_PROGRESS),
+            )
+            if (deck.countsToday) TodayCounts()
+        }
         LinearProgressIndicator(
             progress = { if (deck.goal <= 0) 1f else (deck.decidedToday.toFloat() / deck.goal).coerceAtMost(1f) },
             modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
@@ -227,7 +234,7 @@ private fun Progress(deck: DeckState) {
 }
 
 @Composable
-private fun Stack(state: DeckUiState, actions: DeckActions) {
+private fun Stack(state: DeckUiState, actions: DeckActions, snackbar: SnackbarHostState?) {
     val top = state.top ?: return
     val scope = rememberCoroutineScope()
     val still = reducedMotion()
@@ -249,7 +256,7 @@ private fun Stack(state: DeckUiState, actions: DeckActions) {
             }
         }
         Column(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = MukharSpace.gutter)) {
+            Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = MukharSpace.gutter), contentAlignment = Alignment.TopCenter) {
                 // The card behind, slightly smaller, so the deck reads as a stack.
                 state.deck?.cards?.getOrNull(1)?.let { next ->
                     androidx.compose.runtime.key(next.id) {
@@ -300,66 +307,54 @@ private fun Stack(state: DeckUiState, actions: DeckActions) {
                         .testTag(TAG_DECK_CARD),
                 )
             }
-            Text(
-                stringResource(R.string.deck_swipe_hint),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = MukharSpace.s, start = MukharSpace.gutter, end = MukharSpace.gutter),
-            )
+            SnackbarSpace(snackbar)
+            if (state.deck?.showHint == true) {
+                Text(
+                    stringResource(R.string.deck_swipe_hint),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = MukharSpace.gutter).testTag(TAG_DECK_HINT),
+                )
+            }
             Buttons(top) { go(it) }
         }
     }
 }
 
-/** The four actions, always visible with text (never gesture-only). */
+/** The four actions in one row, each with its label (never gesture-only); Got it is the biggest. */
 @Composable
 private fun Buttons(card: DeckCard, onChoice: (DeckChoice) -> Unit) {
-    Column(
-        Modifier.fillMaxWidth().padding(horizontal = MukharSpace.gutter, vertical = MukharSpace.m),
-        verticalArrangement = Arrangement.spacedBy(MukharSpace.s),
-    ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(MukharSpace.s)) {
-            val discardCd = stringResource(R.string.deck_discard_cd, card.lemma)
-            OutlinedButton(
-                onClick = { onChoice(DeckChoice.DISCARDED) },
-                modifier = Modifier.weight(1f).heightIn(min = MukharSpace.touch).testTag(TAG_DECK_DISCARD).semantics { contentDescription = discardCd },
-            ) {
-                Icon(Icons.Rounded.Close, null, Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.deck_discard), maxLines = 1)
-            }
-            val laterCd = stringResource(R.string.deck_later_cd, card.lemma)
-            OutlinedButton(
-                onClick = { onChoice(DeckChoice.LATER) },
-                modifier = Modifier.weight(1f).heightIn(min = MukharSpace.touch).testTag(TAG_DECK_LATER).semantics { contentDescription = laterCd },
-            ) {
-                Icon(Icons.Rounded.Schedule, null, Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.deck_later), maxLines = 1)
-            }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(MukharSpace.s)) {
-            val starCd = stringResource(R.string.deck_star_cd, card.lemma)
-            FilledTonalButton(
-                onClick = { onChoice(DeckChoice.STARRED) },
-                modifier = Modifier.weight(1f).heightIn(min = 52.dp).testTag(TAG_DECK_STAR).semantics { contentDescription = starCd },
-            ) {
-                Icon(Icons.Rounded.Star, null, tint = MukharTheme.colors.accentInk)
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.deck_star), maxLines = 1)
-            }
-            val doneCd = stringResource(R.string.deck_done_cd, card.lemma)
-            Button(
-                onClick = { onChoice(DeckChoice.DONE) },
-                modifier = Modifier.weight(1f).heightIn(min = 52.dp).testTag(TAG_DECK_DONE).semantics { contentDescription = doneCd },
-            ) {
-                Icon(Icons.Rounded.Check, null, tint = MukharTheme.colors.accent)
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.deck_done), maxLines = 1)
-            }
-        }
+    ActionRow {
+        RoundAction(
+            Icons.Rounded.Close, stringResource(R.string.deck_discard), stringResource(R.string.deck_discard_cd, card.lemma), RoundStyle.OUTLINED,
+            { onChoice(DeckChoice.DISCARDED) }, Modifier.weight(1f).testTag(TAG_DECK_DISCARD),
+        )
+        RoundAction(
+            Icons.Rounded.Schedule, stringResource(R.string.deck_later), stringResource(R.string.deck_later_cd, card.lemma), RoundStyle.OUTLINED,
+            { onChoice(DeckChoice.LATER) }, Modifier.weight(1f).testTag(TAG_DECK_LATER),
+        )
+        RoundAction(
+            Icons.Rounded.Star, stringResource(R.string.deck_star), stringResource(R.string.deck_star_cd, card.lemma), RoundStyle.TONAL,
+            { onChoice(DeckChoice.STARRED) }, Modifier.weight(1f).testTag(TAG_DECK_STAR), tint = MukharTheme.colors.accentInk,
+        )
+        RoundAction(
+            Icons.Rounded.Check, stringResource(R.string.deck_done), stringResource(R.string.deck_done_cd, card.lemma), RoundStyle.PRIMARY,
+            { onChoice(DeckChoice.DONE) }, Modifier.weight(1f).testTag(TAG_DECK_DONE), size = 68.dp, tint = MukharTheme.colors.accent,
+        )
     }
+}
+
+/** "Today counts" once 5 word cards are practised today (D-055). */
+@Composable
+fun TodayCounts(modifier: Modifier = Modifier) {
+    InfoChip(
+        stringResource(R.string.deck_today_counts),
+        MaterialTheme.colorScheme.tertiaryContainer,
+        MaterialTheme.colorScheme.tertiary,
+        modifier.testTag(TAG_TODAY_COUNTS),
+        icon = Icons.Rounded.Check,
+    )
 }
 
 /** The card: word, pronunciation, both meanings, example. [hidden] = the card behind (not read or tappable). */
@@ -367,9 +362,10 @@ private fun Buttons(card: DeckCard, onChoice: (DeckChoice) -> Unit) {
 @Composable
 fun WordCard(card: DeckCard, voice: Boolean, onSpeak: (String, Lang) -> Unit, modifier: Modifier = Modifier, hidden: Boolean = false) {
     val hi = card.lang == Lang.HI
-    MukharCard(modifier.fillMaxSize()) {
+    // Wraps its content (scrolling if taller than the space), so on a tall phone the card sits high, not stretched.
+    MukharCard(modifier.fillMaxWidth()) {
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState(), enabled = !hidden).padding(MukharSpace.l),
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState(), enabled = !hidden).padding(MukharSpace.l),
             verticalArrangement = Arrangement.spacedBy(MukharSpace.m),
         ) {
             if (card.comingBack) {
@@ -396,8 +392,11 @@ fun WordCard(card: DeckCard, voice: Boolean, onSpeak: (String, Lang) -> Unit, mo
             Section(stringResource(if (hi) R.string.deck_meaning_hi_word else R.string.deck_meaning_en)) {
                 Text(card.meaning, style = if (hi) MukharTheme.type.hiBodyLarge else MaterialTheme.typography.bodyLarge)
             }
-            Section(stringResource(if (hi) R.string.deck_meaning_en_word else R.string.deck_meaning_hi)) {
-                Text(card.gloss, style = if (hi) MaterialTheme.typography.bodyLarge else MukharTheme.type.hiBodyLarge)
+            // Words saved from a talk have no gloss: no empty section.
+            if (card.gloss.isNotBlank()) {
+                Section(stringResource(if (hi) R.string.deck_meaning_en_word else R.string.deck_meaning_hi)) {
+                    Text(card.gloss, style = if (hi) MaterialTheme.typography.bodyLarge else MukharTheme.type.hiBodyLarge)
+                }
             }
             Section(stringResource(R.string.deck_example)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -443,11 +442,11 @@ private fun GoalMet(deck: DeckState, actions: DeckActions) {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 6.dp),
         )
-        Button(onClick = actions.onOpenGym, modifier = Modifier.fillMaxWidth().padding(top = 20.dp).heightIn(min = 52.dp)) {
-            Text(stringResource(R.string.deck_open_gym))
-        }
-        OutlinedButton(onClick = actions.onKeepGoing, modifier = Modifier.fillMaxWidth().padding(top = 8.dp).heightIn(min = MukharSpace.touch).testTag(TAG_DECK_KEEP_GOING)) {
+        Button(onClick = actions.onKeepGoing, modifier = Modifier.fillMaxWidth().padding(top = 20.dp).heightIn(min = 52.dp).testTag(TAG_DECK_KEEP_GOING)) {
             Text(stringResource(R.string.deck_keep_going))
+        }
+        OutlinedButton(onClick = actions.onRevise, modifier = Modifier.fillMaxWidth().padding(top = 8.dp).heightIn(min = MukharSpace.touch).testTag(TAG_DECK_REVISE)) {
+            Text(stringResource(R.string.deck_revise))
         }
         TextButton(onClick = actions.onBack, modifier = Modifier.padding(top = 4.dp)) { Text(stringResource(R.string.deck_back_to_words)) }
     }
@@ -493,3 +492,6 @@ const val TAG_DECK_DISCARD = "deck_discard"
 const val TAG_DECK_GOAL = "deck_goal"
 const val TAG_DECK_KEEP_GOING = "deck_keep_going"
 const val TAG_DECK_EMPTY = "deck_empty"
+const val TAG_DECK_HINT = "deck_hint"
+const val TAG_DECK_REVISE = "deck_revise"
+const val TAG_TODAY_COUNTS = "today_counts"
