@@ -25,8 +25,8 @@
 
 | Mode | Status | Notes |
 |---|---|---|
-| **On this phone** | Next release (1.1) | Free and offline. Speech-to-text runs on the phone with a one-time model download of about 40 MB per language, and feedback comes from built-in rules. Pace and pauses are accurate; filler counts are estimates. |
-| **Your own keys** | **Available in 1.0** | Paste your own Deepgram or Sarvam key (speech-to-text) and Anthropic key (coaching). The phone calls those services directly, so Mukhar never sees your keys or your audio. |
+| **On this phone** | Planned | Free and offline. Speech-to-text runs on the phone with a one-time model download of about 40 MB per language, and feedback comes from built-in rules. Pace and pauses are accurate; filler counts are estimates. |
+| **Your own keys** | **Available** | Paste your own Deepgram or Sarvam key (speech-to-text) and Anthropic key (coaching). The phone calls those services directly, so Mukhar never sees your keys or your audio. |
 | **Mukhar Cloud** | Coming soon | The server in `worker/` is complete but switched off. |
 
 Whatever the mode, a talk never gets stuck: if no transcript can be written (no key yet, offline, or the service failed), Mukhar measures pace (estimated from syllables) and long pauses from the recording itself and writes delivery notes. The recording is kept so the full transcript can be written later; Settings → Recordings manages recordings and their space limit (500 MB by default).
