@@ -97,6 +97,10 @@ data class WordEntity(
     val source: String,
     @ColumnInfo(name = "source_session_id") val sourceSessionId: String?,
     @ColumnInfo(name = "added_at") val addedAt: Long,
+    /** v3 (D-056): for words saved from the dictionary, which aren't in the curated packs. */
+    val gloss: String? = null,
+    val pos: String? = null,
+    val translit: String? = null,
 )
 
 @Entity(tableName = "card", indices = [Index("due"), Index("word_id")])

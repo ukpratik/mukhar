@@ -84,6 +84,12 @@ data class RevisionRoute(val lang: String? = null, val set: String? = null, val 
 
 @Serializable data class WordDetailRoute(val wordId: String)
 
+/** D-056: look up any word (English or Hindi). */
+@Serializable data object LookupRoute
+
+/** A looked-up word's page: [id] like `en:happy`; [word] for a word only the AI can explain (not in the dictionary). */
+@Serializable data class LookupEntryRoute(val id: String, val word: String? = null)
+
 // M5: Me (Progress S16) → Settings (S19), Plan/paywall (S18), Share card (S21); Quota (S17) from the talk flow.
 
 @Serializable data object SettingsRoute

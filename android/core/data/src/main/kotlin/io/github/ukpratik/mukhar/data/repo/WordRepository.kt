@@ -53,7 +53,33 @@ import java.time.LocalDate
 /** S14 status chip. [SAVED_FOR_LATER] = harvested over the daily cap, waiting for its day (US-021). */
 enum class WordStatus { NEW, LEARNING, KNOWN, SAVED_FOR_LATER }
 
-enum class WordSource(val key: String) { CURATED("curated"), TALK("talk") }
+enum class WordSource(val key: String) {
+    CURATED("curated"),
+    TALK("talk"),
+
+    /** Saved from a dictionary look-up (D-056). */
+    LOOKUP("lookup"),
+    ;
+
+    companion object {
+        fun of(key: String): WordSource = entries.firstOrNull { it.key == key } ?: CURATED
+    }
+}
+
+/** A looked-up word to save into My words (D-056); for a curated word only [id] and [lang] matter. */
+data class LookupWord(
+    val id: String,
+    val lang: Lang,
+    val lemma: String,
+    val meaning: String,
+    val example: String,
+    val gloss: String?,
+    val pos: String?,
+    val translit: String?,
+)
+
+/** Whether a looked-up word is in My words (so in revision) and starred. */
+data class LookupStatus(val saved: Boolean, val starred: Boolean)
 
 /** A word in the bank, its curated extras (part of speech, gloss, transliteration) and its review state. */
 data class WordItem(
@@ -484,6 +510,52 @@ class WordRepository(
         dao.insertCard(newCard("mw:$wordId", CardType.MEANING_WORD, wordId, null, meaning, lemma, lang, next, next + 1))
     }
 
+    // ---- Dictionary look-ups (D-056) ----
+
+    fun observeLookupStatus(id: String): Flow<LookupStatus> = combine(dao.observeWord(id), dao.observeCardsForWord(id), dao.observeDeck()) { w, cards, rows ->
+        val row = rows.firstOrNull { it.wordId == id }?.let { DeckChoice.of(it.choice) }
+        val saved = w != null && (cards.isEmpty() || cards.any { !it.suspended })
+        LookupStatus(saved = saved, starred = saved && row == DeckChoice.STARRED)
+    }
+
+    /**
+     * "Add to my words" (or Star) from a look-up: the word gets its two revision cards (now, and meaning → word
+     * tomorrow) like a deck word, and a Done/Starred row so it shows in those lists. A curated word is added from its
+     * pack (and leaves the deck). The row is numbered [WordDeck.LOOKUP_SEQ], so a look-up doesn't count towards the
+     * day's card goal or streak. A word already in My words just has its star set.
+     */
+    suspend fun saveLookup(word: LookupWord, starred: Boolean) = mutex.withLock {
+        val now = clock.now()
+        val existing = dao.word(word.id)
+        if (existing == null) {
+            val curated = catalog.byId(word.id)
+            if (curated != null) {
+                addCurated(curated, now)
+            } else {
+                dao.insertWord(
+                    WordEntity(
+                        id = word.id, lang = word.lang.code, lemma = word.lemma.trim(), meaning = word.meaning, example = word.example,
+                        register = "", tracks = "", source = WordSource.LOOKUP.key, sourceSessionId = null, addedAt = now.toEpochMilli(),
+                        gloss = word.gloss, pos = word.pos, translit = word.translit,
+                    ),
+                )
+                addWordCards(word.id, word.lang, word.lemma.trim(), word.meaning, release = now)
+            }
+        } else {
+            dao.setWordSuspended(word.id, false)
+        }
+        val choice = (if (starred) DeckChoice.STARRED else DeckChoice.DONE).key
+        val row = dao.deckRow(word.id)
+        val keep = row != null && DeckChoice.of(row.choice)?.inGym == true
+        dao.upsertDeck(
+            if (keep) {
+                row!!.copy(choice = choice)
+            } else {
+                WordDeckEntity(word.id, word.lang.code, choice, now.toEpochMilli(), WordDeck.LOOKUP_SEQ)
+            },
+        )
+    }
+
     // ---- Harvest from talks (US-021, US-040) ----
 
     /** A tapped upgraded word: deduplicated, at most 5 new a day, the rest carried to the next day with room. */
@@ -571,9 +643,9 @@ class WordRepository(
         }
         return WordItem(
             id = w.id, lang = Lang.fromCode(w.lang), lemma = w.lemma, meaning = w.meaning, example = w.example, register = w.register,
-            tracks = w.tracks.split(',').filter(String::isNotEmpty), source = if (w.source == WordSource.TALK.key) WordSource.TALK else WordSource.CURATED,
-            sourceSessionId = w.sourceSessionId, addedAt = Instant.ofEpochMilli(w.addedAt), pos = curated?.pos, gloss = curated?.gloss,
-            translit = curated?.translit, exampleGloss = curated?.exampleGloss, status = status,
+            tracks = w.tracks.split(',').filter(String::isNotEmpty), source = WordSource.of(w.source),
+            sourceSessionId = w.sourceSessionId, addedAt = Instant.ofEpochMilli(w.addedAt), pos = curated?.pos ?: w.pos, gloss = curated?.gloss ?: w.gloss,
+            translit = curated?.translit ?: w.translit, exampleGloss = curated?.exampleGloss, status = status,
             releaseDay = if (waiting) streakDay(Instant.ofEpochMilli(wm!!.due), clock.zone()) else null,
             nextReview = active.filter { it.state != CardState.NEW.value }.minOfOrNull { it.due }?.let(Instant::ofEpochMilli),
             inGym = active.isNotEmpty() || cards.isEmpty(),

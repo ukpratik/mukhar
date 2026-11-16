@@ -1,6 +1,5 @@
 package io.github.ukpratik.mukhar.app.feature.words
 
-import io.github.ukpratik.mukhar.domain.revise.ReviewEstimate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -21,28 +20,30 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.BookmarkAdded
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
-import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -59,21 +60,23 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ukpratik.mukhar.app.R
 import io.github.ukpratik.mukhar.app.feature.onboarding.Eyebrow
 import io.github.ukpratik.mukhar.app.feature.talk.common.ArtCircle
-import io.github.ukpratik.mukhar.data.prefs.SettingsStore
 import io.github.ukpratik.mukhar.app.feature.words.deck.DeckEntryCard
+import io.github.ukpratik.mukhar.data.prefs.SettingsStore
 import io.github.ukpratik.mukhar.data.repo.DeckCard
 import io.github.ukpratik.mukhar.data.repo.DeckLists
 import io.github.ukpratik.mukhar.data.repo.DeckState
@@ -82,36 +85,35 @@ import io.github.ukpratik.mukhar.data.repo.WordItem
 import io.github.ukpratik.mukhar.data.repo.WordRepository
 import io.github.ukpratik.mukhar.data.repo.WordSource
 import io.github.ukpratik.mukhar.domain.model.Lang
+import io.github.ukpratik.mukhar.domain.revise.ReviewEstimate
 import io.github.ukpratik.mukhar.domain.words.DailyWordPicker
 import io.github.ukpratik.mukhar.domain.words.WordHistory
 import io.github.ukpratik.mukhar.ui.text.mixedScript
-import io.github.ukpratik.mukhar.ui.theme.NotoDeva
-import androidx.compose.ui.text.AnnotatedString
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import io.github.ukpratik.mukhar.ui.theme.MukharCard
 import io.github.ukpratik.mukhar.ui.theme.MukharSpace
 import io.github.ukpratik.mukhar.ui.theme.MukharTheme
-import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.ukpratik.mukhar.ui.theme.NotoDeva
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.ZoneId
-import javax.inject.Inject
 
 /** D-055: Learn (new word deck), Revise (learnt words), My words (lists). */
 enum class WordsSection { LEARN, REVISE, MY_WORDS }
 
 /** My words filters. */
-enum class MyWordsFilter { ALL, STARRED, DONE, TALKS, LINES }
+enum class MyWordsFilter { ALL, STARRED, DONE, TALKS, LOOKUPS, LINES }
 
 data class SavedLineUi(val id: String, val original: String, val better: String, val lang: Lang)
 
@@ -144,6 +146,7 @@ data class WordBankUiState(
     val today: LocalDate = LocalDate.now(),
 ) {
     val talkWords: List<WordItem> get() = words.filter { it.source == WordSource.TALK }
+    val lookupWords: List<WordItem> get() = words.filter { it.source == WordSource.LOOKUP }
     val reviseMinutes: Int get() = ReviewEstimate.minutes(revision.due)
 
     /** The language whose "you've met every word" note applies on this tab. */
@@ -233,6 +236,8 @@ data class WordBankActions(
     val onPractiseStarred: (Lang?) -> Unit = {},
     val onStar: (String, Boolean) -> Unit = { _, _ -> },
     val onBringBack: (String) -> Unit = {},
+    /** D-056: open word search. */
+    val onLookUp: () -> Unit = {},
 )
 
 @Composable
@@ -243,10 +248,11 @@ fun WordsScreen(
     onRevise: (Lang?, LocalDate, LocalDate) -> Unit = { _, _, _ -> },
     onOpenDeck: (Lang?) -> Unit = {},
     onPractiseStarred: (Lang?) -> Unit = {},
+    onLookUp: () -> Unit = {},
     vm: WordBankViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    WordBankContent(state, WordBankActions(vm::onEvent, onOpenRevision, onOpenWord, onTalk, onRevise, onOpenDeck, onPractiseStarred, vm::setStarred, vm::bringBack))
+    WordBankContent(state, WordBankActions(vm::onEvent, onOpenRevision, onOpenWord, onTalk, onRevise, onOpenDeck, onPractiseStarred, vm::setStarred, vm::bringBack, onLookUp))
 }
 
 /** Words (S14, D-055): Learn · Revise · My words under optional language tabs. Stateless. */
@@ -264,6 +270,7 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 6.dp).semantics { heading() },
         )
+        LookUpField(actions.onLookUp)
         val tab = state.tab
         if (tab != null && state.langs.size > 1) LangTabs(state.langs, tab) { actions.onEvent(WordBankEvent.Tab(it)) }
         val sectionLabel = stringResource(R.string.words_section_a11y)
@@ -294,6 +301,27 @@ fun WordBankContent(state: WordBankUiState, actions: WordBankActions, modifier: 
             WordsSection.LEARN -> Learn(state, actions)
             WordsSection.REVISE -> Revise(state, actions)
             WordsSection.MY_WORDS -> MyWords(state, actions)
+        }
+    }
+}
+
+/**
+ * D-056: the way into word search, at the top of Words. It looks like a search field but opens the search screen
+ * (which focuses the real field), so the Words screen itself never scrolls under a keyboard.
+ */
+@Composable
+private fun LookUpField(onClick: () -> Unit) {
+    val label = stringResource(R.string.lookup_field_cd)
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag(TAG_WORDS_LOOKUP).semantics { contentDescription = label },
+    ) {
+        Row(Modifier.padding(horizontal = MukharSpace.l, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.Search, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.width(12.dp))
+            Text(stringResource(R.string.lookup_field_hint), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -624,6 +652,7 @@ private fun MyWords(state: WordBankUiState, actions: WordBankActions) {
                                 MyWordsFilter.STARRED -> R.string.words_seg_starred
                                 MyWordsFilter.DONE -> R.string.words_seg_done
                                 MyWordsFilter.TALKS -> R.string.words_filter_talks
+                                MyWordsFilter.LOOKUPS -> R.string.words_filter_lookups
                                 MyWordsFilter.LINES -> R.string.words_seg_lines
                             },
                         ),
@@ -635,6 +664,7 @@ private fun MyWords(state: WordBankUiState, actions: WordBankActions) {
     when (state.filter) {
         MyWordsFilter.ALL -> WordList(state, state.words, actions)
         MyWordsFilter.TALKS -> WordList(state, state.talkWords, actions)
+        MyWordsFilter.LOOKUPS -> WordList(state, state.lookupWords, actions)
         MyWordsFilter.STARRED -> Starred(state, actions)
         MyWordsFilter.DONE -> Done(state, actions)
         MyWordsFilter.LINES -> Lines(state)
@@ -701,6 +731,17 @@ private fun WordRow(w: WordItem, showNext: Boolean = false, trailing: (@Composab
             )
             if (next != null) {
                 Text(next, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
+            }
+            if (w.source == WordSource.LOOKUP) {
+                Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Rounded.Search, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(14.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.word_src_lookup, shortDay(w.addedAt.atZone(ZoneId.systemDefault()).toLocalDate())),
+                        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
             if (w.source == WordSource.TALK) {
                 Row(Modifier.padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -805,6 +846,7 @@ private fun nextReviewLabel(w: WordItem): String {
 
 const val TAG_WORD_BANK = "word_bank"
 const val TAG_WORDS_TABS = "words_tabs"
+const val TAG_WORDS_LOOKUP = "words_lookup"
 const val TAG_HISTORY_EMPTY = "words_history_empty"
 const val TAG_REVISE_WEEK = "words_revise_week"
 const val TAG_EXHAUSTED = "words_exhausted"

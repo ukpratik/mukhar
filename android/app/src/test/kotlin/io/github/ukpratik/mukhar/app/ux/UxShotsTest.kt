@@ -24,6 +24,15 @@ import io.github.ukpratik.mukhar.app.feature.words.WordBankContent
 import io.github.ukpratik.mukhar.app.feature.words.WordBankUiState
 import io.github.ukpratik.mukhar.app.feature.words.WordsFixtures
 import io.github.ukpratik.mukhar.app.feature.words.WordsSection
+import io.github.ukpratik.mukhar.app.feature.words.lookup.AiUi
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupActions
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupContent
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupEntryActions
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupEntryContent
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupEntryUiState
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupFixtures
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupUiState
+import io.github.ukpratik.mukhar.data.repo.LookupStatus
 import io.github.ukpratik.mukhar.app.feature.words.revise.RevisionActions
 import io.github.ukpratik.mukhar.app.feature.words.revise.RevisionContent
 import io.github.ukpratik.mukhar.app.feature.words.revise.RevisionUiState
@@ -114,5 +123,55 @@ class UxShotsTest {
     @Test
     fun today() = shot("today") {
         TodayContent(TodayFixtures.midDay.copy(deck = DeckFixtures.state()), TodayActions())
+    }
+
+    // ---- D-056 look-up ----
+
+    @Test
+    fun lookupResults() = shot("lookup_results") {
+        LookupContent(
+            LookupUiState(
+                query = "happ", searched = "happ", preparing = false,
+                results = listOf(LookupFixtures.happyHit, LookupFixtures.articulateHit, LookupFixtures.khushHit),
+            ),
+            LookupActions(), autoFocus = false,
+        )
+    }
+
+    @Test
+    fun lookupEmpty() = shot("lookup_empty") { LookupContent(LookupUiState(preparing = false), LookupActions(), autoFocus = false) }
+
+    @Test
+    fun lookupNoMatch() = shot("lookup_no_match") {
+        LookupContent(LookupUiState(query = "zeitgeist", searched = "zeitgeist", preparing = false, hasKey = true), LookupActions(), autoFocus = false)
+    }
+
+    @Test
+    fun entryEnglish() = shot("entry_en") {
+        LookupEntryContent(LookupEntryUiState(loading = false, entry = LookupFixtures.happy, voice = true, hasKey = true), LookupEntryActions())
+    }
+
+    @Test
+    fun entryHindiSaved() = shot("entry_hi_saved") {
+        LookupEntryContent(
+            LookupEntryUiState(loading = false, entry = LookupFixtures.khush, voice = true, status = LookupStatus(saved = true, starred = true)),
+            LookupEntryActions(),
+        )
+    }
+
+    @Test
+    fun entryMukhar() = shot("entry_mukhar") {
+        LookupEntryContent(LookupEntryUiState(loading = false, entry = LookupFixtures.articulate, voice = true, hasKey = false), LookupEntryActions())
+    }
+
+    @Test
+    fun entryAi() {
+        RuntimeEnvironment.setQualifiers("w393dp-h1600dp-xxhdpi")
+        shot("entry_ai") {
+            LookupEntryContent(
+                LookupEntryUiState(loading = false, entry = LookupFixtures.happy, voice = true, hasKey = true, ai = AiUi.Done(LookupFixtures.lucidAi)),
+                LookupEntryActions(),
+            )
+        }
     }
 }

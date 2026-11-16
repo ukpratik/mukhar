@@ -11,3 +11,6 @@ local.properties
 
 # Product docs live in their own private repo (ukpratik/mukhar-product)
 /product/
+
+# Dictionary build inputs (downloaded by tools/dictionary/build_dictionary.py)
+tools/dictionary/.cache/

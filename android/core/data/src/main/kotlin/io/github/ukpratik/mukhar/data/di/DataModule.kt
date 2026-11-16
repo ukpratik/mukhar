@@ -56,6 +56,9 @@ import io.github.ukpratik.mukhar.domain.Clock
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import io.github.ukpratik.mukhar.data.byok.AnthropicClient
+import io.github.ukpratik.mukhar.data.dictionary.DictionaryRepository
+import io.github.ukpratik.mukhar.data.dictionary.DictionaryStore
+import io.github.ukpratik.mukhar.data.dictionary.FileExplainCache
 import io.github.ukpratik.mukhar.data.ideas.FileIdeasCache
 import io.github.ukpratik.mukhar.data.ideas.SpeakingIdeasRepository
 import io.github.ukpratik.mukhar.data.byok.ByokFile
@@ -275,7 +278,7 @@ object DataModule {
         analytics: Analytics,
         reminders: ReminderScheduler,
         vault: KeyVault,
-    ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR), File(context.filesDir, FileIdeasCache.DIR)), sync, trialReminders, analytics) {
+    ): DataWiper = DataWiper(db, settings, listOf(files.dir, File(context.cacheDir, SHARE_DIR), File(context.filesDir, FileIdeasCache.DIR), File(context.filesDir, FileExplainCache.DIR)), sync, trialReminders, analytics) {
         reminders.reschedule()
         vault.wipe() // own API keys, their Tink keyset and the Keystore master key (ADR-008)
     }
@@ -354,6 +357,21 @@ object DataModule {
     @Singleton
     fun speakingIdeas(vault: KeyVault, anthropic: AnthropicClient, @ApplicationContext context: Context, json: Json, usage: ByokUsageLog): SpeakingIdeasRepository =
         SpeakingIdeasRepository(vault, anthropic, FileIdeasCache(File(context.filesDir, FileIdeasCache.DIR), json), usage)
+
+    /** D-056: word search over the offline dictionary (`dictionary.db`) and Mukhar's words; AI explanations in `files/lookup`. */
+    @Provides
+    @Singleton
+    fun dictionary(
+        @ApplicationContext context: Context,
+        json: Json,
+        catalog: WordCatalog,
+        synonyms: SynonymSource,
+        vault: KeyVault,
+        anthropic: AnthropicClient,
+        usage: ByokUsageLog,
+    ): DictionaryRepository = DictionaryRepository(
+        DictionaryStore(context, json), catalog, synonyms, vault, anthropic, FileExplainCache(File(context.filesDir, FileExplainCache.DIR), json), usage,
+    )
 
     /** THE analysis pipeline in release (and in debug unless the debug menu forces the fake): picks per call by mode. */
     @Provides

@@ -6,11 +6,11 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 /**
- * `mukhar.db` v2 (LLD §2.1; v2 adds `word_deck`, US-081). Migrations: additive AutoMigration where possible, hand-written otherwise, each with a
+ * `mukhar.db` v3 (LLD §2.1; v2 adds `word_deck`, US-081; v3 adds dictionary fields to `word`, D-056). Migrations: additive AutoMigration where possible, hand-written otherwise, each with a
  * MigrationTestHelper test. Never `fallbackToDestructiveMigration`.
  */
 @Database(
-    version = 2,
+    version = 3,
     exportSchema = true,
     entities = [
         TalkSessionEntity::class, TranscriptEntity::class, MetricsEntity::class, FeedbackEntity::class,
@@ -42,6 +42,15 @@ abstract class MukharDatabase : RoomDatabase() {
             }
         }
 
-        val MIGRATIONS = arrayOf(MIGRATION_1_2)
+        /** v2 → v3: words saved from the dictionary (D-056) keep their Hindi/English gloss, part of speech and romanisation. */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `word` ADD COLUMN `gloss` TEXT")
+                db.execSQL("ALTER TABLE `word` ADD COLUMN `pos` TEXT")
+                db.execSQL("ALTER TABLE `word` ADD COLUMN `translit` TEXT")
+            }
+        }
+
+        val MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
     }
 }

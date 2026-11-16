@@ -322,6 +322,17 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
 
     suspend fun setRecordingsCapMb(mb: Int) = update { it[K.recordingsCapMb] = mb.coerceIn(RecordingRetention.CAP_OPTIONS_MB.first(), RecordingRetention.CAP_OPTIONS_MB.last()) }
 
+    // D-056: the last few words looked up, newest first (ids like "en:happy").
+
+    val recentLookups: Flow<List<String>> = store.data.map { p -> p[K.recentLookups]?.split('\n')?.filter(String::isNotEmpty).orEmpty() }.distinctUntilChanged()
+
+    suspend fun addRecentLookup(id: String, keep: Int = 12) = update {
+        val current = it[K.recentLookups]?.split('\n')?.filter(String::isNotEmpty).orEmpty()
+        it[K.recentLookups] = (listOf(id) + (current - id)).take(keep).joinToString("\n")
+    }
+
+    suspend fun clearRecentLookups() = update { it.remove(K.recentLookups) }
+
     /** Delete all my data (US-063): every key goes, so the next start is a fresh install (onboarding). */
     suspend fun clearAll() = update { it.clear() }
 
@@ -417,6 +428,7 @@ class SettingsStore @Inject constructor(private val store: DataStore<Preferences
         fun dailyWords(lang: Lang) = intPreferencesKey("daily_new_words_${lang.code}")
         val wordsTab = stringPreferencesKey("words_tab_lang")
         val donePrompts = stringSetPreferencesKey("done_prompt_ids")
+        val recentLookups = stringPreferencesKey("recent_lookups")
         val recordingsCapMb = intPreferencesKey("recordings_cap_mb")
         val openedDay = stringPreferencesKey("daily_opened_day")
         val openedIds = stringSetPreferencesKey("daily_opened_ids")

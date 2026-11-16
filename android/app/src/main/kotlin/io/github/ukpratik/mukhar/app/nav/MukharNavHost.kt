@@ -43,6 +43,9 @@ import io.github.ukpratik.mukhar.app.feature.talk.sayagain.SayAgainScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordDetailScreen
 import io.github.ukpratik.mukhar.app.feature.words.WordsScreen
 import io.github.ukpratik.mukhar.app.feature.words.deck.DeckScreen
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupEntryScreen
+import io.github.ukpratik.mukhar.app.feature.words.lookup.LookupScreen
+import io.github.ukpratik.mukhar.data.dictionary.DictionaryRepository
 import io.github.ukpratik.mukhar.app.feature.words.revise.RevisionScreen
 import io.github.ukpratik.mukhar.app.feature.words.review.ReviewScreen
 
@@ -245,6 +248,23 @@ fun NavGraphBuilder.wordsDestination(navController: NavHostController) {
             },
             onOpenDeck = { lang -> navController.navigate(DeckRoute(lang?.code)) },
             onPractiseStarred = { lang -> navController.navigate(RevisionRoute(lang?.code, RevisionRoute.SET_STARRED)) },
+            onLookUp = { navController.navigate(LookupRoute) },
+        )
+    }
+    // D-056: look up any word, and its page (which can open another word, its saved card, or the keys screen).
+    composable<LookupRoute> {
+        LookupScreen(
+            onBack = { navController.popBackStack() },
+            onOpenEntry = { id -> navController.navigate(LookupEntryRoute(id)) },
+            onExplainUnknown = { lang, word -> navController.navigate(LookupEntryRoute(DictionaryRepository.idFor(lang, word), word)) },
+        )
+    }
+    composable<LookupEntryRoute> {
+        LookupEntryScreen(
+            onBack = { navController.popBackStack() },
+            onOpenSaved = { id -> navController.navigate(WordDetailRoute(id)) },
+            onAddKey = { navController.navigate(KeysRoute) },
+            onLookUp = { lang, word -> navController.navigate(LookupEntryRoute(DictionaryRepository.idFor(lang, word), word)) },
         )
     }
 }

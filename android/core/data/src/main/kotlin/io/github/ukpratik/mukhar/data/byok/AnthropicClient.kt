@@ -10,6 +10,8 @@ import io.github.ukpratik.mukhar.domain.feedback.Mistake
 import io.github.ukpratik.mukhar.domain.feedback.Register
 import io.github.ukpratik.mukhar.domain.feedback.Safety
 import io.github.ukpratik.mukhar.domain.feedback.UpgradedWord
+import io.github.ukpratik.mukhar.domain.model.Lang
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -32,13 +34,14 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
 
 data class LlmUsage(val inputTokens: Long, val outputTokens: Long)
 
 data class LlmFeedback(val feedback: Feedback, val model: String, val usage: LlmUsage)
 
 data class LlmIdeas(val ideas: SpeakingIdeas, val model: String, val usage: LlmUsage)
+
+data class LlmExplanation(val explanation: WordExplanation, val usage: LlmUsage)
 
 data class LlmSentence(val result: String, val corrected: String, val example: String, val note: String, val usage: LlmUsage)
 
@@ -81,6 +84,14 @@ class AnthropicClient(
         val body = body(system, SpeakingIdeasPrompt.userMessage(request), SpeakingIdeasPrompt.SCHEMA, SpeakingIdeasPrompt.MAX_TOKENS, cacheSystem = false)
         return message(key, body) { out, model, usage ->
             ByokResult.Ok(LlmIdeas(SpeakingIdeasPrompt.tidy(json.decodeFromJsonElement(SpeakingIdeas.serializer(), out)), model, usage))
+        }
+    }
+
+    /** "Explain with AI" for a looked-up word (D-056): one structured call at effort `low`, like the sentence check. */
+    suspend fun explainWord(key: String, lang: Lang, word: String): ByokResult<LlmExplanation> {
+        val body = body(WordExplainPrompt.SYSTEM, WordExplainPrompt.userMessage(lang, word), WordExplainPrompt.SCHEMA, WordExplainPrompt.MAX_TOKENS, cacheSystem = false)
+        return message(key, body) { out, _, usage ->
+            ByokResult.Ok(LlmExplanation(WordExplainPrompt.tidy(json.decodeFromJsonElement(WordExplanation.serializer(), out)), usage))
         }
     }
 

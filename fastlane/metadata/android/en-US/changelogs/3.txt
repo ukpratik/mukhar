@@ -1,0 +1,5 @@
+- Look up any word: English, हिंदी, or Hindi typed in English letters (khush). Works offline
+- Each word shows its meanings, Hindi words for English ones, examples and stronger words
+- Add a looked-up word to My words to revise it, or star it
+- With your own Anthropic key: Explain with AI, with both meanings, how to say it and examples
+- Words has three parts: Learn, Revise and My words; 5 word cards a day count for your streak

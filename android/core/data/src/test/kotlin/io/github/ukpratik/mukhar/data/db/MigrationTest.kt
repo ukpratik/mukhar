@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/** v1 (1.0.0) → v2 keeps every row and marks curated Word Gym words done in the new deck (US-081). */
+/** v1 (1.0.0) → v2 keeps every row and marks curated words done in the new deck (US-081); v2 → v3 adds dictionary fields (D-056). */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
 class MigrationTest {
@@ -35,6 +35,26 @@ class MigrationTest {
         db.query("SELECT COUNT(*) FROM word").use { c ->
             c.moveToFirst()
             assertThat(c.getInt(0)).isEqualTo(2)
+        }
+        db.close()
+    }
+
+    @Test
+    fun v2ToV3AddsDictionaryFieldsAndKeepsWords() {
+        helper.createDatabase(DB, 2).use { db ->
+            db.execSQL(
+                "INSERT INTO word (id, lang, lemma, meaning, example, register, tracks, source, source_session_id, added_at) " +
+                    "VALUES ('en:pivotal', 'en', 'pivotal', 'm', 'e', 'power', 'professional', 'talk', 's1', 2000)",
+            )
+        }
+        val db = helper.runMigrationsAndValidate(DB, 3, true, *MukharDatabase.MIGRATIONS)
+        db.query("SELECT lemma, gloss, pos, translit FROM word").use { c ->
+            assertThat(c.count).isEqualTo(1)
+            c.moveToFirst()
+            assertThat(c.getString(0)).isEqualTo("pivotal")
+            assertThat(c.isNull(1)).isTrue()
+            assertThat(c.isNull(2)).isTrue()
+            assertThat(c.isNull(3)).isTrue()
         }
         db.close()
     }

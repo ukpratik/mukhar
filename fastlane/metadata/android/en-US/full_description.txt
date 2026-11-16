@@ -18,6 +18,7 @@
 <li>New words one card at a time, for interviews, work, public speaking, content creation or everyday talk: the meaning in English and Hindi, an example and the pronunciation. Got it, Star, Later or Not for me.</li>
 <li>Revise: the words you learnt come back when it's time. See the word, recall the meaning, then Knew it or Again.</li>
 <li>Spaced revision (FSRS) brings words back before you forget them, with a 2-minute quick revision.</li>
+<li>Look up any word, offline: English, हिंदी, or Hindi typed in English letters. Meanings, Hindi words for English ones, examples and stronger words; add it to your words in one tap. With your own Anthropic key, Explain with AI adds both meanings, how to say it and examples.</li>
 </ul>
 
 <p><b>A calm habit</b></p>

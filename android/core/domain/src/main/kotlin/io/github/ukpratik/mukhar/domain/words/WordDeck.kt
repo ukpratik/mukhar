@@ -53,8 +53,14 @@ object WordDeck {
         return back + newOrder.filter { it !in decided && it !in exclude }
     }
 
-    /** Words decided since [dayStart] (any choice), for "3 of 5 today". */
-    fun decidedToday(decisions: List<DeckDecision>, dayStart: Instant): Int = decisions.count { !it.decidedAt.isBefore(dayStart) }
+    /**
+     * Words decided in the deck since [dayStart] (any choice), for "3 of 5 today". Words saved from a dictionary
+     * look-up ([LOOKUP_SEQ]) don't count: the goal and the streak are for working through cards.
+     */
+    fun decidedToday(decisions: List<DeckDecision>, dayStart: Instant): Int = decisions.count { it.seq >= 0 && !it.decidedAt.isBefore(dayStart) }
+
+    /** The [DeckDecision.seq] of a word saved from the dictionary (D-056), outside the deck's numbering. */
+    const val LOOKUP_SEQ = -1L
 
     /** The next decision number. */
     fun nextSeq(decisions: List<DeckDecision>): Long = (decisions.maxOfOrNull { it.seq } ?: 0L) + 1

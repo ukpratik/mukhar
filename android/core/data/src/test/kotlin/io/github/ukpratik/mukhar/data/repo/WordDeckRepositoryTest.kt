@@ -225,4 +225,45 @@ class WordDeckRepositoryTest {
         repeat(9) { repo.decide(deck().cards.first().id, DeckChoice.DISCARDED) }
         assertThat(deck().showHint).isFalse()
     }
+
+    // ---- D-056: words saved from a look-up ----
+
+    @Test
+    fun aLookedUpWordGoesIntoMyWordsAndRevisionWithoutCountingTheGoal() = runTest {
+        val word = LookupWord("en:lucid", Lang.EN, "lucid", "clear and easy to understand", "a lucid answer", "साफ़", "adjective", null)
+        assertThat(repo.observeLookupStatus(word.id).first()).isEqualTo(LookupStatus(saved = false, starred = false))
+        repo.saveLookup(word, starred = false)
+        val item = repo.observeWord(word.id).first()!!
+        assertThat(item.source).isEqualTo(WordSource.LOOKUP)
+        assertThat(item.gloss).isEqualTo("साफ़")
+        assertThat(item.pos).isEqualTo("adjective")
+        assertThat(dao.cardsForWord(word.id)).hasSize(2)
+        assertThat(repo.observeRevision().first().due).isEqualTo(1)
+        assertThat(repo.observeDeckLists(null).first().done.single().words.map { it.id }).containsExactly(word.id)
+        assertThat(repo.observeLookupStatus(word.id).first()).isEqualTo(LookupStatus(saved = true, starred = false))
+        // Not a deck card: the day's goal and streak are untouched.
+        assertThat(deck().decidedToday).isEqualTo(0)
+        assertThat(deck().practisedToday).isEqualTo(0)
+        // Star it from the look-up: same word, now in Starred.
+        repo.saveLookup(word, starred = true)
+        assertThat(repo.observeDeckLists(null).first().starred.map { it.id }).containsExactly(word.id)
+        assertThat(repo.observeLookupStatus(word.id).first().starred).isTrue()
+        assertThat(dao.cardsForWord(word.id)).hasSize(2)
+    }
+
+    @Test
+    fun lookingUpADeckWordTakesItOutOfTheDeck() = runTest {
+        val top = deck().cards.first()
+        repo.saveLookup(LookupWord(top.id, top.lang, top.lemma, "ignored", "", null, null, null), starred = true)
+        assertThat(deck().cards.map { it.id }).doesNotContain(top.id)
+        assertThat(repo.observeWord(top.id).first()!!.meaning).isEqualTo(top.meaning) // from the pack
+        assertThat(repo.observeDeckLists(null).first().starred.map { it.id }).containsExactly(top.id)
+        // A deck word marked done keeps its deck number when starred from a look-up.
+        val next = deck().cards.first()
+        repo.decide(next.id, DeckChoice.DONE)
+        val seq = dao.deckRow(next.id)!!.seq
+        repo.saveLookup(LookupWord(next.id, next.lang, next.lemma, "", "", null, null, null), starred = true)
+        assertThat(dao.deckRow(next.id)!!.seq).isEqualTo(seq)
+        assertThat(dao.deckRow(next.id)!!.choice).isEqualTo("starred")
+    }
 }

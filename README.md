@@ -14,6 +14,7 @@
   - one thing you did well and one thing to work on, both quoted from your own talk
 - **Say it again.** Retake the same topic and compare the two talks.
 - **Words.** Learn new words one card at a time, chosen for your goal (professional, content creation, public speaking, everyday, or just cool words): Got it, Star, Later or Not for me. Words you learn come back in Revise until they stick.
+- **Look up any word.** An offline dictionary for English and Hindi (also Hindi typed in English letters): meanings, Hindi words for English ones, examples and stronger words. Add a word to revise it. With your own Anthropic key, "Explain with AI" adds both meanings, pronunciation and examples.
 - **Spaced revision.** FSRS scheduling brings words back just before you'd forget them. A quick revision mode takes 2 minutes.
 - **Habit loop.** Daily streaks with freezes and a repair window, gentle reminders that back off if you ignore them, and a weekly goal.
 - **Progress.** Trends, personal bests, insights, and a share card.
@@ -77,3 +78,8 @@ Full policy: [PRIVACY.md](PRIVACY.md).
 ## Licence
 
 [GPL-3.0](LICENSE). Fonts: Manrope, Fraunces and Noto Sans Devanagari, all under the SIL Open Font License (see `android/core/ui/fonts/`).
+
+Dictionary data (`android/core/data/src/main/assets/dict_*.jsonl`, built by `tools/dictionary/build_dictionary.py`):
+- English: [Open English WordNet](https://en-word.net) 2025, CC BY 4.0.
+- Hindi: [Wiktionary](https://en.wiktionary.org) entries via [kaikki.org](https://kaikki.org), CC BY-SA 4.0. The Hindi file is shared under the same licence.
+- Word frequency for ranking: [FrequencyWords](https://github.com/hermitdave/FrequencyWords) by Hermit Dave, MIT.

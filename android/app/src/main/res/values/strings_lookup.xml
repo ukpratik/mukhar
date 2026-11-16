@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- D-056: look up any word, English or Hindi. -->
+    <string name="lookup_field_hint">Look up a word · English or हिंदी</string>
+    <string name="lookup_field_cd">Look up a word</string>
+    <string name="lookup_back_cd">Back</string>
+    <string name="lookup_clear_cd">Clear the search</string>
+    <string name="lookup_recent">Recent</string>
+    <string name="lookup_recent_clear">Clear</string>
+    <string name="lookup_empty_title">Look up any word</string>
+    <string name="lookup_empty_body">Type in English, in हिंदी, or Hindi in English letters (khush). It works offline.</string>
+    <string name="lookup_preparing">Getting the dictionary ready (first time only)…</string>
+    <string name="lookup_no_match">No match for “%1$s”</string>
+    <string name="lookup_no_match_body">Check the spelling, or try the word without its ending.</string>
+    <string name="lookup_explain_unknown">Explain “%1$s” with AI</string>
+    <string name="lookup_mukhar_badge">Mukhar word</string>
+    <string name="lookup_hit_a11y">%1$s, %2$s. %3$s</string>
+    <string name="lookup_hit_mukhar_a11y">One of Mukhar\'s words.</string>
+
+    <string name="entry_title">Word</string>
+    <string name="entry_meanings">Meanings</string>
+    <string name="entry_in_english">In English</string>
+    <string name="entry_in_hindi">हिंदी में</string>
+    <string name="entry_hindi_words_cd">Hindi words for %1$s. Tap one to look it up.</string>
+    <string name="entry_also">Also: %1$s</string>
+    <string name="entry_stronger">Stronger words</string>
+    <string name="entry_forms">Forms: %1$s</string>
+    <string name="entry_add">Add to my words</string>
+    <string name="entry_saved">In my words</string>
+    <string name="entry_star_cd">Star this word</string>
+    <string name="entry_unstar_cd">Remove the star</string>
+    <string name="entry_added_toast">Added. It comes up in Revise.</string>
+    <string name="entry_not_found">This word isn\'t in the dictionary.</string>
+    <string name="entry_source_en">Dictionary: Open English WordNet (CC BY 4.0)</string>
+    <string name="entry_source_hi">Dictionary: Wiktionary (CC BY-SA 4.0)</string>
+
+    <string name="entry_ai_button">Explain with AI</string>
+    <string name="entry_ai_cost">≈ ₹0.02 on your key</string>
+    <string name="entry_ai_loading">Asking the AI…</string>
+    <string name="entry_ai_title">Explained by AI</string>
+    <string name="entry_ai_say_it">Say it: %1$s</string>
+    <string name="entry_ai_meaning_en">In English</string>
+    <string name="entry_ai_meaning_hi">हिंदी में</string>
+    <string name="entry_ai_examples">Examples</string>
+    <string name="entry_ai_usage">When to use it</string>
+    <string name="entry_ai_related">Related words</string>
+    <string name="entry_ai_not_word">This doesn\'t look like a word.</string>
+    <string name="entry_ai_did_you_mean">Look up “%1$s”</string>
+    <string name="entry_ai_caution">AI explanations can be wrong. Check words that matter.</string>
+    <string name="entry_ai_no_key">Want a fuller explanation with Hindi and examples? Add your own Anthropic key.</string>
+    <string name="entry_ai_add_key">Add a key</string>
+    <string name="entry_ai_fail_offline">No internet. The dictionary still works; try the AI again when you\'re online.</string>
+    <string name="entry_ai_fail_key">Your Anthropic key wasn\'t accepted. Check it in Settings → Your keys.</string>
+    <string name="entry_ai_fail_refused">The AI couldn\'t explain this word.</string>
+    <string name="entry_ai_fail_busy">The AI is busy right now. Try again in a minute.</string>
+    <string name="entry_ai_fail_bad">The AI\'s answer didn\'t come through properly. Try again.</string>
+    <string name="entry_ai_fail_paused">Your keys are paused for this month (your spending limit).</string>
+    <string name="entry_ai_retry">Try again</string>
+
+    <string name="word_src_lookup">Looked up %1$s</string>
+    <string name="words_filter_lookups">Looked up</string>
+</resources>
